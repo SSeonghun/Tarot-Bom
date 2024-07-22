@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.member.entity;
 
+import com.ssafy.tarotbom.domain.tarot.entity.TarotSummary;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.global.code.entity.CodeType;
 import jakarta.persistence.*;
@@ -43,6 +44,10 @@ public class Member {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
     @PrimaryKeyJoinColumn
     private Reader reader;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
+    @PrimaryKeyJoinColumn
+    private TarotSummary tarotSummary;
 
     /* @oneToMany 로 연결되는 테이블이 엄청 많긴 한데, 전부 전체로딩하기엔 부담이 있는 데이터들
     * 따라서 일단 연결하지 않는다
