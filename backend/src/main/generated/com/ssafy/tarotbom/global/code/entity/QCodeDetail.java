@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -18,35 +17,24 @@ public class QCodeDetail extends EntityPathBase<CodeDetail> {
 
     private static final long serialVersionUID = 967074242L;
 
-    private static final PathInits INITS = PathInits.DIRECT2;
-
     public static final QCodeDetail codeDetail = new QCodeDetail("codeDetail");
 
-    public final NumberPath<Long> codeDetailId = createNumber("codeDetailId", Long.class);
+    public final StringPath codeDetailId = createString("codeDetailId");
 
-    public final QCodeType codeType;
+    public final StringPath codeTypeId = createString("codeTypeId");
 
     public final StringPath detailDesc = createString("detailDesc");
 
     public QCodeDetail(String variable) {
-        this(CodeDetail.class, forVariable(variable), INITS);
+        super(CodeDetail.class, forVariable(variable));
     }
 
     public QCodeDetail(Path<? extends CodeDetail> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QCodeDetail(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QCodeDetail(PathMetadata metadata, PathInits inits) {
-        this(CodeDetail.class, metadata, inits);
-    }
-
-    public QCodeDetail(Class<? extends CodeDetail> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.codeType = inits.isInitialized("codeType") ? new QCodeType(forProperty("codeType")) : null;
+        super(CodeDetail.class, metadata);
     }
 
 }

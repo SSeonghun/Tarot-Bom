@@ -22,7 +22,11 @@ public class QReader extends EntityPathBase<Reader> {
 
     public static final QReader reader = new QReader("reader");
 
+    public final com.ssafy.tarotbom.global.code.entity.QCodeDetail grade;
+
     public final StringPath intro = createString("intro");
+
+    public final com.ssafy.tarotbom.global.code.entity.QCodeDetail keyword;
 
     public final QMember member;
 
@@ -50,6 +54,8 @@ public class QReader extends EntityPathBase<Reader> {
 
     public QReader(Class<? extends Reader> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.grade = inits.isInitialized("grade") ? new com.ssafy.tarotbom.global.code.entity.QCodeDetail(forProperty("grade")) : null;
+        this.keyword = inits.isInitialized("keyword") ? new com.ssafy.tarotbom.global.code.entity.QCodeDetail(forProperty("keyword")) : null;
         this.member = inits.isInitialized("member") ? new QMember(forProperty("member"), inits.get("member")) : null;
     }
 

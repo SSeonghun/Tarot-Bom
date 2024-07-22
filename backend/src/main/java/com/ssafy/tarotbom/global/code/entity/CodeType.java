@@ -14,14 +14,10 @@ import java.util.List;
 public class CodeType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "code_type_id", columnDefinition = "int unsigned")
     private long codeTypeId;
 
-    @Column(name = "type_desc")
+    @Column(name = "type_desc", length=20)
     private String typeDesc;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "codeType")
-    private List<CodeDetail> codeDetail;
 
 }

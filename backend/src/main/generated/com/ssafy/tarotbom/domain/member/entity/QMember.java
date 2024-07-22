@@ -24,11 +24,9 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath email = createString("email");
 
-    public final BooleanPath isManager = createBoolean("isManager");
-
-    public final BooleanPath isReader = createBoolean("isReader");
-
     public final NumberPath<Long> memberId = createNumber("memberId", Long.class);
+
+    public final com.ssafy.tarotbom.global.code.entity.QCodeDetail memberType;
 
     public final StringPath nickname = createString("nickname");
 
@@ -58,6 +56,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public QMember(Class<? extends Member> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.memberType = inits.isInitialized("memberType") ? new com.ssafy.tarotbom.global.code.entity.QCodeDetail(forProperty("memberType")) : null;
         this.reader = inits.isInitialized("reader") ? new QReader(forProperty("reader"), inits.get("reader")) : null;
     }
 

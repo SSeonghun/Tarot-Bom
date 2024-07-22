@@ -18,17 +18,13 @@ public class MemberTestMain {
     @PostMapping("/join")
     public ResponseEntity<?> joinMember(@RequestBody Map<String, String> req){
         Member m = Member.builder()
-                .nickname("주스")
-                .email("joo1798@gmail.com")
-                .isReader(false)
-                .isManager(false)
-                .password("1234")
-                .profileUrl(null)
-                .token(null)
+                .nickname(req.get("nickname"))
+                .email(req.get("email"))
+                .password(req.get("password"))
+                .profileUrl(req.get("profileUrl"))
+                .token(req.get("token"))
                 .build();
-        Reader r = Reader.builder().intro(null).rating(0).price(10000).member(m).build();
         mtr.save(m);
-        rtr.save(r);
         return ResponseEntity.ok().build();
     }
 

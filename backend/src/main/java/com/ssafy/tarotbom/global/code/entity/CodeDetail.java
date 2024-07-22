@@ -12,14 +12,13 @@ import lombok.*;
 public class CodeDetail {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "code_detail_id", columnDefinition = "int unsigned")
-    private long codeDetailId;
+    @Column(name = "code_detail_id", columnDefinition = "char(3)")
+    private String codeDetailId;
 
-    @Column(name = "detail_desc")
+    @Column(name = "detail_desc", length = 30)
     private String detailDesc;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "code_type_id")
-    private CodeType codeType;
+    // 실제로는 CodeType과 연관관계이지만, 굳이 불러올 필요 없으므로 연결하지는 않는다
+    @Column(name = "code_type_id", columnDefinition = "int unsigned")
+    private String codeTypeId;
 }
