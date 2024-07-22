@@ -24,13 +24,13 @@ public class QTarotLog extends EntityPathBase<TarotLog> {
 
     public final NumberPath<Long> logId = createNumber("logId", Long.class);
 
-    public final QRoom roomId;
+    public final QRoom room;
 
     public final DateTimePath<java.time.LocalDateTime> time = createDateTime("time", java.time.LocalDateTime.class);
 
     public final NumberPath<Integer> type = createNumber("type", Integer.class);
 
-    public final com.ssafy.tarotbom.domain.member.entity.QMember userId;
+    public final com.ssafy.tarotbom.domain.member.entity.QMember user;
 
     public QTarotLog(String variable) {
         this(TarotLog.class, forVariable(variable), INITS);
@@ -50,8 +50,8 @@ public class QTarotLog extends EntityPathBase<TarotLog> {
 
     public QTarotLog(Class<? extends TarotLog> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.roomId = inits.isInitialized("roomId") ? new QRoom(forProperty("roomId"), inits.get("roomId")) : null;
-        this.userId = inits.isInitialized("userId") ? new com.ssafy.tarotbom.domain.member.entity.QMember(forProperty("userId"), inits.get("userId")) : null;
+        this.room = inits.isInitialized("room") ? new QRoom(forProperty("room"), inits.get("room")) : null;
+        this.user = inits.isInitialized("user") ? new com.ssafy.tarotbom.domain.member.entity.QMember(forProperty("user"), inits.get("user")) : null;
     }
 
 }
