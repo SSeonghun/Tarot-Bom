@@ -7,10 +7,15 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-white font-bold"><Link to="/" className="text-white hover:text-gray-400">Home</Link></div>
         <div className="space-x-4">
-          <Link to="/about" className="text-white hover:text-gray-400">About</Link>
-          <Link to="/contact" className="text-white hover:text-gray-400">Contact</Link>
-          <button className='border border-spacing-x-12'><Link to="/login" className="text-white hover:text-gray-400">Contact</Link></button>
-        </div>
+          <Link to="/online" className="text-white hover:text-gray-400">온라인 타로</Link>
+          <Link to="/offline" className="text-white hover:text-gray-400">오프라인 타로</Link>
+          <Link to="/serch-reader" className="text-white hover:text-gray-400">리더 검색</Link>
+          <Link to="/community" className="text-white hover:text-gray-400">커뮤니티</Link>
+          <Link to="/SignIn">
+            <button className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700">
+            SignIn
+            </button>
+          </Link>        </div>
       </div>
     </nav>
   );
