@@ -23,11 +23,11 @@ public class Room {
     /* 리더ID, 시커ID, 상담분야는 각각 @ManyToOne으로 연결한다 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reader_id")
-    private Member readerId;
+    private Member reader;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seeker_id")
-    private Member seekerId;
+    private Member seeker;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "keyword", columnDefinition = "char(3)")

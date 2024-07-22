@@ -22,11 +22,11 @@ public class TarotLog {
     /* 유저ID, 방Id : @ManyToOne */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Member userId;
+    private Member user;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
-    private Room roomId;
+    private Room room;
     
     @Column(name = "type", columnDefinition = "int(1)")
     private int type;
