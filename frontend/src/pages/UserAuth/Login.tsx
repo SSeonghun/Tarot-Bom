@@ -1,12 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './login.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Login: React.FC = () => {
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
+
+  useEffect(() => {
+    // 페이지가 마운트되면 스타일 적용
+    document.body.style.overflow = 'hidden';
+
+    // 페이지가 언마운트되면 스타일 제거
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
 
   const validateEmail = (email: string) => {
     // 이메일 형식 검증을 위한 정규 표현식
