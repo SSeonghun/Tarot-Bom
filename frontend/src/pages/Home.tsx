@@ -2,6 +2,7 @@ import React from 'react';
 import Hero1 from '../components/Home/Hero1';
 import Hero2 from '../components/Home/Hero2';
 import Hero3 from '../components/Home/Hero3';
+import Hero4 from '../components/Home/Hero4'
 
 const Home: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const Home: React.FC = () => {
       <hr className='border-white'/>
       <Hero3></Hero3>
       <hr className='border-white'/>
+      <Hero4></Hero4>
     </div>
   );
 }
