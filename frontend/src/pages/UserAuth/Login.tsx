@@ -79,11 +79,14 @@ const Login: React.FC = () => {
                 </button>
               </div>
               <div>
+
                 <button
                   type="button"
                   className="w-full py-3 font-semibold text-white rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 focus:outline-none"
                 >
-                  회원가입
+                  <Link to={'/Signup'}>
+                    회원가입
+                  </Link>
                 </button>
               </div>
 
