@@ -6,8 +6,8 @@ import Navbar from './components/Navbar';
 import Offline from './pages/OfflineTarot';
 import Online from './pages/OnlineTarot';
 import SerchReader from './pages/SearchReader/SearchReader';
-import Community from './pages/Community/Community'
-import SignUp from './pages/UserAuth/Signup'
+import Community from './pages/Community/Community';
+import SignUp from './pages/UserAuth/Signup';
 
 const App: React.FC = () => {
   return (
@@ -26,6 +26,6 @@ const App: React.FC = () => {
       </div>
     </Router>
   );
-}
+};
 
 export default App;
