@@ -1,5 +1,7 @@
 package com.ssafy.tarotbom.domain.member.entity;
 
+import com.ssafy.tarotbom.global.code.entity.CodeDetail;
+import com.ssafy.tarotbom.global.code.entity.CodeType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,12 +29,6 @@ public class Member {
     @Column(name = "token", length = 500)
     private String token;
 
-    @Column(name = "is_reader")
-    private boolean isReader;
-
-    @Column(name = "is_manager")
-    private boolean isManager;
-
     @Column(name = "profile_url")
     private String profileUrl;
 
@@ -42,15 +38,21 @@ public class Member {
 
     /* @oneToOne 리스트
     * 1. 리더 프로필
+    * 2. 개인 타로 요약
     * */
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
     @PrimaryKeyJoinColumn
     private Reader reader;
 
-    /* @oneToMany 리스트
-    * 2. 개인 타로 요약
-    * 3. 알람?
-    * 4. 예약 (여기서는 시커 기준 조회)
+    /* @oneToMany 로 연결되는 테이블이 엄청 많긴 한데, 전부 전체로딩하기엔 부담이 있는 데이터들
+    * 따라서 일단 연결하지 않는다
     * */
+
+    /* @ManyToOne 리스트
+    * 1. 회원유형 (시커, 리더, 매니저)
+    * */
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="member_type", columnDefinition = "char(3)")
+    private CodeDetail memberType;
 
 }

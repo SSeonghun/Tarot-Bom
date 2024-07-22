@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.member.entity;
 
+import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class Reader {
     @Column(name = "price")
     private int price;
 
+    /* @OneToOne과 각종 어노테이션을 통해 member_id를 Member의 pk와 연결  */
     @OneToOne(fetch = FetchType.EAGER)
     @MapsId
     @JoinColumn(name = "member_id", columnDefinition = "int unsigned")
@@ -33,5 +35,13 @@ public class Reader {
     * 1.자신분야 (공통코드 쪽)
     * 2.등급 (공통코드 쪽)
     * */
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="keyword") // 자신분야
+    private CodeDetail keyword;
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="grade") // 공통코드
+    private CodeDetail grade;
 
 }

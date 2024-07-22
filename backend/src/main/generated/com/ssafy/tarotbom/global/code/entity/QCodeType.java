@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -19,8 +18,6 @@ public class QCodeType extends EntityPathBase<CodeType> {
     private static final long serialVersionUID = 631668971L;
 
     public static final QCodeType codeType = new QCodeType("codeType");
-
-    public final ListPath<CodeDetail, QCodeDetail> codeDetail = this.<CodeDetail, QCodeDetail>createList("codeDetail", CodeDetail.class, QCodeDetail.class, PathInits.DIRECT2);
 
     public final NumberPath<Long> codeTypeId = createNumber("codeTypeId", Long.class);
 
