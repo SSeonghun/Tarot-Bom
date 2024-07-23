@@ -9,7 +9,7 @@ const KakaoMap: React.FC<KakaoMapProps> = (props) => {
   useEffect(() => {
     // 스크립트 요소를 동적으로 생성하고 카카오맵 API를 로드합니다.
     const script = document.createElement('script');
-    script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=a249a246c22d037c86575681a7b56bfc'; // 발급받은 API 키
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KakaoMap_api}`; // 발급받은 API 키
     script.async = true;
     document.head.appendChild(script);
 
