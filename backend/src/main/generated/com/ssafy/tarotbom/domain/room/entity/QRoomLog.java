@@ -11,16 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QTarotLog is a Querydsl query type for TarotLog
+ * QRoomLog is a Querydsl query type for RoomLog
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QTarotLog extends EntityPathBase<TarotLog> {
+public class QRoomLog extends EntityPathBase<RoomLog> {
 
-    private static final long serialVersionUID = 2103441707L;
+    private static final long serialVersionUID = -200835144L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QTarotLog tarotLog = new QTarotLog("tarotLog");
+    public static final QRoomLog roomLog = new QRoomLog("roomLog");
 
     public final NumberPath<Long> logId = createNumber("logId", Long.class);
 
@@ -32,23 +32,23 @@ public class QTarotLog extends EntityPathBase<TarotLog> {
 
     public final com.ssafy.tarotbom.domain.member.entity.QMember user;
 
-    public QTarotLog(String variable) {
-        this(TarotLog.class, forVariable(variable), INITS);
+    public QRoomLog(String variable) {
+        this(RoomLog.class, forVariable(variable), INITS);
     }
 
-    public QTarotLog(Path<? extends TarotLog> path) {
+    public QRoomLog(Path<? extends RoomLog> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QTarotLog(PathMetadata metadata) {
+    public QRoomLog(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QTarotLog(PathMetadata metadata, PathInits inits) {
-        this(TarotLog.class, metadata, inits);
+    public QRoomLog(PathMetadata metadata, PathInits inits) {
+        this(RoomLog.class, metadata, inits);
     }
 
-    public QTarotLog(Class<? extends TarotLog> type, PathMetadata metadata, PathInits inits) {
+    public QRoomLog(Class<? extends RoomLog> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.room = inits.isInitialized("room") ? new QRoom(forProperty("room"), inits.get("room")) : null;
         this.user = inits.isInitialized("user") ? new com.ssafy.tarotbom.domain.member.entity.QMember(forProperty("user"), inits.get("user")) : null;
