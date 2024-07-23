@@ -6,6 +6,8 @@ import com.ssafy.tarotbom.global.code.entity.CodeType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name="member")
 @Getter
@@ -59,5 +61,25 @@ public class Member {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="member_type", columnDefinition = "char(3)")
     private CodeDetail memberType;
+
+    @Column(name = "create_time", columnDefinition = "timestamp")
+    private LocalDateTime createTime;
+
+    @Column(name = "update_time", columnDefinition = "timestamp")
+    private LocalDateTime updateTime;
+
+    // create time, update time 자동갱신
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createTime = now;
+        this.updateTime = now;
+    }
+
+    // update time 자동갱신
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
 
 }
