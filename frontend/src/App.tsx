@@ -8,6 +8,7 @@ import Online from './pages/OnlineTarot';
 import SerchReader from './pages/SearchReader/SearchReader';
 import Community from './pages/Community/Community';
 import SignUp from './pages/UserAuth/Signup';
+import Matching from './pages/Matching/Matching';
 
 const App: React.FC = () => {
   return (
@@ -22,6 +23,7 @@ const App: React.FC = () => {
           <Route path="/online" element={<Online />} />
           <Route path="/serch-reader" element={<SerchReader />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/matching" element={<Matching />} />
         </Routes>
       </div>
     </Router>
