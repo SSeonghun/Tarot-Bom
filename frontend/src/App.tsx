@@ -4,10 +4,11 @@ import Home from './pages/Home';
 import Login from './pages/UserAuth/Login';
 import Navbar from './components/Navbar';
 import Offline from './pages/OfflineTarot';
-import Online from './pages/OnlineTarot';
+import Online from './pages/PlayTarot/Online';
 import SerchReader from './pages/SearchReader/SearchReader';
 import Community from './pages/Community/Community';
 import SignUp from './pages/UserAuth/Signup';
+import Graphic from './pages/PlayTarot/Graphic';
 
 const App: React.FC = () => {
   return (
@@ -16,10 +17,11 @@ const App: React.FC = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/SignUp" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/offline" element={<Offline />} />
           <Route path="/online" element={<Online />} />
+          <Route path="/online/graphic" element={<Graphic />} />
           <Route path="/serch-reader" element={<SerchReader />} />
           <Route path="/community" element={<Community />} />
         </Routes>
