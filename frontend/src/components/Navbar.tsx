@@ -11,9 +11,9 @@ const Navbar: React.FC = () => {
           <Link to="/offline" className="text-white hover:text-gray-400">오프라인 타로</Link>
           <Link to="/serch-reader" className="text-white hover:text-gray-400">리더 검색</Link>
           <Link to="/community" className="text-white hover:text-gray-400">커뮤니티</Link>
-          <Link to="/Login">
+          <Link to="/login">
             <button className="px-4 py-2 text-white bg-gray-500 rounded hover:bg-gray-700">
-            LogIn
+            Login
             </button>
           </Link>
         </div>
