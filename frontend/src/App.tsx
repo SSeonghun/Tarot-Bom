@@ -21,7 +21,7 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/offline" element={<Offline />} />
-          <Route path="/online" element={<Online />} />
+          <Route path="/online" element={<Matching />} />
           <Route path="/online/graphic" element={<Graphic />} />
           <Route path="/serch-reader" element={<SerchReader />} />
           <Route path="/community" element={<Community />} />
