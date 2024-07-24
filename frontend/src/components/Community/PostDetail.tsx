@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 interface Post {
@@ -7,48 +7,107 @@ interface Post {
   content: string;
   author: string;
   date: string;
+  category: string;
 }
 
-const PostDetail: React.FC = () => {
+interface Comment {
+  id: number;
+  postId: number;
+  author: string;
+  content: string;
+  date: string;
+}
+
+const PostDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState('');
+  const [author, setAuthor] = useState('Anonymous'); // 기본값으로 "Anonymous" 설정
 
   useEffect(() => {
-    // 실제 데이터를 가져오는 API 호출을 할 수 있습니다.
-    // 예시로 하드코딩된 데이터를 사용합니다.
-    const fetchedPosts: Post[] = [
-      { id: 1, title: 'First Post', content: 'This is the first post.', author: 'Alice', date: '2023-01-01' },
-      { id: 2, title: 'Second Post', content: 'This is the second post.', author: 'Bob', date: '2023-01-02' },
-      { id: 3, title: 'Third Post', content: 'This is the third post.', author: 'Charlie', date: '2023-01-03' },
-      { id: 4, title: 'Fourth Post', content: 'This is the fourth post.', author: 'David', date: '2023-01-04' },
-      { id: 5, title: 'Fifth Post', content: 'This is the fifth post.', author: 'Eve', date: '2023-01-05' },
-      { id: 6, title: 'Sixth Post', content: 'This is the sixth post.', author: 'Frank', date: '2023-01-06' },
-      { id: 7, title: 'Seventh Post', content: 'This is the seventh post.', author: 'Grace', date: '2023-01-07' },
-      { id: 8, title: 'Eighth Post', content: 'This is the eighth post.', author: 'Hank', date: '2023-01-08' },
-      { id: 9, title: 'Ninth Post', content: 'This is the ninth post.', author: 'Ivy', date: '2023-01-09' },
-      { id: 10, title: 'Tenth Post', content: 'This is the tenth post.', author: 'Jack', date: '2023-01-10' },
+    // 게시글 데이터와 댓글 데이터를 가져오는 API 호출을 여기에 작성합니다.
+    const fetchedPost: Post = {
+      id: parseInt(id ?? '0'),
+      title: 'Sample Post',
+      content: 'This is a sample post.',
+      author: 'Alice',
+      date: '2023-01-01',
+      category: 'Technology',
+    };
+
+    const fetchedComments: Comment[] = [
+      { id: 1, postId: parseInt(id ?? '0'), author: 'Bob', content: 'Great post!', date: '2023-01-02' },
+      { id: 2, postId: parseInt(id ?? '0'), author: 'Charlie', content: 'Thanks for sharing!', date: '2023-01-03' },
     ];
-    
-    // id가 문자열로 되어있으므로 숫자로 변환
-    const postId = id ? parseInt(id) : NaN;
-    const post = fetchedPosts.find(p => p.id === postId);
-    setPost(post || null);
+
+    setPost(fetchedPost);
+    setComments(fetchedComments);
   }, [id]);
 
-  if (!post) {
-    return <div>Loading...</div>;
-  }
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewComment(e.target.value);
+  };
+
+  const handleCommentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // 댓글 데이터를 서버에 저장하는 로직을 여기에 작성합니다.
+    const newCommentData: Comment = {
+      id: comments.length + 1,
+      postId: parseInt(id ?? '0'),
+      author,
+      content: newComment,
+      date: new Date().toISOString().split('T')[0],
+    };
+    setComments([...comments, newCommentData]);
+    setNewComment('');
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto p-4 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-4">{post.title}</h1>
-        <p className="mb-4"><strong>Author:</strong> {post.author}</p>
-        <p className="mb-4"><strong>Date:</strong> {post.date}</p>
-        <p>{post.content}</p>
+        {post && (
+          <>
+            <h1 className="text-2xl font-bold mb-4">{post.title}</h1>
+            <p className="text-gray-600 mb-4">By {post.author} on {post.date}</p>
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">Content</h2>
+              <p>{post.content}</p>
+            </div>
+          </>
+        )}
+
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-2">Comments</h2>
+          <div className="space-y-4">
+            {comments.map(comment => (
+              <div key={comment.id} className="p-4 bg-gray-50 rounded-md shadow-sm">
+                <p className="text-gray-800 font-semibold">{comment.author} <span className="text-gray-500">on {comment.date}</span></p>
+                <p className="mt-2">{comment.content}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <form onSubmit={handleCommentSubmit} className="mt-6">
+          <h2 className="text-xl font-semibold mb-2">Add a Comment</h2>
+          <textarea
+            value={newComment}
+            onChange={handleCommentChange}
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+            rows={4}
+            required
+          />
+          <button
+            type="submit"
+            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            Post Comment
+          </button>
+        </form>
       </div>
     </div>
   );
 };
 
-export default PostDetail;
+export default PostDetailPage;
