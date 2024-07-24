@@ -82,4 +82,5 @@ public class Member {
         this.updateTime = LocalDateTime.now();
     }
 
+
 }
