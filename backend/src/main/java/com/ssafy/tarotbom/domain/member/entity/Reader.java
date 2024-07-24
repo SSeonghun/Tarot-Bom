@@ -4,6 +4,8 @@ import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name="reader")
 @Getter
@@ -43,5 +45,28 @@ public class Reader {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="grade") // 공통코드
     private CodeDetail grade;
+
+    @Column(name = "score")
+    private int score;
+
+    @Column(name = "create_time", columnDefinition = "timestamp")
+    private LocalDateTime createTime;
+
+    @Column(name = "update_time", columnDefinition = "timestamp")
+    private LocalDateTime updateTime;
+
+    // create time, update time 자동갱신
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createTime = now;
+        this.updateTime = now;
+    }
+
+    // update time 자동갱신
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
 
 }

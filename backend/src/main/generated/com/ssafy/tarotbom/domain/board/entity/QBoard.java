@@ -36,6 +36,8 @@ public class QBoard extends EntityPathBase<Board> {
 
     public final NumberPath<Long> likelyCnt = createNumber("likelyCnt", Long.class);
 
+    public final ListPath<Likely, QLikely> likelyList = this.<Likely, QLikely>createList("likelyList", Likely.class, QLikely.class, PathInits.DIRECT2);
+
     public final com.ssafy.tarotbom.domain.member.entity.QMember member;
 
     public final StringPath title = createString("title");
