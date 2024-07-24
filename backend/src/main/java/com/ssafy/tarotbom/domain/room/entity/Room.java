@@ -3,7 +3,9 @@ package com.ssafy.tarotbom.domain.room.entity;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -20,11 +22,13 @@ public class Room {
     @Column(name = "room_id", columnDefinition = "int unsigned")
     private long roomId;
 
-    /* 리더ID, 시커ID, 상담분야는 각각 @ManyToOne으로 연결한다 */
+    /* @ManyToOne으로 연결 : 리더ID, 시커ID, 상담분야 */
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reader_id")
     private Member reader;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seeker_id")
     private Member seeker;
@@ -39,7 +43,7 @@ public class Room {
     @Column(name = "close_date", columnDefinition = "timestamp")
     private LocalDateTime closeTime;
 
-    @Column(name = "is_normal_close")
+    @Column(name = "is_normal_close", columnDefinition = "tinyint(1)")
     private boolean isNormalClose;
 
     @Column(name = "room_url")

@@ -1,6 +1,7 @@
 package com.ssafy.tarotbom.global.code.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -12,11 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class CodeType {
-
     @Id
     @Column(name = "code_type_id", columnDefinition = "int unsigned")
     private long codeTypeId;
 
+    @NotNull
     @Column(name = "type_desc", length=20)
     private String typeDesc;
 

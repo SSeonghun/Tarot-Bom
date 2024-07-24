@@ -1,6 +1,7 @@
 package com.ssafy.tarotbom.domain.tarot.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -17,15 +18,17 @@ public class TarotResultCard {
     private long cardResultId;
 
     /* @ManyToOne으로 연결 : 카드ID, 결과ID */
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "card_id", referencedColumnName = "", columnDefinition = "int(2)")
+    @JoinColumn(name = "card_id", columnDefinition = "int(2)")
     private TarotCard card;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "result_id", columnDefinition = "int unsigned")
     private TarotResult result;
 
-    /* 240722 : 생각해보니 타로 카드는 뽑는 순서도 중요해서 몇번째로 뽑은 카드인지도 기록해야할거같음!!! */
+    @NotNull
     @Column(name = "sequence", columnDefinition = "int(2)")
     private int sequence;
 }

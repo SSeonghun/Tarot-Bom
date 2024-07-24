@@ -3,7 +3,10 @@ package com.ssafy.tarotbom.domain.board.entity;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@DynamicInsert
 public class Board {
 
     @Id
@@ -22,17 +26,21 @@ public class Board {
     private long boardId;
 
     /* @ManyToOne으로 연결 : 작성자ID, 게시글유형 */
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_type")
     private CodeDetail boardType;
 
+    @NotNull
     @Column(name = "title", length = 50)
     private String title;
 
+    @NotNull
     @Column(name = "content", length=1000)
     private String content;
 
@@ -42,9 +50,11 @@ public class Board {
     @Column(name = "update_time", columnDefinition = "timestamp")
     private LocalDateTime updateTime;
 
+    @ColumnDefault("0")
     @Column(name = "comment_cnt")
     private int commentCnt;
 
+    @ColumnDefault("0")
     @Column(name = "likely_cnt", columnDefinition = "int unsigned")
     private long likelyCnt;
 

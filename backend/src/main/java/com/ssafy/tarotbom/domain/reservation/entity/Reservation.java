@@ -4,6 +4,7 @@ import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.room.entity.Room;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class Reservation {
     @JoinColumn(name = "room_id", columnDefinition = "int unsigned")
     private Room room;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seeker_id", columnDefinition = "int unsigned")
     private Member seeker;
@@ -33,6 +35,7 @@ public class Reservation {
     @JoinColumn(name = "reader_id", columnDefinition = "int unsigned")
     private Member reader;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status", columnDefinition = "char(3)")
     private CodeDetail status;
@@ -41,6 +44,7 @@ public class Reservation {
     @JoinColumn(name = "keyword", columnDefinition = "char(3)")
     private CodeDetail keyword;
 
+    @NotNull
     @Column(name = "price")
     private int price;
 
