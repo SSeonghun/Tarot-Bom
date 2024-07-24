@@ -66,5 +66,5 @@ public class Reservation {
     public void preUpdate() {
         this.updateTime = LocalDateTime.now();
     }
-    
+
 }
