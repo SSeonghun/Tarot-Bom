@@ -2,6 +2,7 @@ package com.ssafy.tarotbom.domain.security;
 
 import com.ssafy.tarotbom.domain.member.dto.CustomUserInfoDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,13 +13,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 // 사용자별 정보를 표시하고 액세스하는 방법을 정의
+@Slf4j
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
+
 
     private final CustomUserInfoDto member;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() { // 사용자 권한
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+
         List<String> memberTypes = new ArrayList<>();
         memberTypes.add("ROLE_" + member.getMemberType().getCodeDetailId()); // Spring Security에서 권한 식별할 때 ROLE_을 붙임
 

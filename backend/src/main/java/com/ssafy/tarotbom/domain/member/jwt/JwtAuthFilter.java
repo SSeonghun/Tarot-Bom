@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter { // OncePerRequestFilter는 한번 실행을 보장
     private final CustomUserDetailsService customUserDetailsService;
@@ -37,7 +39,6 @@ public class JwtAuthFilter extends OncePerRequestFilter { // OncePerRequestFilte
                 if (userDetails != null) {
                     // 접근 권한 인증 Token
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
 
                     // 현재 Request의 Security Context에 접근 권한 설정
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);

@@ -6,6 +6,7 @@ import com.ssafy.tarotbom.domain.member.jwt.JwtAuthFilter;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
 import com.ssafy.tarotbom.domain.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,7 @@ import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity // 스프링 security 지원을 가능하게 하는 기능
@@ -33,9 +34,6 @@ public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
-
-
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomUserDetailsService customUserDetailsService) throws Exception {
@@ -52,7 +50,7 @@ public class WebSecurityConfig {
         http.formLogin((form) -> form.disable());
         http.httpBasic(AbstractHttpConfigurer::disable);
 
-        // JwtAuthFilter를 USernamePasswordAuthenticationFilter 앞에 추가
+        // JwtAuthFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
         http.addFilterBefore(new JwtAuthFilter(customUserDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling((exceptionHandling) -> exceptionHandling
@@ -60,17 +58,15 @@ public class WebSecurityConfig {
                 .accessDeniedHandler(new AccessDeniedHandlerImpl())
         );
 
-
+        log.info("오나?");
         // 권한 규칙 : login, signup 경로는 직접 service에서 인증처리 나머지는 여기서 인증
         // -> main경로도 추가해야하나?
         http.authorizeHttpRequests((authorizeRequests) -> {
             authorizeRequests.requestMatchers("/user/signup/**").permitAll() // 회원가입 api
-                    .requestMatchers("/user/emailCheck/**").permitAll() // 로그인 api
+                    .requestMatchers("/user/login/**").permitAll() // 로그인 api
+                    .requestMatchers("/user/emailCheck/**").permitAll()
                     .anyRequest().authenticated(); // 위의 것 외에는 인증 없이 접근 불가
         });
-
-
-
 
         return http.build();
     }
