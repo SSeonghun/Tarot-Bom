@@ -6,13 +6,13 @@ import Hero4 from '../../components/ReaderProfile/Hero4';
 
 const SeekerMypage: React.FC = () => {
   return (
-    <div>
-      <Hero1/>
-      <Hero2/>
-      <Hero3/>
-      <Hero4/>
+    <div style={{ backgroundColor: '#1A0E2D' }}>
+      <Hero1 />
+      <Hero2 />
+      <Hero3 />
+      <Hero4 />
     </div>
   );
-}
+};
 
 export default SeekerMypage;
