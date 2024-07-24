@@ -1,4 +1,4 @@
-package com.ssafy.tarotbom.domain.config;
+package com.ssafy.tarotbom.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

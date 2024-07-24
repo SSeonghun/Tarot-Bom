@@ -1,6 +1,6 @@
 package com.ssafy.tarotbom.domain.member.jwt;
 
-import com.ssafy.tarotbom.domain.security.CustomUserDetailsService;
+import com.ssafy.tarotbom.global.security.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

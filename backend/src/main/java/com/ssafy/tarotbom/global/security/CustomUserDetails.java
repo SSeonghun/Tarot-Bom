@@ -1,4 +1,4 @@
-package com.ssafy.tarotbom.domain.security;
+package com.ssafy.tarotbom.global.security;
 
 import com.ssafy.tarotbom.domain.member.dto.CustomUserInfoDto;
 import lombok.RequiredArgsConstructor;
