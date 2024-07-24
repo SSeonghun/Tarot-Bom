@@ -11,6 +11,7 @@ import Matching from './pages/Matching/Matching';
 import Graphic from './pages/PlayTarot/graphic';
 import ChangePwd from './pages/UserAuth/ChangePwd';
 import FindPwd from './pages/UserAuth/FindPwd';
+import ReaderProfile from './pages/UserProfile/ReaderProfle';
 
 const App: React.FC = () => {
   return (
@@ -29,6 +30,7 @@ const App: React.FC = () => {
           <Route path="/matching" element={<Matching />} />
           <Route path="/change-pwd" element={<ChangePwd />} />
           <Route path="/findpwd" element={<FindPwd />} />
+          <Route path="/reader-profile" element={<ReaderProfile />} />
         </Routes>
       </div>
     </Router>
