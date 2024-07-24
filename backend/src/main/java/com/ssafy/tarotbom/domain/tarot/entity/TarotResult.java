@@ -4,6 +4,7 @@ import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.room.entity.Room;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -17,17 +18,18 @@ import java.util.List;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class TarotResult {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "result_id", columnDefinition = "int unsigned")
     private long resultId;
 
     /* @ManyToOne으로 연결 : 리더ID, 시커ID,키워드 */
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reader_id", columnDefinition = "int unsigned")
     private Member reader;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seeker_id", columnDefinition = "int unsigned")
     private Member seeker;

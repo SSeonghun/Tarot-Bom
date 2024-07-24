@@ -4,6 +4,7 @@ import com.ssafy.tarotbom.domain.tarot.entity.TarotSummary;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.global.code.entity.CodeType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,15 +18,18 @@ import java.time.LocalDateTime;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id", nullable = false, columnDefinition = "int unsigned")
+    @Column(name = "member_id", columnDefinition = "int unsigned")
     private long memberId;
 
+    @NotNull
     @Column(name = "nickname", unique = true, length = 20)
     private String nickname;
 
+    @NotNull
     @Column(name = "email", unique = true, length=100)
     private String email;
 
+    @NotNull
     @Column(name = "password")
     private String password;
 
@@ -36,8 +40,6 @@ public class Member {
     private String profileUrl;
 
     // 추후 카카오 api 로그인 관련 필드 생성 예정
-    // 여러모로 시커와 리더 구분이 필요한데, 여기서는 시커 기준으로 간다
-    // 리더 쪽에서 자동으로 띄워줘야하는 리스트는 리더 기준으로 join
 
     /* @oneToOne 리스트
     * 1. 리더 프로필
@@ -58,6 +60,8 @@ public class Member {
     /* @ManyToOne 리스트
     * 1. 회원유형 (시커, 리더, 매니저)
     * */
+
+    @NotNull
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="member_type", columnDefinition = "char(3)")
     private CodeDetail memberType;
@@ -81,5 +85,6 @@ public class Member {
     public void preUpdate() {
         this.updateTime = LocalDateTime.now();
     }
+
 
 }

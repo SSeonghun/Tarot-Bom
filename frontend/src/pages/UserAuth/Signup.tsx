@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import './login.css';
 import InputField from '../../components/login_signup/InputField';
 import SubmitButton from '../../components/login_signup/SubmitButton';
 import LinkButton from '../../components/login_signup/LinkButton';
+import { Link } from 'react-router-dom';
 
 const Signup: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -102,7 +102,10 @@ const Signup: React.FC = () => {
                 error={passwordError}
               />
               <SubmitButton text="회원가입" />
-              <LinkButton to="/login" text="로그인 페이지로 돌아가기" />
+              <Link to="/login" className="block text-blue-400 my-5">
+                로그인 페이지로 
+              </Link>
+
             </form>
           </div>
         </div>

@@ -6,6 +6,7 @@ import InputField from '../../components/login_signup/InputField';
 import SubmitButton from '../../components/login_signup/SubmitButton';
 import LinkButton from '../../components/login_signup/LinkButton';
 
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -65,11 +66,21 @@ const Login: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <SubmitButton text="로그인" />
-              <LinkButton to="/Signup" text="회원가입" />
-              <Link className="block text-blue-400 my-5" to="">
-                아이디/비밀번호 찾기
-              </Link>
+
+              <div className='flex justify-evenly mb-auto' >
+                <Link className="block text-blue-400 my-5" to="/signup">
+                 회원가입
+                </Link>
+                <Link className="block text-blue-400 my-5" to="/change-pwd">
+                  비밀번호 변경
+                </Link>
+                <Link className="block text-blue-400 my-5" to="/findpwd">
+                  비밀번호 찾기
+                </Link>
+              </div>
+
             </form>
+
           </div>
         </div>
       </div>

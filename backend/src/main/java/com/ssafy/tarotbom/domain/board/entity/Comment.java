@@ -2,6 +2,7 @@ package com.ssafy.tarotbom.domain.board.entity;
 
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,10 +20,12 @@ public class Comment {
     private long commentId;
 
     /* @ManyToOne으로 연결 : 게시글 ID, 작성자 ID */
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", columnDefinition = "int unsigned")
     private Board board;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id", columnDefinition = "int unsigned")
     private Member writer;
