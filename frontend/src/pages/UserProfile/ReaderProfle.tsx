@@ -1,10 +1,16 @@
 import React from 'react';
+import Hero1 from '../../components/ReaderProfile/Hero1';
+import Hero2 from '../../components/ReaderProfile/Hero2';
+import Hero3 from '../../components/ReaderProfile/Hero3';
+import Hero4 from '../../components/ReaderProfile/Hero4';
 
 const SeekerMypage: React.FC = () => {
   return (
-    <div className="container p-4 mx-auto">
-      <h1 className="text-2xl font-bold">Home Page</h1>
-      <p>Welcome to the Home Page!</p>
+    <div>
+      <Hero1/>
+      <Hero2/>
+      <Hero3/>
+      <Hero4/>
     </div>
   );
 }

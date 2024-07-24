@@ -11,8 +11,9 @@ import Matching from './pages/Matching/Matching';
 import Graphic from './pages/PlayTarot/graphic';
 import ChangePwd from './pages/UserAuth/ChangePwd';
 import FindPwd from './pages/UserAuth/FindPwd';
-import PostDetail from './components/Community/PostDetail'
-import CreatePostPage from './pages/Community/CreatePostPage'
+import ReaderProfile from './pages/UserProfile/ReaderProfle';
+import PostDetail from './components/Community/PostDetail';
+import CreatePostPage from './pages/Community/CreatePostPage';
 
 const App: React.FC = () => {
   return (
@@ -31,6 +32,7 @@ const App: React.FC = () => {
           <Route path="/matching" element={<Matching />} />
           <Route path="/change-pwd" element={<ChangePwd />} />
           <Route path="/findpwd" element={<FindPwd />} />
+          <Route path="/reader-profile" element={<ReaderProfile />} />
           <Route path="/posts/:id" element={<PostDetail />} />
           <Route path="/create-post" element={<CreatePostPage />} />
         </Routes>
