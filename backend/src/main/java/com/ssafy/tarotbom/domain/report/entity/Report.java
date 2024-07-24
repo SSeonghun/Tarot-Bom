@@ -42,7 +42,7 @@ public class Report {
     @JoinColumn(name = "status", columnDefinition = "char(3)")
     private CodeDetail status;
 
-    @Column(name = "content", length=500)
+    @Column(name = "content", length = 500)
     private String content;
 
     @Column(name = "create_time", columnDefinition = "timestamp")

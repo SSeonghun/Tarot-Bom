@@ -1,42 +1,43 @@
-package com.ssafy.tarotbom.domain.shop.entity;
+package com.ssafy.tarotbom.domain.review.entity;
 
 import com.ssafy.tarotbom.domain.member.entity.Member;
+import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="shop")
+@Table(name="review_reader")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class Shop {
+public class ReviewReader {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "shop_id", columnDefinition = "int unsigned")
-    private long shopId;
+    @Column(name = "review_reader_id", columnDefinition = "int unsigned")
+    private long reviewReaderId;
 
-    /* @ManyToOne으로 연결 : 등록자 리더 ID */
+    /* @ManyToOne으로 연결 : 시커/리더ID */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seeker_id", columnDefinition = "int unsigned")
+    private Member seeker;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reader_id", columnDefinition = "int unsigned")
     private Member reader;
 
-    @Column(name = "shop_name", length=30)
-    private String shopName;
+    /* @OneToOne으로 연결 : 타로결과ID */
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "result_id", columnDefinition = "int unsigned")
+    private TarotResult result;
 
-    @Column(name = "address")
-    private String address;
+    @Column(name = "rating")
+    private int rating;
 
-    @Column(name = "phone", length=20)
-    private String phone;
-
-    @Column(name = "longitude", columnDefinition = "decimal(11, 8)")
-    private double longitude;
-
-    @Column(name = "latitude", columnDefinition = "decimal(10, 8)")
-    private double latitude;
+    @Column(name = "content", length = 500)
+    private String content;
 
     @Column(name = "create_time", columnDefinition = "timestamp")
     private LocalDateTime createTime;
@@ -57,4 +58,5 @@ public class Shop {
     public void preUpdate() {
         this.updateTime = LocalDateTime.now();
     }
+
 }
