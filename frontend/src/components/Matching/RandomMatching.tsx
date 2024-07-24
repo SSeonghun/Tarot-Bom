@@ -1,66 +1,90 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
+// 컴포넌트
 import HoverButton from '../Common/HoverButton';
-import '../../assets/css/InputFade.css'; // CSS 파일을 가져옴
+// css
+import '../../assets/css/FadeInOut.css'; // CSS 파일을 가져옴
 
 const RandomMatching: React.FC = () => {
-  // 상태 추가: 선택된 버튼의 레이블과 두 번째 입력 필드의 표시 여부를 제어
-  const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
-  const [showSecondInput, setShowSecondInput] = useState<boolean>(false);
-  const [animationClass, setAnimationClass] = useState<string>('fade-out');
-  const [buttonsLoaded, setButtonsLoaded] = useState<boolean>(false);
+  const [selectedLabel, setSelectedLabel] = useState<string | null>(null); // 카테고리를 어떤걸 선택했는지 나타내는 변수 (밑에 변수 떄문에 useState)
+  const [showSecondInput, setShowSecondInput] = useState<boolean>(false); // 카테고리를 설정해야 고민을 입력할수 있게 설정하는 변수
+  const [animationClass, setAnimationClass] = useState<string>('fade-out'); // 에니메이션 유지 변수
+  const [onLoad, setOnLoad] = useState<boolean>(false); // 처음에 컴포넌트 띄울때 에니메이션
+  const worryArea = useRef<HTMLTextAreaElement | null>(null); // 고민 내용 변수
 
-  // 버튼 클릭 핸들러
+  /*
+  카테고리 설정 버튼 함수
+  이함수가 실행되면 고민 설정 부분이 나타남
+  */
   const handleButtonClick = (label: string) => {
     setSelectedLabel(label);
-    setShowSecondInput(true); // 두 번째 입력 필드를 나타나게 설정
+    setShowSecondInput(true);
     setAnimationClass('fade-in');
   };
 
-  // 애니메이션 종료 후 상태 업데이트
-  useEffect(() => {
-    if (!showSecondInput) {
-      setAnimationClass('fade-out');
-    }
-  }, [showSecondInput]);
+  /* 
+  매칭 시작 버튼 함수
 
-  // 컴포넌트가 마운트될 때 버튼에 애니메이션 적용
+  반응형 변수인 카테고리 정보와, 고민내용을 받아 어딘가에 저장해야 할듯
+
+  */
+  const submit = () => {
+    if (worryArea.current) {
+
+      if(worryArea.current.value === '') { // 고민을 입력하지 않으면
+        console.log("여기 Alert으로 고민 입력하라고 띄우기")
+        return;
+      }
+
+      // 정상 접근
+      console.log('선택된 카테고리 : ' + selectedLabel);
+      console.log('고민 : ' + worryArea.current.value);
+    }
+  };
+
+  /*
+  컴포넌트가 onMouted 될때 애니메이션 효과 실행 하기위한 함수
+  */
   useEffect(() => {
-    setButtonsLoaded(true);
+    setOnLoad(true);
+
+    return () => {
+      setOnLoad(false);
+    };
   }, []);
 
-  // 버튼 레이블 배열
+  // 카테고리 구조체
   const buttonLabels = [
-    '연애운', 
-    '직장운', 
-    '재물운', 
-    '건강운', 
+    '연애운',
+    '직장운',
+    '재물운',
+    '건강운',
     '가족운',
     '기타'
   ];
 
   return (
-    <div className='bg-white w-[700px] h-[500px] -mt-20 flex items-center justify-center rounded-md'>
+    <div className={`bg-white w-[700px] h-[500px] -mt-20 flex items-center justify-center rounded-md ${onLoad ? 'button-fade-in' : 'fade-out-clear'}`}>
       <div className='flex flex-col items-center'>
         <h2 className='text-2xl font-bold mb-4'>랜덤 매칭</h2>
 
-        {/* 선택된 레이블을 상단에 표시 */}
         {selectedLabel && (
-          <h3 className='text-xl font-semibold mb-4'>
+          <h3 className='text-xl font-semibold mb-4' id='category'>
             선택된 카테고리: {selectedLabel}
           </h3>
         )}
 
-        <div className={`flex flex-wrap justify-center mt-5 ${buttonsLoaded ? 'button-fade-in' : ''}`}>
+        <div className='flex flex-wrap justify-center mt-5'>
           {buttonLabels.map((label) => (
             <div key={label} className='m-2'>
-              <HoverButton 
-                label={label} // 동적 레이블
+              <HoverButton
+                label={label}
                 color="bg-gray-500"
                 hoverColor="bg-gray-300"
                 hsize="h-12"
                 wsize="w-48"
                 fontsize="text-lg"
-                onClick={() => handleButtonClick(label)} // 버튼 클릭 시 레이블 설정
+                onClick={() => handleButtonClick(label)}
               />
             </div>
           ))}
@@ -72,14 +96,17 @@ const RandomMatching: React.FC = () => {
               placeholder='고민'
               className='border border-gray-300 rounded-lg p-3 w-full h-28 resize-none'
               rows={5}
+              ref={worryArea}
+              required
             />
             <HoverButton
-                label='입력'
-                color="bg-gray-500"
-                hoverColor="bg-gray-300"
-                hsize="h-12"
-                wsize="w-48"
-                fontsize="text-lg"
+              label='매칭 시작하기'
+              color="bg-gray-500"
+              hoverColor="bg-gray-300"
+              hsize="h-12"
+              wsize="w-48"
+              fontsize="text-lg"
+              onClick={submit}
             />
           </div>
         )}

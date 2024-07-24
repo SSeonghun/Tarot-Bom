@@ -4,10 +4,11 @@ import Calander from '../../assets/REVIEW-removebg-preview.png';
 import HoverButton from '../Common/HoverButton';
 import RandomMatching from './RandomMatching';
 import BookMatching from './BookMatching';
-import '../../assets/css/FadeInOut.css';
+import '../../assets/css/FadeInOut.css'; // CSS 파일을 가져옴
 
 const Matching: React.FC = () => {
   const [shiftDirection, setShiftDirection] = useState<'none' | 'left' | 'right'>('none');
+  const [fade, setFade] = useState<boolean>(true);
 
   // 버튼 레이블
   const randomLabel = shiftDirection === 'right' ? '돌아가기' : '랜덤매칭';
@@ -34,7 +35,7 @@ const Matching: React.FC = () => {
         {/* 왼쪽 부분 */}
         <div className="w-full h-full bg-gray-900 absolute left-[-50%]">
           {shiftDirection === 'right' && (
-            <div className="absolute top-1/4 left-1/4">
+            <div className="absolute top-1/4 left-40">
               <RandomMatching />
             </div>
           )}
@@ -59,7 +60,7 @@ const Matching: React.FC = () => {
         {/* 오른쪽 부분 */}
         <div className="w-full h-full bg-gray-700 absolute right-[-50%]">
           {shiftDirection === 'left' && (
-            <div className="absolute top-1/4 right-1/4">
+            <div className={`absolute top-1/4 right-40 ${fade} ? 'fade-in-onload' : 'fade-out-clear'`}>
               <BookMatching />
             </div>
           )}
