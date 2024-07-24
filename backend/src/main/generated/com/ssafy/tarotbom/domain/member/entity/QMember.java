@@ -22,6 +22,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public static final QMember member = new QMember("member1");
 
+    public final DateTimePath<java.time.LocalDateTime> createTime = createDateTime("createTime", java.time.LocalDateTime.class);
+
     public final StringPath email = createString("email");
 
     public final NumberPath<Long> memberId = createNumber("memberId", Long.class);
@@ -39,6 +41,8 @@ public class QMember extends EntityPathBase<Member> {
     public final com.ssafy.tarotbom.domain.tarot.entity.QTarotSummary tarotSummary;
 
     public final StringPath token = createString("token");
+
+    public final DateTimePath<java.time.LocalDateTime> updateTime = createDateTime("updateTime", java.time.LocalDateTime.class);
 
     public QMember(String variable) {
         this(Member.class, forVariable(variable), INITS);
