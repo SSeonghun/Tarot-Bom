@@ -66,12 +66,15 @@ const Login: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <SubmitButton text="로그인" />
-              <LinkButton to="/Signup" text="회원가입" />
+
               <div className='flex justify-evenly mb-auto' >
+                <Link className="block text-blue-400 my-5" to="/signup">
+                 회원가입
+                </Link>
                 <Link className="block text-blue-400 my-5" to="/change-pwd">
                   비밀번호 변경
                 </Link>
-                <Link className="block text-blue-400 my-5" to="/pwdfind">
+                <Link className="block text-blue-400 my-5" to="/findpwd">
                   비밀번호 찾기
                 </Link>
               </div>
