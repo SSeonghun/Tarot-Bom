@@ -44,6 +44,7 @@ public class JwtUtil {
         Claims claims = Jwts.claims();
         claims.put("memberId", member.getMemberId());
         claims.put("email", member.getEmail());
+        claims.put("memberType", member.getMemberType());
 
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime tokenValidity = now.plusSeconds(expireTime);
@@ -56,7 +57,7 @@ public class JwtUtil {
                 .compact(); // 토큰을 문자열 형태로 반환
     }
 
-    public Long getUserId(String token){
+    public Long getMemberId(String token){
         return parseClaims(token).get("memberId", Long.class);
     }
 
