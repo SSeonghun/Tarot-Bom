@@ -2,6 +2,7 @@ package com.ssafy.tarotbom.domain.tarot.entity;
 
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,16 +14,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class TarotSummary {
-
     @Id
     @Column(name = "member_id", columnDefinition = "int unsigned")
     private long memberId;
 
     /* @ManyToOne으로 연결 : 타로카드 ID */
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id", columnDefinition = "int(2)")
     private TarotCard card;
 
+    @NotNull
     @Column(name = "content", length = 1000)
     private String content;
 

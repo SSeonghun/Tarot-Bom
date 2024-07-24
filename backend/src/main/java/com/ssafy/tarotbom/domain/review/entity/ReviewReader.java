@@ -3,6 +3,7 @@ package com.ssafy.tarotbom.domain.review.entity;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -20,19 +21,23 @@ public class ReviewReader {
     private long reviewReaderId;
 
     /* @ManyToOne으로 연결 : 시커/리더ID */
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seeker_id", columnDefinition = "int unsigned")
     private Member seeker;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reader_id", columnDefinition = "int unsigned")
     private Member reader;
 
     /* @OneToOne으로 연결 : 타로결과ID */
+    @NotNull
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "result_id", columnDefinition = "int unsigned")
     private TarotResult result;
 
+    @NotNull
     @Column(name = "rating")
     private int rating;
 

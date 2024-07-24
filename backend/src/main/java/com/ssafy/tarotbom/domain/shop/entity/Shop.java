@@ -2,6 +2,7 @@ package com.ssafy.tarotbom.domain.shop.entity;
 
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,22 +20,27 @@ public class Shop {
     private long shopId;
 
     /* @ManyToOne으로 연결 : 등록자 리더 ID */
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reader_id", columnDefinition = "int unsigned")
     private Member reader;
 
+    @NotNull
     @Column(name = "shop_name", length=30)
     private String shopName;
 
+    @NotNull
     @Column(name = "address")
     private String address;
 
     @Column(name = "phone", length=20)
     private String phone;
 
+    @NotNull
     @Column(name = "longitude", columnDefinition = "decimal(11, 8)")
     private double longitude;
 
+    @NotNull
     @Column(name = "latitude", columnDefinition = "decimal(10, 8)")
     private double latitude;
 

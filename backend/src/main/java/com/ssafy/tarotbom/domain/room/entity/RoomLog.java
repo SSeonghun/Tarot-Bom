@@ -2,6 +2,7 @@ package com.ssafy.tarotbom.domain.room.entity;
 
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,21 +14,23 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class RoomLog {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "log_id", columnDefinition = "int unsigned")
     private long logId;
 
-    /* 유저ID, 방Id : @ManyToOne */
+    /* @ManyToOne으로 연결 : 유저ID, 방ID */
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Member user;
-    
+
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
-    
+
+    @NotNull
     @Column(name = "type", columnDefinition = "int(1)")
     private int type;
     

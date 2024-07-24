@@ -1,6 +1,7 @@
 package com.ssafy.tarotbom.domain.member.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,10 +19,12 @@ public class FavoriteReader {
     private long favoriteId;
 
     /* @ManyToOne으로 연결 : 찜한사람 ID, 리더 ID */
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seeker_id", columnDefinition = "int unsigned")
     private Member seeker;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reader_id", columnDefinition = "int unsigned")
     private Member reader;
