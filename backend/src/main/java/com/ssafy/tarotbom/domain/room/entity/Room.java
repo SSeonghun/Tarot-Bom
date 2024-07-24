@@ -34,10 +34,10 @@ public class Room {
     private CodeDetail keyword;
 
     @Column(name = "create_date", columnDefinition = "timestamp")
-    private LocalDateTime createDate;
+    private LocalDateTime createTime;
 
     @Column(name = "close_date", columnDefinition = "timestamp")
-    private LocalDateTime closeDate;
+    private LocalDateTime closeTime;
 
     @Column(name = "is_normal_close")
     private boolean isNormalClose;
@@ -51,7 +51,7 @@ public class Room {
     // create time 자동갱신
     @PrePersist
     public void prePersist() {
-        this.createDate = LocalDateTime.now();
+        this.createTime = LocalDateTime.now();
     }
 
 }

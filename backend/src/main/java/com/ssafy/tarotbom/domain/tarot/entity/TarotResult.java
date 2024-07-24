@@ -23,7 +23,7 @@ public class TarotResult {
     @Column(name = "result_id", columnDefinition = "int unsigned")
     private long resultId;
 
-    /* @ManyToOne으로 연결 : 리더ID, 시커ID, 방 ID, 키워드 */
+    /* @ManyToOne으로 연결 : 리더ID, 시커ID,키워드 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reader_id", columnDefinition = "int unsigned")
     private Member reader;
@@ -32,14 +32,16 @@ public class TarotResult {
     @JoinColumn(name = "seeker_id", columnDefinition = "int unsigned")
     private Member seeker;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id", columnDefinition = "int unsigned")
-    private Room room;
-
     /* Room에 포함되어있는 정보가 중복되어있긴 한데, 따로 조회할 일이 대부분일 것 같아 분리하였음 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "keyword", columnDefinition = "char(3)")
     private CodeDetail keyword;
+    
+    /* @OneToOne으로 연결 : 타로 룸
+    * 맥락을 고려해 단방향 연결로 구성 */
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", columnDefinition = "int unsigned")
+    private Room room;
 
     /* @OneToMany로 연결 : 타로결과카드
     * 타로 결과와 함께 거의 무조건 조회되기 때문에, 강력하게 연결하였음 */

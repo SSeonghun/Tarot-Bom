@@ -1,9 +1,9 @@
 import React from 'react';
 import MainBg from '../../assets/mainBg.png';
-import HoverButton from './component/HoverButton';
+import HoverButton from '../Common/HoverButton';
 
 // Main Section 1
-//
+// 추가 수정 필요할듯?
 
 const Hero1: React.FC = () => {
   return (

@@ -6,15 +6,13 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-/* 240722 제안 : 이거 tarot log보다는 room log가 좀 더 맞는 표현같기도?? */
-
 @Entity
-@Table(name="tarot_log")
+@Table(name="room_log")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class TarotLog {
+public class RoomLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
