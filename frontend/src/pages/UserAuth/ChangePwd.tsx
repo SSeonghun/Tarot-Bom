@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './login.css';
 import InputField from '../../components/login_signup/InputField';
 import SubmitButton from '../../components/login_signup/SubmitButton';
 import LinkButton from '../../components/login_signup/LinkButton';
-import { Link } from 'react-router-dom';
 
 const Signup: React.FC = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  // const [email, setEmail] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
+  // const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
   useEffect(() => {
@@ -20,20 +20,24 @@ const Signup: React.FC = () => {
     };
   }, []);
 
-  const validateEmail = (email: string) => {
-    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return re.test(String(email).toLowerCase());
+  const noopHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentPassword(e.target.value);
   };
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setEmail(value);
-    if (validateEmail(value)) {
-      setEmailError('');
-    } else {
-      setEmailError('유효한 이메일 주소를 입력해주세요.');
-    }
-  };
+  // const validateEmail = (email: string) => {
+  //   const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  //   return re.test(String(email).toLowerCase());
+  // };
+
+  // const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { value } = e.target;
+  //   setEmail(value);
+  //   if (validateEmail(value)) {
+  //     setEmailError('');
+  //   } else {
+  //     setEmailError('유효한 이메일 주소를 입력해주세요.');
+  //   }
+  // };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
@@ -55,15 +59,14 @@ const Signup: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateEmail(email)) {
-      setEmailError('유효한 이메일 주소를 입력해주세요.');
-      return;
-    }
+    // if (!validateEmail(email)) {
+    //   setEmailError('유효한 이메일 주소를 입력해주세요.');
+    //   return;
+    // }
     if (password !== confirmPassword) {
       setPasswordError('비밀번호가 일치하지 않습니다.');
       return;
     }
-    console.log('회원가입 시도', { username, email, password });
   };
 
   return (
@@ -72,22 +75,17 @@ const Signup: React.FC = () => {
         <div className="flex min-h-screen bg-[#04060F] bg-opacity-0">
           <div className="w-full space-y-6 bg-gray-800 rounded-lg max-w-96 bg-opacity-0">
             <div className="text">
-              <h2 className="text-6xl font-bold text-white">회원가입</h2>
+              <h2 className="text-6xl font-bold text-white">비밀번호 변경</h2>
             </div>
             <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+
               <InputField
-                type="text"
-                placeholder="사용자 이름"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="password"
+                placeholder="기존 비밀번호"
+                value={currentPassword}
+                onChange={noopHandler}
               />
-              <InputField
-                type="email"
-                placeholder="이메일"
-                value={email}
-                onChange={handleEmailChange}
-                error={emailError}
-              />
+
               <InputField
                 type="password"
                 placeholder="비밀번호"
@@ -101,11 +99,10 @@ const Signup: React.FC = () => {
                 onChange={handleConfirmPasswordChange}
                 error={passwordError}
               />
-              <SubmitButton text="회원가입" />
+              <SubmitButton text="비밀번호 변경" />
               <Link to="/login" className="block text-blue-400 my-5">
                 로그인 페이지로 
               </Link>
-
             </form>
           </div>
         </div>
