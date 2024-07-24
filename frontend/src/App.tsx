@@ -4,12 +4,13 @@ import Home from './pages/Home';
 import Login from './pages/UserAuth/Login';
 import Navbar from './components/Navbar';
 import Offline from './pages/OfflineTarot';
-import Online from './pages/PlayTarot/Online';
 import SerchReader from './pages/SearchReader/SearchReader';
 import Community from './pages/Community/Community';
 import SignUp from './pages/UserAuth/Signup';
 import Matching from './pages/Matching/Matching';
 import Graphic from './pages/PlayTarot/graphic';
+import ChangePwd from './pages/UserAuth/ChangePwd';
+import FindPwd from './pages/UserAuth/FindPwd';
 
 const App: React.FC = () => {
   return (
@@ -26,6 +27,8 @@ const App: React.FC = () => {
           <Route path="/serch-reader" element={<SerchReader />} />
           <Route path="/community" element={<Community />} />
           <Route path="/matching" element={<Matching />} />
+          <Route path="/change-pwd" element={<ChangePwd />} />
+          <Route path="/findpwd" element={<FindPwd />} />
         </Routes>
       </div>
     </Router>

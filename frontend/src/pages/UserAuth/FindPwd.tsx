@@ -49,7 +49,7 @@ const Login: React.FC = () => {
         <div className="flex min-h-screen bg-[#04060F] bg-opacity-0">
           <div className="w-full space-y-6 bg-gray-800 rounded-lg max-w-96 bg-opacity-0">
             <div className="text">
-              <h2 className="text-6xl font-bold text-white">로그인</h2>
+              <h2 className="text-6xl font-bold text-white">비밀번호 찾기</h2>
             </div>
             <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
               <InputField
@@ -59,22 +59,11 @@ const Login: React.FC = () => {
                 onChange={handleEmailChange}
                 error={emailError}
               />
-              <InputField
-                type="password"
-                placeholder="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <SubmitButton text="로그인" />
-              <LinkButton to="/Signup" text="회원가입" />
-              <div className='flex justify-evenly mb-auto' >
-                <Link className="block text-blue-400 my-5" to="/change-pwd">
-                  비밀번호 변경
-                </Link>
-                <Link className="block text-blue-400 my-5" to="/pwdfind">
-                  비밀번호 찾기
-                </Link>
-              </div>
+              <SubmitButton text="비밀번호 찾기" />
+
+              <Link className="block text-blue-400 my-5" to="/login">
+                로그인 페이지로
+              </Link>
 
             </form>
 
