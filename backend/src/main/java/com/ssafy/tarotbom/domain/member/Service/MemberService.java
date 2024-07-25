@@ -8,5 +8,6 @@ import org.springframework.stereotype.Service;
 
 
 public interface MemberService{
-    ResponseEntity<BasicMessageDto> login(LoginReqDto loginReqDto, HttpServletResponse response);
+    BasicMessageDto login(LoginReqDto loginReqDto, HttpServletResponse response);
+    BasicMessageDto signup(LoginReqDto loginReqDto, HttpServletResponse response);
 }

@@ -31,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public ResponseEntity<BasicMessageDto> login(LoginReqDto loginReqDto, HttpServletResponse response){
+    public BasicMessageDto login(LoginReqDto loginReqDto, HttpServletResponse response){
         String email = loginReqDto.getEmail();
         String password = loginReqDto.getPassword();
         Member member = memberRepository.findMemberByEmail(email);
@@ -49,6 +49,15 @@ public class MemberServiceImpl implements MemberService {
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createAccessToken(info));
 
-        return new ResponseEntity<>(new BasicMessageDto("로그인 성공"), HttpStatus.OK);
+        return new BasicMessageDto("로그인 성공");
+    }
+
+    @Override
+    public BasicMessageDto signup(LoginReqDto loginReqDto, HttpServletResponse response) {
+
+        Optional<Member> member = memberRepository.;
+
+
+        return null;
     }
 }
