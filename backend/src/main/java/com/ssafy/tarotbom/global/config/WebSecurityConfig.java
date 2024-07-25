@@ -54,7 +54,6 @@ public class WebSecurityConfig {
                 .accessDeniedHandler(new AccessDeniedHandlerImpl())
         );
 
-        log.info("오나?");
         // 권한 규칙 : login, signup 경로는 직접 service에서 인증처리 나머지는 여기서 인증
         // -> main경로도 추가해야하나?
         http.authorizeHttpRequests((authorizeRequests) -> {
