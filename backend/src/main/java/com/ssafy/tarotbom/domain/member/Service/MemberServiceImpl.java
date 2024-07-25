@@ -2,18 +2,25 @@ package com.ssafy.tarotbom.domain.member.Service;
 
 import com.ssafy.tarotbom.domain.member.dto.CustomUserInfoDto;
 import com.ssafy.tarotbom.domain.member.dto.LoginReqDto;
+import com.ssafy.tarotbom.domain.member.dto.SignupReqDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
+import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.global.dto.BasicMessageDto;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +38,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public ResponseEntity<BasicMessageDto> login(LoginReqDto loginReqDto, HttpServletResponse response){
+    public BasicMessageDto login(LoginReqDto loginReqDto, HttpServletResponse response){
         String email = loginReqDto.getEmail();
         String password = loginReqDto.getPassword();
         Member member = memberRepository.findMemberByEmail(email);
@@ -49,6 +56,24 @@ public class MemberServiceImpl implements MemberService {
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createAccessToken(info));
 
-        return new ResponseEntity<>(new BasicMessageDto("로그인 성공"), HttpStatus.OK);
+        return new BasicMessageDto("로그인 성공");
+    }
+
+    @Override
+    @Transactional
+    public BasicMessageDto signup(SignupReqDto signupReqDto) throws DataIntegrityViolationException {
+        BCryptPasswordEncoder bcrypasswordEncoder = new BCryptPasswordEncoder();
+
+        String nickname = signupReqDto.getNickname();
+        String email = signupReqDto.getEmail();
+        String password = bcrypasswordEncoder.encode(signupReqDto.getPassword());
+
+        CodeDetail codeDetail = new CodeDetail("M01", "Seeker", "1");
+
+        Member member = new Member(2, nickname, email, password, null, null, null, null, codeDetail, null, null);
+        memberRepository.save(member);
+
+        return new BasicMessageDto("회원가입 성공");
+
     }
 }
