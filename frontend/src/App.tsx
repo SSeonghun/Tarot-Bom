@@ -14,6 +14,7 @@ import FindPwd from './pages/UserAuth/FindPwd';
 import ReaderProfile from './pages/UserProfile/ReaderProfle';
 import PostDetail from './components/Community/PostDetail';
 import CreatePostPage from './pages/Community/CreatePostPage';
+import TarotResult from './pages/TarotResult/TarotResult';
 
 const App: React.FC = () => {
   return (
@@ -35,6 +36,7 @@ const App: React.FC = () => {
           <Route path="/reader-profile" element={<ReaderProfile />} />
           <Route path="/posts/:id" element={<PostDetail />} />
           <Route path="/create-post" element={<CreatePostPage />} />
+          <Route path="/tarot-result" element={<TarotResult />} />
         </Routes>
       </div>
     </Router>
