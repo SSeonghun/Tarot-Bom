@@ -52,12 +52,12 @@ public class MemberServiceImpl implements MemberService {
         return new BasicMessageDto("로그인 성공");
     }
 
-    @Override
-    public BasicMessageDto signup(LoginReqDto loginReqDto, HttpServletResponse response) {
-
-        Optional<Member> member = memberRepository.;
-
-
-        return null;
-    }
+//    @Override
+//    public BasicMessageDto signup(LoginReqDto loginReqDto, HttpServletResponse response) {
+//
+//        Optional<Member> member = memberRepository.;
+//
+//
+//        return null;
+//    }
 }

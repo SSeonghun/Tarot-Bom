@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service;
 
 public interface MemberService{
     BasicMessageDto login(LoginReqDto loginReqDto, HttpServletResponse response);
-    BasicMessageDto signup(LoginReqDto loginReqDto, HttpServletResponse response);
+//    BasicMessageDto signup(LoginReqDto loginReqDto, HttpServletResponse response);
 }

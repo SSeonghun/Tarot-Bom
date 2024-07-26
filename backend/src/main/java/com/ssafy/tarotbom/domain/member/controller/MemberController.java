@@ -35,7 +35,8 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity<BasicMessageDto> signup(@Valid @RequestBody SignupReqDto signupReqDto, HttpServletResponse response){
-        BasicMessageDto result = memberService.signup(signupReqDto, response);
+        BasicMessageDto result = memberService.signup(signupReqDto, response)
+                .orElse;
         return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
