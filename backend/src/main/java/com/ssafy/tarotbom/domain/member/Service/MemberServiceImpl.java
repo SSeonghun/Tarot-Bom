@@ -9,15 +9,10 @@ import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.global.dto.BasicMessageDto;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.ConstraintViolationException;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,10 +20,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
@@ -38,14 +35,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public BasicMessageDto login(LoginReqDto loginReqDto, HttpServletResponse response){
+    public BasicMessageDto login(LoginReqDto loginReqDto, HttpServletResponse response) throws BadCredentialsException, UsernameNotFoundException {
         String email = loginReqDto.getEmail();
         String password = loginReqDto.getPassword();
-        Member member = memberRepository.findMemberByEmail(email);
 
-        if(member == null){
-            throw new UsernameNotFoundException("이메일이 존재하지 않습니다.");
-        }
+        Member member = memberRepository.findMemberByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("이메일이 존재하지 않습니다.")
+        );
 
         // 암호화된 password를 디코딩 한 결과값과 입력한 패스워드 값이 다르면 null 반환
         if(!passwordEncoder.matches(password, member.getPassword())){
@@ -62,19 +58,29 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public BasicMessageDto signup(SignupReqDto signupReqDto) throws DataIntegrityViolationException {
+    public BasicMessageDto signup(SignupReqDto signupReqDto) throws DataIntegrityViolationException, IllegalArgumentException {
         BCryptPasswordEncoder bcrypasswordEncoder = new BCryptPasswordEncoder();
 
         String nickname = signupReqDto.getNickname();
         String email = signupReqDto.getEmail();
         String password = bcrypasswordEncoder.encode(signupReqDto.getPassword());
 
-        CodeDetail codeDetail = new CodeDetail("M01", "Seeker", "1");
+        Optional<Member> findMemberByNickname = memberRepository.findMemberByNickname(nickname);
+        if(findMemberByNickname.isPresent()){
+            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+        }
 
-        Member member = new Member(2, nickname, email, password, null, null, null, null, codeDetail, null, null);
+        Optional<Member> findMemberByEmail = memberRepository.findMemberByEmail(email);
+        if(findMemberByEmail.isPresent()){
+            throw new IllegalArgumentException("중복된 이메일이 존재합니다.");
+        }
+
+        CodeDetail codeDetail = new CodeDetail("M01", "Seeker", "1"); // DB에 저장된 후에 코드 refactoring
+
+        Member member = new Member(nickname, email, password, codeDetail);
         memberRepository.save(member);
 
         return new BasicMessageDto("회원가입 성공");
 
-
+    }
 }

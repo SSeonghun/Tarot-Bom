@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class MemberController {
+
     private final MemberService memberService;
 
     /*
@@ -26,7 +27,6 @@ public class MemberController {
         return "test";
     }
     */
-
 
     @PostMapping("/login")
     public ResponseEntity<BasicMessageDto> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
