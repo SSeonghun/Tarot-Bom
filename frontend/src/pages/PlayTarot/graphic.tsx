@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import './Graphic.css';
-import cardBackImage from '../../assets/card-back.png';
+import React, { useEffect, useState } from "react";
+import "./Graphic.css";
+import cardBackImage from "../../assets/card-back.png";
 
 // 비복원 추출을 위한 유틸리티 함수
 const getRandomCard = (excludeCards: number[]): number => {
-  const availableCards = Array.from({ length: 78 }, (_, index) => index).filter(card => !excludeCards.includes(card));
+  const availableCards = Array.from({ length: 78 }, (_, index) => index).filter(
+    (card) => !excludeCards.includes(card)
+  );
   const randomIndex = Math.floor(Math.random() * availableCards.length);
   return availableCards[randomIndex];
 };
@@ -16,9 +18,9 @@ const Graphic: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, []);
 
@@ -31,7 +33,7 @@ const Graphic: React.FC = () => {
 
     // 선택된 카드와 랜덤 카드 상태 업데이트
     setSelectedCards([...selectedCards, index]);
-    setCardImages(prev => ({ ...prev, [index]: randomCard }));
+    setCardImages((prev) => ({ ...prev, [index]: randomCard }));
 
     // 카드가 뽑히는 애니메이션 후 카드 제거 애니메이션
     setTimeout(() => {
@@ -48,7 +50,7 @@ const Graphic: React.FC = () => {
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <div className='flex items-center justify-center min-h-screen p-4 page'>
+    <div className="flex items-center justify-center min-h-screen p-4 page">
       <div className="relative w-full max-w-4xl p-4 mb-auto mt-16 mr-auto ml-36">
         {/* Display selected numbers */}
         <div className="absolute top-0 p-4 right-0">
@@ -61,20 +63,24 @@ const Graphic: React.FC = () => {
         </div>
         {/* Container for the cards */}
         <div className="absolute inset-0 grid grid-cols-1 gap-4">
-          {Array.from({ length: 78 }, (_, index) => (
-            !selectedCards.includes(index) && (
-              <div
-                key={index}
-                onClick={() => handleCardClick(index)} // 클릭 핸들러 추가
-                className={`w-24 h-36 bg-cover bg-center rounded-lg absolute transition-transform duration-300 ease-in-out transform hover:scale-125 ${removingCards.includes(index) ? 'animate-card-remove' : ''}`} // 애니메이션 클래스 추가
-                style={{
-                  backgroundImage: `url(${cardBackImage})`,
-                  top: `${(index % 3) * 200}px`, // Vertical offset based on the row
-                  left: `${Math.floor(index / 3) * 25}px`, // Horizontal offset based on the column
-                }}
-              />
-            )
-          ))}
+          {Array.from(
+            { length: 78 },
+            (_, index) =>
+              !selectedCards.includes(index) && (
+                <div
+                  key={index}
+                  onClick={() => handleCardClick(index)} // 클릭 핸들러 추가
+                  className={`w-24 h-36 bg-cover bg-center rounded-lg absolute transition-transform duration-300 ease-in-out transform hover:scale-125 ${
+                    removingCards.includes(index) ? "animate-card-remove" : ""
+                  }`} // 애니메이션 클래스 추가
+                  style={{
+                    backgroundImage: `url(${cardBackImage})`,
+                    top: `${(index % 3) * 200}px`, // Vertical offset based on the row
+                    left: `${Math.floor(index / 3) * 25}px`, // Horizontal offset based on the column
+                  }}
+                />
+              )
+          )}
         </div>
         {/* 모달 및 버튼 */}
         <button
@@ -111,6 +117,6 @@ const Graphic: React.FC = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Graphic;
