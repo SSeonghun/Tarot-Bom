@@ -86,5 +86,14 @@ public class Member {
         this.updateTime = LocalDateTime.now();
     }
 
+    public Member(String nickname, String email, String password, CodeDetail memberType) {
+        this.nickname = nickname;
+        this.email = email;
+        this.password = password;
+        this.memberType = memberType;
+    }
 
+    public void setMemberType(@NotNull CodeDetail memberType) {
+        this.memberType = memberType;
+    }
 }
