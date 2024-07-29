@@ -1,5 +1,8 @@
 import React from "react";
 import HoverButton from "../../Common/HoverButton";
+import Hero1 from "./Hero1";
+import Hero2 from "./Hero2";
+import Hero3 from "./Hero3";
 
 const ReaderMypage: React.FC = () => {
   return (
@@ -19,7 +22,16 @@ const ReaderMypage: React.FC = () => {
           ></HoverButton>
         </div>
       </div>
-      <hr className="border-black" />
+      <hr className="border-black border-[2px]" />
+      <div className="mt-3">
+        <Hero1 />
+      </div>
+      <div className="mt-3">
+        <Hero2 />
+      </div>
+      <div className="mt-3">
+        <Hero3 />
+      </div>
     </div>
   );
 };

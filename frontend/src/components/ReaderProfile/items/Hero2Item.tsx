@@ -1,5 +1,5 @@
-import React from 'react';
-import { useCountUp } from './useCountUe';
+import React from "react";
+import { useCountUp } from "../../Common/useCountUI";
 
 interface Hero2ItemProps {
   title: string;
