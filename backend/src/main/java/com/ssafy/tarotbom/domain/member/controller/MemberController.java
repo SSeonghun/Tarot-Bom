@@ -30,6 +30,7 @@ public class MemberController {
         return memberService.login(loginReqDto, response);
     }
 
+    @PostMapping("/user/")
 
 
 }
