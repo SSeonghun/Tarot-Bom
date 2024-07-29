@@ -8,12 +8,14 @@ import SerchReader from './pages/SearchReader/SearchReader';
 import Community from './pages/Community/PostListPage';
 import SignUp from './pages/UserAuth/Signup';
 import Matching from './pages/Matching/Matching';
-import Graphic from './pages/PlayTarot/graphic';
+import Graphic from './pages/PlayTarot/Graphic';
 import ChangePwd from './pages/UserAuth/ChangePwd';
 import FindPwd from './pages/UserAuth/FindPwd';
 import ReaderProfile from './pages/UserProfile/ReaderProfle';
 import PostDetail from './components/Community/PostDetail';
 import CreatePostPage from './pages/Community/CreatePostPage';
+import Play from './pages/PlayTarot/Play';
+
 
 const App: React.FC = () => {
   return (
@@ -35,6 +37,7 @@ const App: React.FC = () => {
           <Route path="/reader-profile" element={<ReaderProfile />} />
           <Route path="/posts/:id" element={<PostDetail />} />
           <Route path="/create-post" element={<CreatePostPage />} />
+          <Route path="/play" element={<Play />} />
         </Routes>
       </div>
     </Router>
