@@ -8,7 +8,7 @@ import SerchReader from './pages/SearchReader/SearchReader';
 import Community from './pages/Community/PostListPage';
 import SignUp from './pages/UserAuth/Signup';
 import Matching from './pages/Matching/Matching';
-import Graphic from './pages/PlayTarot/graphic';
+import Graphic from './pages/PlayTarot/Graphic';
 import ChangePwd from './pages/UserAuth/ChangePwd';
 import FindPwd from './pages/UserAuth/FindPwd';
 import ReaderProfile from './pages/UserProfile/ReaderProfle';
