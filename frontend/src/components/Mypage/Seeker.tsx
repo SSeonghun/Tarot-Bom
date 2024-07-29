@@ -25,7 +25,7 @@ const Seeker: React.FC = () => {
         </div>
       </div>
 
-      <div className="relative h-[700px] bg-gray-700 z-30">
+      <div className="relative h-fit bg-gray-700 z-30">
         <div className="h-fit bg-white mx-[100px] relative flex flex-col -top-[450px] rounded-xl bg-opacity-55">
           <SeekerItem />
         </div>

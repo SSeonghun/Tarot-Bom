@@ -26,6 +26,10 @@ const ReaderMypage: React.FC = () => {
       <div className="mt-3">
         <Hero1 />
       </div>
+      <h1 className="text-black font-bold text-[50px] mt-[100px] ms-4 me-4 mb-4">
+        최근 타로 내역
+      </h1>
+      <hr className="border-black border-[2px]" />
       <div className="mt-3">
         <Hero2 />
       </div>
