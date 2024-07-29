@@ -14,6 +14,8 @@ import FindPwd from './pages/UserAuth/FindPwd';
 import ReaderProfile from './pages/UserProfile/ReaderProfle';
 import PostDetail from './components/Community/PostDetail';
 import CreatePostPage from './pages/Community/CreatePostPage';
+import SeekerMypage from "./pages/UserProfile/SeekerMypage";
+import ReaderMypage from "./pages/UserProfile/ReaderMypage";
 
 const App: React.FC = () => {
   return (
@@ -35,6 +37,8 @@ const App: React.FC = () => {
           <Route path="/reader-profile" element={<ReaderProfile />} />
           <Route path="/posts/:id" element={<PostDetail />} />
           <Route path="/create-post" element={<CreatePostPage />} />
+          <Route path="/seaker-mypage" element={<SeekerMypage />} />
+          <Route path="/reader-mypage" element={<ReaderMypage />} />
         </Routes>
       </div>
     </Router>
