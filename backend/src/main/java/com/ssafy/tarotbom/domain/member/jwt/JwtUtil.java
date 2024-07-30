@@ -43,6 +43,9 @@ public class JwtUtil {
     private String createToken(CustomUserInfoDto member, long expireTime){
 
         Claims claims = Jwts.claims();
+
+        log.info("[JwtUtil-createToken] email : {}", member.getEmail());
+
         claims.put("memberId", member.getMemberId());
         claims.put("email", member.getEmail());
         claims.put("memberType", member.getMemberType().getCodeDetailId());
