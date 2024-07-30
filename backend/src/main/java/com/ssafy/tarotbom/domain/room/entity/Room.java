@@ -23,12 +23,10 @@ public class Room {
     private long roomId;
 
     /* @ManyToOne으로 연결 : 리더ID, 시커ID, 상담분야 */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reader_id", insertable = false, updatable = false)
     private Member reader;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seeker_id", insertable = false, updatable = false)
     private Member seeker;
@@ -57,13 +55,15 @@ public class Room {
     private RoomStyle roomStyle;
 
     // insert시 객체가 아닌 id를 입력할 수 있도록 해야함
-    @Column(name = "reader_id")
+    @NotNull
+    @Column(name = "reader_id", columnDefinition = "int unsigned")
     private long readerId;
 
-    @Column(name = "seeker_id")
+    @NotNull
+    @Column(name = "seeker_id", columnDefinition = "int unsigned")
     private long seekerId;
 
-    @Column(name = "keyword")
+    @Column(name = "keyword", columnDefinition = "char(3)")
     private String keywords;
 
     // create time 자동갱신
