@@ -1,15 +1,14 @@
 package com.ssafy.tarotbom.domain.member.controller;
 
 import com.ssafy.tarotbom.domain.member.Service.MemberService;
-import com.ssafy.tarotbom.domain.member.dto.EmailCheckReqDto;
-import com.ssafy.tarotbom.domain.member.dto.EmailReqDto;
-import com.ssafy.tarotbom.domain.member.dto.LoginReqDto;
-import com.ssafy.tarotbom.domain.member.dto.SignupReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.EmailCheckReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.EmailReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
 import com.ssafy.tarotbom.global.dto.BasicMessageDto;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

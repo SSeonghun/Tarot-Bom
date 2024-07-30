@@ -1,8 +1,8 @@
 package com.ssafy.tarotbom.domain.member.Service;
 
 import com.ssafy.tarotbom.domain.member.dto.CustomUserInfoDto;
-import com.ssafy.tarotbom.domain.member.dto.LoginReqDto;
-import com.ssafy.tarotbom.domain.member.dto.SignupReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
@@ -119,7 +119,7 @@ public class MemberServiceImpl implements MemberService {
         String title = "유저 이메일 인증 번호";
         String authCode = this.createCode();
         String text = "타로봄에 오신 것을 환영합니다.\n\n"
-                + "인증 번호는\n" +"\t\t" + authCode + "\n입니다.";
+                + "      인증 번호는\n\n" +"         " + authCode + "\n\n         입니다.";
 
         redisTool.setValues(AUTH_CODE_PREFIX + toEmail , authCode, Duration.ofMillis(authCodeExpirationMillis));
         emailTool.sendEmail(toEmail, title, text);
