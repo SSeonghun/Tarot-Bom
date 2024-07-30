@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     // 기본형
-    COMMON_NOT_FOUND(HttpStatus.NOT_FOUND, "C001", "요청한 리소스를 찾을 수 없습니다."),
+    COMMON_ETC(HttpStatus.INTERNAL_SERVER_ERROR, "C001", "서버에 오류가 발생했습니다."),
+    COMMON_NOT_FOUND(HttpStatus.NOT_FOUND, "C002", "요청한 리소스를 찾을 수 없습니다."),
     // Room
     ROOM_RESERVED_ALREADY_EXISTS(HttpStatus.CONFLICT, "R001", "이미 방이 생성된 예약입니다."),
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "R002", "방을 찾을 수 없습니다."),
