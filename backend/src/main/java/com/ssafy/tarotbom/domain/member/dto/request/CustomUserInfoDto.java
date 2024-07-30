@@ -1,10 +1,8 @@
-package com.ssafy.tarotbom.domain.member.dto;
+package com.ssafy.tarotbom.domain.member.dto.request;
 
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 
 // 로직 내부에서 인증 유저 정보를 저장해두는 DTO

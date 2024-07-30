@@ -7,8 +7,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 
 public interface MemberService{
-    BasicMessageDto login(LoginReqDto loginReqDto, HttpServletResponse response);
-    BasicMessageDto signup(SignupReqDto signupReqDto);
-    BasicMessageDto sendCodeToEmail(String toEmail);
+    boolean login(LoginReqDto loginReqDto, HttpServletResponse response);
+    boolean signup(SignupReqDto signupReqDto);
+    boolean sendCodeToEmail(String toEmail);
     boolean verifyCode(String code, String authCode);
 }

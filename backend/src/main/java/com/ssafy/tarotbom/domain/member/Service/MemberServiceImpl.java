@@ -1,6 +1,6 @@
 package com.ssafy.tarotbom.domain.member.Service;
 
-import com.ssafy.tarotbom.domain.member.dto.CustomUserInfoDto;
+import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
 import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
 import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
@@ -10,6 +10,8 @@ import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.domain.member.email.EmailTool;
 import com.ssafy.tarotbom.global.config.RedisTool;
 import com.ssafy.tarotbom.global.dto.BasicMessageDto;
+import com.ssafy.tarotbom.global.error.BusinessException;
+import com.ssafy.tarotbom.global.error.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,30 +49,30 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public BasicMessageDto login(LoginReqDto loginReqDto, HttpServletResponse response) throws BadCredentialsException, UsernameNotFoundException {
+    public boolean login(LoginReqDto loginReqDto, HttpServletResponse response) throws BadCredentialsException, UsernameNotFoundException {
         String email = loginReqDto.getEmail();
         String password = loginReqDto.getPassword();
 
         Member member = memberRepository.findMemberByEmail(email).orElseThrow(
-                () -> new UsernameNotFoundException("이메일이 존재하지 않습니다.")
+                () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
         );
 
         // 암호화된 password를 디코딩 한 결과값과 입력한 패스워드 값이 다르면 null 반환
         if(!passwordEncoder.matches(password, member.getPassword())){
-            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
         CustomUserInfoDto info = modelMapper.map(member, CustomUserInfoDto.class);
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createAccessToken(info));
 
-        return new BasicMessageDto("로그인 성공");
+        return true;
 
     }
 
     @Override
     @Transactional
-    public BasicMessageDto signup(SignupReqDto signupReqDto) throws DataIntegrityViolationException, IllegalArgumentException {
+    public boolean signup(SignupReqDto signupReqDto) throws BusinessException {
         BCryptPasswordEncoder bcrypasswordEncoder = new BCryptPasswordEncoder();
 
         String nickname = signupReqDto.getNickname();
@@ -79,12 +81,12 @@ public class MemberServiceImpl implements MemberService {
 
         Optional<Member> findMemberByNickname = memberRepository.findMemberByNickname(nickname);
         if(findMemberByNickname.isPresent()){
-            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+            throw new BusinessException(ErrorCode.MEMBER_DUPLICATED);
         }
 
         Optional<Member> findMemberByEmail = memberRepository.findMemberByEmail(email);
         if(findMemberByEmail.isPresent()){
-            throw new IllegalArgumentException("중복된 이메일이 존재합니다.");
+            throw new BusinessException(ErrorCode.MEMBER_DUPLICATED);
         }
 
         CodeDetail codeDetail = new CodeDetail("M01", "Seeker", "1"); // DB에 저장된 후에 코드 refactoring
@@ -92,7 +94,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = new Member(nickname, email, password, codeDetail);
         memberRepository.save(member);
 
-        return new BasicMessageDto("회원가입 성공");
+        return true;
 
     }
 
@@ -107,12 +109,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public BasicMessageDto sendCodeToEmail(String toEmail){
+    public boolean sendCodeToEmail(String toEmail){
 
         // 이메일 중복 검사
         Optional<Member> findMemberByEmail = memberRepository.findMemberByEmail(toEmail);
         if(findMemberByEmail.isPresent()){
-            throw new IllegalArgumentException("중복된 이메일이 존재합니다.");
+            throw new BusinessException(ErrorCode.MEMBER_DUPLICATED);
         }
 
         // 인증 코드 생성, 저장, 이메일 전송
@@ -124,14 +126,16 @@ public class MemberServiceImpl implements MemberService {
         redisTool.setValues(AUTH_CODE_PREFIX + toEmail , authCode, Duration.ofMillis(authCodeExpirationMillis));
         emailTool.sendEmail(toEmail, title, text);
 
-        return new BasicMessageDto("이메일 전송");
+        return true;
     }
 
     @Override
     public boolean verifyCode(String email, String authCode) {
         String redisAuthCode = redisTool.getValues((AUTH_CODE_PREFIX + email));
-
-        return redisTool.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode);
+        if(!redisTool.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode)){
+            throw new BusinessException(ErrorCode.MEMBER_INVALID_CODE);
+        }
+        return true;
     }
 
 }
