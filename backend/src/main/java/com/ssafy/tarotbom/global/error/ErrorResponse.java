@@ -10,7 +10,7 @@ public class ErrorResponse {
     private final String code;
     private final String message;
 
-    public ErrorResponse of(ErrorCode errorCode) {
+    public static ErrorResponse of(ErrorCode errorCode) {
         return ErrorResponse.builder()
                 .status(errorCode.getStatus().value())
                 .code(errorCode.getCode())

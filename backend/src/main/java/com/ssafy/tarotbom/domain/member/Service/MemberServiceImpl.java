@@ -1,17 +1,20 @@
 package com.ssafy.tarotbom.domain.member.Service;
 
 import com.ssafy.tarotbom.domain.member.dto.CustomUserInfoDto;
-import com.ssafy.tarotbom.domain.member.dto.LoginReqDto;
-import com.ssafy.tarotbom.domain.member.dto.SignupReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
+import com.ssafy.tarotbom.domain.member.email.EmailTool;
+import com.ssafy.tarotbom.global.config.RedisTool;
 import com.ssafy.tarotbom.global.dto.BasicMessageDto;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,7 +23,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.Optional;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -32,6 +37,13 @@ public class MemberServiceImpl implements MemberService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+
+    private final RedisTool redisTool;
+    private final EmailTool emailTool;
+    private static final String AUTH_CODE_PREFIX = "AuthCode ";
+
+    @Value("${spring.mail.auth-code-expiration-millis}")
+    private Long authCodeExpirationMillis;
 
     @Override
     @Transactional
@@ -83,4 +95,43 @@ public class MemberServiceImpl implements MemberService {
         return new BasicMessageDto("회원가입 성공");
 
     }
+
+    private String createCode(){
+        Random random = new Random();
+        String randomNumber = "";
+        for(int i=0; i<6; i++){
+            randomNumber += Integer.toString(random.nextInt(10));
+        }
+
+        return randomNumber;
+    }
+
+    @Override
+    public BasicMessageDto sendCodeToEmail(String toEmail){
+
+        // 이메일 중복 검사
+        Optional<Member> findMemberByEmail = memberRepository.findMemberByEmail(toEmail);
+        if(findMemberByEmail.isPresent()){
+            throw new IllegalArgumentException("중복된 이메일이 존재합니다.");
+        }
+
+        // 인증 코드 생성, 저장, 이메일 전송
+        String title = "유저 이메일 인증 번호";
+        String authCode = this.createCode();
+        String text = "타로봄에 오신 것을 환영합니다.\n\n"
+                + "      인증 번호는\n\n" +"         " + authCode + "\n\n         입니다.";
+
+        redisTool.setValues(AUTH_CODE_PREFIX + toEmail , authCode, Duration.ofMillis(authCodeExpirationMillis));
+        emailTool.sendEmail(toEmail, title, text);
+
+        return new BasicMessageDto("이메일 전송");
+    }
+
+    @Override
+    public boolean verifyCode(String email, String authCode) {
+        String redisAuthCode = redisTool.getValues((AUTH_CODE_PREFIX + email));
+
+        return redisTool.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode);
+    }
+
 }

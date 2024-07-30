@@ -1,25 +1,24 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/UserAuth/Login';
-import Navbar from './components/Navbar';
-import Offline from './pages/OfflineTarot';
-import SerchReader from './pages/SearchReader/SearchReader';
-import Community from './pages/Community/PostListPage';
-import SignUp from './pages/UserAuth/Signup';
-import Matching from './pages/Matching/Matching';
-import Graphic from './pages/PlayTarot/Graphic';
-import ChangePwd from './pages/UserAuth/ChangePwd';
-import FindPwd from './pages/UserAuth/FindPwd';
-import ReaderProfile from './pages/UserProfile/ReaderProfle';
-import PostDetail from './components/Community/PostDetail';
-import CreatePostPage from './pages/Community/CreatePostPage';
-import TarotResult from './pages/TarotResult/TarotResult';
-import Play from './pages/PlayTarot/Play';
-import CreateReader from './pages/CreateReader/CreateReader';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/UserAuth/Login";
+import Navbar from "./components/Navbar";
+import Offline from "./pages/OfflineTarot";
+import SerchReader from "./pages/SearchReader/SearchReader";
+import Community from "./pages/Community/PostListPage";
+import SignUp from "./pages/UserAuth/Signup";
+import Matching from "./pages/Matching/Matching";
+import Graphic from "./pages/PlayTarot/Graphic";
+import ChangePwd from "./pages/UserAuth/ChangePwd";
+import FindPwd from "./pages/UserAuth/FindPwd";
+import ReaderProfile from "./pages/UserProfile/ReaderProfle";
+import PostDetail from "./components/Community/PostDetail";
+import CreatePostPage from "./pages/Community/CreatePostPage";
+import TarotResult from "./pages/TarotResult/TarotResult";
+import Play from "./pages/PlayTarot/Play";
+import CreateReader from "./pages/CreateReader/CreateReader";
 import SeekerMypage from "./pages/UserProfile/SeekerMypage";
 import ReaderMypage from "./pages/UserProfile/ReaderMypage";
-
 
 const App: React.FC = () => {
   return (

@@ -1,41 +1,35 @@
-// useCountUp.ts
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 interface UseCountUpProps {
   start: number;
   end: number;
-  duration: number; // duration in milliseconds
+  duration: number;
 }
 
-export function useCountUp({ start, end, duration }: UseCountUpProps) {
+export const useCountUp = ({ start, end, duration }: UseCountUpProps) => {
   const [count, setCount] = useState(start);
 
   useEffect(() => {
-    let frameId: number;
-    const startTime = performance.now();
-    const frameRate = 1000 / 60;
-    const totalFrame = Math.round(duration / frameRate);
+    let startTime: number | null = null;
 
-    function update() {
-      const elapsedTime = performance.now() - startTime;
-      const progress = Math.min(elapsedTime / duration, 1);
-      const easedProgress = easeOutExpo(progress);
-      const currentValue = Math.round(start + (end - start) * easedProgress);
-      setCount(currentValue);
+    const animate = (currentTime: number) => {
+      if (startTime === null) startTime = currentTime;
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      setCount(Math.round(start + (end - start) * progress));
 
       if (progress < 1) {
-        frameId = requestAnimationFrame(update);
+        requestAnimationFrame(animate);
       }
-    }
+    };
 
-    update();
+    requestAnimationFrame(animate);
 
-    return () => cancelAnimationFrame(frameId);
+    // Cleanup on unmount
+    return () => {
+      startTime = null;
+    };
   }, [start, end, duration]);
 
-  function easeOutExpo(t: number): number {
-    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-  }
-
   return count;
-}
+};

@@ -60,6 +60,7 @@ public class WebSecurityConfig {
             authorizeRequests.requestMatchers("/user/signup/**").permitAll() // 회원가입 api
                     .requestMatchers("/user/login/**").permitAll() // 로그인 api
                     .requestMatchers("/user/emailCheck/**").permitAll()
+                    .requestMatchers("/user/emails/**").permitAll()
                     .anyRequest().authenticated(); // 위의 것 외에는 인증 없이 접근 불가
         });
 

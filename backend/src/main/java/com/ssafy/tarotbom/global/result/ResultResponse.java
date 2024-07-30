@@ -11,10 +11,17 @@ public class ResultResponse {
     private final String message;
     private final Object data;
 
-    public ResultResponse of(ResultCode resultCode, Object data) {
+    public static ResultResponse of(ResultCode resultCode, Object data) {
         return ResultResponse.builder().status(resultCode.getStatus().value())
                 .code(resultCode.getCode())
                 .data(data)
+                .message(resultCode.getMessage())
+                .build();
+    }
+
+    public static ResultResponse of(ResultCode resultCode) {
+        return ResultResponse.builder().status(resultCode.getStatus().value())
+                .code(resultCode.getCode())
                 .message(resultCode.getMessage())
                 .build();
     }

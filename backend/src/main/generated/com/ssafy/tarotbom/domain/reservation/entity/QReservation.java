@@ -30,11 +30,17 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final com.ssafy.tarotbom.domain.member.entity.QMember reader;
 
+    public final NumberPath<Long> readerId = createNumber("readerId", Long.class);
+
     public final NumberPath<Long> reservationId = createNumber("reservationId", Long.class);
 
     public final com.ssafy.tarotbom.domain.room.entity.QRoom room;
 
+    public final NumberPath<Long> roomId = createNumber("roomId", Long.class);
+
     public final com.ssafy.tarotbom.domain.member.entity.QMember seeker;
+
+    public final NumberPath<Long> seekerId = createNumber("seekerId", Long.class);
 
     public final DateTimePath<java.time.LocalDateTime> startTime = createDateTime("startTime", java.time.LocalDateTime.class);
 
