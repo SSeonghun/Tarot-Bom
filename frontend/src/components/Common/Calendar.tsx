@@ -2,10 +2,12 @@ import React, { useState } from "react";
 
 interface CalendarComponentProps {
   highlightDates?: Date[]; // 하이라이트할 날짜 배열을 받는 props
+  layout?: "row" | "col" | "col-single"; // 레이아웃 유형을 설정하는 props
 }
 
 const CalendarComponent: React.FC<CalendarComponentProps> = ({
   highlightDates = [],
+  layout = "row",
 }) => {
   const [currentMonth, setCurrentMonth] = useState<number>(
     new Date().getMonth()
@@ -63,9 +65,55 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
     );
   };
 
+  // 다가오는 일정을 하이라이트 날짜에서 추출합니다.
+  const getUpcomingEvents = () => {
+    return highlightDates
+      .filter(
+        (date) =>
+          date.getFullYear() === currentYear && date.getMonth() === currentMonth
+      )
+      .sort((a, b) => a.getDate() - b.getDate());
+  };
+
+  // 달력과 다가오는 일정이 표시될 레이아웃에 따라 처리
+  const renderUpcomingEvents = () => {
+    const upcomingEvents = getUpcomingEvents();
+
+    if (layout === "col-single") {
+      // 단일 일정 표시
+      const firstEvent = upcomingEvents[0];
+      return firstEvent ? (
+        <div>
+          <strong>{firstEvent.toLocaleDateString()}</strong>: 다가오는 일정
+        </div>
+      ) : (
+        <div>일정이 없습니다.</div>
+      );
+    } else {
+      // 모든 일정 표시
+      return upcomingEvents.length ? (
+        upcomingEvents.map((event, index) => (
+          <div key={index}>
+            <strong>{event.toLocaleDateString()}</strong>: 다가오는 일정
+          </div>
+        ))
+      ) : (
+        <div>일정이 없습니다.</div>
+      );
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center py-8 px-4">
-      <div className="max-w-sm w-full shadow-lg">
+    <div
+      className={`flex ${
+        layout === "row" ? "flex-row" : "flex-col"
+      } items-start justify-center py-8 px-4`}
+    >
+      <div
+        className={`w-full max-w-sm shadow-lg ${
+          layout === "row" ? "flex-1" : "w-full"
+        }`}
+      >
         <div className="md:p-4 p-2 dark:bg-gray-800 bg-white bg-opacity-30 rounded-t">
           <div className="px-4 flex items-center justify-between">
             <span
@@ -175,17 +223,34 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
           </div>
           <hr className="border border-gray-700 mt-3" />
         </div>
-        <div className="dark:bg-gray-700 bg-white bg-opacity-30 pb-4 rounded-b">
-          <div>
-            <h1 className="text-black text-[30px] font-bold text-center">
-              다가오는 일정
-            </h1>
+        {(layout === "col" || layout === "col-single") && (
+          <div className="dark:bg-gray-700 bg-white bg-opacity-30 pb-4 rounded-b">
+            <div>
+              <h1 className="text-black text-[30px] font-bold text-center">
+                다가오는 일정
+              </h1>
+            </div>
+            <div className="my-2 mx-6 p-4 border border-gray-200">
+              {renderUpcomingEvents()}
+            </div>
           </div>
-          <div className="my-2 mx-6 p-4 border border-gray-200">
-            여기에 일정내용
+        )}
+      </div>
+
+      {layout === "row" && (
+        <div className="ms-4 w-full max-w-sm shadow-lg flex-1">
+          <div className="dark:bg-gray-700 bg-white bg-opacity-30 pb-4 rounded-b">
+            <div>
+              <h1 className="text-black text-[30px] font-bold text-center">
+                다가오는 일정
+              </h1>
+            </div>
+            <div className="my-2 mx-6 p-4 border border-gray-200">
+              {renderUpcomingEvents()}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
