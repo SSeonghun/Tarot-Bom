@@ -16,6 +16,8 @@ import PostDetail from './components/Community/PostDetail';
 import CreatePostPage from './pages/Community/CreatePostPage';
 import Play from './pages/PlayTarot/Play';
 import CreateReader from './pages/CreateReader/CreateReader';
+import SeekerMypage from "./pages/UserProfile/SeekerMypage";
+import ReaderMypage from "./pages/UserProfile/ReaderMypage";
 
 
 const App: React.FC = () => {
@@ -40,6 +42,8 @@ const App: React.FC = () => {
           <Route path="/create-post" element={<CreatePostPage />} />
           <Route path="/play" element={<Play />} />
           <Route path="/create-reader" element={<CreateReader />} />
+          <Route path="/seaker-mypage" element={<SeekerMypage />} />
+          <Route path="/reader-mypage" element={<ReaderMypage />} />
         </Routes>
       </div>
     </Router>
