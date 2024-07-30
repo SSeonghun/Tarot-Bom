@@ -38,7 +38,6 @@ dependencies {
 	implementation 'org.hibernate.validator:hibernate-validator:7.0.1.Final'
 	implementation 'org.glassfish:jakarta.el:4.0.2'
 
-
 	// 스프링 시큐리티
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
@@ -50,6 +49,13 @@ dependencies {
 	// ModelMapper
 //	implementation group: 'org.modelmapper', name : 'modelmapper', version '2.4.2'
 	implementation 'org.modelmapper:modelmapper:3.1.1'
+
+	// email 라이브러리
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.0.5'
+
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 
 }
 
