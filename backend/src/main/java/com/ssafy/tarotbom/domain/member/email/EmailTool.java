@@ -1,6 +1,6 @@
-package com.ssafy.tarotbom.global.config;
+package com.ssafy.tarotbom.domain.member.email;
 
-import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;

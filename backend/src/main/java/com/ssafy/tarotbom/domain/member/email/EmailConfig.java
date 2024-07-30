@@ -1,4 +1,4 @@
-package com.ssafy.tarotbom.global.config;
+package com.ssafy.tarotbom.domain.member.email;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

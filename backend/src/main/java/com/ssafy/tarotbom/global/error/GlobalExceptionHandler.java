@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex){
         log.error(ex.toString());
         ErrorCode errorCode = ex.getErrorCode();
-        ErrorResponse errorResponse = new ErrorResponse(errorCode);
+        ErrorResponse errorResponse = ErrorResponse.of(errorCode);
         return ResponseEntity.status(errorCode.getStatus()).body(errorResponse);
     }
 }

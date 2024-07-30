@@ -7,7 +7,7 @@ import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
-import com.ssafy.tarotbom.global.config.EmailTool;
+import com.ssafy.tarotbom.domain.member.email.EmailTool;
 import com.ssafy.tarotbom.global.config.RedisTool;
 import com.ssafy.tarotbom.global.dto.BasicMessageDto;
 import jakarta.servlet.http.HttpServletResponse;
@@ -117,11 +117,12 @@ public class MemberServiceImpl implements MemberService {
 
         // 인증 코드 생성, 저장, 이메일 전송
         String title = "유저 이메일 인증 번호";
-        String text = "타로봄에 오신 것을 환영합니다.";
         String authCode = this.createCode();
+        String text = "타로봄에 오신 것을 환영합니다.\n\n"
+                + "인증 번호는\n" +"\t\t" + authCode + "\n입니다.";
 
         redisTool.setValues(AUTH_CODE_PREFIX + toEmail , authCode, Duration.ofMillis(authCodeExpirationMillis));
-        emailTool.sendEmail(toEmail, title, authCode);
+        emailTool.sendEmail(toEmail, title, text);
 
         return new BasicMessageDto("이메일 전송");
     }
