@@ -1,7 +1,7 @@
-import React from "react";
-import MypageBackground from "../../assets/img/mypageback.png";
-import Profile from "../../assets/img/profile2.png";
-import SeekerItem from "./items/SeekerItem";
+import React from 'react';
+import MypageBackground from '../../assets/img/mypageback.png';
+import Profile from '../../assets/img/profile2.png';
+import SeekerItem from './seekeritems/SeekerItem';
 
 const Seeker: React.FC = () => {
   return (
@@ -10,8 +10,8 @@ const Seeker: React.FC = () => {
         className="absolute inset-0 z-0 opacity-80"
         style={{
           backgroundImage: `url(${MypageBackground})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       ></div>
       <div className="absolute inset-0 z-10 bg-black opacity-50"></div>
