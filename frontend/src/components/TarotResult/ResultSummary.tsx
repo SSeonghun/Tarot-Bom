@@ -1,79 +1,63 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import cardBg from '../../assets/img/card.png';
 import moneyImg from '../../assets/money.png';
 import HoverButton from '../../components/Common/HoverButton';
+import OpenAI from '../Common/OpenAI';
+import Loading from '../Common/Loading';
 
 const category = '금전운';
 
-const apiKey = 'process.env.REACT_APP_OPENAI_API_KEY';
-const apiEndpoint = 'https://api.openai.com/v1/chat/completions';
+interface CardData {
+  id: number;
+  name: string;
+  detail: string;
+}
 
-const fetchOpenAIResponse = async (messages: { role: string; content: string }[]) => {
-  const response = await fetch(apiEndpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      model: 'gpt-3.5-turbo',
-      messages: messages,
-      max_tokens: 1024,
-      top_p: 1,
-      temperature: 1,
-      frequency_penalty: 0.5,
-      presence_penalty: 0.5,
-    }),
-  });
+const cards: CardData[] = Array.from({ length: 3 }, (_, index) => ({
+  id: index,
+  name: `ACE & CUPS`,
+  detail: `야호 야호 야호 야호 야호 야호 야호 야호 야호 야호 야호 `,
+}));
 
-  const data = await response.json();
-  return data.choices?.[0]?.message?.content || 'No response';
-};
+const ResultSummary: React.FC = () => {
+  const [summary, setSummary] = useState<string>('');
 
-const TarotResult: React.FC = () => {
-  const [summary, setSummary] = useState<string | null>(null);
-
-  useEffect(() => {
-    const askTarotReading = async () => {
-      const cards = [
-        { name: 'ACE & CUPS', category: ['금전운'] },
-        // 추가 카드 데이터를 여기에 넣습니다.
-      ];
-
-      const messages = cards.map(card => ({
-        role: 'user',
-        content: `카드 이름: ${card.name}, 카테고리: ${card.category.join(', ')}`
-      }));
-
-      try {
-        const aiResponse = await fetchOpenAIResponse(messages);
-        setSummary(aiResponse);
-        console.log(aiResponse)
-      } catch (error) {
-        console.error('Error fetching AI response:', error);
-        setSummary('Error fetching AI response');
-      }
-    };
-
-    askTarotReading();
-  }, []);
+  const handleSummaryGenerated = (generatedSummary: string) => {
+    setSummary(generatedSummary);
+  };
 
   return (
     <div className="relative flex flex-col items-center p-10">
+      {/* OpenAI 컴포넌트는 한번만 호출됩니다 */}
+      <OpenAI cards={cards.map(card => ({ name: card.name, category }))} onSummaryGenerated={handleSummaryGenerated} />
+
       <div className="relative w-full max-w-3xl">
         <img src={cardBg} alt="Background" className="w-full h-auto object-cover" />
         <div className="absolute inset-12 bg-white bg-opacity-20 border shadow-lg p-3 bg-cover"></div>
-
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-          <div className="text-4xl font-bold text-white p-4 rounded-lg flex flex-row">
-            <img src={moneyImg} alt="moneyImg" className="w-8 h-8 mr-2" />
-            AI {category} 요약
-          </div>
-          <div className="mt-8 border border-white p-6 rounded-lg max-w-xl bg-black bg-opacity-60">
-            <p className="text-white text-s">{summary}</p>
-          </div>
-          <p className="mt-5 text-lg font-bold text-white">타로 결과에 어울리는 음악을 들어보세요!</p>
-        </div>
+       
+            {summary ? (
+              // summary 있을 때
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                  <div className="text-4xl font-bold text-white p-4 rounded-lg flex flex-row">
+                    <img src={moneyImg} alt="moneyImg" className="w-8 h-8 mr-2" />
+                    AI {category} 요약
+                  </div>
+                <div className="mt-8 border border-white p-6 rounded-lg max-w-xl bg-black bg-opacity-60">
+              <p className="text-white text-s" dangerouslySetInnerHTML={{ __html: summary.replace(/\n/g, '<br />') }}></p>
+              </div>
+              <p className="mt-5 text-lg font-bold text-white">타로 결과에 어울리는 음악을 들어보세요!</p>
+            </div>
+            ) : (
+              // summary 없을 때
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                <div className="flex flex-col items-center">
+                  <p className="text-white text-3xl">결과를 기다리고 있습니다...</p>
+                  {/* 로딩 표시기 */}
+                  < Loading />
+                </div>
+              </div>
+            )}
+          
       </div>
 
       <div className="relative mt-8 flex items-center gap-10">
@@ -106,4 +90,4 @@ const TarotResult: React.FC = () => {
   );
 };
 
-export default TarotResult;
+export default ResultSummary;
