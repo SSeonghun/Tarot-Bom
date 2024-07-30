@@ -25,16 +25,16 @@ public class Room {
     /* @ManyToOne으로 연결 : 리더ID, 시커ID, 상담분야 */
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reader_id")
+    @JoinColumn(name = "reader_id", insertable = false, updatable = false)
     private Member reader;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seeker_id")
+    @JoinColumn(name = "seeker_id", insertable = false, updatable = false)
     private Member seeker;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "keyword", columnDefinition = "char(3)")
+    @JoinColumn(name = "keyword", columnDefinition = "char(3)", insertable = false, updatable = false)
     private CodeDetail keyword;
 
     @Column(name = "create_date", columnDefinition = "timestamp")
@@ -51,6 +51,20 @@ public class Room {
 
     @Column(name = "worry", length = 150)
     private String worry;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "room_style", columnDefinition = "char(3)")
+    private RoomStyle roomStyle;
+
+    // insert시 객체가 아닌 id를 입력할 수 있도록 해야함
+    @Column(name = "reader_id")
+    private long readerId;
+
+    @Column(name = "seeker_id")
+    private long seekerId;
+
+    @Column(name = "keyword")
+    private String keywords;
 
     // create time 자동갱신
     @PrePersist
