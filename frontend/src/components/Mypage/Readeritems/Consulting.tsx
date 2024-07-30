@@ -75,7 +75,7 @@ const consultationItems: ConsultationItem[] = [
 
 const itemsPerPage = 4;
 
-const Hero1: React.FC = () => {
+const Consulting: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
 
   const handlePageClick = (selectedPage: number) => {
@@ -221,4 +221,4 @@ const Hero1: React.FC = () => {
   );
 };
 
-export default Hero1;
+export default Consulting;

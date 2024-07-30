@@ -21,7 +21,7 @@ ChartJS.register(
   Legend
 );
 
-const Hero1: React.FC = () => {
+const Summary: React.FC = () => {
   const data = {
     labels: [
       "1월",
@@ -120,10 +120,10 @@ const Hero1: React.FC = () => {
         </div>
       </div>
       <div className="col-span-5 bg-gray-200 rounded-lg">
-        <Calendar highlightDates={highlightDates} />
+        <Calendar highlightDates={highlightDates} layout="col" />
       </div>
     </div>
   );
 };
 
-export default Hero1;
+export default Summary;

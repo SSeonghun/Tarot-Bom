@@ -10,7 +10,7 @@ import Toggle from "../../Common/Toggle";
 import Profile from "../../../assets/img/profile2.png";
 import Seed from "../../../assets/img/seed.png";
 
-const Hero1: React.FC = () => {
+const ReaderItem: React.FC = () => {
   const [activeComponent, setActiveComponent] = useState<string>("Summary");
 
   const renderComponent = () => {
@@ -81,4 +81,4 @@ const Hero1: React.FC = () => {
   );
 };
 
-export default Hero1;
+export default ReaderItem;
