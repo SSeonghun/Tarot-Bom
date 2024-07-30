@@ -1,5 +1,6 @@
-package com.ssafy.tarotbom.domain.member.Service;
+package com.ssafy.tarotbom.global.config;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -11,11 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
-public class EmailService {
+public class EmailTool {
     private final JavaMailSender emailSender;
 
+
     // 이메일 발송
-    public void sendEmail(String toEmail, String title, String text) throws Exception, RuntimeException {
+    public void sendEmail(String toEmail, String title, String text) {
         SimpleMailMessage emailForm = createEmailForm(toEmail, title, text);
 
         try{
@@ -27,8 +29,9 @@ public class EmailService {
     }
 
     // 수신자의 이메일 주소, 제목, 내용을 입력받아 SimpleMailMessage 객체를 생성해 반환하는 메서드
-    private SimpleMailMessage createEmailForm(String toEmail, String title, String text) throws Exception{
+    private SimpleMailMessage createEmailForm(String toEmail, String title, String text){
         SimpleMailMessage message = new SimpleMailMessage();
+
         message.setTo(toEmail);
         message.setSubject(title);
         message.setText(text);

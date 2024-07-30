@@ -1,6 +1,8 @@
 package com.ssafy.tarotbom.domain.member.controller;
 
 import com.ssafy.tarotbom.domain.member.Service.MemberService;
+import com.ssafy.tarotbom.domain.member.dto.EmailCheckReqDto;
+import com.ssafy.tarotbom.domain.member.dto.EmailReqDto;
 import com.ssafy.tarotbom.domain.member.dto.LoginReqDto;
 import com.ssafy.tarotbom.domain.member.dto.SignupReqDto;
 import com.ssafy.tarotbom.global.dto.BasicMessageDto;
@@ -35,8 +37,22 @@ public class MemberController {
     }
 
 
-    @PostMapping("/user/")
+    @PostMapping("/emails/verifications")
+    public ResponseEntity<BasicMessageDto> sendMessage(@Valid @RequestBody EmailReqDto emailReqDto){
+        BasicMessageDto result = memberService.sendCodeToEmail(emailReqDto.getEmail());
 
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/emails/verifications")
+    public ResponseEntity<BasicMessageDto> verifyCode(@Valid @RequestBody EmailCheckReqDto emailcheckReqDto){
+        BasicMessageDto result;
+        if(memberService.verifyCode(emailcheckReqDto.getEmail(), emailcheckReqDto.getVerificationCode())){
+            return new ResponseEntity<>( new BasicMessageDto("인증 성공"), HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>( new BasicMessageDto("인증 실패"), HttpStatus.UNAUTHORIZED);
+        }
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<BasicMessageDto> signup(@Valid @RequestBody SignupReqDto signupReqDto){

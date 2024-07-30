@@ -11,5 +11,6 @@ import org.springframework.stereotype.Service;
 public interface MemberService{
     BasicMessageDto login(LoginReqDto loginReqDto, HttpServletResponse response);
     BasicMessageDto signup(SignupReqDto signupReqDto);
-
+    BasicMessageDto sendCodeToEmail(String toEmail);
+    boolean verifyCode(String code, String authCode);
 }

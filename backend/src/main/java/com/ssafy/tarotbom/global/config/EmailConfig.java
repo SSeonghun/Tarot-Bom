@@ -22,7 +22,7 @@ public class EmailConfig {
     @Value("${spring.mail.password}")
     private String password;
 
-    @Value("${spring.mail.smtp.auth")
+    @Value("${spring.mail.properties.mail.smtp.auth}")
     private boolean auth;
 
     @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
@@ -48,7 +48,7 @@ public class EmailConfig {
 
     // 이메일을 보내기 위한 객체 생성
     @Bean
-    public JavaMailSender javaMailSender() {
+    public JavaMailSender mailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);
         mailSender.setPort(port);
