@@ -5,6 +5,8 @@ import SubmitButton from '../../components/login_signup/SubmitButton';
 import LinkButton from '../../components/login_signup/LinkButton';
 import { Link } from 'react-router-dom';
 
+const { signup } = require('../../API/userApi'); // api.js에서 signup 함수를 import
+
 const Signup: React.FC = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -53,22 +55,32 @@ const Signup: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (!validateEmail(email)) {
       setEmailError('유효한 이메일 주소를 입력해주세요.');
       return;
     }
+
     if (password !== confirmPassword) {
       setPasswordError('비밀번호가 일치하지 않습니다.');
       return;
     }
+
     console.log('회원가입 시도', { username, email, password });
+
+    try {
+      const result = await signup(username, email, password);
+      console.log('회원가입 성공', result);
+    } catch (error) {
+      console.error('회원가입 중 오류 발생', error);
+    }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4 login-page">
-      <div className="z-10 w-full max-w-md ml-auto mr-10 mt-16"> 
+      <div className="z-10 w-full max-w-md ml-auto mr-10 mt-16">
         <div className="flex min-h-screen bg-[#04060F] bg-opacity-0">
           <div className="w-full space-y-6 bg-gray-800 rounded-lg max-w-96 bg-opacity-0">
             <div className="text">
@@ -103,9 +115,8 @@ const Signup: React.FC = () => {
               />
               <SubmitButton text="회원가입" />
               <Link to="/login" className="block text-blue-400 my-5">
-                로그인 페이지로 
+                로그인 페이지로
               </Link>
-
             </form>
           </div>
         </div>

@@ -60,9 +60,19 @@ public class MemberServiceImpl implements MemberService {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
+
         CustomUserInfoDto info = modelMapper.map(member, CustomUserInfoDto.class);
 
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createAccessToken(info));
+        log.info("modelmapper CustomUserInfoDto : {}", info.getEmail());
+        String accessToken = jwtUtil.createAccessToken(info);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
+        log.info("Access Token: {}", accessToken);
+
+        String refreshToken = jwtUtil.createRefreshToken(info);
+        response.addHeader("RefreshToken:", refreshToken);
+        log.info("Refresh Token : {}", refreshToken);
+
+        //리프레시 토큰 저장 메서드
 
         return new BasicMessageDto("로그인 성공");
 

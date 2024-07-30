@@ -27,6 +27,8 @@ public class JwtUtil {
     private String secretKey;
     @Value("${jwt.expiration_time}")
     private long accessTokenExpTime;
+    @Value("${jwt.refresh_expiration_time}")
+    private long refreshTokenExpTime;
 
     private Key key;
 
@@ -39,13 +41,15 @@ public class JwtUtil {
     public String createAccessToken(CustomUserInfoDto member){
         return createToken(member, accessTokenExpTime);
     }
+    public String createRefreshToken(CustomUserInfoDto member) { return createToken(member, refreshTokenExpTime); }
 
     private String createToken(CustomUserInfoDto member, long expireTime){
 
         Claims claims = Jwts.claims();
         claims.put("memberId", member.getMemberId());
         claims.put("email", member.getEmail());
-        claims.put("memberType", member.getMemberType().getCodeDetailId());
+        log.info("member sadfasdf : {}", member.getMemberId());
+//        claims.put("memberType", member.getMemberType().getCodeDetailId());
 
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime tokenValidity = now.plusSeconds(expireTime);
@@ -58,6 +62,7 @@ public class JwtUtil {
                     .signWith(key, SignatureAlgorithm.HS256) // 암호화 알고리즘으로 토큰 암호화
                     .compact(); // 토큰을 문자열 형태로 반환
     }
+
 
     public Long getMemberId(String token){
         return parseClaims(token).get("memberId", Long.class);

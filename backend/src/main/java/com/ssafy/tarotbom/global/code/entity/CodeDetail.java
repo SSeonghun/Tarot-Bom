@@ -24,4 +24,6 @@ public class CodeDetail {
     @NotNull
     @Column(name = "code_type_id", columnDefinition = "int unsigned")
     private String codeTypeId;
+
+
 }

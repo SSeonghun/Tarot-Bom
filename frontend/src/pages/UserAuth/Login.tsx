@@ -6,6 +6,7 @@ import InputField from '../../components/login_signup/InputField';
 import SubmitButton from '../../components/login_signup/SubmitButton';
 import LinkButton from '../../components/login_signup/LinkButton';
 
+const { login } = require('../../API/userApi');
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -34,18 +35,24 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateEmail(email)) {
       setEmailError('유효한 이메일 주소를 입력해주세요.');
       return;
     }
     console.log('로그인 시도', { email, password });
+
+    try {
+      const result = await login(email, password);
+    } catch (error) {
+      console.error('로그인 중 오류 발생', error);
+    }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4 login-page">
-      <div className="z-10 w-full max-w-md ml-auto mr-10 mt-28"> 
+      <div className="z-10 w-full max-w-md ml-auto mr-10 mt-28">
         <div className="flex min-h-screen bg-[#04060F] bg-opacity-0">
           <div className="w-full space-y-6 bg-gray-800 rounded-lg max-w-96 bg-opacity-0">
             <div className="text">
@@ -67,9 +74,9 @@ const Login: React.FC = () => {
               />
               <SubmitButton text="로그인" />
 
-              <div className='flex justify-evenly mb-auto' >
+              <div className="flex justify-evenly mb-auto">
                 <Link className="block text-blue-400 my-5" to="/signup">
-                 회원가입
+                  회원가입
                 </Link>
                 <Link className="block text-blue-400 my-5" to="/change-pwd">
                   비밀번호 변경
@@ -78,9 +85,7 @@ const Login: React.FC = () => {
                   비밀번호 찾기
                 </Link>
               </div>
-
             </form>
-
           </div>
         </div>
       </div>
