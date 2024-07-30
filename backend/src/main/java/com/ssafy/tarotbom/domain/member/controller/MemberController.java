@@ -1,13 +1,14 @@
 package com.ssafy.tarotbom.domain.member.controller;
 
 import com.ssafy.tarotbom.domain.member.Service.MemberService;
-import com.ssafy.tarotbom.domain.member.dto.LoginReqDto;
-import com.ssafy.tarotbom.domain.member.dto.SignupReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.EmailCheckReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.EmailReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
 import com.ssafy.tarotbom.global.dto.BasicMessageDto;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,24 @@ public class MemberController {
     public ResponseEntity<BasicMessageDto> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
         BasicMessageDto result = memberService.login(loginReqDto, response);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/emails/verifications")
+    public ResponseEntity<BasicMessageDto> sendMessage(@Valid @RequestBody EmailReqDto emailReqDto){
+        BasicMessageDto result = memberService.sendCodeToEmail(emailReqDto.getEmail());
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/emails/verifications")
+    public ResponseEntity<BasicMessageDto> verifyCode(@Valid @RequestBody EmailCheckReqDto emailcheckReqDto){
+        BasicMessageDto result;
+        if(memberService.verifyCode(emailcheckReqDto.getEmail(), emailcheckReqDto.getVerificationCode())){
+            return new ResponseEntity<>( new BasicMessageDto("인증 성공"), HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>( new BasicMessageDto("인증 실패"), HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @PostMapping("/signup")
