@@ -15,6 +15,7 @@ import ReaderProfile from './pages/UserProfile/ReaderProfle';
 import PostDetail from './components/Community/PostDetail';
 import CreatePostPage from './pages/Community/CreatePostPage';
 import Play from './pages/PlayTarot/Play';
+import CreateReader from './pages/CreateReader/CreateReader';
 
 
 const App: React.FC = () => {
@@ -38,6 +39,7 @@ const App: React.FC = () => {
           <Route path="/posts/:id" element={<PostDetail />} />
           <Route path="/create-post" element={<CreatePostPage />} />
           <Route path="/play" element={<Play />} />
+          <Route path="/create-reader" element={<CreateReader />} />
         </Routes>
       </div>
     </Router>
