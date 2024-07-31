@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.Response;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -26,8 +27,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = getJwtFromCookies(request, "accessToken");
-        String refreshToken = getJwtFromCookies(request, "refreshToken");
+        String accessToken = getJwtFromCookies(request, "accessToken", response);
+        String refreshToken = getJwtFromCookies(request, "refreshToken", response);
 
         // 액세스 토큰 검증
         if (accessToken != null && jwtUtil.validateToken(accessToken)) {
@@ -73,10 +74,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response); // 다음 필터로 넘기기
     }
 
-    private String getJwtFromCookies(HttpServletRequest request, String tokenName) {
+    private String getJwtFromCookies(HttpServletRequest request, String tokenName, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
 
         if (cookies == null) {
+
+            if(tokenName.equals("refreshToken")){
+                try{
+                sendUnauthorizedResponse(response);
+                return null;
+                } catch (Exception e) {
+                    // todo: 오류처리 해야할듯
+                    return null;
+                }
+            }
+
             log.warn("No cookies found in the request");
             return null;
         }
@@ -88,5 +100,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         return null;
+    }
+
+    private void sendUnauthorizedResponse(HttpServletResponse response) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
+        response.setContentType("text/error");
+        response.getWriter().write("Authentication required. Please log in.");
     }
 }
