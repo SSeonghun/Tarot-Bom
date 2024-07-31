@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import "./login.css";
 import InputField from "../../components/login_signup/InputField";
 import SubmitButton from "../../components/login_signup/SubmitButton";
-import LinkButton from "../../components/login_signup/LinkButton";
 
 const { login } = require("../../API/userApi");
 
