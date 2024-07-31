@@ -1,6 +1,7 @@
-package com.ssafy.tarotbom.domain.member.dto;
+package com.ssafy.tarotbom.domain.member.dto.request;
 
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
+
 import lombok.*;
 
 

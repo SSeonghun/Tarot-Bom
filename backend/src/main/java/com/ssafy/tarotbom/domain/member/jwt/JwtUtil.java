@@ -1,6 +1,6 @@
 package com.ssafy.tarotbom.domain.member.jwt;
 
-import com.ssafy.tarotbom.domain.member.dto.CustomUserInfoDto;
+import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

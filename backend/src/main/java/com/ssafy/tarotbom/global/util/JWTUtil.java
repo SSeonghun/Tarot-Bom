@@ -1,6 +1,6 @@
 package com.ssafy.tarotbom.global.util;
 
-import com.ssafy.tarotbom.domain.member.dto.CustomUserInfoDto;
+//import com.ssafy.tarotbom.domain.member.dto.CustomUserInfoDto;
 
 public class JWTUtil {
 
