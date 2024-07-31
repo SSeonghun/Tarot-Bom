@@ -13,6 +13,7 @@ import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.dto.LoginResponseDto;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ import java.time.Duration;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -41,6 +43,7 @@ public class MemberServiceImpl implements MemberService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final TokenService tokenService;
 
     private final RedisTool redisTool;
     private final EmailTool emailTool;
@@ -88,10 +91,6 @@ public class MemberServiceImpl implements MemberService {
         log.info("[MemberServiceImpl - login] Access Token: {}", accessToken);
         log.info("[MemberServiceImpl - login] Refresh Token : {}", refreshToken);
 
-        // Base64 인코딩 => 공백이 들어가서 쿠키로 전송이 안됨 풀때는 Decode해야함
-        String encodedAccessToken = Base64.getEncoder().encodeToString(accessToken.getBytes());
-        String encodedRefreshToken = Base64.getEncoder().encodeToString(refreshToken.getBytes());
-
         // 액세스 토큰 쿠키 설정
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
@@ -105,6 +104,11 @@ public class MemberServiceImpl implements MemberService {
         refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
+
+        tokenService.saveRefreshToken(String.valueOf(member.getMemberId()), refreshToken, 7, TimeUnit.DAYS);
+
+        String memberId = tokenService.getRefreshToken(member.getMemberId());
+        log.info("[MemberServiceImpl-login] redisMemberId : {}", memberId );
 
         return new LoginResponseDto("로그인 성공", accessTokenCookie, refreshTokenCookie);
 
@@ -176,6 +180,60 @@ public class MemberServiceImpl implements MemberService {
             throw new BusinessException(ErrorCode.MEMBER_INVALID_CODE);
         }
         return true;
+    }
+
+
+    /**
+     * 엑세스 토큰 발급
+     * @param loginReqDto
+     * @return
+     */
+    @Override
+    public Cookie createAceessToken(LoginReqDto loginReqDto, HttpServletResponse response, HttpServletRequest request) {
+
+        // 클라이언트에서 받은 토큰
+        String refreshTokenReq = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshTokenReq = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        Long memberIdFromToken = jwtUtil.getMemberId(refreshTokenReq);
+
+        // 레디스에서 받은 토큰
+        String memberIdToken = tokenService.getRefreshToken(memberIdFromToken);
+
+        if(refreshTokenReq == memberIdToken && jwtUtil.validateToken(refreshTokenReq) && jwtUtil.validateToken(memberIdToken)) {
+
+            Member member = memberRepository.findMemberByMemberId(memberIdFromToken).orElseThrow(
+                    () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
+            );
+
+            CustomUserInfoDto info = CustomUserInfoDto.builder()
+                    .memberId(member.getMemberId())
+                    .email(member.getEmail())
+                    .memberType(member.getMemberType())
+                    .password(member.getPassword())
+                    .nickname(member.getNickname())
+                    .build();
+
+            String accessToken = jwtUtil.createAccessToken(info);
+
+            Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+            accessTokenCookie.setHttpOnly(true);
+            accessTokenCookie.setSecure(true);
+            accessTokenCookie.setPath("/");
+            accessTokenCookie.setMaxAge(60 * 60); // 1시간
+
+            return accessTokenCookie;
+        }
+
+        return null;
+
     }
 
 }
