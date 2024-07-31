@@ -53,7 +53,7 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/emails/verifications/check")
+    @PostMapping("/emails/check")
     public ResponseEntity<?> verifyCode(@Valid @RequestBody EmailCheckReqDto emailcheckReqDto){
         memberService.verifyCode(emailcheckReqDto.getEmail(), emailcheckReqDto.getVerificationCode());
         if(memberService.verifyCode(emailcheckReqDto.getEmail(), emailcheckReqDto.getVerificationCode())){
