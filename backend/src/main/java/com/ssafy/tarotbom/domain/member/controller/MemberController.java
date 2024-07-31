@@ -38,7 +38,10 @@ public class MemberController {
 
         LoginResponseDto result = memberService.login(loginReqDto, response);
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        response.addCookie(result.getAccessTokenCookie());
+        response.addCookie(result.getRefreshTokenCookie());
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

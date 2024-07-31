@@ -11,6 +11,7 @@ import com.ssafy.tarotbom.domain.member.email.EmailTool;
 import com.ssafy.tarotbom.global.config.RedisTool;
 import com.ssafy.tarotbom.global.dto.BasicMessageDto;
 import com.ssafy.tarotbom.global.dto.LoginResponseDto;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.Base64;
 import java.util.Optional;
 import java.util.Random;
 
@@ -85,9 +87,25 @@ public class MemberServiceImpl implements MemberService {
         log.info("[MemberServiceImpl - login] Access Token: {}", accessToken);
         log.info("[MemberServiceImpl - login] Refresh Token : {}", refreshToken);
 
-        //리프레시 토큰 저장 메서드
+        // Base64 인코딩 => 공백이 들어가서 쿠키로 전송이 안됨 풀때는 Decode해야함
+        String encodedAccessToken = Base64.getEncoder().encodeToString(accessToken.getBytes());
+        String encodedRefreshToken = Base64.getEncoder().encodeToString(refreshToken.getBytes());
 
-        return new LoginResponseDto("로그인 성공", accessToken, refreshToken);
+        // 액세스 토큰 쿠키 설정
+        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setSecure(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(60 * 60); // 1시간
+
+        // 리프레시 토큰 쿠키 설정
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
+
+        return new LoginResponseDto("로그인 성공", accessTokenCookie, refreshTokenCookie);
 
     }
 
@@ -131,6 +149,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public BasicMessageDto sendCodeToEmail(String toEmail){
+        log.info("[MemberServiceImpl-sendCodeToEmail] Email : {}", toEmail);
 
         // 이메일 중복 검사
         Optional<Member> findMemberByEmail = memberRepository.findMemberByEmail(toEmail);

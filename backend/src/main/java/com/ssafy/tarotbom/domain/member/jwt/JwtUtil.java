@@ -21,7 +21,7 @@ public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    public static final String BEARER_PREFIX = "Bearer ";
+    public static final String BEARER_PREFIX = "Bearer_";
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -56,13 +56,20 @@ public class JwtUtil {
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime tokenValidity = now.plusSeconds(expireTime);
 
-        return BEARER_PREFIX +
-                Jwts.builder()
-                    .setClaims(claims)
-                    .setIssuedAt(Date.from(now.toInstant())) // 토큰 발행 시간
-                    .setExpiration(Date.from(tokenValidity.toInstant())) // 토큰 만료 시간
-                    .signWith(key, SignatureAlgorithm.HS256) // 암호화 알고리즘으로 토큰 암호화
-                    .compact(); // 토큰을 문자열 형태로 반환
+//        return BEARER_PREFIX +
+//                Jwts.builder()
+//                    .setClaims(claims)
+//                    .setIssuedAt(Date.from(now.toInstant())) // 토큰 발행 시간
+//                    .setExpiration(Date.from(tokenValidity.toInstant())) // 토큰 만료 시간
+//                    .signWith(key, SignatureAlgorithm.HS256) // 암호화 알고리즘으로 토큰 암호화
+//                    .compact(); // 토큰을 문자열 형태로 반환
+
+        return Jwts.builder()
+                        .setClaims(claims)
+                        .setIssuedAt(Date.from(now.toInstant())) // 토큰 발행 시간
+                        .setExpiration(Date.from(tokenValidity.toInstant())) // 토큰 만료 시간
+                        .signWith(key, SignatureAlgorithm.HS256) // 암호화 알고리즘으로 토큰 암호화
+                        .compact(); // 토큰을 문자열 형태로 반환
     }
 
 
