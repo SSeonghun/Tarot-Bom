@@ -46,10 +46,6 @@ public class MemberController {
         }
     }
 
-
-}
-
-
     @PostMapping("/emails/verifications")
     public ResponseEntity<?> sendMessage(@Valid @RequestBody EmailReqDto emailReqDto){
         if(memberService.sendCodeToEmail(emailReqDto.getEmail())){
