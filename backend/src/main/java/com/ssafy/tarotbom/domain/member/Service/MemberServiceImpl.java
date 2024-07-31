@@ -59,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
 
         // 암호화된 password를 디코딩 한 결과값과 입력한 패스워드 값이 다르면 null 반환
         if(!passwordEncoder.matches(password, member.getPassword())){
-            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+            throw new BusinessException(ErrorCode.MEMBER_DIFF_PASSWORD);
         }
 
         log.info("[MemberServiceImpl - login] loginReqDto : {}", loginReqDto.getEmail());
