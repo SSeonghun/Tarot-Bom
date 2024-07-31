@@ -98,6 +98,13 @@ public class MemberServiceImpl implements MemberService {
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(60 * 60); // 1시간
 
+        String storedRefreshToken = tokenService.getRefreshToken(member.getMemberId());
+
+        if(storedRefreshToken != null) {
+            tokenService.deleteRefreshToken(member.getMemberId());
+        }
+
+
         // 리프레시 토큰 쿠키 설정
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
