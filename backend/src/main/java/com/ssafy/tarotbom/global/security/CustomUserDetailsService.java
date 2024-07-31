@@ -27,7 +27,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         Member member = memberRepository.findById(Long.parseLong(memberId))
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
-        CustomUserInfoDto dto = mapper.map(member, CustomUserInfoDto.class);
+//        CustomUserInfoDto dto = mapper.map(member, CustomUserInfoDto.class);
+
+        CustomUserInfoDto dto = CustomUserInfoDto.builder()
+                .memberId(member.getMemberId())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .password(member.getPassword()) // 암호화된 비밀번호는 보안상 취급 주의
+                .memberType(member.getMemberType())
+                .build();
 
         return new CustomUserDetails(dto);
     }
