@@ -6,6 +6,7 @@ import com.ssafy.tarotbom.domain.member.dto.request.EmailReqDto;
 import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
 import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
 import com.ssafy.tarotbom.global.dto.BasicMessageDto;
+import com.ssafy.tarotbom.global.dto.LoginResponseDto;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,11 +32,12 @@ public class MemberController {
     */
 
     @PostMapping("/login")
-    public ResponseEntity<BasicMessageDto> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
 
         log.info("loginReqDte : {}", loginReqDto.getEmail());
 
-        BasicMessageDto result = memberService.login(loginReqDto, response);
+        LoginResponseDto result = memberService.login(loginReqDto, response);
+
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

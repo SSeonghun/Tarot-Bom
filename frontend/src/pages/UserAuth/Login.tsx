@@ -1,22 +1,22 @@
 // Login.tsx
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import './login.css';
-import InputField from '../../components/login_signup/InputField';
-import SubmitButton from '../../components/login_signup/SubmitButton';
-import LinkButton from '../../components/login_signup/LinkButton';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import "./login.css";
+import InputField from "../../components/login_signup/InputField";
+import SubmitButton from "../../components/login_signup/SubmitButton";
+import LinkButton from "../../components/login_signup/LinkButton";
 
-const { login } = require('../../API/userApi');
+const { login } = require("../../API/userApi");
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, []);
 
@@ -29,24 +29,25 @@ const Login: React.FC = () => {
     const { value } = e.target;
     setEmail(value);
     if (validateEmail(value)) {
-      setEmailError('');
+      setEmailError("");
     } else {
-      setEmailError('유효한 이메일 주소를 입력해주세요.');
+      setEmailError("유효한 이메일 주소를 입력해주세요.");
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateEmail(email)) {
-      setEmailError('유효한 이메일 주소를 입력해주세요.');
+      setEmailError("유효한 이메일 주소를 입력해주세요.");
       return;
     }
-    console.log('로그인 시도', { email, password });
+    console.log("로그인 시도", { email, password });
 
     try {
       const result = await login(email, password);
+      console.log(result);
     } catch (error) {
-      console.error('로그인 중 오류 발생', error);
+      console.error("로그인 중 오류 발생", error);
     }
   };
 

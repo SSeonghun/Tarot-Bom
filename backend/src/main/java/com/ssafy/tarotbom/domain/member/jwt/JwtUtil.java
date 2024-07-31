@@ -51,8 +51,7 @@ public class JwtUtil {
 
         claims.put("memberId", member.getMemberId());
         claims.put("email", member.getEmail());
-        log.info("member sadfasdf : {}", member.getMemberId());
-//        claims.put("memberType", member.getMemberType().getCodeDetailId());
+        claims.put("memberType", member.getMemberType().getCodeDetailId());
 
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime tokenValidity = now.plusSeconds(expireTime);

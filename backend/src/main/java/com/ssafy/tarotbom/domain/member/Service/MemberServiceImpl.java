@@ -10,6 +10,7 @@ import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.domain.member.email.EmailTool;
 import com.ssafy.tarotbom.global.config.RedisTool;
 import com.ssafy.tarotbom.global.dto.BasicMessageDto;
+import com.ssafy.tarotbom.global.dto.LoginResponseDto;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public BasicMessageDto login(LoginReqDto loginReqDto, HttpServletResponse response) throws BadCredentialsException, UsernameNotFoundException {
+    public LoginResponseDto login(LoginReqDto loginReqDto, HttpServletResponse response) throws BadCredentialsException, UsernameNotFoundException {
         String email = loginReqDto.getEmail();
         String password = loginReqDto.getPassword();
 
@@ -60,21 +61,33 @@ public class MemberServiceImpl implements MemberService {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
+        log.info("[MemberServiceImpl - login] loginReqDto : {}", loginReqDto.getEmail());
 
-        CustomUserInfoDto info = modelMapper.map(member, CustomUserInfoDto.class);
+//        CustomUserInfoDto info = modelMapper.map(member, CustomUserInfoDto.class);
 
-        log.info("modelmapper CustomUserInfoDto : {}", info.getEmail());
+        CustomUserInfoDto info = CustomUserInfoDto.builder()
+                .memberId(member.getMemberId())
+                .email(member.getEmail())
+                .memberType(member.getMemberType())
+                .password(member.getPassword())
+                .nickname(member.getNickname())
+                .build();
+
+
+        log.info("[MemberServiceImpl - login] CustomUserInfoDto : {}", info.getMemberType());
         String accessToken = jwtUtil.createAccessToken(info);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
-        log.info("Access Token: {}", accessToken);
+//        response.add(JwtUtil.AUTHORIZATION_HEADER, accessToken);
 
         String refreshToken = jwtUtil.createRefreshToken(info);
-        response.addHeader("RefreshToken:", refreshToken);
-        log.info("Refresh Token : {}", refreshToken);
+//        response.addHeader("RefreshToken:", refreshToken);
+
+
+        log.info("[MemberServiceImpl - login] Access Token: {}", accessToken);
+        log.info("[MemberServiceImpl - login] Refresh Token : {}", refreshToken);
 
         //리프레시 토큰 저장 메서드
 
-        return new BasicMessageDto("로그인 성공");
+        return new LoginResponseDto("로그인 성공", accessToken, refreshToken);
 
     }
 
