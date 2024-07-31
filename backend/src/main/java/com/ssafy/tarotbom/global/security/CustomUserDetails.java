@@ -1,6 +1,6 @@
 package com.ssafy.tarotbom.global.security;
 
-import com.ssafy.tarotbom.domain.member.dto.CustomUserInfoDto;
+import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
