@@ -5,9 +5,9 @@ import com.ssafy.tarotbom.domain.member.dto.request.EmailCheckReqDto;
 import com.ssafy.tarotbom.domain.member.dto.request.EmailReqDto;
 import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
 import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
-import com.ssafy.tarotbom.global.dto.BasicMessageDto;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.result.ResultCode;
+import com.ssafy.tarotbom.global.dto.LoginResponseDto;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +20,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
+@CrossOrigin(origins = "http://localhost:3000") // 허용할 출처 설정
 public class MemberController {
 
     private final MemberService memberService;
@@ -32,13 +33,15 @@ public class MemberController {
     */
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
-        if(memberService.login(loginReqDto, response)) {
-            return ResponseEntity.status(ResultCode.LOGIN_OK.getStatus()).body(null);
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
+        LoginResponseDto result = memberService.login(loginReqDto, response);
+        log.info("loginReqDte : {}", loginReqDto.getEmail());
+        if(result.getMessage() == "로그인 성공") {
+            return ResponseEntity.status(ResultCode.LOGIN_OK.getStatus()).body(result);
         }else{
             return ResponseEntity.status(ErrorCode.COMMON_NOT_FOUND.getStatus()).body(null);
         }
-    }
+}
 
 
     @PostMapping("/emails/verifications")
@@ -62,11 +65,13 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupReqDto signupReqDto){
+        log.info("SingupDto : {}", signupReqDto.getEmail());
         if(memberService.signup(signupReqDto)) {
             return ResponseEntity.status(ResultCode.SIGNUP_OK.getStatus()).body(null);
         }else{
             return ResponseEntity.status(ErrorCode.COMMON_NOT_FOUND.getStatus()).body(null);
         }
+
     }
 
 }
