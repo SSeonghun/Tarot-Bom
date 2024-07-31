@@ -35,14 +35,16 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
         LoginResponseDto result = memberService.login(loginReqDto, response);
-        log.info("loginReqDte : {}", loginReqDto.getEmail());
+
+        response.addCookie(result.getAccessTokenCookie());
+        response.addCookie(result.getRefreshTokenCookie());
+
         if(result.getMessage() == "로그인 성공") {
             return ResponseEntity.status(ResultCode.LOGIN_OK.getStatus()).body(result);
         }else{
             return ResponseEntity.status(ErrorCode.COMMON_NOT_FOUND.getStatus()).body(null);
         }
-}
-
+    }
 
     @PostMapping("/emails/verifications")
     public ResponseEntity<?> sendMessage(@Valid @RequestBody EmailReqDto emailReqDto){

@@ -9,8 +9,9 @@ import lombok.*;
 // -> 토큰 생성, 유효성 검사 등에 필요한 정보
 @Getter
 @Setter
-//@NoArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CustomUserInfoDto {
     private long memberId;
     private String nickname;
