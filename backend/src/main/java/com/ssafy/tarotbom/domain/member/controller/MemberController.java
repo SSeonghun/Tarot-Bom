@@ -6,6 +6,7 @@ import com.ssafy.tarotbom.domain.member.dto.request.EmailReqDto;
 import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
 import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
 import com.ssafy.tarotbom.global.dto.BasicMessageDto;
+import com.ssafy.tarotbom.global.dto.LoginResponseDto;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
+@CrossOrigin(origins = "http://localhost:3000") // 허용할 출처 설정
 public class MemberController {
 
     private final MemberService memberService;
@@ -30,8 +32,12 @@ public class MemberController {
     */
 
     @PostMapping("/login")
-    public ResponseEntity<BasicMessageDto> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
-        BasicMessageDto result = memberService.login(loginReqDto, response);
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
+
+        log.info("loginReqDte : {}", loginReqDto.getEmail());
+
+        LoginResponseDto result = memberService.login(loginReqDto, response);
+
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -55,6 +61,9 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity<BasicMessageDto> signup(@Valid @RequestBody SignupReqDto signupReqDto){
+
+        log.info("SingupDto : {}", signupReqDto.getEmail());
+
         BasicMessageDto result = memberService.signup(signupReqDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
