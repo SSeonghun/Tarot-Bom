@@ -52,7 +52,7 @@ public class MemberServiceImpl implements MemberService {
     public boolean login(LoginReqDto loginReqDto, HttpServletResponse response) throws BadCredentialsException, UsernameNotFoundException {
         String email = loginReqDto.getEmail();
         String password = loginReqDto.getPassword();
-
+        log.info(email);
         Member member = memberRepository.findMemberByEmail(email).orElseThrow(
                 () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
         );
