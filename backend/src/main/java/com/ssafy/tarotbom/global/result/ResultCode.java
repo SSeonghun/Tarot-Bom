@@ -9,7 +9,12 @@ import org.springframework.http.HttpStatus;
 public enum ResultCode {
 
     // 기본형
-    COMMON_OK(HttpStatus.OK, "C200", "요청을 처리했습니다.");
+    COMMON_OK(HttpStatus.OK, "C001", "요청을 처리했습니다."),
+
+    // Room
+    ROOM_OPENED(HttpStatus.CREATED, "R001", "방을 개설했습니다."),
+    ROOM_ENTERED(HttpStatus.OK, "R002", "방에 입장했습니다.")
+    ;
 
     // ==== 응답 코드 정의 종료 ====
 

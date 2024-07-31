@@ -23,16 +23,16 @@ public class Reservation {
 
     /* @ManyToOne으로 연결 : 방ID, 리더/시커ID, 상태, 상담분야 */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id", columnDefinition = "int unsigned")
+    @JoinColumn(name = "room_id", insertable = false, updatable = false, columnDefinition = "int unsigned")
     private Room room;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seeker_id", columnDefinition = "int unsigned")
+    @JoinColumn(name = "seeker_id", insertable = false, updatable = false, columnDefinition = "int unsigned")
     private Member seeker;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reader_id", columnDefinition = "int unsigned")
+    @JoinColumn(name = "reader_id", insertable = false, updatable = false, columnDefinition = "int unsigned")
     private Member reader;
 
     @NotNull
@@ -56,6 +56,17 @@ public class Reservation {
 
     @Column(name = "update_time", columnDefinition = "timestamp")
     private LocalDateTime updateTime;
+
+    // 단순 쿼리를 위한 string column 생성
+    
+    @Column(name = "room_id", columnDefinition = "int unsigned")
+    private long roomId;
+
+    @Column(name = "seeker_id", columnDefinition = "int unsigned")
+    private long seekerId;
+
+    @Column(name = "reader_id", columnDefinition = "int unsigned")
+    private long readerId;
 
     // create time, update time 자동갱신
     @PrePersist
