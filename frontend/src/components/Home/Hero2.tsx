@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Witch from '../../assets/Witch_On_Broom-removebg-preview.png';
 import Sample from '../../assets/sample.png';
 
 // Main Section 2
@@ -53,7 +52,7 @@ const Hero2: React.FC = () => {
         {/* 이미지 */}
         <img
           ref={observerRef}
-          src={Witch}
+          src={'https://cdn3d.iconscout.com/3d/premium/thumb/witch-on-broom-9783075-7970703.png'}
           className={`w-1/2 h-auto max-h-[70vh] transition-opacity duration-1000 ${
             isVisible ? 'opacity-100' : 'opacity-0'
           }`}
