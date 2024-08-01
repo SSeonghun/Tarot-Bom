@@ -42,7 +42,7 @@ const fetchOpenAIResponse = async (messages: { role: string; content: string }[]
 };
 
 const OpenAI: React.FC<OpenAIProps> = ({ cards, onSummaryGenerated }) => {
-  const hasFetchedRef = useRef(false); 
+  const hasFetchedRef = useRef(true); 
   // 처음에 false로 놔두고, 한번 실행되면 true로 바뀌고 중단.
   useEffect(() => {
     if (!hasFetchedRef.current) {

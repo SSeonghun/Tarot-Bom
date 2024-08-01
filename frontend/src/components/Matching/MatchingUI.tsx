@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import TarotCard from "../../assets/Tarot_cards-removebg-preview.png";
 import Calander from "../../assets/REVIEW-removebg-preview.png";
 import HoverButton from "../Common/HoverButton";
 import RandomMatching from "./RandomMatching";
@@ -42,7 +41,7 @@ const Matching: React.FC = () => {
             </div>
           )}
           <img
-            src={TarotCard}
+            src={"https://cdn3d.iconscout.com/3d/premium/thumb/tarot-cards-11858327-9666345.png?f=webp"}
             alt="Tarot Card"
             className="absolute right-0 -top-1/4 mt-60 w-1/3 h-auto"
           />
@@ -69,7 +68,7 @@ const Matching: React.FC = () => {
             </div>
           )}
           <img
-            src={Calander}
+            src={"https://cdn3d.iconscout.com/3d/premium/thumb/review-8533326-6715462.png?f=webp"}
             alt="Calander"
             className="absolute left-0 w-1/3 -top-1/4 h-auto mt-60"
           />

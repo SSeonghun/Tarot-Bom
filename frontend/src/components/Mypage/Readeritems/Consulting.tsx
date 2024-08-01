@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Tarot from "../../../assets/Tarot_cards-removebg-preview.png";
 import Profile from "../../../assets/img/reviewprofile.png";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
@@ -103,7 +102,7 @@ const Consulting: React.FC = () => {
       </div>
       <div className="flex flex-row justify-center items-center my-6">
         <img
-          src={Tarot}
+          src={"https://cdn3d.iconscout.com/3d/premium/thumb/tarot-cards-11858327-9666345.png?f=webp"}
           alt="타로 카드 이미지"
           className="w-[200px] h-auto m-4"
         />

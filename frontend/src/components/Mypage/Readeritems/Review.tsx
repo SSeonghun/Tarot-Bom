@@ -1,5 +1,4 @@
 import React from "react";
-import ReviewImg from "../../../assets/REVIEW-removebg-preview.png";
 import ReviewItem from "../../Common/ReviewItem";
 
 // 더미 데이터 배열 정의
@@ -78,7 +77,7 @@ const Review: React.FC = () => {
         <div className="col-span-4 flex flex-col justify-center items-center text-white">
           <div className="rounded-lg flex flex-col p-4 justify-center items-center">
             <img
-              src={ReviewImg}
+              src={"https://cdn3d.iconscout.com/3d/premium/thumb/review-8533326-6715462.png?f=webp"}
               alt="리뷰 이미지"
               className="w-[300px] h-auto"
             />
