@@ -7,10 +7,7 @@ import com.ssafy.tarotbom.global.result.ResultResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,11 +17,18 @@ public class TarotResultController {
 
     private final TarotResultService tarotResultService;
 
+    @GetMapping("/search/{resultId}")
+    public ResponseEntity<ResultResponse> getTarotResult(@PathVariable("resultId") long resultId) {
+        tarotResultService.getTarotResult(resultId, 1);
+        return null;
+    }
+
     @PostMapping
     public ResponseEntity<ResultResponse> saveTarotResult(@RequestBody TarotResultSaveRequestDto dto) {
         tarotResultService.saveTarotResult(dto);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.TAROT_CARD_RESULT_SAVED);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
+
 
 }

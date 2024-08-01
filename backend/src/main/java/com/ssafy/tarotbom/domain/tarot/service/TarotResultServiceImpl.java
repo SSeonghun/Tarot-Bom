@@ -2,11 +2,14 @@ package com.ssafy.tarotbom.domain.tarot.service;
 
 import com.ssafy.tarotbom.domain.tarot.dto.request.TarotResultCardDto;
 import com.ssafy.tarotbom.domain.tarot.dto.request.TarotResultSaveRequestDto;
+import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotDirection;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotResultCard;
 import com.ssafy.tarotbom.domain.tarot.repository.TarotResultCardRepository;
 import com.ssafy.tarotbom.domain.tarot.repository.TarotResultRepository;
+import com.ssafy.tarotbom.global.error.BusinessException;
+import com.ssafy.tarotbom.global.error.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,5 +70,25 @@ public class TarotResultServiceImpl implements TarotResultService {
         // 삽입할 list 구성 종료
         // 값을 삽입한다.
         tarotResultCardRepository.saveAll(cardList);
+    }
+
+    /** <pre>
+     * public void getTarotResult(long resultId)
+     * resultId를 기반으로 타로 결과를 반환합니다. 카드의 정보도 함께 반환합니다.
+     * 요청한 유저의 ID가 타로 결과에 포함되어있지 않다면 볼 수 없습니다.
+     * </pre>
+     * */
+    @Override
+    @Transactional
+    public TarotResultGetResponseDto getTarotResult(long resultId, long userId) {
+        log.info("요청 받음");
+        TarotResult tarotResult = tarotResultRepository.findById(resultId).orElse(null);
+        if(tarotResult == null) { // 검색 결과가 없다면 null을 반환
+            throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_FOUND);
+        }
+        if(tarotResult.getReaderId() != userId && tarotResult.getSeekerId() != userId){
+            throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_YOUR_RESULT);
+        }
+        return null;
     }
 }
