@@ -58,7 +58,7 @@ const ResultSummary: React.FC = () => {
             <p className="mt-5 text-lg font-bold text-white">타로 결과에 어울리는 음악을 들어보세요!</p>
             <MusicPlayer />
           </div>
-        ) : (
+        ) : ( 
           // summary 없을 때
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
             <div className="flex flex-col items-center">
