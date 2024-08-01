@@ -32,9 +32,14 @@ public class TarotResultCard {
     @Column(name = "sequence", columnDefinition = "int(2)")
     private int sequence;
 
+    @Column(name = "direction", columnDefinition = "char(1)")
+    private String direction;
+
+    @NotNull
     @Column(name = "card_id", columnDefinition = "int(2)")
     private int cardId;
 
+    @NotNull
     @Column(name = "result_id", columnDefinition = "int unsigned")
     private long resultId;
 }
