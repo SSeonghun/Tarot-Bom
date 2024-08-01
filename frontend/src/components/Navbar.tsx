@@ -7,6 +7,7 @@ const Navbar: React.FC = () => {
       <div className="container flex items-center justify-between mx-auto">
         <div className="font-bold text-white"><Link to="/" className="text-white hover:text-gray-400">Home</Link></div>
         <div className="space-x-4">
+          <Link to="/booking" className="text-white hover:text-gray-400">타로예약</Link>
           <Link to="/tarot-result" className="text-white hover:text-gray-400">타로결과</Link>
           <Link to="/online" className="text-white hover:text-gray-400">온라인 타로</Link>
           <Link to="/offline" className="text-white hover:text-gray-400">오프라인 타로</Link>

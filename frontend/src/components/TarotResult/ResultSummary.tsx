@@ -4,6 +4,10 @@ import moneyImg from '../../assets/money.png';
 import HoverButton from '../../components/Common/HoverButton';
 import OpenAI from '../Common/OpenAI';
 import Loading from '../Common/Loading';
+import MusicPlayer from '../Common/MusicPlayer';
+import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
+import remarkGfm from 'remark-gfm';
 
 const category = '금전운';
 
@@ -23,6 +27,7 @@ const ResultSummary: React.FC = () => {
   const [summary, setSummary] = useState<string>('');
 
   const handleSummaryGenerated = (generatedSummary: string) => {
+    console.log(summary)
     setSummary(generatedSummary);
   };
 
@@ -35,29 +40,34 @@ const ResultSummary: React.FC = () => {
         <img src={cardBg} alt="Background" className="w-full h-auto object-cover" />
         <div className="absolute inset-12 bg-white bg-opacity-20 border shadow-lg p-3 bg-cover"></div>
        
-            {summary ? (
-              // summary 있을 때
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                  <div className="text-4xl font-bold text-white p-4 rounded-lg flex flex-row">
-                    <img src={moneyImg} alt="moneyImg" className="w-8 h-8 mr-2" />
-                    AI {category} 요약
-                  </div>
-                <div className="mt-8 border border-white p-6 rounded-lg max-w-xl bg-black bg-opacity-60">
-              <p className="text-white text-s" dangerouslySetInnerHTML={{ __html: summary.replace(/\n/g, '<br />') }}></p>
-              </div>
-              <p className="mt-5 text-lg font-bold text-white">타로 결과에 어울리는 음악을 들어보세요!</p>
+        {summary ? (
+          // summary 있을 때
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+            <div className="text-4xl font-bold text-white p-4 rounded-lg flex flex-row">
+              <img src={moneyImg} alt="moneyImg" className="w-8 h-8 mr-2" />
+              AI {category} 요약
             </div>
-            ) : (
-              // summary 없을 때
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                <div className="flex flex-col items-center">
-                  <p className="text-white text-3xl">결과를 기다리고 있습니다...</p>
-                  {/* 로딩 표시기 */}
-                  < Loading />
-                </div>
-              </div>
-            )}
-          
+            <div className="mt-8 border border-white p-6 rounded-lg max-w-xl bg-black bg-opacity-60">
+              <ReactMarkdown
+                className="text-white text-s"
+                remarkPlugins={[remarkBreaks, remarkGfm]}
+              >
+                {summary.replace(/\n/g, "\n\n")}
+              </ReactMarkdown>
+            </div>
+            <p className="mt-5 text-lg font-bold text-white">타로 결과에 어울리는 음악을 들어보세요!</p>
+            <MusicPlayer />
+          </div>
+        ) : ( 
+          // summary 없을 때
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+            <div className="flex flex-col items-center">
+              <p className="text-white text-3xl">결과를 기다리고 있습니다...</p>
+              {/* 로딩 표시기 */}
+              < Loading />
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="relative mt-8 flex items-center gap-10">
