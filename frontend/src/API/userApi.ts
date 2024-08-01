@@ -22,10 +22,16 @@ const signup = async (nickname: string, email: string, password: string) => {
 
 const login = async (email: string, password: string) => {
   try {
-    const response = await axios.post(API_URL + "login", {
-      email,
-      password,
-    });
+    const response = await axios.post(
+      API_URL + "login",
+      {
+        email,
+        password,
+      },
+      {
+        withCredentials: true, // 쿠키를 포함하도록 설정
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("로그인 실패", error);

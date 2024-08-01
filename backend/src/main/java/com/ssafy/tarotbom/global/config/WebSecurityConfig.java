@@ -2,6 +2,7 @@ package com.ssafy.tarotbom.global.config;
 
 
 //import com.ssafy.tarotbom.domain.jwt.JwtUtil;
+import com.ssafy.tarotbom.domain.member.Service.TokenService;
 import com.ssafy.tarotbom.domain.member.jwt.JwtAuthFilter;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
 import com.ssafy.tarotbom.global.security.CustomUserDetailsService;
@@ -30,6 +31,7 @@ public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
+    private final TokenService tokenService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomUserDetailsService customUserDetailsService) throws Exception {
@@ -47,7 +49,7 @@ public class WebSecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
 
         // JwtAuthFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
-        http.addFilterBefore(new JwtAuthFilter(customUserDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthFilter(customUserDetailsService, jwtUtil, tokenService), UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling((exceptionHandling) -> exceptionHandling
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
