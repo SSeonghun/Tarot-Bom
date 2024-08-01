@@ -45,7 +45,8 @@ const Login: React.FC = () => {
 
     try {
       const result = await login(email, password);
-      console.log("로그인 성공");
+      console.log("로그인 성공", result);
+      window.location.href = "/";
     } catch (error) {
       console.error("로그인 중 오류 발생", error);
     }

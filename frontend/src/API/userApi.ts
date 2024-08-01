@@ -21,6 +21,8 @@ const signup = async (nickname: string, email: string, password: string) => {
 };
 
 const login = async (email: string, password: string) => {
+  console.log(API_URL + "login");
+
   try {
     const response = await axios.post(
       API_URL + "login",

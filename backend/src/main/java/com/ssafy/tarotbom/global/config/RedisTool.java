@@ -35,6 +35,11 @@ public class RedisTool {
         return (String) values.get(key);
     }
 
+    // 레디스 키 삭제
+    public void deleteValue(String key) {
+        redisTemplate.delete(key);
+    }
+
     public boolean checkExistsValue(String value){
         return !value.equals("false");
     }

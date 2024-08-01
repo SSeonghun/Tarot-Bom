@@ -47,7 +47,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final RedisTool redisTool;
     private final EmailTool emailTool;
-    private static final String AUTH_CODE_PREFIX = "AuthCode ";
+    private static final String AUTH_CODE_PREFIX = "AuthCode:";
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private Long authCodeExpirationMillis;
@@ -174,6 +174,14 @@ public class MemberServiceImpl implements MemberService {
         String text = "타로봄에 오신 것을 환영합니다.\n\n"
                 + "      인증 번호는\n\n" +"         " + authCode + "\n\n         입니다.";
 
+
+        // 이미 인증 번호를 보내 레디스 서버에 인증번호가 있음
+        String pinNum = redisTool.getValues(AUTH_CODE_PREFIX + toEmail);
+        if(pinNum != null) {
+            // 해당 레디스 키를 삭제하고 재발급
+            redisTool.deleteValue(AUTH_CODE_PREFIX + toEmail);
+        }
+
         redisTool.setValues(AUTH_CODE_PREFIX + toEmail , authCode, Duration.ofMillis(authCodeExpirationMillis));
         emailTool.sendEmail(toEmail, title, text);
 
@@ -182,8 +190,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean verifyCode(String email, String authCode) {
+
         String redisAuthCode = redisTool.getValues((AUTH_CODE_PREFIX + email));
-        if(!redisTool.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode)){
+        log.info("redis get pinNumber : {} ",redisAuthCode);
+//        if(!(redisTool.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode))){
+//            throw new BusinessException(ErrorCode.MEMBER_INVALID_CODE);
+//        }
+        if(!(redisAuthCode.equals(authCode))){
             throw new BusinessException(ErrorCode.MEMBER_INVALID_CODE);
         }
         return true;

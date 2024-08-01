@@ -1,10 +1,16 @@
-import React from 'react';
+import React from "react";
 
 interface SubmitButtonProps {
   text: string;
+  onClick?: () => void; // onClick은 선택 사항입니다.
+  className?: string;
 }
 
-const SubmitButton: React.FC<SubmitButtonProps> = ({ text }) => {
+const SubmitButton: React.FC<SubmitButtonProps> = ({
+  text,
+  onClick,
+  className,
+}) => {
   return (
     <button
       type="submit"
@@ -16,4 +22,3 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({ text }) => {
 };
 
 export default SubmitButton;
-
