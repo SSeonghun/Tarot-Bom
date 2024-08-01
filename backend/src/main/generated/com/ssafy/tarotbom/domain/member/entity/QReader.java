@@ -22,6 +22,8 @@ public class QReader extends EntityPathBase<Reader> {
 
     public static final QReader reader = new QReader("reader");
 
+    public final DateTimePath<java.time.LocalDateTime> createTime = createDateTime("createTime", java.time.LocalDateTime.class);
+
     public final com.ssafy.tarotbom.global.code.entity.QCodeDetail grade;
 
     public final StringPath intro = createString("intro");
@@ -35,6 +37,10 @@ public class QReader extends EntityPathBase<Reader> {
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
     public final NumberPath<Double> rating = createNumber("rating", Double.class);
+
+    public final NumberPath<Integer> score = createNumber("score", Integer.class);
+
+    public final DateTimePath<java.time.LocalDateTime> updateTime = createDateTime("updateTime", java.time.LocalDateTime.class);
 
     public QReader(String variable) {
         this(Reader.class, forVariable(variable), INITS);

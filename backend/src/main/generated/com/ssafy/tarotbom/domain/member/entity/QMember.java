@@ -22,6 +22,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public static final QMember member = new QMember("member1");
 
+    public final DateTimePath<java.time.LocalDateTime> createTime = createDateTime("createTime", java.time.LocalDateTime.class);
+
     public final StringPath email = createString("email");
 
     public final NumberPath<Long> memberId = createNumber("memberId", Long.class);
@@ -36,7 +38,11 @@ public class QMember extends EntityPathBase<Member> {
 
     public final QReader reader;
 
+    public final com.ssafy.tarotbom.domain.tarot.entity.QTarotSummary tarotSummary;
+
     public final StringPath token = createString("token");
+
+    public final DateTimePath<java.time.LocalDateTime> updateTime = createDateTime("updateTime", java.time.LocalDateTime.class);
 
     public QMember(String variable) {
         this(Member.class, forVariable(variable), INITS);
@@ -58,6 +64,7 @@ public class QMember extends EntityPathBase<Member> {
         super(type, metadata, inits);
         this.memberType = inits.isInitialized("memberType") ? new com.ssafy.tarotbom.global.code.entity.QCodeDetail(forProperty("memberType")) : null;
         this.reader = inits.isInitialized("reader") ? new QReader(forProperty("reader"), inits.get("reader")) : null;
+        this.tarotSummary = inits.isInitialized("tarotSummary") ? new com.ssafy.tarotbom.domain.tarot.entity.QTarotSummary(forProperty("tarotSummary"), inits.get("tarotSummary")) : null;
     }
 
 }

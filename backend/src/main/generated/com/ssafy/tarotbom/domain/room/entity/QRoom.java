@@ -22,21 +22,29 @@ public class QRoom extends EntityPathBase<Room> {
 
     public static final QRoom room = new QRoom("room");
 
-    public final DateTimePath<java.time.LocalDateTime> closeDate = createDateTime("closeDate", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.LocalDateTime> closeTime = createDateTime("closeTime", java.time.LocalDateTime.class);
 
-    public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.LocalDateTime> createTime = createDateTime("createTime", java.time.LocalDateTime.class);
 
     public final BooleanPath isNormalClose = createBoolean("isNormalClose");
 
     public final com.ssafy.tarotbom.global.code.entity.QCodeDetail keyword;
 
-    public final com.ssafy.tarotbom.domain.member.entity.QMember readerId;
+    public final StringPath keywords = createString("keywords");
+
+    public final com.ssafy.tarotbom.domain.member.entity.QMember reader;
+
+    public final NumberPath<Long> readerId = createNumber("readerId", Long.class);
 
     public final NumberPath<Long> roomId = createNumber("roomId", Long.class);
 
+    public final EnumPath<RoomStyle> roomStyle = createEnum("roomStyle", RoomStyle.class);
+
     public final StringPath roomUrl = createString("roomUrl");
 
-    public final com.ssafy.tarotbom.domain.member.entity.QMember seekerId;
+    public final com.ssafy.tarotbom.domain.member.entity.QMember seeker;
+
+    public final NumberPath<Long> seekerId = createNumber("seekerId", Long.class);
 
     public final StringPath worry = createString("worry");
 
@@ -59,8 +67,8 @@ public class QRoom extends EntityPathBase<Room> {
     public QRoom(Class<? extends Room> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.keyword = inits.isInitialized("keyword") ? new com.ssafy.tarotbom.global.code.entity.QCodeDetail(forProperty("keyword")) : null;
-        this.readerId = inits.isInitialized("readerId") ? new com.ssafy.tarotbom.domain.member.entity.QMember(forProperty("readerId"), inits.get("readerId")) : null;
-        this.seekerId = inits.isInitialized("seekerId") ? new com.ssafy.tarotbom.domain.member.entity.QMember(forProperty("seekerId"), inits.get("seekerId")) : null;
+        this.reader = inits.isInitialized("reader") ? new com.ssafy.tarotbom.domain.member.entity.QMember(forProperty("reader"), inits.get("reader")) : null;
+        this.seeker = inits.isInitialized("seeker") ? new com.ssafy.tarotbom.domain.member.entity.QMember(forProperty("seeker"), inits.get("seeker")) : null;
     }
 
 }

@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import Witch from "./Witch_On_Broom-removebg-preview.png";
-import Sample from "./sample.png";
+import React, { useState, useEffect, useRef } from 'react';
+import Sample from '../../assets/sample.png';
 
 // Main Section 2
 const Hero2: React.FC = () => {
@@ -8,16 +7,17 @@ const Hero2: React.FC = () => {
   const [displayedText, setDisplayedText] = useState<string>('');
   const observerRef = useRef<HTMLImageElement>(null);
 
-  const fullText: string = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed at, incidunt, tempora, unde accusamus ut temporibus quas sequi impedit delectus alias omnis? Asperiores possimus autem et tenetur nulla! Non, error!";
+  const fullText: string =
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed at, incidunt, tempora, unde accusamus ut temporibus quas sequi impedit delectus alias omnis? Asperiores possimus autem et tenetur nulla! Non, error!';
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-        } 
+        }
       },
-      { threshold: 0.5 } 
+      { threshold: 0.5 }
     );
 
     if (observerRef.current) {
@@ -52,15 +52,15 @@ const Hero2: React.FC = () => {
         {/* 이미지 */}
         <img
           ref={observerRef}
-          src={Witch}
-          className={`w-1/2 h-auto max-h-[70vh] transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+          src={'https://cdn3d.iconscout.com/3d/premium/thumb/witch-on-broom-9783075-7970703.png'}
+          className={`w-1/2 h-auto max-h-[70vh] transition-opacity duration-1000 ${
+            isVisible ? 'opacity-100' : 'opacity-0'
+          }`}
           alt="Witch"
         />
 
         {/* 텍스트 */}
-        <p className="text-white w-1/2 top-0 ml-4 whitespace-pre-wrap">
-          {displayedText}
-        </p>
+        <p className="text-white w-1/2 top-0 ml-4 whitespace-pre-wrap">{displayedText}</p>
       </div>
 
       {/* 화면 아래쪽에 배치된 Sample 이미지 */}
@@ -69,6 +69,6 @@ const Hero2: React.FC = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Hero2;

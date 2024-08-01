@@ -1,5 +1,5 @@
 import React from 'react';
-import HoverButton from './HoverButton';
+import HoverButton from '../../Common/HoverButton';
 import CardImg from './CardImg.png';
 
 interface HomeCard {

@@ -2,7 +2,12 @@ package com.ssafy.tarotbom.domain.member.entity;
 
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="reader")
@@ -10,6 +15,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@DynamicInsert
 public class Reader {
 
     @Id
@@ -40,8 +46,33 @@ public class Reader {
     @JoinColumn(name="keyword") // 자신분야
     private CodeDetail keyword;
 
+    @NotNull
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="grade") // 공통코드
     private CodeDetail grade;
+
+    @ColumnDefault("0")
+    @Column(name = "score")
+    private int score;
+
+    @Column(name = "create_time", columnDefinition = "timestamp")
+    private LocalDateTime createTime;
+
+    @Column(name = "update_time", columnDefinition = "timestamp")
+    private LocalDateTime updateTime;
+
+    // create time, update time 자동갱신
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createTime = now;
+        this.updateTime = now;
+    }
+
+    // update time 자동갱신
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
 
 }

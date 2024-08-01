@@ -1,10 +1,10 @@
 import React from 'react';
+import SearchReader from '../../components/SearchReader/SearchReader';
 
 const SerchReader: React.FC = () => {
   return (
-    <div className="container p-4 mx-auto">
-      <h1 className="text-2xl font-bold">SerchReader Page</h1>
-      <p>Welcome to the SerchReader Page!</p>
+    <div className='bg-gradient-to-tl from-rose-600 from-0% via-fuchsia-900 to-purple-900 h-fit '>
+      <SearchReader />
     </div>
   );
 }

@@ -3,7 +3,9 @@ package com.ssafy.tarotbom.domain.room.entity;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -20,26 +22,26 @@ public class Room {
     @Column(name = "room_id", columnDefinition = "int unsigned")
     private long roomId;
 
-    /* 리더ID, 시커ID, 상담분야는 각각 @ManyToOne으로 연결한다 */
+    /* @ManyToOne으로 연결 : 리더ID, 시커ID, 상담분야 */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reader_id")
+    @JoinColumn(name = "reader_id", insertable = false, updatable = false)
     private Member reader;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seeker_id")
+    @JoinColumn(name = "seeker_id", insertable = false, updatable = false)
     private Member seeker;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "keyword", columnDefinition = "char(3)")
+    @JoinColumn(name = "keyword", columnDefinition = "char(3)", insertable = false, updatable = false)
     private CodeDetail keyword;
 
     @Column(name = "create_date", columnDefinition = "timestamp")
-    private LocalDateTime createDate;
+    private LocalDateTime createTime;
 
     @Column(name = "close_date", columnDefinition = "timestamp")
-    private LocalDateTime closeDate;
+    private LocalDateTime closeTime;
 
-    @Column(name = "is_normal_close")
+    @Column(name = "is_normal_close", columnDefinition = "tinyint(1)")
     private boolean isNormalClose;
 
     @Column(name = "room_url")
@@ -48,10 +50,26 @@ public class Room {
     @Column(name = "worry", length = 150)
     private String worry;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "room_style", columnDefinition = "char(3)")
+    private RoomStyle roomStyle;
+
+    // insert시 객체가 아닌 id를 입력할 수 있도록 해야함
+    @NotNull
+    @Column(name = "reader_id", columnDefinition = "int unsigned")
+    private long readerId;
+
+    @NotNull
+    @Column(name = "seeker_id", columnDefinition = "int unsigned")
+    private long seekerId;
+
+    @Column(name = "keyword", columnDefinition = "char(3)")
+    private String keywords;
+
     // create time 자동갱신
     @PrePersist
     public void prePersist() {
-        this.createDate = LocalDateTime.now();
+        this.createTime = LocalDateTime.now();
     }
 
 }

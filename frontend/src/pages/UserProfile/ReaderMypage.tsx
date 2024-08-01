@@ -1,12 +1,12 @@
 import React from 'react';
+import Reader from '../../components/Mypage/Reader';
 
 const SeekerMypage: React.FC = () => {
   return (
-    <div className="container p-4 mx-auto">
-      <h1 className="text-2xl font-bold">Home Page</h1>
-      <p>Welcome to the Home Page!</p>
+    <div className="bg-black">
+      <Reader />
     </div>
   );
-}
+};
 
 export default SeekerMypage;
