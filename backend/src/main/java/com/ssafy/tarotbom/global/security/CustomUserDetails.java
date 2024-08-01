@@ -1,6 +1,8 @@
 package com.ssafy.tarotbom.global.security;
 
-import com.ssafy.tarotbom.domain.member.dto.CustomUserInfoDto;
+import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
+import com.ssafy.tarotbom.global.code.entity.CodeDetail;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 // 사용자별 정보를 표시하고 액세스하는 방법을 정의
 @Slf4j
 @RequiredArgsConstructor
+@Getter
 public class CustomUserDetails implements UserDetails {
 
 
@@ -40,6 +43,14 @@ public class CustomUserDetails implements UserDetails {
     public String getUsername() {
         return String.valueOf(member.getMemberId());
     }
+
+    public String getEmail() {return String.valueOf(member.getEmail());}
+
+    public CodeDetail getMemberType() {
+        return member.getMemberType(); // 변경된 부분
+    }
+
+    public long getMemberId() {return member.getMemberId();}
 
     @Override
     public boolean isAccountNonExpired() { // 계정 만료 여부

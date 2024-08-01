@@ -1,5 +1,7 @@
 package com.ssafy.tarotbom.domain.member.email;
 
+import com.ssafy.tarotbom.global.error.BusinessException;
+import com.ssafy.tarotbom.global.error.ErrorCode;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +26,7 @@ public class EmailTool {
             emailSender.send(emailForm);
         } catch(RuntimeException e){
             log.debug("MailService.sendEmail Exception occur toEmail : {}, " + "title : {}, text: {}", toEmail, title, text );
-            throw new RuntimeException("MailService.sendEmail 이메일 전송을 할 수 없는 이메일입니다.");
+            throw new BusinessException(ErrorCode.MEMBER_INVALID_EMAIL);
         }
     }
 

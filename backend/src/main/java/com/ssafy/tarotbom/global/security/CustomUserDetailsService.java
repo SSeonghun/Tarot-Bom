@@ -1,8 +1,10 @@
 package com.ssafy.tarotbom.global.security;
 
-import com.ssafy.tarotbom.domain.member.dto.CustomUserInfoDto;
+import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
+import com.ssafy.tarotbom.global.error.BusinessException;
+import com.ssafy.tarotbom.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,9 +25,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
         Member member = memberRepository.findById(Long.parseLong(memberId))
-                .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
-        CustomUserInfoDto dto = mapper.map(member, CustomUserInfoDto.class);
+//        CustomUserInfoDto dto = mapper.map(member, CustomUserInfoDto.class);
+
+        CustomUserInfoDto dto = CustomUserInfoDto.builder()
+                .memberId(member.getMemberId())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .password(member.getPassword()) // 암호화된 비밀번호는 보안상 취급 주의
+                .memberType(member.getMemberType())
+                .build();
 
         return new CustomUserDetails(dto);
     }
