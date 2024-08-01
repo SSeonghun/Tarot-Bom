@@ -33,7 +33,7 @@ const Select: React.FC<SelectProps> = ({ options, selectedOption, onSelect, sele
         const canSelect = isAvailable; // 선택 가능 여부
 
         return (
-          <button
+          <button 
             key={option}
             className={`rounded-full px-4 py-1 m-1 ${selectedOption.includes(option) ? 'bg-red-500 text-white' : 'bg-pink-400 text-white'}`}
             onClick={() => canSelect && onSelect(option)} // 클릭 가능할 때만 onSelect 호출
