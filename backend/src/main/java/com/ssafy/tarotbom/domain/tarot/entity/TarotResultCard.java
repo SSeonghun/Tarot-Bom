@@ -18,12 +18,10 @@ public class TarotResultCard {
     private long cardResultId;
 
     /* @ManyToOne으로 연결 : 카드ID, 결과ID */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id", insertable = false, updatable = false, columnDefinition = "int(2)")
     private TarotCard card;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "result_id", insertable = false, updatable = false, columnDefinition = "int unsigned")
     private TarotResult result;
@@ -32,8 +30,10 @@ public class TarotResultCard {
     @Column(name = "sequence", columnDefinition = "int(2)")
     private int sequence;
 
+    @NotNull
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "direction", columnDefinition = "char(1)")
-    private String direction;
+    private TarotDirection direction;
 
     @NotNull
     @Column(name = "card_id", columnDefinition = "int(2)")

@@ -28,6 +28,8 @@ public class QTarotResultCard extends EntityPathBase<TarotResultCard> {
 
     public final NumberPath<Long> cardResultId = createNumber("cardResultId", Long.class);
 
+    public final EnumPath<TarotDirection> direction = createEnum("direction", TarotDirection.class);
+
     public final QTarotResult result;
 
     public final NumberPath<Long> resultId = createNumber("resultId", Long.class);
