@@ -1,10 +1,10 @@
 package com.ssafy.tarotbom.domain.member.controller;
 
 import com.ssafy.tarotbom.domain.member.Service.MemberService;
-import com.ssafy.tarotbom.domain.member.dto.request.EmailCheckReqDto;
-import com.ssafy.tarotbom.domain.member.dto.request.EmailReqDto;
-import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
-import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
+import com.ssafy.tarotbom.domain.member.Service.ReaderService;
+import com.ssafy.tarotbom.domain.member.dto.request.*;
+import com.ssafy.tarotbom.domain.member.dto.response.ReaderDetatilResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.result.ResultCode;
 import com.ssafy.tarotbom.global.dto.LoginResponseDto;
@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ import jakarta.validation.Valid;
 public class MemberController {
 
     private final MemberService memberService;
+    private final ReaderService readerService;
 
     /*
     @GetMapping("/test")
@@ -79,5 +82,55 @@ public class MemberController {
         }
 
     }
+
+    /**
+     * 리더 만들기 요청
+     * @param readerJoinRequestDto
+     * @return
+     */
+    @PostMapping("/readerjoin")
+    public ResponseEntity<?> readerJoin(@Valid @RequestBody ReaderJoinRequestDto readerJoinRequestDto) {
+
+        memberService.readerJoin(readerJoinRequestDto);
+
+        return null;
+    }
+
+    /////////////// 리더 검색 /////////////////
+
+    /**
+     * 전체 리더조회
+     * @return
+     */
+    @GetMapping("/reader/list")
+    public  ResponseEntity<?> searchAllReader() {
+        List<ReaderListResponseDto> readerList = readerService.searchAllReader();
+
+        log.info("readerListsize : {}", readerList.size());
+
+        return null;
+    }
+
+    /**
+     * 리더 프로필 상세
+     * @param readerId
+     * @return
+     */
+    @GetMapping("/reader/detail/{readerId}")
+    public ResponseEntity<?> readerDetail(@Valid @PathVariable long readerId) {
+
+        ReaderDetatilResponseDto readerDetatilResponseDto = readerService.searchReaderDetail(readerId);
+
+        return null;
+    }
+
+
+    /////////////// 마이페이지 //////////////////
+    @GetMapping("/seeker/mypage")
+    public ResponseEntity<?> seekerMypage() {
+        return null;
+    }
+
+
 
 }

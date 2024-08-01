@@ -114,21 +114,44 @@ public class ReservationServiceImpl implements ReservationService{
     @Override
     public List<ReadReservationResponseDto> readReservation(HttpServletRequest request) {
 
-        long readerId = cookieUtil.getUserId(request);
+        long memberId = cookieUtil.getUserId(request);
+
+        // todo : 여기서 리더인지 시커인지 쿠키 뜯어서 구분 0 인지 O 인지 구분 해야 할듯
+        String memberType = "M01";
 
 //        long readerId = reader.getMemberId();
+        
+        List<Reservation> reservations = null;
 
-        List<Reservation> reservations = reservationRepository.findAllByReaderId(readerId);
+        if(memberType == "M01") {
+            reservations = reservationRepository.findAllByReaderId(memberId);
+        } else if (memberType == "M03") {
+            reservations = reservationRepository.findAllBySeekerId(memberId);
+        }
 
         log.info("reservations_reader : {}", reservations.size());
 
         // ReadReservationResponseDto로 변환
         return reservations.stream()
                 .map(reservation -> ReadReservationResponseDto.builder()
+                        .reservationId(reservation.getReservationId())
                         .seekerId(reservation.getSeekerId())
                         .startTime(reservation.getStartTime())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public int deleteReservation(long reservationId) {
+
+        try {
+            reservationRepository.deleteById(reservationId);
+            return 1;
+        } catch (Exception e) {
+            // todo: 오류 처리
+            return 0;
+        }
+
     }
 
 

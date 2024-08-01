@@ -15,4 +15,5 @@ public interface ReservationService {
     List<ReadReservationResponseDto> readReservation(HttpServletRequest request);
 
 
+    int deleteReservation(long reservationId);
 }

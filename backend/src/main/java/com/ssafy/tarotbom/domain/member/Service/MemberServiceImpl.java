@@ -2,10 +2,14 @@ package com.ssafy.tarotbom.domain.member.Service;
 
 import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
 import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.ReaderJoinRequestDto;
 import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
+import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
+import com.ssafy.tarotbom.domain.member.entity.Reader;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
+import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.domain.member.email.EmailTool;
 import com.ssafy.tarotbom.global.config.RedisTool;
@@ -28,10 +32,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,6 +51,7 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
     private final TokenService tokenService;
+    private final ReaderRepository readerRepository;
 
     private final RedisTool redisTool;
     private final EmailTool emailTool;
@@ -255,5 +263,34 @@ public class MemberServiceImpl implements MemberService {
         return null;
 
     }
+
+    @Override
+    public void readerJoin(ReaderJoinRequestDto readerJoinRequestDto) {
+
+        
+        // todo : 공용 코드 관련 정리 필요 왜 카테고리가 G로 시작?
+        CodeDetail defaultCode = CodeDetail
+                .builder()
+                .codeDetailId("CO1")
+                .codeTypeId("3")
+                .detailDesc("기본")
+                .build();
+
+        // 리더 객체 생성후 save
+        Reader reader = Reader
+                .builder()
+                .memberId(readerJoinRequestDto.getSeekerId())
+                .createTime(LocalDateTime.now())
+                .updateTime(LocalDateTime.now())
+                .intro(readerJoinRequestDto.getIntro())
+                .grade(defaultCode)
+                .build();
+
+
+        readerRepository.save(reader);
+
+
+    }
+
 
 }

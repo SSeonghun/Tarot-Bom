@@ -1,20 +1,19 @@
-package com.ssafy.tarotbom.domain.reservation.dto.response;
+package com.ssafy.tarotbom.domain.member.dto.request;
 
+import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
-
 @Slf4j
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReadReservationResponseDto {
-    private long reservationId;
+public class ReaderJoinRequestDto {
     private long seekerId;
-    private LocalDateTime startTime;
+    private CodeDetail keyword;
+    private String intro;
 }
