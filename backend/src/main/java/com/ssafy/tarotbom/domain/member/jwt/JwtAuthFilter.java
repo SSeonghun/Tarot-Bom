@@ -81,7 +81,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             if(tokenName.equals("refreshToken")){
                 try{
-                sendUnauthorizedResponse(response);
+//                sendUnauthorizedResponse(response);
                 return null;
                 } catch (Exception e) {
                     // todo: 오류처리 해야할듯

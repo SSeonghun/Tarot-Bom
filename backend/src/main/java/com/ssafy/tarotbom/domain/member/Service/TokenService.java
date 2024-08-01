@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * todo: 레디스 Tool이 있는지 모르고 다시 만듬 합쳐야 할듯
+ */
 @Service
 public class TokenService {
 
