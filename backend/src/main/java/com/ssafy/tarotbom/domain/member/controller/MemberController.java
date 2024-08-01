@@ -39,7 +39,8 @@ public class MemberController {
         response.addCookie(result.getAccessTokenCookie());
         response.addCookie(result.getRefreshTokenCookie());
 
-        if(result.getMessage() == "로그인 성공") {
+        log.info("{}" , result.getAccessTokenCookie());
+        if(result.getMessage().equals("로그인 성공")) {
             return ResponseEntity.status(ResultCode.LOGIN_OK.getStatus()).body(result);
         }else{
             return ResponseEntity.status(ErrorCode.COMMON_NOT_FOUND.getStatus()).body(null);
@@ -57,6 +58,9 @@ public class MemberController {
 
     @PostMapping("/emails/check")
     public ResponseEntity<?> verifyCode(@Valid @RequestBody EmailCheckReqDto emailcheckReqDto){
+
+        log.info("pinNumber : {} ", emailcheckReqDto.getVerificationCode());
+
         memberService.verifyCode(emailcheckReqDto.getEmail(), emailcheckReqDto.getVerificationCode());
         if(memberService.verifyCode(emailcheckReqDto.getEmail(), emailcheckReqDto.getVerificationCode())){
             return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(null);
