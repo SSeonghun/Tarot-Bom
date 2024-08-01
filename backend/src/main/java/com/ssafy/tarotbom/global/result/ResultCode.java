@@ -19,11 +19,10 @@ public enum ResultCode {
     LOGIN_OK(HttpStatus.OK, "M200", "로그인 성공"),
     SIGNUP_OK(HttpStatus.CREATED, "M201", "회원가입 성공"),
     EMAIL_SEND_OK(HttpStatus.ACCEPTED, "M202", "이메일 전송"),
-    VALIDATION_NUMBER_OK(HttpStatus.OK, "M004", "인증번호 인증 성공")
+    VALIDATION_NUMBER_OK(HttpStatus.OK, "M004", "인증번호 인증 성공"),
 
-
-
-
+    // Tarot
+    TAROT_CARD_INFO_FOUND(HttpStatus.OK, "T001", "카드 조회 성공"),
 
     ;
     // ==== 응답 코드 정의 종료 ====
