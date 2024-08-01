@@ -4,21 +4,23 @@ import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.reservation.dto.request.AddReservationsRequestDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResoneseDto;
+import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
 import com.ssafy.tarotbom.domain.reservation.repository.ReservationRepository;
-import com.ssafy.tarotbom.domain.room.dto.request.RoomOpenRequestDto;
-import com.ssafy.tarotbom.domain.room.dto.response.RoomOpenResponseDto;
 import com.ssafy.tarotbom.domain.room.entity.Room;
 import com.ssafy.tarotbom.domain.room.repository.RoomRepository;
 import com.ssafy.tarotbom.domain.room.service.RoomService;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.global.code.entity.repository.CodeDetailRepository;
+import com.ssafy.tarotbom.global.util.CookieUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -30,6 +32,7 @@ public class ReservationServiceImpl implements ReservationService{
     private final CodeDetailRepository codeDetailRepository;
     private final MemberRepository memberRepository;
     private final RoomRepository roomRepository;
+    private final CookieUtil cookieUtil;
 
     @Override
     public AddReservationsResoneseDto addReservation(AddReservationsRequestDto addReservationsRequestDto) {
@@ -108,6 +111,25 @@ public class ReservationServiceImpl implements ReservationService{
         return addReservationsResoneseDto;
     }
 
+    @Override
+    public List<ReadReservationResponseDto> readReservation(HttpServletRequest request) {
+
+        long readerId = cookieUtil.getUserId(request);
+
+//        long readerId = reader.getMemberId();
+
+        List<Reservation> reservations = reservationRepository.findAllByReaderId(readerId);
+
+        log.info("reservations_reader : {}", reservations.size());
+
+        // ReadReservationResponseDto로 변환
+        return reservations.stream()
+                .map(reservation -> ReadReservationResponseDto.builder()
+                        .seekerId(reservation.getSeekerId())
+                        .startTime(reservation.getStartTime())
+                        .build())
+                .collect(Collectors.toList());
+    }
 
 
 }
