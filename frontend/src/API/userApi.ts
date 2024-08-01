@@ -34,20 +34,11 @@ const login = async (email: string, password: string) => {
     );
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      if (error.response.status === 401) {
-        console.error("로그인 실패: 잘못된 이메일 또는 비밀번호입니다.");
-        // 401 에러 발생 시 로그인 페이지로 리다이렉트
-        window.location.href = "/login"; // 로그인 페이지 URL로 변경
-      } else {
-        console.error("로그인 실패", error);
-      }
-    } else {
-      console.error("로그인 실패", error);
-    }
+    console.error("로그인 실패", error);
     throw error;
   }
 };
+
 
 const update = async (
   nickname: string,
