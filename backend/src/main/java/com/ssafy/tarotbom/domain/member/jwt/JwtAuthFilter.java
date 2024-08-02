@@ -76,7 +76,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private String getJwtFromCookies(HttpServletRequest request, String tokenName, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
-
         if (cookies == null) {
 
             if(tokenName.equals("refreshToken")){
@@ -92,12 +91,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             log.warn("No cookies found in the request");
             return null;
         }
-
+        log.info("---------------");
         for (Cookie cookie : cookies) {
+            log.info("cookies : {}", cookie.getValue());
             if (tokenName.equals(cookie.getName())) {
                 return cookie.getValue();
             }
         }
+        log.info("-----------------");
 
         return null;
     }
