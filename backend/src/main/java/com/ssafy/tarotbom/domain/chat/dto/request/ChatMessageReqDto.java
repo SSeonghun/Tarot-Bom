@@ -7,6 +7,10 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ChatMessageReqDto {
+    public enum MessageType {
+        ENTER, TALK, QUIT;
+    }
+
     private MessageType messageType;
 //    private long roomId;
     private String roomId;
