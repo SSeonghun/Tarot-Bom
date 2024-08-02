@@ -30,17 +30,25 @@ public class QTarotResult extends EntityPathBase<TarotResult> {
 
     public final com.ssafy.tarotbom.global.code.entity.QCodeDetail keyword;
 
+    public final StringPath keywords = createString("keywords");
+
     public final StringPath memo = createString("memo");
 
     public final StringPath music = createString("music");
 
     public final com.ssafy.tarotbom.domain.member.entity.QMember reader;
 
+    public final NumberPath<Long> readerId = createNumber("readerId", Long.class);
+
     public final NumberPath<Long> resultId = createNumber("resultId", Long.class);
 
     public final com.ssafy.tarotbom.domain.room.entity.QRoom room;
 
+    public final NumberPath<Long> roomId = createNumber("roomId", Long.class);
+
     public final com.ssafy.tarotbom.domain.member.entity.QMember seeker;
+
+    public final NumberPath<Long> seekerId = createNumber("seekerId", Long.class);
 
     public final StringPath summary = createString("summary");
 

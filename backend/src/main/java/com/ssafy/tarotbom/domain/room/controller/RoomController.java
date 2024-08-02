@@ -23,7 +23,6 @@ public class RoomController {
     @PostMapping("/open")
     public ResponseEntity<ResultResponse> openRoom (@RequestBody RoomOpenRequestDto dto) {
         log.trace("room open");
-        System.out.println("방 열기 명령 수령");
         roomService.openRoom(dto);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.ROOM_OPENED);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
