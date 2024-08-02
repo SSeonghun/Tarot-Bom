@@ -132,6 +132,7 @@ const ControlsPanel: React.FC = () => {
                     onClick={() => handleTabClick('camera')}
                     className={`flex-1 p-2 ${selectedTab === 'camera' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
                 >
+                    <img src="" alt="" />
                     카메라 
                 </button>
                 <button
