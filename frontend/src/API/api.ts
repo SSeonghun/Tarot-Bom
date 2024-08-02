@@ -1,6 +1,7 @@
 import axios from "axios";
 import { error } from "console";
 
+
 const API_URL = "http://localhost/tarotbom/";
 
 const readerList = async (page: number, name: string) => {
