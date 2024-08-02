@@ -8,6 +8,8 @@ import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.result.ResultCode;
 import com.ssafy.tarotbom.global.dto.LoginResponseDto;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -96,6 +98,16 @@ public class MemberController {
         return null;
     }
 
+    @PostMapping("/changeAccessToken")
+    public ResponseEntity<?> changeAccessToken(HttpServletRequest request, HttpServletResponse response){
+
+        Cookie newAccessToken = memberService.changeAccessToken(request);
+
+        response.addCookie(newAccessToken);
+
+        return ResponseEntity.status(ResultCode.LOGIN_OK.getStatus()).body("Access token successfully updated.");
+    }
+
     /////////////// 리더 검색 /////////////////
 
     /**
@@ -107,8 +119,19 @@ public class MemberController {
         List<ReaderListResponseDto> readerList = readerService.searchAllReader();
 
         log.info("readerListsize : {}", readerList.size());
+        log.info("readerList : {}", readerList.get(0).getMemberId());
 
-        return null;
+        // 리스트를 정상적으로 반환하도록 수정
+        try{
+
+        if (readerList.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 데이터가 없을 경우 No Content 응답
+        }
+        return ResponseEntity.ok(readerList); // 데이터가 있을 경우 OK 응답
+        } catch (Exception e) {
+            log.error("{}", e);
+            return null;
+        }
     }
 
     /**
@@ -119,9 +142,18 @@ public class MemberController {
     @GetMapping("/reader/detail/{readerId}")
     public ResponseEntity<?> readerDetail(@Valid @PathVariable long readerId) {
 
+        log.info("readerId : {}", readerId);
+
+
         ReaderDetatilResponseDto readerDetatilResponseDto = readerService.searchReaderDetail(readerId);
 
-        return null;
+        if (readerDetatilResponseDto != null) {
+            // 리더 정보를 성공적으로 가져온 경우
+            return ResponseEntity.ok(readerDetatilResponseDto);
+        } else {
+            // 리더 정보를 찾지 못한 경우 (404 Not Found)
+            return ResponseEntity.notFound().build();
+        }
     }
 
 

@@ -16,11 +16,11 @@ import java.util.List;
 public class ReaderDetatilResponseDto {
     private long memberId;
     private String name;
-    private CodeDetail memberType;
-    private CodeDetail keyword;
+    private String memberType;
+    private String keyword;
     private String intro;
     private double rating;
-    private CodeDetail grade;
+    private String grade;
     private int price;
 
     // 기존 리더 리스트DTO에 추가로 더 반환

@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 public class ReaderListResponseDto {
     private long memberId;
     private String name;
-    private CodeDetail memberType;
-    private CodeDetail keyword;
+    private String memberType;
+    private String keyword;
     private String intro;
     private double rating;
-    private CodeDetail grade;
+    private String grade;
     private int price;
 
 }

@@ -34,7 +34,7 @@ public class ReaderServiceImpl implements ReaderService{
 
         //todo: 리더 쪽 테이블 확인
         return readers.stream()
-                .map(reader -> new ReaderListResponseDto(reader.getMember().getMemberId(),reader.getMember().getNickname(), reader.getMember().getMemberType() ,reader.getKeyword(), reader.getIntro(), reader.getRating(), reader.getGrade(), reader.getPrice()))
+                .map(reader -> new ReaderListResponseDto(reader.getMember().getMemberId(),reader.getMember().getNickname(), reader.getMember().getMemberType().getCodeDetailId() ,reader.getKeyword().getCodeDetailId(), reader.getIntro(), reader.getRating(), reader.getGrade().getCodeDetailId(), reader.getPrice()))
                 .collect(Collectors.toList());
     }
 
@@ -81,11 +81,11 @@ public class ReaderServiceImpl implements ReaderService{
                 .builder()
                 .memberId(reader.getMemberId())
                 .name(member.getNickname())
-                .memberType(member.getMemberType())
-                .keyword(reader.getKeyword())
+                .memberType(member.getMemberType().getDetailDesc())
+                .keyword(reader.getKeyword().getDetailDesc())
                 .intro(reader.getIntro())
                 .rating(reader.getRating())
-                .grade(reader.getGrade())
+                .grade(reader.getGrade().getDetailDesc())
                 .price(reader.getPrice())
                 .allConsertings(allConserting)
                 .allReaservations(allReaservations)

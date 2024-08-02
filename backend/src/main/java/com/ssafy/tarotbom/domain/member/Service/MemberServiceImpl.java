@@ -16,6 +16,7 @@ import com.ssafy.tarotbom.global.config.RedisTool;
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.dto.LoginResponseDto;
+import com.ssafy.tarotbom.global.util.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,6 +56,8 @@ public class MemberServiceImpl implements MemberService {
 
     private final RedisTool redisTool;
     private final EmailTool emailTool;
+    private final CookieUtil cookieUtil;
+
     private static final String AUTH_CODE_PREFIX = "AuthCode:";
 
     @Value("${spring.mail.auth-code-expiration-millis}")
@@ -290,6 +293,63 @@ public class MemberServiceImpl implements MemberService {
         readerRepository.save(reader);
 
 
+    }
+
+    /**
+     * 리더/시커 전환시 엑세스 토큰 재발급
+     * @return
+     */
+    @Override
+    public Cookie changeAccessToken(HttpServletRequest request) {
+
+        long memberId = cookieUtil.getUserId(request);
+        String type = cookieUtil.getMemberType(request);
+        String email = cookieUtil.getMemberEmail(request);
+
+        log.info("{}, {}, {}", memberId, type, email);
+
+        CodeDetail memberCode = null;
+
+        if(type.equals("M01")) { //seaker
+            memberCode = CodeDetail
+                    .builder()
+                    .codeDetailId("M03")
+                    .codeTypeId("0")
+                    .detailDesc("리더")
+                    .build();
+        } else if(type.equals("M03")) { //reader
+            memberCode = CodeDetail
+                    .builder()
+                    .codeDetailId("M01")
+                    .codeTypeId("0")
+                    .detailDesc("시커")
+                    .build();
+        }
+
+        CustomUserInfoDto member = CustomUserInfoDto
+                .builder()
+                .memberId(memberId)
+                .memberType(memberCode)
+                .email(email)
+                .build();
+
+        String newAccessToken = jwtUtil.createAccessToken(member);
+
+        log.info("new AccessToken : {}", newAccessToken);
+
+        // 기존 엑세스 토큰 쿠키 제거
+        Cookie oldTokenCookie = new Cookie("accessToken", "");
+        oldTokenCookie.setMaxAge(0); // 즉시 만료
+        oldTokenCookie.setPath("/"); // 경로 설정
+
+        Cookie newTokenCookie = new Cookie("accessToken", newAccessToken);
+        newTokenCookie.setHttpOnly(true);
+        newTokenCookie.setSecure(true);
+        newTokenCookie.setMaxAge(60 * 60); // 1시간 유효
+        newTokenCookie.setPath("/"); // 경로 설정
+
+
+        return newTokenCookie;
     }
 
 

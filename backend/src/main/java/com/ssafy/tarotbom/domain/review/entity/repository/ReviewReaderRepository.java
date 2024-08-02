@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ReviewReaderRepository extends JpaRepository<Reader, Long> {
-    List<ReviewReader> findByReaderId(long readerId);
+    List<ReviewReader> findByMemberId(long readerId);
 }
