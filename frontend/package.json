@@ -13,11 +13,9 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/react-slick": "^0.23.13",
-<<<<<<< HEAD
-=======
     "axios": "^1.7.2",
->>>>>>> 6b562fbc19c109fab050d5f17bf9446bdef7affb
     "chart.js": "^4.4.3",
+    "livekit-client": "^2.4.2",
     "openai": "^4.0.0",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",

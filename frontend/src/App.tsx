@@ -20,6 +20,7 @@ import CreateReader from "./pages/CreateReader/CreateReader";
 import SeekerMypage from "./pages/UserProfile/SeekerMypage";
 import ReaderMypage from "./pages/UserProfile/ReaderMypage";
 import Booking from "./pages/Booking/Booking";
+import WebRTCpage from "./pages/WebRTC/WebRTCpage";
 
 const App: React.FC = () => {
   return (
@@ -47,7 +48,7 @@ const App: React.FC = () => {
           <Route path="/seaker-mypage" element={<SeekerMypage />} />
           <Route path="/reader-mypage" element={<ReaderMypage />} />
           <Route path="/booking" element={<Booking />} />
-
+          <Route path="/webrtc" element={<WebRTCpage/>}/>
         </Routes>
       </div>
     </Router>
