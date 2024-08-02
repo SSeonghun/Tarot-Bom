@@ -64,7 +64,7 @@ public class WebSecurityConfig {
                     .requestMatchers("/user/emailCheck/**").permitAll()
                     .requestMatchers("/user/emails/**").permitAll() // 이메일 중복 검사
                     .requestMatchers("/error/**").authenticated()
-                    .anyRequest().permitAll(); // authenticated(); // 위의 것 외에는 인증 없이 접근 불가
+                    .anyRequest().authenticated(); // 위의 것 외에는 인증 없이 접근 불가
         });
 
         return http.build();
