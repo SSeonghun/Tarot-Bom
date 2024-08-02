@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.tarot.dto.request;
 
+import com.ssafy.tarotbom.domain.tarot.dto.TarotResultCardDto;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

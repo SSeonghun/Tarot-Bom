@@ -1,6 +1,6 @@
 package com.ssafy.tarotbom.domain.tarot.dto.response;
 
-import com.ssafy.tarotbom.domain.tarot.dto.request.TarotResultCardDto;
+import com.ssafy.tarotbom.domain.tarot.dto.TarotResultCardDto;
 import lombok.Builder;
 import lombok.Getter;
 

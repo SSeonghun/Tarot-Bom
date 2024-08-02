@@ -1,6 +1,7 @@
 package com.ssafy.tarotbom.domain.tarot.controller;
 
 import com.ssafy.tarotbom.domain.tarot.dto.request.TarotResultSaveRequestDto;
+import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
 import com.ssafy.tarotbom.domain.tarot.service.TarotResultService;
 import com.ssafy.tarotbom.global.result.ResultCode;
 import com.ssafy.tarotbom.global.result.ResultResponse;
@@ -19,8 +20,9 @@ public class TarotResultController {
 
     @GetMapping("/search/{resultId}")
     public ResponseEntity<ResultResponse> getTarotResult(@PathVariable("resultId") long resultId) {
-        tarotResultService.getTarotResult(resultId, 1);
-        return null;
+        TarotResultGetResponseDto result = tarotResultService.getTarotResult(resultId, 1);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.TAROT_CARD_RESULT_FOUND, result);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     @PostMapping

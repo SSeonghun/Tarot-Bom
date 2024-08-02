@@ -1,8 +1,9 @@
 package com.ssafy.tarotbom.domain.tarot.service;
 
-import com.ssafy.tarotbom.domain.tarot.dto.request.TarotResultCardDto;
+import com.ssafy.tarotbom.domain.tarot.dto.TarotResultCardDto;
 import com.ssafy.tarotbom.domain.tarot.dto.request.TarotResultSaveRequestDto;
 import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
+import com.ssafy.tarotbom.domain.tarot.entity.TarotCard;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotDirection;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotResultCard;
@@ -75,20 +76,48 @@ public class TarotResultServiceImpl implements TarotResultService {
     /** <pre>
      * public void getTarotResult(long resultId)
      * resultId를 기반으로 타로 결과를 반환합니다. 카드의 정보도 함께 반환합니다.
-     * 요청한 유저의 ID가 타로 결과에 포함되어있지 않다면 볼 수 없습니다.
+     * 요청한 유저의 ID가 타로 결과에 포함되어있지 않다면 볼 수 없습니다. (구현 예정)
      * </pre>
      * */
     @Override
     @Transactional
     public TarotResultGetResponseDto getTarotResult(long resultId, long userId) {
-        log.info("요청 받음");
+        log.info("요청 받음 : getTarotResult");
         TarotResult tarotResult = tarotResultRepository.findById(resultId).orElse(null);
         if(tarotResult == null) { // 검색 결과가 없다면 null을 반환
             throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_FOUND);
         }
-        if(tarotResult.getReaderId() != userId && tarotResult.getSeekerId() != userId){
-            throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_YOUR_RESULT);
+//        if(tarotResult.getReaderId() != userId && tarotResult.getSeekerId() != userId){
+//            throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_YOUR_RESULT);
+//        }
+        List<TarotResultCardDto> cards = new ArrayList<>();
+        // 우선 카드 리스트 정보부터 채운다
+        for(TarotResultCard c : tarotResult.getCardList()){
+            TarotCard oneCard = c.getCard();
+            String direction;
+            // enum값을 응답에 맞도록 String으로 변경
+            if(c.getDirection() == TarotDirection.R) {
+                direction = "reversed";
+            } else{
+                direction = "upright";
+            }
+            cards.add(
+                    TarotResultCardDto.builder()
+                            .cardId(oneCard.getCardId())
+                            .sequence(c.getSequence())
+                            .direction(direction)
+                            .build()
+            );
         }
-        return null;
+        return TarotResultGetResponseDto.builder()
+                .readerId(tarotResult.getReaderId())
+                .seekerId(tarotResult.getSeekerId())
+                .date(tarotResult.getDate())
+                .keyword(tarotResult.getKeywords())
+                .memo(tarotResult.getMemo())
+                .summary(tarotResult.getSummary())
+                .music(tarotResult.getMusic())
+                .cards(cards)
+                .build();
     }
 }
