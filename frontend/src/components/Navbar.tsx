@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   return (
-    <nav className="p-4 bg-gray-800">
+    <nav className="p-4 bg-transparent fixed top-0 left-0 w-full z-50">
       <div className="container flex items-center justify-between mx-auto">
-        <div className="font-bold text-white"><Link to="/" className="text-white hover:text-gray-400">Home</Link></div>
+        <div className="font-bold text-white">
+          <Link to="/" className="text-white hover:text-gray-400">Home</Link>
+        </div>
         <div className="space-x-4">
           <Link to="/booking" className="text-white hover:text-gray-400">타로예약</Link>
           <Link to="/tarot-result" className="text-white hover:text-gray-400">타로결과</Link>
@@ -15,7 +17,7 @@ const Navbar: React.FC = () => {
           <Link to="/community" className="text-white hover:text-gray-400">커뮤니티</Link>
           <Link to="/login">
             <button className="px-4 py-2 text-white bg-gray-500 rounded hover:bg-gray-700">
-            Login
+              Login
             </button>
           </Link>
         </div>
