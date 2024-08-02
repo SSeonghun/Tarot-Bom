@@ -6,6 +6,11 @@ import LinkButton from '../login_signup/LinkButton';
 
 const readerList = require("../../API/api")
 
+
+
+
+
+const SerchReader: React.FC = () => {
   // 리더 리스트 상태 정의
   const [readers, setReaders] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -28,7 +33,6 @@ const readerList = require("../../API/api")
   }, []);
 
 
-const SerchReader: React.FC = () => {
   const Labels = [
     { name: '연애운' },
     { name: '직장운' },
