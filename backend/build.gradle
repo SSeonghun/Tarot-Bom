@@ -47,7 +47,6 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	// ModelMapper
-//	implementation group: 'org.modelmapper', name : 'modelmapper', version '2.4.2'
 	implementation 'org.modelmapper:modelmapper:3.1.1'
 
 	// email 라이브러리
@@ -56,8 +55,25 @@ dependencies {
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+	// websocket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	// stomp
+	implementation 'org.webjars:sockjs-client:1.1.2'
+	implementation 'org.webjars:stomp-websocket:2.3.3-1'
+
 	// aws
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// 나중에 삭제하고 올리기
+	implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+	implementation 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.webjars.bower:bootstrap:4.3.1'
+	implementation 'org.webjars.bower:vue:2.5.16'
+	implementation 'org.webjars.bower:axios:0.17.1'
+	implementation 'org.webjars:sockjs-client:1.1.2'
+	implementation 'com.google.code.gson:gson:2.8.0'
+
 
 }
 
