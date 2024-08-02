@@ -17,6 +17,7 @@ import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.domain.member.dto.response.LoginResponseDto;
 import com.ssafy.tarotbom.global.util.CookieUtil;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -126,6 +127,19 @@ public class MemberServiceImpl implements MemberService {
         String memberId = tokenService.getRefreshToken(member.getMemberId());
         log.info("[MemberServiceImpl-login] redisMemberId : {}", memberId );
 
+        boolean isReader = false;
+        try {
+            Long id = member.getMemberId();
+            Reader reader = readerRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+            isReader = true;
+        } catch (NumberFormatException | EntityNotFoundException e) {
+            isReader = false;
+            log.info("{}", isReader);
+        }
+
+        log.info("{}", isReader);
+
+
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
 
@@ -133,6 +147,7 @@ public class MemberServiceImpl implements MemberService {
                 .builder()
                 .email(email)
                 .name(name)
+                .isReader(isReader)
                 .build();
 
         return loginResponseDto;
