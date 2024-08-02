@@ -1,5 +1,4 @@
 import React from 'react';
-import img1 from '../../assets/Tarot_cards-removebg-preview.png'
 import resultBg from '../../assets/result-bg.jpeg'
 import ResultCard from '../../components/TarotResult/ResultCard'
 
@@ -13,7 +12,7 @@ const TarotResult: React.FC = () => {
           {/* 상단 제목 */}
           <div className='flex flex-col items-center'>
             <div className='flex flex-row items-center'>
-              <img src={img1} alt="img1" className='w-1/3 mr-4' />
+              <img src={"https://cdn3d.iconscout.com/3d/premium/thumb/tarot-cards-11858327-9666345.png?f=webp"} alt="img1" className='w-1/3 mr-4' />
               <h1 className="text-6xl font-bold text-white">타로 결과</h1>
             </div>
               <hr className='w-full border-t-2 border-white mt-4' />

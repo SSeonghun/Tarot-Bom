@@ -1,6 +1,7 @@
 package com.ssafy.tarotbom.domain.member.Service;
 
 import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.ReaderJoinRequestDto;
 import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
 import com.ssafy.tarotbom.global.dto.LoginResponseDto;
 import jakarta.servlet.http.Cookie;
@@ -14,4 +15,8 @@ public interface MemberService{
     boolean sendCodeToEmail(String toEmail);
     boolean verifyCode(String code, String authCode);
     Cookie createAceessToken(LoginReqDto loginReqDto, HttpServletResponse response, HttpServletRequest request);
+
+    void readerJoin(ReaderJoinRequestDto readerJoinRequestDto);
+
+    Cookie changeAccessToken(HttpServletRequest request);
 }

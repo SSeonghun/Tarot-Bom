@@ -2,10 +2,14 @@
 import axios from "axios";
 import { error } from "console";
 
-const API_URL = "http://localhost/tarotbom/user/";
+
+const API_URL = "https://i11c208.p.ssafy.io/tarotbom/user/";
 
 const signup = async (nickname: string, email: string, password: string) => {
   console.log(nickname, email, password);
+
+  
+
   try {
     const response = await axios.post(API_URL + "signup", {
       nickname,
@@ -23,6 +27,7 @@ const signup = async (nickname: string, email: string, password: string) => {
 const login = async (email: string, password: string) => {
   console.log(API_URL + "login");
 
+
   try {
     const response = await axios.post(
       API_URL + "login",
@@ -34,12 +39,16 @@ const login = async (email: string, password: string) => {
         withCredentials: true, // 쿠키를 포함하도록 설정
       }
     );
+
+
+
     return response.data;
   } catch (error) {
     console.error("로그인 실패", error);
     throw error;
   }
 };
+
 
 const update = async (
   nickname: string,
@@ -202,76 +211,74 @@ const readerAuth = async (keyword: string, intro: string) => {
   try {
     const response = await axios.post(`${API_URL}reader/auth`, {
       keyword,
-      intro
+      intro,
     });
-    return response.data
+    return response.data;
   } catch (error) {
-    console.error('리더 인증 실패', error)
-    throw error
+    console.error("리더 인증 실패", error);
+    throw error;
   }
 };
 
 const readerSummary = async () => {
   try {
-    const response = await axios.get(`${API_URL}reader/summary`)
-    return response.data
+    const response = await axios.get(`${API_URL}reader/summary`);
+    return response.data;
   } catch (error) {
-    console.error('리더 마이페이지 요약 조회 실패', error)
-    throw error
+    console.error("리더 마이페이지 요약 조회 실패", error);
+    throw error;
   }
-}
-
+};
 
 const readerTarot = async () => {
   try {
-    const response = await axios.get(`${API_URL}reader/tarot`)
-    return response.data
+    const response = await axios.get(`${API_URL}reader/tarot`);
+    return response.data;
   } catch (error) {
-    console.error('리더 마이페이지 개인타로분석 조회 실패', error)
-    throw error
+    console.error("리더 마이페이지 개인타로분석 조회 실패", error);
+    throw error;
   }
-}
+};
 
 const readerSales = async () => {
   try {
-    const response = await axios.get(`${API_URL}reader/sales`)
-    return response.data
+    const response = await axios.get(`${API_URL}reader/sales`);
+    return response.data;
   } catch (error) {
-    console.error('리더 마이페이지 수입 조회 실패', error)
-    throw error
+    console.error("리더 마이페이지 수입 조회 실패", error);
+    throw error;
   }
-}
+};
 
 const readerReview = async () => {
   try {
-    const response = await axios.get(`${API_URL}reader/review`)
-    return response.data
+    const response = await axios.get(`${API_URL}reader/review`);
+    return response.data;
   } catch (error) {
-    console.error('리더 마이페이지 리뷰 조회 실패', error)
-    throw error
+    console.error("리더 마이페이지 리뷰 조회 실패", error);
+    throw error;
   }
-}
+};
 
 const readerConsult = async () => {
   try {
-    const response = await axios.get(`${API_URL}reader/consult`)
-    return response.data
+    const response = await axios.get(`${API_URL}reader/consult`);
+    return response.data;
   } catch (error) {
-    console.error('리더 마이페이지 최근상담내역 조회 실패', error)
-    throw error
+    console.error("리더 마이페이지 최근상담내역 조회 실패", error);
+    throw error;
   }
-}
-
+};
 
 const readerSchedule = async () => {
   try {
-    const response = await axios.get(`${API_URL}reader/schedule`)
-    return response.data
+    const response = await axios.get(`${API_URL}reader/schedule`);
+    return response.data;
   } catch (error) {
-    console.error('리더 마이페이지 예약일정 조회 실패', error)
-    throw error
+    console.error("리더 마이페이지 예약일정 조회 실패", error);
+    throw error;
   }
-}
+};
 
 export {
   signup,
@@ -294,6 +301,5 @@ export {
   readerSales,
   readerReview,
   readerConsult,
-  readerSchedule
-
+  readerSchedule,
 };

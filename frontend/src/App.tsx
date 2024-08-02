@@ -19,6 +19,7 @@ import Play from "./pages/PlayTarot/Play";
 import CreateReader from "./pages/CreateReader/CreateReader";
 import SeekerMypage from "./pages/UserProfile/SeekerMypage";
 import ReaderMypage from "./pages/UserProfile/ReaderMypage";
+import Booking from "./pages/Booking/Booking";
 
 const App: React.FC = () => {
   return (
@@ -45,6 +46,7 @@ const App: React.FC = () => {
           <Route path="/create-reader" element={<CreateReader />} />
           <Route path="/seaker-mypage" element={<SeekerMypage />} />
           <Route path="/reader-mypage" element={<ReaderMypage />} />
+          <Route path="/booking" element={<Booking />} />
         </Routes>
       </div>
     </Router>

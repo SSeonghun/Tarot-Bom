@@ -1,10 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Sphere from '../../assets/img/sphere.png';
 import Category from './item/Category';
 import ReaderCard from './item/ReaderCard';
 import LinkButton from '../login_signup/LinkButton';
 
+const readerList = require("../../API/api")
+
+
+
+
+
 const SerchReader: React.FC = () => {
+  // 리더 리스트 상태 정의
+  const [readers, setReaders] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // API 호출
+  useEffect(() => {
+    const loadReaders = async () => {
+      try {
+        const data = await readerList(); // API 함수 호출
+        setReaders(data);
+      } catch (error) {
+        setError('리더 목록을 가져오는 데 문제가 발생했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadReaders();
+  }, []);
+
+
   const Labels = [
     { name: '연애운' },
     { name: '직장운' },
