@@ -6,6 +6,7 @@ import com.ssafy.tarotbom.domain.member.dto.request.*;
 import com.ssafy.tarotbom.domain.member.dto.response.LoginResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderDetatilResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.SeekerMypageResponseDto;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.result.ResultCode;
 import jakarta.servlet.http.Cookie;
@@ -150,8 +151,11 @@ public class MemberController {
 
     /////////////// 마이페이지 //////////////////
     @GetMapping("/seeker/mypage")
-    public ResponseEntity<?> seekerMypage() {
-        return null;
+    public ResponseEntity<?> seekerMypage(@Valid @RequestBody SeekerMypageRequestDto seekerMypageRequestDto , HttpServletRequest request) {
+
+        SeekerMypageResponseDto seekerMypageResponseDto = memberService.seekerMypage(request, seekerMypageRequestDto);
+
+        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(seekerMypageResponseDto);
     }
 
 

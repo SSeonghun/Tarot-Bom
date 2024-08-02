@@ -1,6 +1,9 @@
 package com.ssafy.tarotbom.domain.member.dto.response;
 
+import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
+import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
+import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,10 +20,10 @@ public class SeekerMypageResponseDto {
     private String name; // 닉네임
     private String email; // 이메일
     private boolean isReader; // 리더프로필이 있는지 없는지
-    private List<Reservation> reservationList; // 예약 내역
+    private List<ReadReservationResponseDto> reservationList; // 예약 내역
 
     //////최근 타로 내역
-//    private
+    private List<TarotResultGetResponseDto> tarotResults;
 
     //todo: 카테고리별 최대 퍼센트, 카테고리
     //private int bestPercent; // 카테고리별 최대 퍼센트

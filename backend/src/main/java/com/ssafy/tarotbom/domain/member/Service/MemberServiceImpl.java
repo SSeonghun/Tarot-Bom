@@ -1,14 +1,18 @@
 package com.ssafy.tarotbom.domain.member.Service;
 
-import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
-import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
-import com.ssafy.tarotbom.domain.member.dto.request.ReaderJoinRequestDto;
-import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.*;
+import com.ssafy.tarotbom.domain.member.dto.response.SeekerMypageResponseDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
+import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
+import com.ssafy.tarotbom.domain.reservation.service.ReservationService;
+import com.ssafy.tarotbom.domain.tarot.dto.TarotResultCardDto;
+import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
+import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
+import com.ssafy.tarotbom.domain.tarot.repository.TarotResultRepository;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.domain.member.email.EmailTool;
 import com.ssafy.tarotbom.global.code.entity.repository.CodeDetailRepository;
@@ -34,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -47,10 +52,11 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
-    private final ModelMapper modelMapper;
     private final TokenService tokenService;
     private final ReaderRepository readerRepository;
     private final CodeDetailRepository codeDetailRepository;
+    private final TarotResultRepository tarotResultRepository;
+    private final ReservationService reservationService;
 
     private final RedisTool redisTool;
     private final EmailTool emailTool;
@@ -385,6 +391,59 @@ public class MemberServiceImpl implements MemberService {
 
 
         return newTokenCookie;
+    }
+
+    /**
+     * 최근 타로 내역
+     * @param request
+     * @return
+     */
+    @Override
+    public SeekerMypageResponseDto seekerMypage(HttpServletRequest request, SeekerMypageRequestDto seekerMypageRequestDto) {
+
+        // 아이디 가져오기
+        long memberId = cookieUtil.getUserId(request);
+        String email = cookieUtil.getMemberEmail(request);
+
+        long resultId = 0;
+
+
+        // 필요 데이터
+        /*
+        카드정보
+        요약
+        뮤직
+        날짜
+         */
+//        List<TarotResultGetResponseDto> cardDtos = tarotResultRepository
+//                .findByResultId(resultId)
+//                .stream()
+//                .map(card -> TarotResultGetResponseDto.builder()
+//                        .seekerId()
+//                        .readerId()
+//                        .memo()
+//                        .music()
+//                        .summary()
+//                        .cards()
+//                        .date()
+//                        .keyword()
+//                        .build())
+//                .collect(Collectors.toList());
+//
+////        log.info("tarotResult : {}", tarotResults);
+//
+//        List<ReadReservationResponseDto> readReservationResponseDtos = reservationService.readReservation(request);
+//
+//        SeekerMypageResponseDto seekerMypageResponseDto = SeekerMypageResponseDto
+//                .builder()
+//                .isReader(seekerMypageRequestDto.isReader())
+//                .tarotResults(tarotResults)
+//                .reservationList(readReservationResponseDtos)
+//                .email(email)
+//                .name(seekerMypageRequestDto.getName())
+//                .build();
+
+        return null;
     }
 
 
