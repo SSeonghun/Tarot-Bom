@@ -9,11 +9,11 @@ import useStore from '../stores/store';
 
 
 const Navbar: React.FC = () => {
-
+ 
   const navigate = useNavigate();
   const store = useStore();
   return (
-    <nav className="p-4 bg-gray-800">
+    <nav className="p-4 bg-transparent fixed top-0 left-0 w-full z-50">
       <div className="container flex items-center justify-between mx-auto">
         <div className="font-bold text-white">
           <Link to="/" className="text-white hover:text-gray-400">Home</Link>
