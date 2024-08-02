@@ -2,16 +2,21 @@ package com.ssafy.tarotbom.domain.member.Service;
 
 import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
 import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.ReaderJoinRequestDto;
 import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
+import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
+import com.ssafy.tarotbom.domain.member.entity.Reader;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
+import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.domain.member.email.EmailTool;
 import com.ssafy.tarotbom.global.config.RedisTool;
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.dto.LoginResponseDto;
+import com.ssafy.tarotbom.global.util.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,10 +33,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,9 +52,12 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
     private final TokenService tokenService;
+    private final ReaderRepository readerRepository;
 
     private final RedisTool redisTool;
     private final EmailTool emailTool;
+    private final CookieUtil cookieUtil;
+
     private static final String AUTH_CODE_PREFIX = "AuthCode:";
 
     @Value("${spring.mail.auth-code-expiration-millis}")
@@ -255,5 +266,91 @@ public class MemberServiceImpl implements MemberService {
         return null;
 
     }
+
+    @Override
+    public void readerJoin(ReaderJoinRequestDto readerJoinRequestDto) {
+
+        
+        // todo : 공용 코드 관련 정리 필요 왜 카테고리가 G로 시작?
+        CodeDetail defaultCode = CodeDetail
+                .builder()
+                .codeDetailId("CO1")
+                .codeTypeId("3")
+                .detailDesc("기본")
+                .build();
+
+        // 리더 객체 생성후 save
+        Reader reader = Reader
+                .builder()
+                .memberId(readerJoinRequestDto.getSeekerId())
+                .createTime(LocalDateTime.now())
+                .updateTime(LocalDateTime.now())
+                .intro(readerJoinRequestDto.getIntro())
+                .grade(defaultCode)
+                .build();
+
+
+        readerRepository.save(reader);
+
+
+    }
+
+    /**
+     * 리더/시커 전환시 엑세스 토큰 재발급
+     * @return
+     */
+    @Override
+    public Cookie changeAccessToken(HttpServletRequest request) {
+
+        long memberId = cookieUtil.getUserId(request);
+        String type = cookieUtil.getMemberType(request);
+        String email = cookieUtil.getMemberEmail(request);
+
+        log.info("{}, {}, {}", memberId, type, email);
+
+        CodeDetail memberCode = null;
+
+        if(type.equals("M01")) { //seaker
+            memberCode = CodeDetail
+                    .builder()
+                    .codeDetailId("M03")
+                    .codeTypeId("0")
+                    .detailDesc("리더")
+                    .build();
+        } else if(type.equals("M03")) { //reader
+            memberCode = CodeDetail
+                    .builder()
+                    .codeDetailId("M01")
+                    .codeTypeId("0")
+                    .detailDesc("시커")
+                    .build();
+        }
+
+        CustomUserInfoDto member = CustomUserInfoDto
+                .builder()
+                .memberId(memberId)
+                .memberType(memberCode)
+                .email(email)
+                .build();
+
+        String newAccessToken = jwtUtil.createAccessToken(member);
+
+        log.info("new AccessToken : {}", newAccessToken);
+
+        // 기존 엑세스 토큰 쿠키 제거
+        Cookie oldTokenCookie = new Cookie("accessToken", "");
+        oldTokenCookie.setMaxAge(0); // 즉시 만료
+        oldTokenCookie.setPath("/"); // 경로 설정
+
+        Cookie newTokenCookie = new Cookie("accessToken", newAccessToken);
+        newTokenCookie.setHttpOnly(true);
+        newTokenCookie.setSecure(true);
+        newTokenCookie.setMaxAge(60 * 60); // 1시간 유효
+        newTokenCookie.setPath("/"); // 경로 설정
+
+
+        return newTokenCookie;
+    }
+
 
 }

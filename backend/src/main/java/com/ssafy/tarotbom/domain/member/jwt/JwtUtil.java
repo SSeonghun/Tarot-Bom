@@ -41,6 +41,12 @@ public class JwtUtil {
     public String createAccessToken(CustomUserInfoDto member){
         return createToken(member, accessTokenExpTime);
     }
+
+//    public String changeAccessToken(CustomUserInfoDto member) {
+//        return createToken(member, accessTokenExpTime);
+//    }
+
+
     public String createRefreshToken(CustomUserInfoDto member) { return createToken(member, refreshTokenExpTime); }
 
     private String createToken(CustomUserInfoDto member, long expireTime){

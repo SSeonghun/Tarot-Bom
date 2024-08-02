@@ -1,13 +1,15 @@
 package com.ssafy.tarotbom.domain.member.controller;
 
 import com.ssafy.tarotbom.domain.member.Service.MemberService;
-import com.ssafy.tarotbom.domain.member.dto.request.EmailCheckReqDto;
-import com.ssafy.tarotbom.domain.member.dto.request.EmailReqDto;
-import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
-import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
+import com.ssafy.tarotbom.domain.member.Service.ReaderService;
+import com.ssafy.tarotbom.domain.member.dto.request.*;
+import com.ssafy.tarotbom.domain.member.dto.response.ReaderDetatilResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.result.ResultCode;
 import com.ssafy.tarotbom.global.dto.LoginResponseDto;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -24,6 +28,7 @@ import jakarta.validation.Valid;
 public class MemberController {
 
     private final MemberService memberService;
+    private final ReaderService readerService;
 
     /*
     @GetMapping("/test")
@@ -79,5 +84,85 @@ public class MemberController {
         }
 
     }
+
+    /**
+     * 리더 만들기 요청
+     * @param readerJoinRequestDto
+     * @return
+     */
+    @PostMapping("/readerjoin")
+    public ResponseEntity<?> readerJoin(@Valid @RequestBody ReaderJoinRequestDto readerJoinRequestDto) {
+
+        memberService.readerJoin(readerJoinRequestDto);
+
+        return null;
+    }
+
+    @PostMapping("/changeAccessToken")
+    public ResponseEntity<?> changeAccessToken(HttpServletRequest request, HttpServletResponse response){
+
+        Cookie newAccessToken = memberService.changeAccessToken(request);
+
+        response.addCookie(newAccessToken);
+
+        return ResponseEntity.status(ResultCode.LOGIN_OK.getStatus()).body("Access token successfully updated.");
+    }
+
+    /////////////// 리더 검색 /////////////////
+
+    /**
+     * 전체 리더조회
+     * @return
+     */
+    @GetMapping("/reader/list")
+    public  ResponseEntity<?> searchAllReader() {
+        List<ReaderListResponseDto> readerList = readerService.searchAllReader();
+
+        log.info("readerListsize : {}", readerList.size());
+        log.info("readerList : {}", readerList.get(0).getMemberId());
+
+        // 리스트를 정상적으로 반환하도록 수정
+        try{
+
+        if (readerList.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 데이터가 없을 경우 No Content 응답
+        }
+        return ResponseEntity.ok(readerList); // 데이터가 있을 경우 OK 응답
+        } catch (Exception e) {
+            log.error("{}", e);
+            return null;
+        }
+    }
+
+    /**
+     * 리더 프로필 상세
+     * @param readerId
+     * @return
+     */
+    @GetMapping("/reader/detail/{readerId}")
+    public ResponseEntity<?> readerDetail(@Valid @PathVariable long readerId) {
+
+        log.info("readerId : {}", readerId);
+
+
+        ReaderDetatilResponseDto readerDetatilResponseDto = readerService.searchReaderDetail(readerId);
+
+        if (readerDetatilResponseDto != null) {
+            // 리더 정보를 성공적으로 가져온 경우
+            return ResponseEntity.ok(readerDetatilResponseDto);
+        } else {
+            // 리더 정보를 찾지 못한 경우 (404 Not Found)
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    /////////////// 마이페이지 //////////////////
+    @GetMapping("/seeker/mypage")
+    public ResponseEntity<?> seekerMypage() {
+        return null;
+    }
+
+
 
 }
