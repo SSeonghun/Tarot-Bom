@@ -47,7 +47,6 @@ const App: React.FC = () => {
           <Route path="/seaker-mypage" element={<SeekerMypage />} />
           <Route path="/reader-mypage" element={<ReaderMypage />} />
           <Route path="/booking" element={<Booking />} />
-
         </Routes>
       </div>
     </Router>
