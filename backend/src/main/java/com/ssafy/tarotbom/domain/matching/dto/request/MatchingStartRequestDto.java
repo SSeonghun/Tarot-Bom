@@ -1,4 +1,4 @@
-package com.ssafy.tarotbom.domain.matching.dto;
+package com.ssafy.tarotbom.domain.matching.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,10 +11,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MatchingInfoDto {
+public class MatchingStartRequestDto {
     private String keyword;
     private String roomStyle;
-    private LocalDateTime matchedTime;
     private String memberType;
     private long memberId;
 }
