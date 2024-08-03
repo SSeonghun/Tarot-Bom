@@ -61,7 +61,7 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/emails/verifications/check")
+    @PostMapping("/emails/check")
     public ResponseEntity<?> verifyCode(@Valid @RequestBody EmailCheckReqDto emailcheckReqDto){
 
         log.info("pinNumber : {} ", emailcheckReqDto.getVerificationCode());
