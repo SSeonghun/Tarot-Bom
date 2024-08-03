@@ -117,24 +117,15 @@ public class ReservationServiceImpl implements ReservationService{
     public List<ReadReservationResponseDto> readReservation(HttpServletRequest request) {
 
         long memberId = cookieUtil.getUserId(request);
+        String memberType = cookieUtil.getMemberType(request);
 
         log.info("memberId : {}", memberId);
-//        log.info("memberId : {}", );
 
-        // todo : 여기서 리더인지 시커인지 쿠키 뜯어서 구분 0 인지 O 인지 구분 해야 할듯
-        // 근데 리더로 전환하면 쿠키를 다시 발급?????
-        // 리프레시 토큰 기반으로??
-        // 해야겠지??
-
-        String memberType = "M03";
-
-//        long readerId = reader.getMemberId();
-        
         List<Reservation> reservations = null;
 
-        if(memberType == "M03") {
+        if(memberType.equals("M03")) {
             reservations = reservationRepository.findAllByReaderId(memberId);
-        } else if (memberType == "M01") {
+        } else if (memberType.equals("M01")) {
             reservations = reservationRepository.findAllBySeekerId(memberId);
         }
 

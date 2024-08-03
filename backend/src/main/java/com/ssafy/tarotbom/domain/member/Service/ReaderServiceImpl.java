@@ -9,6 +9,7 @@ import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
 import com.ssafy.tarotbom.domain.review.entity.repository.ReviewReaderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReaderServiceImpl implements ReaderService{
 
     private final ReaderRepository readerRepository;
@@ -77,11 +79,13 @@ public class ReaderServiceImpl implements ReaderService{
         int allReaservations = 0;
         int afterReader = 0;
 
+        log.info("{}", reader.getGrade().getCodeTypeId());
+        log.info("{}", reader.getGrade().getCodeDetailId());
+
         ReaderDetatilResponseDto readerDetatilResponseDto = ReaderDetatilResponseDto
                 .builder()
                 .memberId(reader.getMemberId())
                 .name(member.getNickname())
-                .memberType(member.getMemberType().getDetailDesc())
                 .keyword(reader.getKeyword().getDetailDesc())
                 .intro(reader.getIntro())
                 .rating(reader.getRating())
