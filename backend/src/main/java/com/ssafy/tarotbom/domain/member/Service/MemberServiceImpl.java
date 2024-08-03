@@ -1,6 +1,7 @@
 package com.ssafy.tarotbom.domain.member.Service;
 
 import com.ssafy.tarotbom.domain.member.dto.request.*;
+import com.ssafy.tarotbom.domain.member.dto.response.ReaderMypageResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.SeekerMypageResponseDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
@@ -13,6 +14,7 @@ import com.ssafy.tarotbom.domain.tarot.dto.TarotResultCardDto;
 import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
 import com.ssafy.tarotbom.domain.tarot.repository.TarotResultRepository;
+import com.ssafy.tarotbom.domain.tarot.service.TarotResultService;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.domain.member.email.EmailTool;
 import com.ssafy.tarotbom.global.code.entity.repository.CodeDetailRepository;
@@ -42,6 +44,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -55,8 +58,8 @@ public class MemberServiceImpl implements MemberService {
     private final TokenService tokenService;
     private final ReaderRepository readerRepository;
     private final CodeDetailRepository codeDetailRepository;
-    private final TarotResultRepository tarotResultRepository;
     private final ReservationService reservationService;
+    private final TarotResultService tarotResultService;
 
     private final RedisTool redisTool;
     private final EmailTool emailTool;
@@ -394,12 +397,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     /**
-     * 최근 타로 내역
+     * 시커 마이페이지
      * @param request
      * @return
      */
     @Override
-    public SeekerMypageResponseDto seekerMypage(HttpServletRequest request, SeekerMypageRequestDto seekerMypageRequestDto) {
+    public SeekerMypageResponseDto seekerMypage(HttpServletRequest request, MypageRequestDto seekerMypageRequestDto) {
 
         // 아이디 가져오기
         long memberId = cookieUtil.getUserId(request);
@@ -407,43 +410,49 @@ public class MemberServiceImpl implements MemberService {
 
         long resultId = 0;
 
+        // 최근 타로 결과 내역
+        List<TarotResultGetResponseDto> tarotResultGetResponseDtos = tarotResultService.getAllTarotResults(memberId);
 
-        // 필요 데이터
-        /*
-        카드정보
-        요약
-        뮤직
-        날짜
-         */
-//        List<TarotResultGetResponseDto> cardDtos = tarotResultRepository
-//                .findByResultId(resultId)
-//                .stream()
-//                .map(card -> TarotResultGetResponseDto.builder()
-//                        .seekerId()
-//                        .readerId()
-//                        .memo()
-//                        .music()
-//                        .summary()
-//                        .cards()
-//                        .date()
-//                        .keyword()
-//                        .build())
-//                .collect(Collectors.toList());
-//
-////        log.info("tarotResult : {}", tarotResults);
-//
-//        List<ReadReservationResponseDto> readReservationResponseDtos = reservationService.readReservation(request);
-//
-//        SeekerMypageResponseDto seekerMypageResponseDto = SeekerMypageResponseDto
-//                .builder()
-//                .isReader(seekerMypageRequestDto.isReader())
-//                .tarotResults(tarotResults)
-//                .reservationList(readReservationResponseDtos)
-//                .email(email)
-//                .name(seekerMypageRequestDto.getName())
-//                .build();
+        // 예약 내역
+        List<ReadReservationResponseDto> readReservationResponseDtos = reservationService.readReservation(request);
 
-        return null;
+        // todo : 찜리스트 추가
+        SeekerMypageResponseDto seekerMypageResponseDto = SeekerMypageResponseDto
+                .builder()
+                .isReader(seekerMypageRequestDto.isReader())
+                .reservationList(readReservationResponseDtos)
+                .tarotResults(tarotResultGetResponseDtos)
+                .email(email)
+                .name(seekerMypageRequestDto.getName())
+                .build();
+
+        return seekerMypageResponseDto;
+    }
+
+    @Override
+    public ReaderMypageResponseDto readerMypage(HttpServletRequest request, MypageRequestDto readerMypageReqeusetDto) {
+
+        long memberId = cookieUtil.getUserId(request);
+        String email = cookieUtil.getMemberEmail(request);
+
+
+        // 최근 타로 결과 내역
+        List<TarotResultGetResponseDto> tarotResultGetResponseDtos = tarotResultService.getAllTarotResults(memberId);
+
+        // 예약 내역
+        List<ReadReservationResponseDto> readReservationResponseDtos = reservationService.readReservation(request);
+
+        // todo : 리뷰 내역
+        ReaderMypageResponseDto readerMypageResponseDto = ReaderMypageResponseDto
+                .builder()
+                .readReservationResponseDtoList(readReservationResponseDtos)
+                .tarotResultGetResponseDtos(tarotResultGetResponseDtos)
+                .email(email)
+                .name(readerMypageReqeusetDto.getName())
+                .build();
+
+
+        return readerMypageResponseDto;
     }
 
 

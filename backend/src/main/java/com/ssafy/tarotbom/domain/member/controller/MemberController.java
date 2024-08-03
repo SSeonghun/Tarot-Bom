@@ -3,10 +3,7 @@ package com.ssafy.tarotbom.domain.member.controller;
 import com.ssafy.tarotbom.domain.member.Service.MemberService;
 import com.ssafy.tarotbom.domain.member.Service.ReaderService;
 import com.ssafy.tarotbom.domain.member.dto.request.*;
-import com.ssafy.tarotbom.domain.member.dto.response.LoginResponseDto;
-import com.ssafy.tarotbom.domain.member.dto.response.ReaderDetatilResponseDto;
-import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
-import com.ssafy.tarotbom.domain.member.dto.response.SeekerMypageResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.*;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.result.ResultCode;
 import jakarta.servlet.http.Cookie;
@@ -151,11 +148,24 @@ public class MemberController {
 
     /////////////// 마이페이지 //////////////////
     @GetMapping("/seeker/mypage")
-    public ResponseEntity<?> seekerMypage(@Valid @RequestBody SeekerMypageRequestDto seekerMypageRequestDto , HttpServletRequest request) {
+    public ResponseEntity<?> seekerMypage(@Valid @RequestBody MypageRequestDto seekerMypageRequestDto , HttpServletRequest request) {
+
+        log.info("processing");
 
         SeekerMypageResponseDto seekerMypageResponseDto = memberService.seekerMypage(request, seekerMypageRequestDto);
 
+        log.info("success");
+
         return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(seekerMypageResponseDto);
+    }
+
+    @GetMapping("/reader/mypage")
+    public ResponseEntity<?> readerMypage(@Valid @RequestBody MypageRequestDto readerMypageRequestDto, HttpServletRequest request) {
+
+        ReaderMypageResponseDto readerMypageResponseDto = memberService.readerMypage(request, readerMypageRequestDto);
+        log.info("readerMypage");
+
+        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(readerMypageResponseDto);
     }
 
 

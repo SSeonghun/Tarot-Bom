@@ -1,10 +1,11 @@
 package com.ssafy.tarotbom.domain.member.Service;
 
 import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
+import com.ssafy.tarotbom.domain.member.dto.request.MypageRequestDto;
 import com.ssafy.tarotbom.domain.member.dto.request.ReaderJoinRequestDto;
-import com.ssafy.tarotbom.domain.member.dto.request.SeekerMypageRequestDto;
 import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
 import com.ssafy.tarotbom.domain.member.dto.response.LoginResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.ReaderMypageResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.SeekerMypageResponseDto;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,5 +23,7 @@ public interface MemberService{
 
     Cookie changeAccessToken(HttpServletRequest request);
 
-    SeekerMypageResponseDto seekerMypage(HttpServletRequest request, SeekerMypageRequestDto seekerMypageRequestDto);
+    SeekerMypageResponseDto seekerMypage(HttpServletRequest request, MypageRequestDto seekerMypageRequestDto);
+
+    ReaderMypageResponseDto readerMypage(HttpServletRequest request, MypageRequestDto readerMypageReqeusetDto);
 }
