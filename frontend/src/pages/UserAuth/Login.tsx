@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./login.css";
 import InputField from "../../components/login_signup/InputField";
 import SubmitButton from "../../components/login_signup/SubmitButton";
-import useStore from '../../stores/store'
+import useUserStore from '../../stores/store'
 
 
 const { login } = require("../../API/userApi");
@@ -14,7 +14,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
 
-  const store = useStore();
+  const store = useUserStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,7 +56,9 @@ const Login: React.FC = () => {
       // window.location.href = "/";
       navigate("/");
     } catch (error) {
+      alert("이메일과 비밀번호를 다시 확인하세요");
       console.error("로그인 중 오류 발생", error);
+      setPassword("");
     }
   };
 

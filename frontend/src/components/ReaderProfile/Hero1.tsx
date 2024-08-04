@@ -6,6 +6,8 @@ import Profile from "../../assets/img/profile2.png";
 import Seed from "../../assets/img/seed.png";
 
 const Hero1: React.FC = () => {
+
+  
   return (
     <div className="relative bg-black bg-opacity-70">
       <img
