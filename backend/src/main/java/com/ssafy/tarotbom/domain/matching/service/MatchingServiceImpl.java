@@ -2,13 +2,11 @@ package com.ssafy.tarotbom.domain.matching.service;
 
 import com.ssafy.tarotbom.domain.matching.dto.MatchingInfoDto;
 import com.ssafy.tarotbom.domain.matching.dto.request.MatchingStartRequestDto;
-import com.ssafy.tarotbom.global.error.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -59,12 +57,6 @@ public class MatchingServiceImpl implements MatchingService {
      * */
     @Override
     public boolean startMatching(MatchingStartRequestDto dto) {
-        // [0] 이미 매칭 중인 멤버인지 확인함과 동시에 매칭중임을 표기
-        // 만일 이미 매칭 중인 멤버라면 돌려보낸다.
-        if(!setMatchingStatusStart(dto.getMemberId())){
-            // return false;
-        }
-
         // [1] 매칭 조건이 동일한 상대가 있는지 확인
         // 매칭할 수 있는 상대가 있다면, 해당 매칭 상대를 매칭 큐에서 제외한 후, 매칭 확인 파트로 넘어간다
         long seekerId = 0;
