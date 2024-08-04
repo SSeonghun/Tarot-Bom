@@ -130,9 +130,46 @@ public class TarotResultServiceImpl implements TarotResultService {
      */
     @Transactional
     @Override
-    public List<TarotResultGetResponseDto> getAllTarotResults(long userId) {
+    public List<TarotResultGetResponseDto> getAllTarotResultsBySeekerId(long userId) {
 
         List<TarotResult> tarotResults = tarotResultRepository.findAllBySeekerId(userId);
+
+        log.info("{}", tarotResults.size());
+
+//        if (tarotResults.isEmpty()) {
+//            throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_FOUND);
+//        }
+
+        return tarotResults.stream()
+                .map(result -> {
+                    // 카드 리스트 정보 채우기
+                    List<TarotResultCardDto> cards = new ArrayList<>();
+                    for (TarotResultCard c : result.getCardList()) {
+                        String direction = (c.getDirection() == TarotDirection.R) ? "reversed" : "upright";
+                        cards.add(TarotResultCardDto.builder()
+                                .cardId(c.getCard().getCardId())
+                                .sequence(c.getSequence())
+                                .direction(direction)
+                                .build());
+                    }
+
+                    return TarotResultGetResponseDto.builder()
+                            .readerId(result.getReaderId())
+                            .seekerId(result.getSeekerId())
+                            .date(result.getDate())
+                            .keyword(result.getKeywords())
+                            .memo(result.getMemo())
+                            .summary(result.getSummary())
+                            .music(result.getMusic())
+                            .cards(cards)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TarotResultGetResponseDto> getAllTarotResultsByReaderId(long memberId) {
+        List<TarotResult> tarotResults = tarotResultRepository.findAllByReaderId(memberId);
 
         log.info("{}", tarotResults.size());
 

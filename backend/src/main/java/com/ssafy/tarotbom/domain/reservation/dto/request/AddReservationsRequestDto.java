@@ -18,6 +18,6 @@ public class AddReservationsRequestDto {
     private LocalDateTime startTime;
     private int price;
     private String worry;
-    private CodeDetail keyword;
-    private CodeDetail roomStyle;
+    private String keyword;
+    private String roomStyle;
 }

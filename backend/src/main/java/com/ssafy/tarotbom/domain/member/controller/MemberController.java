@@ -87,6 +87,12 @@ public class MemberController {
         return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("만들기 성공");
     }
 
+    /**
+     * 리더 시커 전환
+     * @param request
+     * @param response
+     * @return
+     */
     @PostMapping("/changeAccessToken")
     public ResponseEntity<?> changeAccessToken(HttpServletRequest request, HttpServletResponse response){
 
@@ -123,6 +129,15 @@ public class MemberController {
         }
     }
 
+    @DeleteMapping("/logout")
+    public ResponseEntity<?> logout (HttpServletRequest request) {
+
+        memberService.logout(request);
+
+        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("로그아웃 성공");
+    }
+
+
     /**
      * 리더 프로필 상세
      * @param readerId
@@ -148,9 +163,13 @@ public class MemberController {
 
     /////////////// 마이페이지 //////////////////
     @GetMapping("/seeker/mypage")
-    public ResponseEntity<?> seekerMypage(@Valid @RequestBody MypageRequestDto seekerMypageRequestDto , HttpServletRequest request) {
+    public ResponseEntity<?> seekerMypage(@RequestParam boolean isReader, @RequestParam String name, HttpServletRequest request) {
 
-        log.info("processing");
+        MypageRequestDto seekerMypageRequestDto = MypageRequestDto.builder()
+                .isReader(isReader)
+                .name(name)
+                .build();
+        log.info("processing , {}", seekerMypageRequestDto.isReader());
 
         SeekerMypageResponseDto seekerMypageResponseDto = memberService.seekerMypage(request, seekerMypageRequestDto);
 
