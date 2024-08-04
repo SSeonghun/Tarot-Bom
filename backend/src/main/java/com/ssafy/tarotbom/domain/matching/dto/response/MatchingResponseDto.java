@@ -8,4 +8,5 @@ import lombok.Getter;
 public class MatchingResponseDto {
     private MatchingResponseType responseType;
     private String message;
+    private Object data;
 }

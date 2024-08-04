@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class MatchingInfoDto {
@@ -17,4 +17,5 @@ public class MatchingInfoDto {
     private LocalDateTime matchedTime;
     private String memberType;
     private long memberId;
+    private boolean inConfirm;
 }

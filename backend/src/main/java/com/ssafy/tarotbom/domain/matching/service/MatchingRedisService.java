@@ -15,6 +15,7 @@ public class MatchingRedisService {
 
     public boolean setMatchingStatusStart(String key, long memberId){
         SetOperations<String, Object> sets = redisTemplate.opsForSet();
+        log.info("setMatchingStatusStart:memberId:{} / key:{}",memberId, key);
         if(sets.isMember(key, memberId)){
             log.info("이미 매칭 중인 회원 : {}", memberId);
             return false;
