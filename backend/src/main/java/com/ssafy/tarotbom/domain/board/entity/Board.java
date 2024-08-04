@@ -26,14 +26,13 @@ public class Board {
     private long boardId;
 
     /* @ManyToOne으로 연결 : 작성자ID, 게시글유형 */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", insertable = false, updatable = false)
     private Member member;
 
-    @NotNull
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_type")
+    @JoinColumn(name = "board_type", insertable = false, updatable = false)
     private CodeDetail boardType;
 
     @NotNull
@@ -65,6 +64,14 @@ public class Board {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "board", cascade = CascadeType.ALL)
     List<Likely> likelyList;
+
+    @NotNull
+    @Column(name = "member_id")
+    private long memberId;
+
+    @NotNull
+    @Column(name = "board_type")
+    private String category;
 
     // create time, update time 자동갱신
     @PrePersist
