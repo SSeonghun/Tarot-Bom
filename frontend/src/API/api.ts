@@ -2,7 +2,7 @@ import axios from "axios";
 import { error } from "console";
 
 
-const API_URL = "http://localhost/tarotbom/";
+const API_URL = "https://i11c208.p.ssafy.io/tarotbom/";
 
 const readerList = async (page: number, name: string) => {
   try {

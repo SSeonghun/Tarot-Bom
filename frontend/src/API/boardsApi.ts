@@ -1,7 +1,7 @@
 import axios from "axios";
 import { error } from "console";
 
-const API_URL = "http://localhost/tarotbom/boards/";
+const API_URL = "https://i11c208.p.ssafy.io/tarotbom/boards/";
 
 const boardWrite = async (
   memberId: number,

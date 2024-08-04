@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./login.css";
 import InputField from "../../components/login_signup/InputField";
 import SubmitButton from "../../components/login_signup/SubmitButton";
-import useStore from '../../stores/store'
+import useUserStore from '../../stores/store'
 
 
 const { login } = require("../../API/userApi");
@@ -14,7 +14,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
 
-  const store = useStore();
+  const store = useUserStore();
   const navigate = useNavigate();
 
   useEffect(() => {
