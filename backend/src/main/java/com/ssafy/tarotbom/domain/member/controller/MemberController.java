@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.member.controller;
 
+import com.ssafy.tarotbom.domain.member.Service.FavoriteReaderService;
 import com.ssafy.tarotbom.domain.member.Service.MemberService;
 import com.ssafy.tarotbom.domain.member.Service.ReaderService;
 import com.ssafy.tarotbom.domain.member.dto.request.*;
@@ -26,6 +27,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final ReaderService readerService;
+    private final FavoriteReaderService favoriteReaderService;
 
     /*
     @GetMapping("/test")
@@ -87,6 +89,12 @@ public class MemberController {
         return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("만들기 성공");
     }
 
+    /**
+     * 리더 시커 전환
+     * @param request
+     * @param response
+     * @return
+     */
     @PostMapping("/changeAccessToken")
     public ResponseEntity<?> changeAccessToken(HttpServletRequest request, HttpServletResponse response){
 
@@ -123,6 +131,14 @@ public class MemberController {
         }
     }
 
+    @DeleteMapping("/logout")
+    public ResponseEntity<?> logout (HttpServletRequest request) {
+
+        memberService.logout(request);
+
+        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("로그아웃 성공");
+    }
+
     /**
      * 리더 프로필 상세
      * @param readerId
@@ -145,12 +161,53 @@ public class MemberController {
         }
     }
 
+    /////////////// 리더 찜 관련 /////////////////
+
+    /**
+     * 리더 찜하기
+     * @param favoriteReaderRequestDto
+     * @return
+     */
+    @PostMapping("/favorite/reader")
+    public  ResponseEntity<?> addFavoriteReader(@Valid @RequestBody FavoriteReaderRequestDto favoriteReaderRequestDto){
+
+        favoriteReaderService.addFavoriteReader(favoriteReaderRequestDto);
+
+        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("찜완료");
+    }
+
+    /**
+     * 시커 입장 찜 내역 조회
+     * @param request
+     * @return
+     */
+    @GetMapping("/favorite/list")
+    public ResponseEntity<?> searchFavoriteReader(HttpServletRequest request) {
+
+        favoriteReaderService.searchFavoriteReader(request);
+
+        return null;
+    }
+    
+
 
     /////////////// 마이페이지 //////////////////
-    @GetMapping("/seeker/mypage")
-    public ResponseEntity<?> seekerMypage(@Valid @RequestBody MypageRequestDto seekerMypageRequestDto , HttpServletRequest request) {
 
-        log.info("processing");
+    /**
+     * 시커 마이페이지
+     * @param isReader
+     * @param name
+     * @param request
+     * @return
+     */
+    @GetMapping("/seeker/mypage")
+    public ResponseEntity<?> seekerMypage(@RequestParam boolean isReader, @RequestParam String name, HttpServletRequest request) {
+
+        MypageRequestDto seekerMypageRequestDto = MypageRequestDto.builder()
+                .isReader(isReader)
+                .name(name)
+                .build();
+        log.info("processing , {}", seekerMypageRequestDto.isReader());
 
         SeekerMypageResponseDto seekerMypageResponseDto = memberService.seekerMypage(request, seekerMypageRequestDto);
 
@@ -159,6 +216,12 @@ public class MemberController {
         return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(seekerMypageResponseDto);
     }
 
+    /**
+     * 리더 마이페이지
+     * @param readerMypageRequestDto
+     * @param request
+     * @return
+     */
     @GetMapping("/reader/mypage")
     public ResponseEntity<?> readerMypage(@Valid @RequestBody MypageRequestDto readerMypageRequestDto, HttpServletRequest request) {
 

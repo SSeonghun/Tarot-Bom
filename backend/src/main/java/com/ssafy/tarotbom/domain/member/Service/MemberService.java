@@ -26,4 +26,6 @@ public interface MemberService{
     SeekerMypageResponseDto seekerMypage(HttpServletRequest request, MypageRequestDto seekerMypageRequestDto);
 
     ReaderMypageResponseDto readerMypage(HttpServletRequest request, MypageRequestDto readerMypageReqeusetDto);
+
+    void logout(HttpServletRequest request);
 }
