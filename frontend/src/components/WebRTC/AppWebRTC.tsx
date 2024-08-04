@@ -122,7 +122,7 @@ function AppWebRTC() {
      * access to the endpoints.
      */
     async function getToken(roomName: string, participantName: string) {
-        const response = await fetch(APPLICATION_SERVER_URL + "token", {
+        const response = await fetch(APPLICATION_SERVER_URL + "tarotbom/openvidu/token", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
