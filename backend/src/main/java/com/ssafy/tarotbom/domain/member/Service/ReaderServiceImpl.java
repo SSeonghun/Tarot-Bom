@@ -7,7 +7,7 @@ import com.ssafy.tarotbom.domain.member.entity.Reader;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
-import com.ssafy.tarotbom.domain.review.entity.repository.ReviewReaderRepository;
+import com.ssafy.tarotbom.domain.review.repository.ReviewReaderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,7 +65,7 @@ public class ReaderServiceImpl implements ReaderService{
 
         Reader reader = readerRepository.findById(readerId);
         // Optional : null 값 반환을 막기 위한 클래스
-        Optional<Reader> reviewReader = reviewReaderRepository.findById(readerId);
+        Optional<ReviewReader> reviewReader = reviewReaderRepository.findById(readerId);
         
         // 리더 이름을 가져오기위함
         Optional<Member> isMember = memberRepository.findMemberByMemberId(readerId);
