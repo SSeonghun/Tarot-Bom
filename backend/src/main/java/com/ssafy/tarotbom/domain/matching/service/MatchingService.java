@@ -8,5 +8,7 @@ public interface MatchingService {
     public boolean setMatchingStatusEnd(long memberId);
 
     public MatchingInfoDto searchToMatching(MatchingInfoDto dto);
+    public boolean offerToMatchingQueue(MatchingInfoDto dto);
+    public boolean confirmMatching(MatchingInfoDto myDto, MatchingInfoDto candidateDto);
 
 }

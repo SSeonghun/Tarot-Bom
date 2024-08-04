@@ -79,6 +79,36 @@ public class MatchingServiceImpl implements MatchingService {
         return null;
     }
 
+    /**
+     * <pre>
+     * public boolean offerToMatchingQueue(MatchingInfoDto dto)
+     * 입력된 정보를 기반으로 큐에 dto를 삽입합니다.
+     * 실패했다면 false를 반환합니다.
+     * </pre>
+     */
+    @Override
+    public boolean offerToMatchingQueue(MatchingInfoDto dto) {
+        BlockingQueue<MatchingInfoDto> putQueue;
+        if(dto.getMemberType().equals("reader")){
+            putQueue = readerMatchingQueue;
+        } else {
+            putQueue = seekerMatchingQueue;
+        }
+        return putQueue.offer(dto);
+    }
+
+    /**
+     * <pre>
+     * public boolean confirmMatching(MatchingInfoDto myDto, MatchingInfoDto candidateDto)
+     * myDto를 기반으로 candidateDto간의 매칭 확인을 합니다.
+     * 만일 확인할 수 없었다면
+     * </pre>
+     */
+    @Override
+    public boolean confirmMatching(MatchingInfoDto myDto, MatchingInfoDto candidateDto) {
+        return false;
+    }
+
 
     // 매칭 성립 조건 : keyword, roomStyle이 동일하며, memberType는 매칭 요청 대상자와 반대여야 한다
     private boolean isMatched(MatchingInfoDto searchingDto, MatchingInfoDto myDto) {

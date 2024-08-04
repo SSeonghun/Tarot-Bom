@@ -33,4 +33,13 @@ public class MatchingRedisService {
         sets.remove(key, memberId);
         return true;
     }
+
+    public boolean confirmMatching(String key, long memberId, long candidateId) {
+        SetOperations<String, Object> sets = redisTemplate.opsForSet();
+        sets.add(key, memberId);
+        // 만일 상대방이 매칭 확인을 한 상태라면 true, 확인을 안 한 상태라면 false를 반환
+        if(sets.isMember(key, candidateId)){
+            return true;
+        } else return false;
+    }
 }
