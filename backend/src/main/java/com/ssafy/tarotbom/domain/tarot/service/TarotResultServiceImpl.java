@@ -3,6 +3,7 @@ package com.ssafy.tarotbom.domain.tarot.service;
 import com.ssafy.tarotbom.domain.tarot.dto.TarotResultCardDto;
 import com.ssafy.tarotbom.domain.tarot.dto.request.TarotResultSaveRequestDto;
 import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
+import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultSaveResponseDto;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotCard;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotDirection;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
@@ -36,7 +37,7 @@ public class TarotResultServiceImpl implements TarotResultService {
      * */
     @Override
     @Transactional
-    public void saveTarotResult(TarotResultSaveRequestDto dto) {
+    public TarotResultSaveResponseDto saveTarotResult(TarotResultSaveRequestDto dto) {
         // 배열 구성 완료
         // 먼저 save할 TarotResult entity를 구성한다
         TarotResult tarotResult = TarotResult.builder()
@@ -72,6 +73,13 @@ public class TarotResultServiceImpl implements TarotResultService {
         // 삽입할 list 구성 종료
         // 값을 삽입한다.
         tarotResultCardRepository.saveAll(cardList);
+
+        TarotResultSaveResponseDto tarotResultSaveResponseDto = TarotResultSaveResponseDto
+                .builder()
+                .result_id(savedResult.getResultId())
+                .build();
+
+        return null;
     }
 
     /** <pre>

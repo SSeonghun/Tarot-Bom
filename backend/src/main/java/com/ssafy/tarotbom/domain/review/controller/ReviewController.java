@@ -25,7 +25,7 @@ public class ReviewController {
      * @return
      */
     @GetMapping("/{readerId}")
-    public ResponseEntity<?> getReview (@Valid @PathVariable long readerId) {
+    public ResponseEntity<?> getReviewE(@Valid @PathVariable long readerId) {
 
         ReviewResponseDto reviewResponseDto = reviewService.getAllReviews(readerId);
 
@@ -33,10 +33,10 @@ public class ReviewController {
     }
 
     @PutMapping("/add")
-    public ResponseEntity<?> addReview (@Valid HttpServletRequest request, @RequestBody ReviewAddRequestDto reviewAddRequestDto) {
+    public ResponseEntity<?> addReview (@RequestBody ReviewAddRequestDto reviewAddRequestDto, HttpServletRequest request) {
 
         reviewService.addReview(request, reviewAddRequestDto);
 
-        return null;
+        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("ok");
     }
 }

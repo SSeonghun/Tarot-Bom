@@ -8,6 +8,8 @@ import com.ssafy.tarotbom.domain.review.dto.request.ReviewAddRequestDto;
 import com.ssafy.tarotbom.domain.review.dto.response.ReviewResponseDto;
 import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
 import com.ssafy.tarotbom.domain.review.repository.ReviewReaderRepository;
+import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
+import com.ssafy.tarotbom.domain.tarot.repository.TarotResultRepository;
 import com.ssafy.tarotbom.global.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewReaderRepository reviewReaderRepository;
     private final CookieUtil cookieUtil;
     private final MemberRepository memberRepository;
+    private final TarotResultRepository tarotResultRepository;
 
     /**
      * 특정 회원의 모든 리뷰를 조회합니다.
@@ -38,6 +41,8 @@ public class ReviewServiceImpl implements ReviewService {
         Optional<Member> reader = memberRepository.findMemberByMemberId(memberId);
 
         List<ReviewReader> reviewReaders = reviewReaderRepository.findByReader(reader);
+
+//        TarotResult tarotResult = tarotResultRepository.findByResultId();
 
         // ReviewReader를 ReviewReaderDto로 변환
         List<ReviewReaderDto> reviewReaderDtos = reviewReaders.stream()
@@ -65,6 +70,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         Optional<Member> reader = memberRepository.findMemberByMemberId(reviewAddRequestDto.getReaderId());
         Optional<Member> member = memberRepository.findMemberByMemberId(seekerId);
+        TarotResult result = tarotResultRepository.findByResultId(reviewAddRequestDto.getResultId());
 
         ReviewReader reviewReader = ReviewReader
                 .builder()
@@ -74,6 +80,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .content(reviewAddRequestDto.getContent())
                 .createTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
+                .result(result)
                 .build();
 
         reviewReaderRepository.save(reviewReader);

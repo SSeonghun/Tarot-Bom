@@ -2,6 +2,7 @@ package com.ssafy.tarotbom.domain.member.Service;
 
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderDetatilResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.ReviewReaderResponseDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
@@ -81,6 +82,10 @@ public class ReaderServiceImpl implements ReaderService{
 
         log.info("{}", reader.getGrade().getCodeTypeId());
         log.info("{}", reader.getGrade().getCodeDetailId());
+        
+        //todo: 리뷰 리스트 생성에서 넣어주기
+        // 리뷰 리스트 생성
+
 
         ReaderDetatilResponseDto readerDetatilResponseDto = ReaderDetatilResponseDto
                 .builder()

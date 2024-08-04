@@ -4,6 +4,7 @@ import com.ssafy.tarotbom.domain.member.dto.ReaderAnalyzeDto;
 import com.ssafy.tarotbom.domain.member.dto.SeekerAnalyzeDto;
 import com.ssafy.tarotbom.domain.member.dto.request.*;
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderMypageResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.ReviewReaderResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.SeekerMypageResponseDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
@@ -12,6 +13,8 @@ import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.service.ReservationService;
+import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
+import com.ssafy.tarotbom.domain.review.repository.ReviewReaderRepository;
 import com.ssafy.tarotbom.domain.tarot.dto.TarotResultCardDto;
 import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
@@ -60,6 +63,7 @@ public class MemberServiceImpl implements MemberService {
     private final CodeDetailRepository codeDetailRepository;
     private final ReservationService reservationService;
     private final TarotResultService tarotResultService;
+    private final ReviewReaderRepository reviewReaderRepository;
 
     private final RedisTool redisTool;
     private final EmailTool emailTool;
@@ -511,6 +515,8 @@ public class MemberServiceImpl implements MemberService {
         long memberId = cookieUtil.getUserId(request);
         String email = cookieUtil.getMemberEmail(request);
 
+        Member reader = memberRepository.getReferenceById(memberId);
+
 
         // 최근 타로 결과 내역
         List<TarotResultGetResponseDto> tarotResultGetResponseDtos = tarotResultService.getAllTarotResultsByReaderId(memberId);
@@ -583,6 +589,19 @@ public class MemberServiceImpl implements MemberService {
         // 예약 내역
         List<ReadReservationResponseDto> readReservationResponseDtos = reservationService.readReservation(request);
 
+        List<ReviewReader> reviewReaders = reviewReaderRepository.findByReader(Optional.of(reader));
+        List<ReviewReaderResponseDto> reviewList = reviewReaders.stream()
+                .map(review -> ReviewReaderResponseDto.builder()
+                        .reviewReaderId(String.valueOf(review.getReviewReaderId()))
+                        .seekerId(String.valueOf(review.getSeeker().getMemberId()))
+                        .readerId(String.valueOf(review.getReader().getMemberId()))
+                        .rating(review.getRating())
+                        .content(review.getContent())
+                        .createTime(review.getCreateTime())
+                        .updateTime(review.getUpdateTime())
+                        .build())
+                .collect(Collectors.toList());
+
         // todo : 리뷰 내역
         ReaderMypageResponseDto readerMypageResponseDto = ReaderMypageResponseDto
                 .builder()
@@ -593,6 +612,7 @@ public class MemberServiceImpl implements MemberService {
                 .categoryanalyze(analyzeDto)
                 .monthlyanalyze(monthlyDto)
                 .name(readerMypageReqeusetDto.getName())
+                .reviewReaderResponseDtos(reviewList)
                 .build();
 
 

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewAddRequestDto {
+    private long resultId;
     private long readerId;
     private int rating;
     private String content;
