@@ -1,6 +1,6 @@
 package com.ssafy.tarotbom.domain.member.jwt;
 
-import com.ssafy.tarotbom.domain.member.Service.TokenService;
+import com.ssafy.tarotbom.domain.member.service.TokenService;
 import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
 import com.ssafy.tarotbom.global.security.CustomUserDetails;
 import com.ssafy.tarotbom.global.security.CustomUserDetailsService;
@@ -11,9 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.connector.Response;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
