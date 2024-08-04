@@ -56,7 +56,9 @@ const Login: React.FC = () => {
       // window.location.href = "/";
       navigate("/");
     } catch (error) {
+      alert("이메일과 비밀번호를 다시 확인하세요");
       console.error("로그인 중 오류 발생", error);
+      setPassword("");
     }
   };
 
