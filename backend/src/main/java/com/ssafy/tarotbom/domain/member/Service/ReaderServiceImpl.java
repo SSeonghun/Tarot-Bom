@@ -7,12 +7,18 @@ import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
+import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
+import com.ssafy.tarotbom.domain.reservation.repository.ReservationRepository;
 import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
 import com.ssafy.tarotbom.domain.review.repository.ReviewReaderRepository;
+import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
+import com.ssafy.tarotbom.domain.tarot.repository.TarotResultRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +31,8 @@ public class ReaderServiceImpl implements ReaderService{
     private final ReaderRepository readerRepository;
     private final ReviewReaderRepository reviewReaderRepository;
     private final MemberRepository memberRepository;
+    private final ReservationRepository reservationRepository;
+    private final TarotResultRepository tarotResultRepository;
 
     /**
      * 리더 리스트 전체 반환
@@ -75,10 +83,20 @@ public class ReaderServiceImpl implements ReaderService{
         // 값이 있으면
         Member member = isMember.get();
 
+        List<Reservation> reservations = reservationRepository.findAllByReaderId(readerId);
+        int allReaservations = reservations.size();
+
+        List<TarotResult> tarotResults = tarotResultRepository.findAllByReaderId(readerId);
+        int allConserting = tarotResults.size();
+
+        LocalDateTime createTime = reader.getCreateTime();
+        LocalDateTime now = LocalDateTime.now();
+        // int로 반환?
+        int afterReader = (int) ChronoUnit.DAYS.between(createTime, now);
+
+
+
         // todo: 상담횟수, 예약횟수, 리더가 된지 몇일? 비즈니스 로직 필요
-        int allConserting = 0;
-        int allReaservations = 0;
-        int afterReader = 0;
 
         log.info("{}", reader.getGrade().getCodeTypeId());
         log.info("{}", reader.getGrade().getCodeDetailId());

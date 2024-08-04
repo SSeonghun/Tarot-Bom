@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.member.controller;
 
+import com.ssafy.tarotbom.domain.member.Service.FavoriteReaderService;
 import com.ssafy.tarotbom.domain.member.Service.MemberService;
 import com.ssafy.tarotbom.domain.member.Service.ReaderService;
 import com.ssafy.tarotbom.domain.member.dto.request.*;
@@ -26,6 +27,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final ReaderService readerService;
+    private final FavoriteReaderService favoriteReaderService;
 
     /*
     @GetMapping("/test")
@@ -137,7 +139,6 @@ public class MemberController {
         return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("로그아웃 성공");
     }
 
-
     /**
      * 리더 프로필 상세
      * @param readerId
@@ -158,6 +159,16 @@ public class MemberController {
             // 리더 정보를 찾지 못한 경우 (404 Not Found)
             return ResponseEntity.notFound().build();
         }
+    }
+
+    /////////////// 리더 찜 관련 /////////////////
+
+    @PostMapping("/favorite/reader")
+    public  ResponseEntity<?> addFavoriteReader(@Valid @RequestBody FavoriteReaderRequestDto favoriteReaderRequestDto){
+
+        favoriteReaderService.addFavoriteReader(favoriteReaderRequestDto);
+
+        return null;
     }
 
 

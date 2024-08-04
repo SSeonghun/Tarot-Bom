@@ -3,6 +3,7 @@ package com.ssafy.tarotbom.domain.review.service;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
+import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.domain.review.dto.ReviewReaderDto;
 import com.ssafy.tarotbom.domain.review.dto.request.ReviewAddRequestDto;
 import com.ssafy.tarotbom.domain.review.dto.response.ReviewResponseDto;
@@ -29,6 +30,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final CookieUtil cookieUtil;
     private final MemberRepository memberRepository;
     private final TarotResultRepository tarotResultRepository;
+    private final ReaderRepository readerRepository;
 
     /**
      * 특정 회원의 모든 리뷰를 조회합니다.
@@ -72,11 +74,29 @@ public class ReviewServiceImpl implements ReviewService {
         Optional<Member> member = memberRepository.findMemberByMemberId(seekerId);
         TarotResult result = tarotResultRepository.findByResultId(reviewAddRequestDto.getResultId());
 
+        Optional<Member> optReader = Optional.ofNullable(readerRepository.findById(reviewAddRequestDto.getReaderId()).getMember());
+
+        List<ReviewReader> reviewReaders = reviewReaderRepository.findByReader(optReader);
+
+        //리뷰 내역 조회후 평균
+        // 처음 등록되는 거면
+
+        double rating = 0;
+
+        // 처음 등록
+        if(reviewReaders.size() == 0) {
+            rating = reviewAddRequestDto.getRating();
+        } else { // 등록 되어있다면 평균을 다시 계산
+            double totalRating = optReader.get().getReader().getRating() * reviewReaders.size();
+            totalRating += reviewAddRequestDto.getRating();
+            rating = totalRating / (reviewReaders.size() + 1);
+        }
+        // todo: rating int -> double
         ReviewReader reviewReader = ReviewReader
                 .builder()
                 .reader(reader.get())
                 .seeker(member.get())
-                .rating(reviewAddRequestDto.getRating())
+                .rating((int) rating)
                 .content(reviewAddRequestDto.getContent())
                 .createTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
