@@ -1,14 +1,13 @@
 // userApi.ts
 import axios from "axios";
-import { error } from "console";
 
 
 const API_URL = "https://i11c208.p.ssafy.io/tarotbom/user/";
 
+
 const signup = async (nickname: string, email: string, password: string) => {
   console.log(nickname, email, password);
 
-  
 
   try {
     const response = await axios.post(API_URL + "signup", {

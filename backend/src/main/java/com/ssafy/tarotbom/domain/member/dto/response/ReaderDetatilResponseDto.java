@@ -16,7 +16,6 @@ import java.util.List;
 public class ReaderDetatilResponseDto {
     private long memberId;
     private String name;
-    private String memberType;
     private String keyword;
     private String intro;
     private double rating;

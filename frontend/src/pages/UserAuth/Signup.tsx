@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./login.css";
 import InputField from "../../components/login_signup/InputField";
 import SubmitButton from "../../components/login_signup/SubmitButton";
-import LinkButton from "../../components/login_signup/LinkButton";
 import { Link } from "react-router-dom";
-import axios from "axios"; // Add this import
+
 
 const { signup } = require("../../API/userApi"); // api.js에서 signup 함수를 import
 const {
@@ -114,7 +113,7 @@ const Signup: React.FC = () => {
     }
 
     try {
-      const result = await emailVerificationApi(email);
+      await emailVerificationApi(email);
       console.log("인증번호 발송");
       alert("인증번호 전송");
     } catch (error) {
@@ -127,7 +126,7 @@ const Signup: React.FC = () => {
     console.log(pinNumber);
 
     try {
-      const result = await emailVerificationCheckApi(email, pinNumber);
+      await emailVerificationCheckApi(email, pinNumber);
       alert("인증 성공");
       console.log("인증성공");
       setVerifyEmail(true);

@@ -1,6 +1,5 @@
 package com.ssafy.tarotbom.domain.member.dto.request;
 
-import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,8 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReaderJoinRequestDto {
-    private long seekerId;
-    private String keyword;
-    private String intro;
+public class MypageRequestDto {
+    private boolean isReader; // 리더 가입 여부
+    private String name;
 }
