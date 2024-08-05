@@ -31,6 +31,7 @@ public enum ErrorCode {
     // Board
     BOARD_EMPTY(HttpStatus.NOT_FOUND, "B001", "게시글이 존재하지 않습니다."),
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "B002", "해당하는 게시글을 찾을 수 없습니다."),
+    BOARD_NOT_YOUR_BOARD(HttpStatus.FORBIDDEN, "B003", "게시글을 수정할 권한이 없습니다."),
 
     // Dto
     DTO_NOT_NULL(HttpStatus.BAD_REQUEST, "D001", "값이 Null일 수 없습니다.")

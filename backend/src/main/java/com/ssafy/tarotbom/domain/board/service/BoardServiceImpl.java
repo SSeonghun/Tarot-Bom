@@ -1,8 +1,10 @@
 package com.ssafy.tarotbom.domain.board.service;
 
+import com.ssafy.tarotbom.domain.board.dto.request.BoardUpdateReqDto;
 import com.ssafy.tarotbom.domain.board.dto.request.BoardWriteReqDto;
 import com.ssafy.tarotbom.domain.board.dto.response.BoardDetailResDto;
 import com.ssafy.tarotbom.domain.board.dto.response.BoardListResDto;
+import com.ssafy.tarotbom.domain.board.dto.response.BoardUpdateResDto;
 import com.ssafy.tarotbom.domain.board.dto.response.BoardWriteResDto;
 import com.ssafy.tarotbom.domain.board.entity.Board;
 import com.ssafy.tarotbom.domain.board.repository.BoardRepository;
@@ -25,8 +27,6 @@ import java.util.stream.Collectors;
 public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
-    private final MemberRepository memberRepository;
-
 
     // 게시판 생성 시 : memberId, 카테고리(공지, 카드정보 등), 제목, 내용
     // 게시판 생성 성공하면 결과로 해당 정보 알려줌.
@@ -79,24 +79,43 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public BoardDetailResDto getDetailBoard(long boardId){
-        Board board = boardRepository.findBoardByBoardId(boardId);
-
-        if(board == null){
-            throw new BusinessException(ErrorCode.BOARD_NOT_FOUND);
-        }
-
-        Member member = memberRepository.findMemberByMemberId(board.getMemberId()).orElseThrow(
-                ()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        Board board = boardRepository.findBoardByBoardId(boardId).orElseThrow(
+                () ->new BusinessException(ErrorCode.BOARD_NOT_FOUND)
+        );
 
         return BoardDetailResDto.builder()
                 .boardId(board.getBoardId())
                 .title(board.getTitle())
                 .content(board.getContent())
                 .likelyCnt(board.getLikelyCnt())
-                .writer(member.getNickname())
+                .writer(board.getMember().getNickname())
                 .createTime(board.getCreateTime())
                 .updateTime(board.getUpdateTime())
                 .commentList(board.getCommentList())
                 .build();
+    }
+
+    @Override
+    public BoardUpdateResDto updateBoard(long boardId, BoardUpdateReqDto reqDto){
+        Board board = boardRepository.findBoardByBoardId(boardId).orElseThrow(
+                () -> new BusinessException(ErrorCode.BOARD_NOT_FOUND)
+        );
+
+        if(board.getMemberId() != reqDto.getMemberId() ) {
+            throw new BusinessException(ErrorCode.BOARD_NOT_YOUR_BOARD);
+        }
+
+        return BoardUpdateResDto.builder()
+                .boardId(board.getBoardId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .likelyCnt(board.getLikelyCnt())
+                .writer(board.getMember().getNickname())
+                .createTime(board.getCreateTime())
+                .updateTime(board.getUpdateTime())
+                .commentList(board.getCommentList())
+                .build();
+
+
     }
 }

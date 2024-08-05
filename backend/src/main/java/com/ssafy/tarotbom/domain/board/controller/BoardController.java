@@ -1,8 +1,10 @@
 package com.ssafy.tarotbom.domain.board.controller;
 
+import com.ssafy.tarotbom.domain.board.dto.request.BoardUpdateReqDto;
 import com.ssafy.tarotbom.domain.board.dto.request.BoardWriteReqDto;
 import com.ssafy.tarotbom.domain.board.dto.response.BoardDetailResDto;
 import com.ssafy.tarotbom.domain.board.dto.response.BoardListResDto;
+import com.ssafy.tarotbom.domain.board.dto.response.BoardUpdateResDto;
 import com.ssafy.tarotbom.domain.board.dto.response.BoardWriteResDto;
 import com.ssafy.tarotbom.domain.board.service.BoardService;
 import com.ssafy.tarotbom.global.result.ResultCode;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.transform.Result;
 import java.util.List;
 
 
@@ -40,6 +43,13 @@ public class BoardController {
     public ResponseEntity<ResultResponse> getDetailBoard(@PathVariable long boardId){
         BoardDetailResDto result = boardService.getDetailBoard(boardId);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.GET_OK, result);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    @PutMapping("/{boardId}")
+    public ResponseEntity<ResultResponse> updateBoard(@PathVariable long boardId, @RequestBody BoardUpdateReqDto reqDto){
+        BoardUpdateResDto result = boardService.updateBoard(boardId, reqDto);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.UPDATE_OK, result);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 }
