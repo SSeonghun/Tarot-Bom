@@ -65,7 +65,9 @@ dependencies {
 	// aws
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
-	//
+
+	// livekit
+	implementation 'io.livekit:livekit-server:0.5.11'
 
 
 }

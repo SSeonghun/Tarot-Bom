@@ -80,7 +80,8 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowedOrigins(Arrays.asList("https://localhost:3000","http://localhost:3000", "https://i11c208.p.ssafy.io", "http://i11c208.p.ssafy.io"));
+
+//        config.setAllowedOrigins(Arrays.asList("https://localhost:3000","http://localhost:3000", "https://client:3000","http://client:3000", "https://i11c208.p.ssafy.io", "http://i11c208.p.ssafy.io"));
         config.setAllowedOriginPatterns(Collections.singletonList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
         // todo : 여기에 허용할 헤더 목록
