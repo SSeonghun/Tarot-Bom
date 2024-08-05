@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Builder
 public class TarotResultGetResponseDto {
+    private long resultId;
     private long readerId;
     private long seekerId;
     private LocalDateTime date;

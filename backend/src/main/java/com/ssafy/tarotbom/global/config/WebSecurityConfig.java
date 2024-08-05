@@ -21,6 +21,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Slf4j
 @Configuration
@@ -36,10 +42,10 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomUserDetailsService customUserDetailsService) throws Exception {
 
+        log.info("security");
+
         http.csrf((csrf) -> csrf.disable());        // CSRF 비활성화 -> JWT 쓰기 때문에
-        http.cors(Customizer.withDefaults());        // CORS 기본값으로 활성
-
-
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
         // 세션 관리 상태 없음으로 구성, Spring Security가 세션 생성 해주거나 사용하지 않음
         http.sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
@@ -63,7 +69,7 @@ public class WebSecurityConfig {
                     .requestMatchers("/user/login/**").permitAll() // 로그인 api
                     .requestMatchers("/user/emailCheck/**").permitAll()
                     .requestMatchers("/user/emails/**").permitAll() // 이메일 중복 검사
-                    .requestMatchers("/**").permitAll()
+//                    .requestMatchers("/**").permitAll()
                     .requestMatchers("/error/**").authenticated()
                     .anyRequest().authenticated(); // 위의 것 외에는 인증 없이 접근 불가
         });
@@ -71,5 +77,21 @@ public class WebSecurityConfig {
         return http.build();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+//        config.setAllowedOrigins(Arrays.asList("https://localhost:3000","http://localhost:3000", "https://client:3000","http://client:3000", "https://i11c208.p.ssafy.io", "http://i11c208.p.ssafy.io"));
+        config.setAllowedOriginPatterns(Collections.singletonList("*"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
+        // todo : 여기에 허용할 헤더 목록
+        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
+    }
 
 }

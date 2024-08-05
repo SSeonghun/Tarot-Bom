@@ -1,11 +1,13 @@
 package com.ssafy.tarotbom.global.config;
 
+import com.ssafy.tarotbom.domain.chat.dto.request.ChatMessageReqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,4 +46,8 @@ public class RedisTool {
     public boolean checkExistsValue(String value){
         return !value.equals("false");
     }
+
+//    public void publish(ChannelTopic topic, ChatMessageReqDto message){
+//        redisTemplate.convertAndSend(topic.getTopic(), message);
+//    }
 }

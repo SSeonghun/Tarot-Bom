@@ -1,14 +1,11 @@
 // userApi.ts
 import axios from "axios";
-import { error } from "console";
 
-
-const API_URL = "https://i11c208.p.ssafy.io/tarotbom/user/";
+// const API_URL = "https://i11c208.p.ssafy.io/tarotbom/user/";
+const API_URL = "http://localhost/tarotbom/user/";
 
 const signup = async (nickname: string, email: string, password: string) => {
   console.log(nickname, email, password);
-
-  
 
   try {
     const response = await axios.post(API_URL + "signup", {
@@ -27,7 +24,6 @@ const signup = async (nickname: string, email: string, password: string) => {
 const login = async (email: string, password: string) => {
   console.log(API_URL + "login");
 
-
   try {
     const response = await axios.post(
       API_URL + "login",
@@ -40,15 +36,12 @@ const login = async (email: string, password: string) => {
       }
     );
 
-
-
     return response.data;
   } catch (error) {
     console.error("로그인 실패", error);
     throw error;
   }
 };
-
 
 const update = async (
   nickname: string,
