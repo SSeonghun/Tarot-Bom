@@ -28,16 +28,16 @@ function configureUrls() {
     // If APPLICATION_SERVER_URL is not configured, use default value from local development
     if (!APPLICATION_SERVER_URL) {
         if (window.location.hostname === "localhost") {
-            APPLICATION_SERVER_URL = "http://localhost:6080/";
+            APPLICATION_SERVER_URL = "https://localhost/";
         } else {
-            APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
+            APPLICATION_SERVER_URL = "https://" + window.location.hostname+"/"  ;
         }
     }
 
     // If LIVEKIT_URL is not configured, use default value from local development
     if (!LIVEKIT_URL) {
         if (window.location.hostname === "localhost") {
-            LIVEKIT_URL = "ws://localhost:7880/";
+            LIVEKIT_URL = "wss://localhost:7880/";
         } else {
             LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
         }
