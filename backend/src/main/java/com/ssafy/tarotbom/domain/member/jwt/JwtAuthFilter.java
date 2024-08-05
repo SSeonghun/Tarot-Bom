@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.connector.Response;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -75,7 +74,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     private String getJwtFromCookies(HttpServletRequest request, String tokenName, HttpServletResponse response) {
+
         Cookie[] cookies = request.getCookies();
+        log.info(request.getHeader("Cookie"));
+
 
         if (cookies == null) {
 
@@ -92,8 +94,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             log.warn("No cookies found in the request");
             return null;
         }
-
         for (Cookie cookie : cookies) {
+
             if (tokenName.equals(cookie.getName())) {
                 return cookie.getValue();
             }
@@ -107,4 +109,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         response.setContentType("text/error");
         response.getWriter().write("Authentication required. Please log in.");
     }
+
 }
