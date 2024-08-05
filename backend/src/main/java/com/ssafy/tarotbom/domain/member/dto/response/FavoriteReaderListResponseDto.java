@@ -14,4 +14,5 @@ import java.util.List;
 public class FavoriteReaderListResponseDto {
     // 리더 정보
     List<ReaderListResponseDto> readerListResponseDtos;
+
 }

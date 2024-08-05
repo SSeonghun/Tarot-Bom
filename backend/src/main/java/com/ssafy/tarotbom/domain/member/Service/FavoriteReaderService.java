@@ -10,4 +10,6 @@ public interface FavoriteReaderService {
     void addFavoriteReader(FavoriteReaderRequestDto favoriteReaderRequestDto);
 
     FavoriteReaderListResponseDto searchFavoriteReader(HttpServletRequest request);
+
+    void deleteFavoriteReader(HttpServletRequest request, long readerId);
 }

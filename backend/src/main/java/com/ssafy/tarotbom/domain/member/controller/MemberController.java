@@ -188,6 +188,18 @@ public class MemberController {
 
         return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(favoriteReaderListResponseDto);
     }
+
+    @DeleteMapping("/favorite/{readerId}")
+    public ResponseEntity<?> deleteFavoriteReader(HttpServletRequest request, @PathVariable long readerId) {
+
+        log.info("{}", readerId);
+
+//        long parseReaderId = Long.parseLong(readerId);
+
+        favoriteReaderService.deleteFavoriteReader(request, readerId);
+
+        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("삭제완료");
+    }
     
 
 

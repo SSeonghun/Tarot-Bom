@@ -119,6 +119,26 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
         return favoriteReaderListResponseDto;
     }
 
+    /**
+     * 찜리더 삭제
+     * @param request
+     * @param readerId
+     */
+    @Override
+    public void deleteFavoriteReader(HttpServletRequest request, long readerId) {
+
+        long seekerId = cookieUtil.getUserId(request);
+
+        Optional<FavoriteReader> favoriteReaderOptional = favoriteReaderRepository.findBySeeker_MemberIdAndReader_MemberId(seekerId, readerId);
+
+        if (favoriteReaderOptional.isEmpty()) {
+            // 적절한 예외 처리
+            throw new RuntimeException("Favorite reader not found");
+        }
+
+        favoriteReaderRepository.delete(favoriteReaderOptional.get());
+
+    }
 
 
 }
