@@ -4,6 +4,7 @@ import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
 import com.ssafy.tarotbom.domain.reservation.repository.ReservationRepository;
 import com.ssafy.tarotbom.domain.room.dto.request.RoomEnterRequestDto;
 import com.ssafy.tarotbom.domain.room.dto.request.RoomOpenRequestDto;
+import com.ssafy.tarotbom.domain.room.dto.response.RoomOpenResponseDto;
 import com.ssafy.tarotbom.domain.room.entity.Room;
 import com.ssafy.tarotbom.domain.room.entity.RoomStyle;
 import com.ssafy.tarotbom.domain.room.repository.RoomQueryRepository;
@@ -30,7 +31,7 @@ public class RoomServiceImpl implements RoomService {
      * </pre>
      * */
     @Override
-    public void openRoom(RoomOpenRequestDto dto) {
+    public RoomOpenResponseDto openRoom(RoomOpenRequestDto dto) {
         String roomType = dto.getRoomType();
         Reservation res = null;
         // 만일 예약을 기반으로 방을 생성하는 거라면, 기존 예약 정보에 방 ID가 포함되어있는지 확인 必
@@ -49,7 +50,7 @@ public class RoomServiceImpl implements RoomService {
         Room room = Room.builder()
                 .readerId(dto.getReaderId())
                 .seekerId(dto.getSeekerId())
-                .keywords(dto.getKeyword())
+                .keyword(dto.getKeyword())
                 .worry(dto.getWorry())
                 .roomStyle(roomStyle)
                 .build();
@@ -58,6 +59,17 @@ public class RoomServiceImpl implements RoomService {
         if(roomType.equals("reserve")){
             reservationRepository.save(res.toBuilder().roomId(savedRoom.getRoomId()).build());
         }
+
+        /*
+         * 예약 서비스에서 룸 아이디를 받아야 해서
+         * DTO 만들어서 보냄
+         */
+        RoomOpenResponseDto roomOpenResponseDto = RoomOpenResponseDto
+                .builder()
+                .roomId(room.getRoomId())
+                .build();
+
+        return roomOpenResponseDto;
     }
 
     /** <pre>

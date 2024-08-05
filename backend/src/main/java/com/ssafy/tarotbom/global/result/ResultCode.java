@@ -23,6 +23,8 @@ public enum ResultCode {
 
     // Tarot
     TAROT_CARD_INFO_FOUND(HttpStatus.OK, "T001", "카드 조회 성공"),
+    TAROT_CARD_RESULT_SAVED(HttpStatus.CREATED, "T002", "타로 결과 저장 성공"),
+    TAROT_CARD_RESULT_FOUND(HttpStatus.OK, "T003", "타로 결과 조회 성공"),
 
     // Board
     WRITE_OK(HttpStatus.CREATED, "B001", "게시글 작성 성공")
