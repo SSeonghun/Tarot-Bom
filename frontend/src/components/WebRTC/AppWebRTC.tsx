@@ -30,7 +30,7 @@ function configureUrls() {
         if (window.location.hostname === "localhost") {
             APPLICATION_SERVER_URL = "https://localhost/";
         } else {
-            APPLICATION_SERVER_URL = "https://" + window.location.hostname  ;
+            APPLICATION_SERVER_URL = "https://" + window.location.hostname+"/"  ;
         }
     }
 
