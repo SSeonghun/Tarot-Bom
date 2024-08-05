@@ -1,7 +1,6 @@
 package com.ssafy.tarotbom.domain.member.dto.response;
 
 import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
-import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +26,7 @@ public class ReaderDetatilResponseDto {
     private int allReaservations;
     private int afterReader;
 
-    private List<ReviewReader> reviews;
+    private List<ReviewReaderResponseDto> reviews;
 
     // todo: 추가로 오프라인 지도 데이터
 

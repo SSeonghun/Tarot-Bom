@@ -30,6 +30,16 @@ public class MemberController {
     private final ReaderService readerService;
     private final FavoriteReaderService favoriteReaderService;
 
+    ///////////////////////////////////////////////
+    //                회원 관련                   //
+    //////////////////////////////////////////////
+
+    /**
+     * 로그인
+     * @param loginReqDto
+     * @param response
+     * @return
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
         LoginResponseDto result = memberService.login(loginReqDto, response);
@@ -37,6 +47,11 @@ public class MemberController {
         return ResponseEntity.status(ResultCode.LOGIN_OK.getStatus()).body(result);
     }
 
+    /**
+     * 이메일 인증번호 발송
+     * @param emailReqDto
+     * @return
+     */
     @PostMapping("/emails/verifications")
     public ResponseEntity<?> sendMessage(@Valid @RequestBody EmailReqDto emailReqDto){
         if(memberService.sendCodeToEmail(emailReqDto.getEmail())){
@@ -46,6 +61,11 @@ public class MemberController {
         }
     }
 
+    /**
+     * 이메일 인증번호 확인
+     * @param emailcheckReqDto
+     * @return
+     */
     @PostMapping("/emails/check")
     public ResponseEntity<?> verifyCode(@Valid @RequestBody EmailCheckReqDto emailcheckReqDto){
 
@@ -59,6 +79,11 @@ public class MemberController {
         }
     }
 
+    /**
+     * 회원가입
+     * @param signupReqDto
+     * @return
+     */
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupReqDto signupReqDto){
         log.info("SingupDto : {}", signupReqDto.getEmail());
@@ -110,7 +135,9 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
-    /////////////// 리더 검색 /////////////////
+    ///////////////////////////////////////////////
+    //                리더 관련                   //
+    //////////////////////////////////////////////
 
     /**
      * 전체 리더조회
@@ -119,18 +146,11 @@ public class MemberController {
     @GetMapping("/reader/list")
     public  ResponseEntity<?> searchAllReader() {
         List<ReaderListResponseDto> readerList = readerService.searchAllReader();
+//        log.info("readerListsize : {}", readerList.size());
+//        log.info("readerList : {}", readerList.get(0).getMemberId());
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_ALL_READER, readerList);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
 
-        log.info("readerListsize : {}", readerList.size());
-        log.info("readerList : {}", readerList.get(0).getMemberId());
-
-        // 리스트를 정상적으로 반환하도록 수정
-        try{
-            ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_ALL_READER, readerList);
-            return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
-        } catch (Exception e) {
-            log.error("{}", e);
-            return null;
-        }
     }
 
     /**
@@ -146,7 +166,9 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
-    /////////////// 리더 찜 관련 /////////////////
+    ///////////////////////////////////////////////
+    //                리더 찜 관련                //
+    //////////////////////////////////////////////
 
     /**
      * 리더 찜하기
@@ -172,6 +194,12 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    /**
+     * 찜한 리더 삭제
+     * @param request
+     * @param readerId
+     * @return
+     */
     @DeleteMapping("/favorite/{readerId}")
     public ResponseEntity<?> deleteFavoriteReader(HttpServletRequest request, @PathVariable long readerId) {
 //        log.info("{}", readerId);
@@ -179,8 +207,11 @@ public class MemberController {
         ResultResponse resultResponse = ResultResponse.of(ResultCode.DELELTE_FAVORITE_READER);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
-    
-    /////////////// 마이페이지 //////////////////
+
+    ///////////////////////////////////////////////
+    //              마이페이지 관련                //
+    //////////////////////////////////////////////
+
     /**
      * 시커 마이페이지
      * @param isReader
