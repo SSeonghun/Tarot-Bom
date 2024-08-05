@@ -1,7 +1,9 @@
 package com.ssafy.tarotbom.domain.matching.service;
 
 import com.ssafy.tarotbom.domain.matching.dto.MatchingInfoDto;
-import com.ssafy.tarotbom.domain.matching.dto.request.MatchingConfirmRequestDto;
+import com.ssafy.tarotbom.domain.room.dto.request.RoomOpenRequestDto;
+import com.ssafy.tarotbom.domain.room.dto.response.RoomOpenResponseDto;
+import com.ssafy.tarotbom.domain.room.service.RoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class MatchingServiceImpl implements MatchingService {
     private final BlockingQueue<MatchingInfoDto> seekerMatchingQueue;
     private final MatchingRedisService redisService;
     private final MatchingRedisService matchingRedisService;
+    private final RoomService roomService;
 
     @Value("${matching.status.key}")
     private String matchingStatusKey;
@@ -26,11 +29,14 @@ public class MatchingServiceImpl implements MatchingService {
     private String matchingConfirmKey;
 
     // List 할당을 위한 생성자 수동 작성
-    public MatchingServiceImpl(MatchingRedisService redisService, MatchingRedisService matchingRedisService) {
+    public MatchingServiceImpl(MatchingRedisService redisService,
+                               MatchingRedisService matchingRedisService,
+                               RoomService roomService) {
         readerMatchingQueue = new LinkedBlockingQueue<>();
         seekerMatchingQueue = new LinkedBlockingQueue<>();
         this.redisService = redisService;
         this.matchingRedisService = matchingRedisService;
+        this.roomService = roomService;
     }
 
     /**
@@ -144,7 +150,12 @@ public class MatchingServiceImpl implements MatchingService {
         }
     }
 
-
+    /**
+     * <pre>
+     * public void setConfirmFalse(MatchingInfoDto dto)
+     * dto와 같은 정보를 담고 있는 객체를 매칭 큐에서 찾은 후, 그 객체의 매칭 확인중 표시를 해제합니다.
+     * </pre>
+     */
     @Override
     public void setConfirmFalse(MatchingInfoDto dto) {
         BlockingQueue<MatchingInfoDto> searchQueue;
@@ -163,6 +174,38 @@ public class MatchingServiceImpl implements MatchingService {
             }
         }
 
+    }
+
+    /**
+     * <pre>
+     * public long openMatchingRoom(MatchingInfoDto myDto, MatchingInfoDto candidateDto)
+     * myDto, candidateDto 유저가 사용할 방을 생성하고 roomId를 반환합니다.
+     * </pre>
+     */
+    @Override
+     public long openMatchingRoom(MatchingInfoDto myDto, MatchingInfoDto candidateDto) {
+        long readerId, seekerId;
+        String worry;
+        if(myDto.getMemberType().equals("reader")){
+            readerId = myDto.getMemberId();
+            seekerId = candidateDto.getMemberId();
+            worry = candidateDto.getWorry();
+        } else {
+            readerId = candidateDto.getMemberId();
+            seekerId = myDto.getMemberId();
+            worry = myDto.getWorry();
+        }
+        // 예약식이 아니므로 reservationId는 생략
+        RoomOpenRequestDto roomOpenRequestDto = RoomOpenRequestDto.builder()
+                .roomType("random")
+                .readerId(readerId)
+                .seekerId(seekerId)
+                .keyword(myDto.getKeyword())
+                .worry(worry)
+                .roomStyle(myDto.getRoomStyle())
+                .build();
+        RoomOpenResponseDto resultDto = roomService.openRoom(roomOpenRequestDto);
+        return resultDto.getRoomId();
     }
 
     // 매칭 성립 조건 : keyword, roomStyle이 동일하며, memberType는 매칭 요청 대상자와 반대여야 한다

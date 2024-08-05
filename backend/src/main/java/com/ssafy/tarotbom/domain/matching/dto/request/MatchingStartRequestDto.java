@@ -16,4 +16,5 @@ public class MatchingStartRequestDto {
     private String roomStyle;
     private String memberType;
     private long memberId;
+    private String worry;
 }

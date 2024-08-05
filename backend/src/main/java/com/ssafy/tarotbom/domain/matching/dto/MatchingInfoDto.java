@@ -18,6 +18,7 @@ public class MatchingInfoDto {
     private String memberType;
     private long memberId;
     private boolean inConfirm;
+    private String worry;
 
     public void switchConfirm() {
         inConfirm = !inConfirm;
@@ -26,7 +27,7 @@ public class MatchingInfoDto {
     @Override
     public boolean equals(Object o) {
         if(o instanceof MatchingInfoDto canDto) {
-            // inConfirm 외의 모든 값을 확인한다
+            // inConfirm, worry 외의 모든 값을 확인한다
             return canDto.getKeyword().equals(this.getKeyword())
                     && canDto.getRoomStyle().equals(this.getRoomStyle())
                     && canDto.getMatchedTime().equals(this.getMatchedTime())

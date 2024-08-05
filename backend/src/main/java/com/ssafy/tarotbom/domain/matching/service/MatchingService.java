@@ -1,7 +1,6 @@
 package com.ssafy.tarotbom.domain.matching.service;
 
 import com.ssafy.tarotbom.domain.matching.dto.MatchingInfoDto;
-import com.ssafy.tarotbom.domain.matching.dto.request.MatchingConfirmRequestDto;
 
 public interface MatchingService {
     // 매칭 신청, 끝 여부 기록
@@ -14,5 +13,6 @@ public interface MatchingService {
     public boolean confirmMatching(MatchingInfoDto myDto, MatchingInfoDto candidateDto);
 
     public void setConfirmFalse(MatchingInfoDto dto);
+    public long openMatchingRoom(MatchingInfoDto myDto, MatchingInfoDto candidateDto);
 
 }
