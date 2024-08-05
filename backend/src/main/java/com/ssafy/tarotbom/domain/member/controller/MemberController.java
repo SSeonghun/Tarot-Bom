@@ -22,19 +22,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:3000") // 허용할 출처 설정
+//@CrossOrigin(origins = "https://localhost:3000") // 허용할 출처 설정
 public class MemberController {
 
     private final MemberService memberService;
     private final ReaderService readerService;
     private final FavoriteReaderService favoriteReaderService;
-
-    /*
-    @GetMapping("/test")
-    public String test(){
-        return "test";
-    }
-    */
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
