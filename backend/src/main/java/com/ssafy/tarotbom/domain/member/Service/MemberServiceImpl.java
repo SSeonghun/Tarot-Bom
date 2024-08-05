@@ -92,8 +92,7 @@ public class MemberServiceImpl implements MemberService {
 
         log.info("[MemberServiceImpl - login] loginReqDto : {}", loginReqDto.getEmail());
 
-//        CustomUserInfoDto info = modelMapper.map(member, CustomUserInfoDto.class);
-
+        // 반환 해주기 위한 DTO 생성
         CustomUserInfoDto info = CustomUserInfoDto.builder()
                 .memberId(member.getMemberId())
                 .email(member.getEmail())
@@ -123,10 +122,10 @@ public class MemberServiceImpl implements MemberService {
 
         String storedRefreshToken = tokenService.getRefreshToken(member.getMemberId());
 
+        // 만약 리프레시 토큰이 있는데 다시 로그인하면 기존 리프레시 토큰 삭제
         if(storedRefreshToken != null) {
             tokenService.deleteRefreshToken(member.getMemberId());
         }
-
 
         // 리프레시 토큰 쿠키 설정
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
@@ -137,8 +136,8 @@ public class MemberServiceImpl implements MemberService {
 
         tokenService.saveRefreshToken(String.valueOf(member.getMemberId()), refreshToken, 7, TimeUnit.DAYS);
 
-        String memberId = tokenService.getRefreshToken(member.getMemberId());
-        log.info("[MemberServiceImpl-login] redisMemberId : {}", memberId );
+//        String memberId = tokenService.getRefreshToken(member.getMemberId());
+//        log.info("[MemberServiceImpl-login] redisMemberId : {}", memberId );
 
         boolean isReader = false;
         try {
@@ -147,11 +146,9 @@ public class MemberServiceImpl implements MemberService {
             isReader = true;
         } catch (NumberFormatException | EntityNotFoundException e) {
             isReader = false;
-            log.info("{}", isReader);
         }
 
-        log.info("{}", isReader);
-
+        log.info("isReader : {}", isReader);
 
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);

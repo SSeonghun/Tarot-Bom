@@ -23,6 +23,9 @@ public enum ErrorCode {
     MEMBER_INVALID_CODE(HttpStatus.BAD_REQUEST, "M004", "유효하지 않은 인증번호입니다."),
     MEMBER_INVALID_EMAIL(HttpStatus.INTERNAL_SERVER_ERROR, "M005", "Runtime : 이메일 전송에 실패하였습니다."),
 
+    // Favorite Reader
+    FAVORITE_DUPLICATED(HttpStatus.CONFLICT, "F001", "이미 찜한 리더 입니다."),
+
     // Tarot
     TAROT_CARD_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "T001", "해당하는 타로 카드를 찾을 수 없습니다."),
     TAROT_RESULT_NOT_FOUND(HttpStatus.NOT_FOUND, "T002", "해당하는 타로 결과를 찾을 수 없습니다."),
