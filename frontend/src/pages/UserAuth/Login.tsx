@@ -1,9 +1,11 @@
 // Login.tsx
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./login.css";
 import InputField from "../../components/login_signup/InputField";
 import SubmitButton from "../../components/login_signup/SubmitButton";
+import useUserStore from '../../stores/store'
+
 
 const { login } = require("../../API/userApi");
 
@@ -11,6 +13,9 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
+
+  const store = useUserStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -34,6 +39,7 @@ const Login: React.FC = () => {
     }
   };
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateEmail(email)) {
@@ -45,9 +51,14 @@ const Login: React.FC = () => {
     try {
       const result = await login(email, password);
       console.log("로그인 성공", result);
-      window.location.href = "/";
+      store.loginUser();
+      
+      // window.location.href = "/";
+      navigate("/");
     } catch (error) {
+      alert("이메일과 비밀번호를 다시 확인하세요");
       console.error("로그인 중 오류 발생", error);
+      setPassword("");
     }
   };
 
