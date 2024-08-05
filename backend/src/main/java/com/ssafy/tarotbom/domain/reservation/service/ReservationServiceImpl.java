@@ -13,6 +13,8 @@ import com.ssafy.tarotbom.domain.room.repository.RoomRepository;
 import com.ssafy.tarotbom.domain.room.service.RoomService;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.global.code.entity.repository.CodeDetailRepository;
+import com.ssafy.tarotbom.global.error.BusinessException;
+import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,11 @@ public class ReservationServiceImpl implements ReservationService{
     private final RoomRepository roomRepository;
     private final CookieUtil cookieUtil;
 
+    /**
+     * 예약 추가
+     * @param addReservationsRequestDto
+     * @return
+     */
     @Override
     public AddReservationsResoneseDto addReservation(AddReservationsRequestDto addReservationsRequestDto) {
 
@@ -144,6 +151,11 @@ public class ReservationServiceImpl implements ReservationService{
         return addReservationsResoneseDto;
     }
 
+    /**
+     * 예약 내역 확인
+     * @param request
+     * @return
+     */
     @Override
     public List<ReadReservationResponseDto> readReservation(HttpServletRequest request) {
 
@@ -161,8 +173,9 @@ public class ReservationServiceImpl implements ReservationService{
         }
 
         log.info("reservations_reader : {}", reservations.size());
-
+        
         // ReadReservationResponseDto로 변환
+        // 남은 예약 내역은 시간으로 판단
         return reservations.stream()
                 .map(reservation -> ReadReservationResponseDto.builder()
                         .reservationId(reservation.getReservationId())
@@ -179,8 +192,7 @@ public class ReservationServiceImpl implements ReservationService{
             reservationRepository.deleteById(reservationId);
             return 1;
         } catch (Exception e) {
-            // todo: 오류 처리
-            return 0;
+            throw new BusinessException(ErrorCode.COMMON_NOT_FOUND);
         }
 
     }
