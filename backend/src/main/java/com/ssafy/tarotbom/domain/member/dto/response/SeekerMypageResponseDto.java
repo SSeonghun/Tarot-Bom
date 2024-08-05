@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.member.dto.response;
 
+import com.ssafy.tarotbom.domain.member.dto.SeekerAnalyzeDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
 import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
@@ -21,6 +22,10 @@ public class SeekerMypageResponseDto {
     private String email; // 이메일
     private boolean isReader; // 리더프로필이 있는지 없는지
     private List<ReadReservationResponseDto> reservationList; // 예약 내역
+
+    // 요약 정보
+    private int totalConserting;
+    private SeekerAnalyzeDto analyze;
 
     //////최근 타로 내역
     private List<TarotResultGetResponseDto> tarotResults;
