@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,11 +64,61 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
 
         long seekerId = cookieUtil.getUserId(request);
 
-        List<FavoriteReader> favoriteReaders = favoriteReaderRepository.findBySeekerId(seekerId);
+        Optional<Member> seeker = memberRepository.findMemberByMemberId(seekerId);
 
+        if (seeker.isEmpty()) {
+            // 적절한 예외 처리
+            throw new RuntimeException("Seeker not found");
+        }
 
-        return null;
+        // 해당 시커의 찜 목록
+        List<FavoriteReader> favoriteReaders = favoriteReaderRepository.findBySeeker(seeker.get());
+
+        log.info("Favorite readers count: {}", favoriteReaders.size());
+
+        // favoriteReaderList 초기화
+        List<ReaderListResponseDto> favoriteReaderList = new ArrayList<>();
+
+        for (FavoriteReader favoriteReader : favoriteReaders) {
+            long readerId = favoriteReader.getReader().getMemberId();
+
+            Optional<Reader> readerOptional = Optional.ofNullable(readerRepository.findById(readerId));
+            if (readerOptional.isEmpty()) {
+                // 적절한 예외 처리
+                throw new RuntimeException("Reader not found");
+            }
+            Reader reader = readerOptional.get();
+
+            Optional<Member> readerNameOptional = memberRepository.findMemberByMemberId(readerId);
+            if (readerNameOptional.isEmpty()) {
+                // 적절한 예외 처리
+                throw new RuntimeException("Member not found");
+            }
+            Member readerName = readerNameOptional.get();
+
+            ReaderListResponseDto readerTemp = ReaderListResponseDto
+                    .builder()
+                    .memberId(readerId)
+                    .name(readerName.getNickname())
+                    .memberType("M03")  // 하드코딩된 값. 필요에 따라 변경
+                    .keyword(reader.getKeyword().getCodeDetailId())
+                    .intro(reader.getIntro())
+                    .rating(reader.getRating())
+                    .grade(reader.getGrade().getCodeDetailId())
+                    .price(reader.getPrice())
+                    .build();
+
+            favoriteReaderList.add(readerTemp);
+        }
+
+        FavoriteReaderListResponseDto favoriteReaderListResponseDto = FavoriteReaderListResponseDto
+                .builder()
+                .readerListResponseDtos(favoriteReaderList)
+                .build();
+
+        return favoriteReaderListResponseDto;
     }
+
 
 
 }

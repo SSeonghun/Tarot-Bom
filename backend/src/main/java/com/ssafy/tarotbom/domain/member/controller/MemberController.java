@@ -184,9 +184,9 @@ public class MemberController {
     @GetMapping("/favorite/list")
     public ResponseEntity<?> searchFavoriteReader(HttpServletRequest request) {
 
-        favoriteReaderService.searchFavoriteReader(request);
+        FavoriteReaderListResponseDto favoriteReaderListResponseDto = favoriteReaderService.searchFavoriteReader(request);
 
-        return null;
+        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(favoriteReaderListResponseDto);
     }
     
 
