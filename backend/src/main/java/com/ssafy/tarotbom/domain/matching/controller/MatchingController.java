@@ -1,6 +1,7 @@
 package com.ssafy.tarotbom.domain.matching.controller;
 
 import com.ssafy.tarotbom.domain.matching.dto.MatchingInfoDto;
+import com.ssafy.tarotbom.domain.matching.dto.request.MatchingCancelRequestDto;
 import com.ssafy.tarotbom.domain.matching.dto.request.MatchingConfirmRequestDto;
 import com.ssafy.tarotbom.domain.matching.dto.request.MatchingStartRequestDto;
 import com.ssafy.tarotbom.domain.matching.dto.response.MatchingConfirmResponseDto;
@@ -138,10 +139,10 @@ public class MatchingController {
         } else {
             log.info("매칭 취소됨 : {}", myDto.getMemberId());
             // 매칭이 취소된 경우, 매칭을 취소한 대상을 큐에서 제거한다.
-            matchingService.removeFromMatchingQueue(dto.getMemberDto());
-            matchingService.setMatchingStatusEnd(dto.getMemberDto().getMemberId());
+            matchingService.removeFromMatchingQueue(myDto);
+            matchingService.setMatchingStatusEnd(myDto.getMemberId());
             // 상대방의 매칭 중 상태도 해제해야함에 유의
-            matchingService.setConfirmFalse(dto.getCandidateDto());
+            matchingService.setConfirmFalse(candidateDto);
             // 마지막으로 각각에게 응답을 보낸다
             MatchingResponseDto memberResponseDto = MatchingResponseDto
                     .builder()
@@ -158,6 +159,20 @@ public class MatchingController {
                     .build();
             sendingOperation.convertAndSend("/sub/matching/status/"+candidateDto.getMemberId(), candidateResponseDto);
         }
+    }
+
+    @MessageMapping("/cancel")
+    public void cancelMatching(MatchingCancelRequestDto dto) {
+        log.info("매칭을 취소함 : {}", dto.getMemberId());
+        matchingService.removeFromMatchingQueue(dto.getMemberDto());
+        matchingService.setMatchingStatusEnd(dto.getMemberId());
+        MatchingResponseDto cancelResponseDto = MatchingResponseDto
+                .builder()
+                .responseType(MatchingResponseType.MATCHING_CANCELED)
+                .message("매칭을 취소했습니다.")
+                .data(dto.getMemberDto())
+                .build();
+        sendingOperation.convertAndSend("/sub/matching/status/"+dto.getMemberId(), cancelResponseDto);
     }
 
     private void sendConfirm(MatchingInfoDto dto1, MatchingInfoDto dto2){
