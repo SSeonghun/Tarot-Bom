@@ -3,6 +3,7 @@ import Hero1 from '../components/Home/Hero1';
 import Hero2 from '../components/Home/Hero2';
 import Hero3 from '../components/Home/Hero3';
 import Hero4 from '../components/Home/Hero4'
+import { Link } from 'react-router-dom';
 
 const Home: React.FC = () => {
   return (

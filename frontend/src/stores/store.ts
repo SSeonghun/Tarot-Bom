@@ -10,7 +10,7 @@ interface UserState {
 }
 
 // Zustand 스토어 생성
-const useStore = create<UserState>()(
+const useUserStore = create<UserState>()(
   persist(
     (set) => ({
       isLoggedIn: false,
@@ -24,4 +24,4 @@ const useStore = create<UserState>()(
   )
 );
 
-export default useStore;
+export default useUserStore;

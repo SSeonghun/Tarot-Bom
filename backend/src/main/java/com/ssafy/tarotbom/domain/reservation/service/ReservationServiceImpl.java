@@ -8,6 +8,7 @@ import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationRespons
 import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
 import com.ssafy.tarotbom.domain.reservation.repository.ReservationRepository;
 import com.ssafy.tarotbom.domain.room.entity.Room;
+import com.ssafy.tarotbom.domain.room.entity.RoomStyle;
 import com.ssafy.tarotbom.domain.room.repository.RoomRepository;
 import com.ssafy.tarotbom.domain.room.service.RoomService;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
@@ -44,28 +45,56 @@ public class ReservationServiceImpl implements ReservationService{
         LocalDateTime startTime = addReservationsRequestDto.getStartTime();
         int price = addReservationsRequestDto.getPrice();
         String worry = addReservationsRequestDto.getWorry();
-        CodeDetail keyword = addReservationsRequestDto.getKeyword();
-        CodeDetail roomStyle = addReservationsRequestDto.getRoomStyle();
+        String keyword_code = addReservationsRequestDto.getKeyword();
+        String roomStyle = addReservationsRequestDto.getRoomStyle();
 
         log.info("addReservation : {}, {}", seekerId, readerId);
+        log.info("keyword_code : {}" , keyword_code);
 
-        Room room = Room.builder().seekerId(seekerId).readerId(readerId).keyword(keyword).build();
+        String keyword = null;
+
+        if (keyword_code.equals("G01")) { // 연애
+            keyword = "연애";
+        } else if (keyword_code.equals("G02")) { // 진로
+            keyword = "진로";
+        } else if (keyword_code.equals("G03")) { // 금전
+            keyword = "금전";
+        } else if (keyword_code.equals("G04")) { // 건강
+            keyword = "건강";
+        } else if (keyword_code.equals("G05")) { // 기타
+            keyword = "기타";
+        }
+
+        CodeDetail keywords = CodeDetail
+                .builder()
+                .codeDetailId(keyword_code)
+                .codeTypeId("10001")
+                .detailDesc(keyword)
+                .build();
+
+        log.info("{} : ", keywords.getCodeDetailId());
+
+        RoomStyle rooms = null;
+
+        if(roomStyle.equals("CAM")) {
+            rooms = RoomStyle.CAM;
+        } else if (roomStyle.equals("GFX")) {
+            rooms = RoomStyle.GFX;
+        }
+
+        Room room = Room
+                .builder()
+                .seekerId(seekerId)
+                .readerId(readerId)
+                .keyword(keywords)
+                .keywords(keyword_code)
+                .worry(worry)
+                .roomStyle(rooms)
+                .build();
 
         roomRepository.save(room);
 
         log.info("room : {}, {}", room.getRoomId(), room.getReaderId());
-
-//        RoomOpenRequestDto roomOpenRequestDto = RoomOpenRequestDto
-//                .builder()
-//                .readerId(readerId)
-//                .seekerId(seekerId)
-//                .keyword(keyword)
-//                .worry(worry)
-//                .roomStyle(roomStyle)
-//                .build();
-//
-//        RoomOpenResponseDto roomOpenResponseDto = roomService.openRoom(roomOpenRequestDto);
-
 
         long roomId = room.getRoomId();
 
@@ -74,6 +103,7 @@ public class ReservationServiceImpl implements ReservationService{
         log.info("reservation : {}", seekerId);
         log.info("reservation : {}", seekerId);
 
+        // todo : db 설정후 변경
         CodeDetail sts = CodeDetail
                 .builder()
                 .codeDetailId("R00")
@@ -99,6 +129,7 @@ public class ReservationServiceImpl implements ReservationService{
                 .seekerId(seekerId)
                 .readerId(readerId)
                 .startTime(startTime)
+                .keyword(keywords)
                 .price(price)
                 .status(sts)
                 .build();
@@ -117,24 +148,15 @@ public class ReservationServiceImpl implements ReservationService{
     public List<ReadReservationResponseDto> readReservation(HttpServletRequest request) {
 
         long memberId = cookieUtil.getUserId(request);
+        String memberType = cookieUtil.getMemberType(request);
 
         log.info("memberId : {}", memberId);
-//        log.info("memberId : {}", );
 
-        // todo : 여기서 리더인지 시커인지 쿠키 뜯어서 구분 0 인지 O 인지 구분 해야 할듯
-        // 근데 리더로 전환하면 쿠키를 다시 발급?????
-        // 리프레시 토큰 기반으로??
-        // 해야겠지??
-
-        String memberType = "M03";
-
-//        long readerId = reader.getMemberId();
-        
         List<Reservation> reservations = null;
 
-        if(memberType == "M03") {
+        if(memberType.equals("M03")) {
             reservations = reservationRepository.findAllByReaderId(memberId);
-        } else if (memberType == "M01") {
+        } else if (memberType.equals("M01")) {
             reservations = reservationRepository.findAllBySeekerId(memberId);
         }
 

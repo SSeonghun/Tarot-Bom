@@ -1,22 +1,34 @@
 package com.ssafy.tarotbom.domain.member.Service;
 
-import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
-import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
-import com.ssafy.tarotbom.domain.member.dto.request.ReaderJoinRequestDto;
-import com.ssafy.tarotbom.domain.member.dto.request.SignupReqDto;
-import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.ReaderAnalyzeDto;
+import com.ssafy.tarotbom.domain.member.dto.SeekerAnalyzeDto;
+import com.ssafy.tarotbom.domain.member.dto.request.*;
+import com.ssafy.tarotbom.domain.member.dto.response.ReaderMypageResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.ReviewReaderResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.SeekerMypageResponseDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
+import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
+import com.ssafy.tarotbom.domain.reservation.service.ReservationService;
+import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
+import com.ssafy.tarotbom.domain.review.repository.ReviewReaderRepository;
+import com.ssafy.tarotbom.domain.tarot.dto.TarotResultCardDto;
+import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
+import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
+import com.ssafy.tarotbom.domain.tarot.repository.TarotResultRepository;
+import com.ssafy.tarotbom.domain.tarot.service.TarotResultService;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.domain.member.email.EmailTool;
+import com.ssafy.tarotbom.global.code.entity.repository.CodeDetailRepository;
 import com.ssafy.tarotbom.global.config.RedisTool;
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
-import com.ssafy.tarotbom.global.dto.LoginResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.LoginResponseDto;
 import com.ssafy.tarotbom.global.util.CookieUtil;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,7 +36,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,10 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -50,9 +58,12 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
-    private final ModelMapper modelMapper;
     private final TokenService tokenService;
     private final ReaderRepository readerRepository;
+    private final CodeDetailRepository codeDetailRepository;
+    private final ReservationService reservationService;
+    private final TarotResultService tarotResultService;
+    private final ReviewReaderRepository reviewReaderRepository;
 
     private final RedisTool redisTool;
     private final EmailTool emailTool;
@@ -73,6 +84,7 @@ public class MemberServiceImpl implements MemberService {
                 () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
         );
 
+        String name = member.getNickname();
         // 암호화된 password를 디코딩 한 결과값과 입력한 패스워드 값이 다르면 null 반환
         if(!passwordEncoder.matches(password, member.getPassword())){
             throw new BusinessException(ErrorCode.MEMBER_DIFF_PASSWORD);
@@ -128,7 +140,41 @@ public class MemberServiceImpl implements MemberService {
         String memberId = tokenService.getRefreshToken(member.getMemberId());
         log.info("[MemberServiceImpl-login] redisMemberId : {}", memberId );
 
-        return new LoginResponseDto("로그인 성공", accessTokenCookie, refreshTokenCookie);
+        boolean isReader = false;
+        try {
+            Long id = member.getMemberId();
+            Reader reader = readerRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+            isReader = true;
+        } catch (NumberFormatException | EntityNotFoundException e) {
+            isReader = false;
+            log.info("{}", isReader);
+        }
+
+        log.info("{}", isReader);
+
+
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
+
+        LoginResponseDto loginResponseDto = LoginResponseDto
+                .builder()
+                .email(email)
+                .name(name)
+                .isReader(isReader)
+                .build();
+
+        return loginResponseDto;
+    }
+
+    @Override
+    public void logout(HttpServletRequest request) {
+
+        try {
+            String email = cookieUtil.getMemberEmail(request);
+            redisTool.deleteValue(AUTH_CODE_PREFIX+email);
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+        }
 
     }
 
@@ -267,33 +313,47 @@ public class MemberServiceImpl implements MemberService {
 
     }
 
+
+    /**
+     * 리더 만들기
+     * @param readerJoinRequestDto
+     */
     @Override
     public void readerJoin(ReaderJoinRequestDto readerJoinRequestDto) {
-
-        
-        // todo : 공용 코드 관련 정리 필요 왜 카테고리가 G로 시작?
-        CodeDetail defaultCode = CodeDetail
-                .builder()
+        // 기본 코드 초기화
+        // todo: 이거 코드를 여기서 만들어서 넣는게 아닌 이미 만들어진 코드를 적용시키는 개념? 으로 가야할듯
+        CodeDetail defaultCode = CodeDetail.builder()
                 .codeDetailId("CO1")
                 .codeTypeId("3")
                 .detailDesc("기본")
                 .build();
 
-        // 리더 객체 생성후 save
-        Reader reader = Reader
-                .builder()
-                .memberId(readerJoinRequestDto.getSeekerId())
+        defaultCode = codeDetailRepository.save(defaultCode);
+
+        // 키워드 코드 조회 및 처리
+        Optional<CodeDetail> keywordOpt = codeDetailRepository.findById(readerJoinRequestDto.getKeyword());
+//        if (!keywordOpt.isPresent()) {
+//            throw new BusinessException(ErrorCode.KEYWORD_NOT_FOUND); // 적절한 예외 처리
+//        }
+        CodeDetail keyword = keywordOpt.get();
+
+        // 회원 조회
+        Member member = memberRepository.findById(readerJoinRequestDto.getSeekerId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)); // 적절한 예외 처리
+
+        // 리더 객체 생성 후 저장
+        Reader reader = Reader.builder()
+                .member(member)
                 .createTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
                 .intro(readerJoinRequestDto.getIntro())
+                .keyword(keyword)
                 .grade(defaultCode)
                 .build();
 
-
         readerRepository.save(reader);
-
-
     }
+
 
     /**
      * 리더/시커 전환시 엑세스 토큰 재발급
@@ -351,6 +411,216 @@ public class MemberServiceImpl implements MemberService {
 
         return newTokenCookie;
     }
+
+    /**
+     * 시커 마이페이지
+     * @param request
+     * @return
+     */
+    @Override
+    public SeekerMypageResponseDto seekerMypage(HttpServletRequest request, MypageRequestDto seekerMypageRequestDto) {
+
+        // 아이디 가져오기
+        long memberId = cookieUtil.getUserId(request);
+        String email = cookieUtil.getMemberEmail(request);
+
+        long resultId = 0;
+
+        // 최근 타로 결과 내역
+        List<TarotResultGetResponseDto> tarotResultGetResponseDtos = tarotResultService.getAllTarotResultsBySeekerId(memberId);
+
+        int[] category = new int[5];
+
+        if(tarotResultGetResponseDtos.size() < 30) {
+            for (int i = 0; i < tarotResultGetResponseDtos.size(); i++) {
+                TarotResultGetResponseDto tarotResultGetResponseDto = tarotResultGetResponseDtos.get(i);
+
+                // 30개의 키워드 확인
+                String temp = tarotResultGetResponseDto.getKeyword();
+                int num = countCategory(temp);
+
+                category[num]++;
+
+                log.info("{}", temp);
+
+            }
+        } else {
+            for (int i = 0; i < 30; i++) {
+                TarotResultGetResponseDto tarotResultGetResponseDto = tarotResultGetResponseDtos.get(i);
+
+                // 30개의 키워드 확인
+                String temp = tarotResultGetResponseDto.getKeyword();
+                int num = countCategory(temp);
+
+                category[num]++;
+
+                log.info("{}", temp);
+
+            }
+        }
+
+        Map<String, Integer> map = new HashMap<>();
+
+        String[] str = {"G01", "G02", "G03", "G04", "G05"};
+
+        for(int i = 0; i < 5; i++) {
+            map.put(str[i], category[i]);
+        }
+
+        SeekerAnalyzeDto seekerAnalyzeDto = SeekerAnalyzeDto
+                .builder()
+                .categories(map)
+                .build();
+
+        // 예약 내역
+        List<ReadReservationResponseDto> readReservationResponseDtos = reservationService.readReservation(request);
+
+        log.info("isReader : {}", seekerMypageRequestDto.isReader());
+        // todo : 찜리스트 추가
+        SeekerMypageResponseDto seekerMypageResponseDto = SeekerMypageResponseDto
+                .builder()
+                .isReader(seekerMypageRequestDto.isReader())
+                .reservationList(readReservationResponseDtos)
+                .tarotResults(tarotResultGetResponseDtos)
+                .totalConserting(tarotResultGetResponseDtos.size())
+                .email(email)
+                .analyze(seekerAnalyzeDto)
+                .name(seekerMypageRequestDto.getName())
+                .build();
+
+        return seekerMypageResponseDto;
+    }
+
+    private int countCategory(String str) {
+
+        int num = 0;
+
+        if(str.equals("G01")) {
+            num = 0;
+        } else if(str.equals("G02")) {
+            num = 1;
+        } else if(str.equals("G03")) {
+            num = 2;
+        } else if (str.equals("G04")) {
+            num = 3;
+        } else if (str.equals("G05")) {
+            num = 4;
+        }
+        return num;
+    }
+
+    @Override
+    public ReaderMypageResponseDto readerMypage(HttpServletRequest request, MypageRequestDto readerMypageReqeusetDto) {
+
+        long memberId = cookieUtil.getUserId(request);
+        String email = cookieUtil.getMemberEmail(request);
+
+        Member reader = memberRepository.getReferenceById(memberId);
+
+
+        // 최근 타로 결과 내역
+        List<TarotResultGetResponseDto> tarotResultGetResponseDtos = tarotResultService.getAllTarotResultsByReaderId(memberId);
+
+        int[] category = new int[5];
+        int[] montly = new int[12];
+
+        if(tarotResultGetResponseDtos.size() < 30) {
+            for (int i = 0; i < tarotResultGetResponseDtos.size(); i++) {
+                TarotResultGetResponseDto tarotResultGetResponseDto = tarotResultGetResponseDtos.get(i);
+
+                // 30개의 키워드 확인
+                String temp = tarotResultGetResponseDto.getKeyword();
+                int num = countCategory(temp);
+
+                LocalDateTime date = tarotResultGetResponseDto.getDate();
+                int month = date.getMonth().getValue() - 1;
+
+                log.info("{}", month);
+                montly[month]++;
+                category[num]++;
+
+                log.info("{}", temp);
+
+            }
+        } else {
+            for (int i = 0; i < 30; i++) {
+                TarotResultGetResponseDto tarotResultGetResponseDto = tarotResultGetResponseDtos.get(i);
+
+                // 30개의 키워드 확인
+                String temp = tarotResultGetResponseDto.getKeyword();
+                int num = countCategory(temp);
+
+                LocalDateTime date = tarotResultGetResponseDto.getDate();
+                int month = date.getMonth().getValue();
+
+                log.info("{}", month);
+
+                montly[month]++;
+                category[num]++;
+
+                log.info("{}", temp);
+
+            }
+        }
+
+        Map<String, Integer> map = new HashMap<>();
+        Map<String, Integer> monthMap = new HashMap<>();
+
+        String[] str = {"G01", "G02", "G03", "G04", "G05"};
+        String[] monthStr = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+
+        for(int i = 0; i < 5; i++) {
+            map.put(str[i], category[i]);
+        }
+
+        for(int i = 0; i < 12; i++) {
+            monthMap.put(monthStr[i], montly[i]);
+        }
+
+        ReaderAnalyzeDto analyzeDto = ReaderAnalyzeDto
+                .builder()
+                .categories(map)
+                .build();
+
+        ReaderAnalyzeDto monthlyDto = ReaderAnalyzeDto
+                .builder()
+                .categories(monthMap)
+                .build();
+        // 예약 내역
+        List<ReadReservationResponseDto> readReservationResponseDtos = reservationService.readReservation(request);
+
+        List<ReviewReader> reviewReaders = reviewReaderRepository.findByReader(Optional.of(reader));
+        List<ReviewReaderResponseDto> reviewList = reviewReaders.stream()
+                .map(review -> ReviewReaderResponseDto.builder()
+                        .reviewReaderId(String.valueOf(review.getReviewReaderId()))
+                        .seekerId(String.valueOf(review.getSeeker().getMemberId()))
+                        .readerId(String.valueOf(review.getReader().getMemberId()))
+                        .rating(review.getRating())
+                        .content(review.getContent())
+                        .createTime(review.getCreateTime())
+                        .updateTime(review.getUpdateTime())
+                        .build())
+                .collect(Collectors.toList());
+
+        // todo : 리뷰 내역
+        ReaderMypageResponseDto readerMypageResponseDto = ReaderMypageResponseDto
+                .builder()
+                .readReservationResponseDtoList(readReservationResponseDtos)
+                .tarotResultGetResponseDtos(tarotResultGetResponseDtos)
+                .email(email)
+                .totalConserting(tarotResultGetResponseDtos.size())
+                .categoryanalyze(analyzeDto)
+                .monthlyanalyze(monthlyDto)
+                .name(readerMypageReqeusetDto.getName())
+                .reviewReaderResponseDtos(reviewList)
+                .build();
+
+
+        return readerMypageResponseDto;
+    }
+
+
+
 
 
 }

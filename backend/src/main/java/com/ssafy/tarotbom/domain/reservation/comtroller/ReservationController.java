@@ -5,6 +5,7 @@ import com.ssafy.tarotbom.domain.reservation.dto.request.AddReservationsRequestD
 import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResoneseDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.service.ReservationService;
+import com.ssafy.tarotbom.global.result.ResultCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,11 +36,12 @@ public class ReservationController {
 
         log.info("response : {} ", addReservationsResoneseDto.getRoomId());
 
-        return null;
+        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(addReservationsResoneseDto);
     }
 
     /**
      * memberId로 검색하니까 리더 시커 구분 없이 예약 내역 조회
+     * 리더가 리더예약도 하고 시커 예약도 하면?
      * @param request
      * @return
      */
@@ -51,7 +53,7 @@ public class ReservationController {
 
         log.info("size : {}", reservations.size());
 
-        return null;
+        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(reservations);
     }
 
     /**
@@ -71,7 +73,7 @@ public class ReservationController {
         // 예약 번호 반환
         reservationService.deleteReservation(reservationId);
 
-        return null;
+        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("삭제완료");
     }
 
 }
