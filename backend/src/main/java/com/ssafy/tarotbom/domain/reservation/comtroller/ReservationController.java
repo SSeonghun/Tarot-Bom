@@ -36,7 +36,7 @@ public class ReservationController {
 
         log.info("response : {} ", addReservationsResoneseDto.getRoomId());
 
-        return null;
+        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(addReservationsResoneseDto);
     }
 
     /**
@@ -73,7 +73,7 @@ public class ReservationController {
         // 예약 번호 반환
         reservationService.deleteReservation(reservationId);
 
-        return null;
+        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("삭제완료");
     }
 
 }
