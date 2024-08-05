@@ -26,6 +26,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 @Slf4j
 @Configuration
@@ -79,10 +80,11 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("https://localhost:3000","http://localhost:3000", "https://i11c208.p.ssafy.io", "http://i11c208.p.ssafy.io"));
+//        config.setAllowedOrigins(Arrays.asList("https://localhost:3000","http://localhost:3000", "https://i11c208.p.ssafy.io", "http://i11c208.p.ssafy.io"));
+        config.setAllowedOriginPatterns(Collections.singletonList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
         // todo : 여기에 허용할 헤더 목록
-        config.setAllowedHeaders(Arrays.asList("Accept", "Content-Type"));
+        config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

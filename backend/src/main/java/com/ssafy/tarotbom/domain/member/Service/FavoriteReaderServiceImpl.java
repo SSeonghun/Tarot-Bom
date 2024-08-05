@@ -9,6 +9,8 @@ import com.ssafy.tarotbom.domain.member.entity.Reader;
 import com.ssafy.tarotbom.domain.member.repository.FavoriteReaderRepository;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
+import com.ssafy.tarotbom.global.error.BusinessException;
+import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +43,15 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
         Reader reader = readerRepository.findById(favoriteReaderRequestDto.getReaderId());
         Optional<Member> seeker = memberRepository.findMemberByMemberId(favoriteReaderRequestDto.getSeekerId());
 
-        //todo: 이미 찜한 사람이면?
+        // 해당 맴버 찜목록 조회
+        // 만약 이미 찜한 리더면 오류 던지기
+        List<FavoriteReader> favoriteReaders = favoriteReaderRepository.findBySeeker(seeker.get());
+        for(int i = 0; i < favoriteReaders.size(); i++) {
+            long readerId = favoriteReaders.get(i).getReader().getMemberId();
+            if(favoriteReaders.get(i).getReader().getMemberId() == favoriteReaderRequestDto.getReaderId()){
+                throw new BusinessException(ErrorCode.FAVORITE_DUPLICATED);
+            }
+        }
 
         FavoriteReader favoriteReader = FavoriteReader
                 .builder()
