@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BoardWriteResDto {
 
-    @NotNull()
     private long memberId;
     private String title;
     private String content;

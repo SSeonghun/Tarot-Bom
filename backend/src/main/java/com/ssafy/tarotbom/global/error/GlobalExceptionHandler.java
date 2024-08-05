@@ -1,7 +1,9 @@
 package com.ssafy.tarotbom.global.error;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -14,6 +16,13 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ex.getErrorCode();
         ErrorResponse errorResponse = ErrorResponse.of(errorCode);
         return ResponseEntity.status(errorCode.getStatus()).body(errorResponse);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ResponseEntity<ErrorResponse> handleNotNullException(ConstraintViolationException ex){
+        log.error(ex.toString());
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOTNULL);
+        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)

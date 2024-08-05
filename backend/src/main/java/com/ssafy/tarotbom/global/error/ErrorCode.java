@@ -27,6 +27,10 @@ public enum ErrorCode {
     TAROT_CARD_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "T001", "해당하는 타로 카드를 찾을 수 없습니다."),
     TAROT_RESULT_NOT_FOUND(HttpStatus.NOT_FOUND, "T002", "해당하는 타로 결과를 찾을 수 없습니다."),
     TAROT_RESULT_NOT_YOUR_RESULT(HttpStatus.FORBIDDEN, "T003", "타로 결과를 조회할 권한이 없습니다."),
+
+    // Dto
+    NOTNULL(HttpStatus.BAD_REQUEST, "D001", "값이 Null일 수 없습니다.")
+
     ;
     // ==== 에러 코드 정의 종료 ====
 
