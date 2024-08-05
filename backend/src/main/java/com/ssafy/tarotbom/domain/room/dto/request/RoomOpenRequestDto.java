@@ -12,8 +12,8 @@ public class RoomOpenRequestDto {
     private String roomType;
     private long readerId;
     private long seekerId;
-    private CodeDetail keyword;
+    private String keyword;
     private String worry;
-    private CodeDetail roomStyle;
+    private String roomStyle;
     private long reservationId;
 }

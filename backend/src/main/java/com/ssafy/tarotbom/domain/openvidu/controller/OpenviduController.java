@@ -17,7 +17,6 @@ import livekit.LivekitWebhook.WebhookEvent;
 @RequestMapping("/openvidu")
 public class OpenviduController {
 
-    
 	@Value("${livekit.api.key}")
 	private String LIVEKIT_API_KEY;
 

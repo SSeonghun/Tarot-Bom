@@ -7,7 +7,6 @@ import com.ssafy.tarotbom.domain.room.dto.request.RoomOpenRequestDto;
 import com.ssafy.tarotbom.domain.room.dto.response.RoomOpenResponseDto;
 import com.ssafy.tarotbom.domain.room.entity.Room;
 import com.ssafy.tarotbom.domain.room.entity.RoomStyle;
-import com.ssafy.tarotbom.domain.room.repository.RoomQueryRepository;
 import com.ssafy.tarotbom.domain.room.repository.RoomRepository;
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
@@ -22,7 +21,6 @@ public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
     private final ReservationRepository reservationRepository;
-    private final RoomQueryRepository roomQueryRepository;
 
     /** <pre>
      * public void oepnRoom(RoomOpenRequestDto dto)
@@ -50,7 +48,7 @@ public class RoomServiceImpl implements RoomService {
         Room room = Room.builder()
                 .readerId(dto.getReaderId())
                 .seekerId(dto.getSeekerId())
-                .keyword(dto.getKeyword())
+                .keywords(dto.getKeyword())
                 .worry(dto.getWorry())
                 .roomStyle(roomStyle)
                 .build();
