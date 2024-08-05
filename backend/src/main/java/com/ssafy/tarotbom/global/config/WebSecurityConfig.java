@@ -2,7 +2,7 @@ package com.ssafy.tarotbom.global.config;
 
 
 //import com.ssafy.tarotbom.domain.jwt.JwtUtil;
-import com.ssafy.tarotbom.domain.member.service.TokenService;
+import com.ssafy.tarotbom.domain.member.Service.TokenService;
 import com.ssafy.tarotbom.domain.member.jwt.JwtAuthFilter;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
 import com.ssafy.tarotbom.global.security.CustomUserDetailsService;

@@ -1,4 +1,4 @@
-package com.ssafy.tarotbom.domain.member.service;
+package com.ssafy.tarotbom.domain.member.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

@@ -1,6 +1,6 @@
 package com.ssafy.tarotbom.domain.member.controller;
 
-import com.ssafy.tarotbom.domain.member.service.MemberService;
+import com.ssafy.tarotbom.domain.member.Service.MemberService;
 import com.ssafy.tarotbom.domain.member.dto.request.EmailCheckReqDto;
 import com.ssafy.tarotbom.domain.member.dto.request.EmailReqDto;
 import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;

@@ -1,4 +1,4 @@
-package com.ssafy.tarotbom.domain.member.service;
+package com.ssafy.tarotbom.domain.member.Service;
 
 import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
 import com.ssafy.tarotbom.domain.member.dto.request.LoginReqDto;
