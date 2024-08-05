@@ -4,6 +4,7 @@ import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -72,6 +73,7 @@ public class Board {
     @NotNull
     @Column(name = "board_type")
     private String category;
+
 
     // create time, update time 자동갱신
     @PrePersist

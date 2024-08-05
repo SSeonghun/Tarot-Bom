@@ -9,5 +9,6 @@ import java.util.List;
 public interface BoardRepository extends JpaRepository<Board, Long> {
     Board save(Board board);
     List<Board> findAll();
+    Board findBoardByBoardId(long boardId);
 
 }
