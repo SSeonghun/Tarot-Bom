@@ -1,4 +1,4 @@
-package com.ssafy.tarotbom.domain.member.Service;
+package com.ssafy.tarotbom.domain.member.service;
 
 import com.ssafy.tarotbom.domain.member.dto.request.FavoriteReaderRequestDto;
 import com.ssafy.tarotbom.domain.member.dto.response.FavoriteReaderListResponseDto;
@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

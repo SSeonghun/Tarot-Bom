@@ -16,16 +16,16 @@ public enum ResultCode {
     ROOM_ENTERED(HttpStatus.OK, "R002", "방에 입장했습니다."),
 
     // Member
-    LOGIN_OK(HttpStatus.OK, "M200", "로그인 성공"),
-    SIGNUP_OK(HttpStatus.CREATED, "M201", "회원가입 성공"),
-    EMAIL_SEND_OK(HttpStatus.ACCEPTED, "M202", "이메일 전송"),
-    VALIDATION_NUMBER_OK(HttpStatus.OK, "M004", "인증번호 인증 성공"),
-    READER_JOIN_OK(HttpStatus.CREATED, "M005", "리더 프로필 만들기 성공"),
-    CHANGE_READER_SEEKER_OK(HttpStatus.OK, "M006", "리더/시커 전환 성공"),
-    LOGOUT_OK(HttpStatus.OK , "M007", "로그아웃 성공"),
+    LOGIN_OK(HttpStatus.OK, "M200", "로그인 했습니다."),
+    SIGNUP_OK(HttpStatus.CREATED, "M201", "회원가입에 성공했습니다."),
+    EMAIL_SEND_OK(HttpStatus.ACCEPTED, "M202", "이메일 전송에 성공했습니다."),
+    VALIDATION_NUMBER_OK(HttpStatus.OK, "M004", "인증번호로 인증이 완료되었습니다."),
+    READER_JOIN_OK(HttpStatus.CREATED, "M005", "리더 프로필을 만들었습니다."),
+    CHANGE_READER_SEEKER_OK(HttpStatus.OK, "M006", "리더/시커 전환이 완료되었습니다."),
+    LOGOUT_OK(HttpStatus.OK , "M007", "로그아웃 했습니다."),
 
     // Reader
-    SEARCH_ALL_READER(HttpStatus.OK, "E001", "전체 리더 조회 성공"),
+    SEARCH_ALL_READER(HttpStatus.OK, "E001", "전체 리더를 조회했습니다."),
     SEARCH_READER_DETAIL(HttpStatus.OK, "E002", "리더 상세 조회 성공"),
 
     // Favorite Reader

@@ -1,8 +1,8 @@
 package com.ssafy.tarotbom.domain.member.controller;
 
-import com.ssafy.tarotbom.domain.member.Service.FavoriteReaderService;
-import com.ssafy.tarotbom.domain.member.Service.MemberService;
-import com.ssafy.tarotbom.domain.member.Service.ReaderService;
+import com.ssafy.tarotbom.domain.member.service.FavoriteReaderService;
+import com.ssafy.tarotbom.domain.member.service.MemberService;
+import com.ssafy.tarotbom.domain.member.service.ReaderService;
 import com.ssafy.tarotbom.domain.member.dto.request.*;
 import com.ssafy.tarotbom.domain.member.dto.response.*;
 import com.ssafy.tarotbom.global.error.ErrorCode;

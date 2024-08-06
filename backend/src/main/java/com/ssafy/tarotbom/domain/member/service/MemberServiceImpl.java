@@ -1,4 +1,4 @@
-package com.ssafy.tarotbom.domain.member.Service;
+package com.ssafy.tarotbom.domain.member.service;
 
 import com.ssafy.tarotbom.domain.member.dto.ReaderAnalyzeDto;
 import com.ssafy.tarotbom.domain.member.dto.SeekerAnalyzeDto;
@@ -15,10 +15,7 @@ import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationRespons
 import com.ssafy.tarotbom.domain.reservation.service.ReservationService;
 import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
 import com.ssafy.tarotbom.domain.review.repository.ReviewReaderRepository;
-import com.ssafy.tarotbom.domain.tarot.dto.TarotResultCardDto;
 import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
-import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
-import com.ssafy.tarotbom.domain.tarot.repository.TarotResultRepository;
 import com.ssafy.tarotbom.domain.tarot.service.TarotResultService;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import com.ssafy.tarotbom.domain.member.email.EmailTool;
@@ -34,7 +31,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
