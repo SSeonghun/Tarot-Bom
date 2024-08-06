@@ -54,6 +54,7 @@ public class MemberController {
      */
     @PostMapping("/emails/verifications")
     public ResponseEntity<?> sendMessage(@Valid @RequestBody EmailReqDto emailReqDto){
+        log.info("email Varification");
         if(memberService.sendCodeToEmail(emailReqDto.getEmail())){
             return ResponseEntity.status(ResultCode.EMAIL_SEND_OK.getStatus()).body(null);
         }else{

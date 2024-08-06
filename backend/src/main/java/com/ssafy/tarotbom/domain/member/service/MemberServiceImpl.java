@@ -281,17 +281,18 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean verifyCode(String email, String authCode) {
 
+        log.info("verify emails {}" , email);
         String redisAuthCode = redisTool.getValues((AUTH_CODE_PREFIX + email));
         log.info("redis get pinNumber : {} ",redisAuthCode);
 //        if(!(redisTool.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode))){
 //            throw new BusinessException(ErrorCode.MEMBER_INVALID_CODE);
 //        }
-        if(!(redisAuthCode.equals(authCode))){
+        if(!(Integer.parseInt(redisAuthCode) == Integer.parseInt(authCode))){
             throw new BusinessException(ErrorCode.MEMBER_INVALID_CODE);
         }
-        else {
-            redisTool.deleteValue(AUTH_CODE_PREFIX + email);
-        }
+//        else {
+//            redisTool.deleteValue(AUTH_CODE_PREFIX + email);
+//        }
 
         return true;
     }
