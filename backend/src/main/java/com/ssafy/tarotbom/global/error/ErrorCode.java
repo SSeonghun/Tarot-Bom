@@ -23,6 +23,13 @@ public enum ErrorCode {
     MEMBER_DIFF_PASSWORD(HttpStatus.BAD_REQUEST, "M003", "비밀번호가 일치하지 않습니다."),
     MEMBER_INVALID_CODE(HttpStatus.BAD_REQUEST, "M004", "유효하지 않은 인증번호입니다."),
     MEMBER_INVALID_EMAIL(HttpStatus.INTERNAL_SERVER_ERROR, "M005", "Runtime : 이메일 전송에 실패하였습니다."),
+    MEMBER_COOKIE_NOT_FOUNT(HttpStatus.NOT_FOUND, "M006", "쿠키를 찾지 못했습니다"),
+
+    // Favorite Reader
+    FAVORITE_DUPLICATED(HttpStatus.CONFLICT, "F001", "이미 찜한 리더 입니다."),
+
+    // Reservation
+
 
     // Tarot
     TAROT_CARD_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "T001", "해당하는 타로 카드를 찾을 수 없습니다."),

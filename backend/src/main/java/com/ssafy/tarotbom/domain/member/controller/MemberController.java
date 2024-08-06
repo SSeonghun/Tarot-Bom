@@ -7,6 +7,7 @@ import com.ssafy.tarotbom.domain.member.dto.request.*;
 import com.ssafy.tarotbom.domain.member.dto.response.*;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.result.ResultCode;
+import com.ssafy.tarotbom.global.result.ResultResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,20 +23,23 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:3000") // 허용할 출처 설정
+//@CrossOrigin(origins = "https://localhost:3000") // 허용할 출처 설정
 public class MemberController {
 
     private final MemberService memberService;
     private final ReaderService readerService;
     private final FavoriteReaderService favoriteReaderService;
 
-    /*
-    @GetMapping("/test")
-    public String test(){
-        return "test";
-    }
-    */
+    ///////////////////////////////////////////////
+    //                회원 관련                   //
+    //////////////////////////////////////////////
 
+    /**
+     * 로그인
+     * @param loginReqDto
+     * @param response
+     * @return
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
         LoginResponseDto result = memberService.login(loginReqDto, response);
@@ -43,6 +47,11 @@ public class MemberController {
         return ResponseEntity.status(ResultCode.LOGIN_OK.getStatus()).body(result);
     }
 
+    /**
+     * 이메일 인증번호 발송
+     * @param emailReqDto
+     * @return
+     */
     @PostMapping("/emails/verifications")
     public ResponseEntity<?> sendMessage(@Valid @RequestBody EmailReqDto emailReqDto){
         if(memberService.sendCodeToEmail(emailReqDto.getEmail())){
@@ -52,6 +61,11 @@ public class MemberController {
         }
     }
 
+    /**
+     * 이메일 인증번호 확인
+     * @param emailcheckReqDto
+     * @return
+     */
     @PostMapping("/emails/check")
     public ResponseEntity<?> verifyCode(@Valid @RequestBody EmailCheckReqDto emailcheckReqDto){
 
@@ -65,6 +79,11 @@ public class MemberController {
         }
     }
 
+    /**
+     * 회원가입
+     * @param signupReqDto
+     * @return
+     */
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupReqDto signupReqDto){
         log.info("SingupDto : {}", signupReqDto.getEmail());
@@ -86,7 +105,8 @@ public class MemberController {
 
         memberService.readerJoin(readerJoinRequestDto);
 
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("만들기 성공");
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.READER_JOIN_OK);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     /**
@@ -102,10 +122,22 @@ public class MemberController {
 
         response.addCookie(newAccessToken);
 
-        return ResponseEntity.status(ResultCode.LOGIN_OK.getStatus()).body("Access token successfully updated.");
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.CHANGE_READER_SEEKER_OK);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
-    /////////////// 리더 검색 /////////////////
+    @DeleteMapping("/logout")
+    public ResponseEntity<?> logout (HttpServletRequest request) {
+
+        memberService.logout(request);
+
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.LOGOUT_OK);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    ///////////////////////////////////////////////
+    //                리더 관련                   //
+    //////////////////////////////////////////////
 
     /**
      * 전체 리더조회
@@ -114,29 +146,11 @@ public class MemberController {
     @GetMapping("/reader/list")
     public  ResponseEntity<?> searchAllReader() {
         List<ReaderListResponseDto> readerList = readerService.searchAllReader();
+//        log.info("readerListsize : {}", readerList.size());
+//        log.info("readerList : {}", readerList.get(0).getMemberId());
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_ALL_READER, readerList);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
 
-        log.info("readerListsize : {}", readerList.size());
-        log.info("readerList : {}", readerList.get(0).getMemberId());
-
-        // 리스트를 정상적으로 반환하도록 수정
-        try{
-
-        if (readerList.isEmpty()) {
-            return ResponseEntity.noContent().build(); // 데이터가 없을 경우 No Content 응답
-        }
-            return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(readerList); // 데이터가 있을 경우 OK 응답
-        } catch (Exception e) {
-            log.error("{}", e);
-            return null;
-        }
-    }
-
-    @DeleteMapping("/logout")
-    public ResponseEntity<?> logout (HttpServletRequest request) {
-
-        memberService.logout(request);
-
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("로그아웃 성공");
     }
 
     /**
@@ -146,22 +160,15 @@ public class MemberController {
      */
     @GetMapping("/reader/detail/{readerId}")
     public ResponseEntity<?> readerDetail(@Valid @PathVariable long readerId) {
-
-        log.info("readerId : {}", readerId);
-
-
+//        log.info("readerId : {}", readerId);
         ReaderDetatilResponseDto readerDetatilResponseDto = readerService.searchReaderDetail(readerId);
-
-        if (readerDetatilResponseDto != null) {
-            // 리더 정보를 성공적으로 가져온 경우
-            return ResponseEntity.ok(readerDetatilResponseDto);
-        } else {
-            // 리더 정보를 찾지 못한 경우 (404 Not Found)
-            return ResponseEntity.notFound().build();
-        }
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_READER_DETAIL, readerDetatilResponseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
-    /////////////// 리더 찜 관련 /////////////////
+    ///////////////////////////////////////////////
+    //                리더 찜 관련                //
+    //////////////////////////////////////////////
 
     /**
      * 리더 찜하기
@@ -170,40 +177,40 @@ public class MemberController {
      */
     @PostMapping("/favorite/reader")
     public  ResponseEntity<?> addFavoriteReader(@Valid @RequestBody FavoriteReaderRequestDto favoriteReaderRequestDto){
-
         favoriteReaderService.addFavoriteReader(favoriteReaderRequestDto);
-
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("찜완료");
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.FAVORITE_READER_ADD);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     /**
-     * 시커 입장 찜 내역 조회
+     * 시커 입장 찜 내역 전체 조회
      * @param request
      * @return
      */
     @GetMapping("/favorite/list")
     public ResponseEntity<?> searchFavoriteReader(HttpServletRequest request) {
-
         FavoriteReaderListResponseDto favoriteReaderListResponseDto = favoriteReaderService.searchFavoriteReader(request);
-
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(favoriteReaderListResponseDto);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_ALL_FAVORITE_READER, favoriteReaderListResponseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    /**
+     * 찜한 리더 삭제
+     * @param request
+     * @param readerId
+     * @return
+     */
     @DeleteMapping("/favorite/{readerId}")
     public ResponseEntity<?> deleteFavoriteReader(HttpServletRequest request, @PathVariable long readerId) {
-
-        log.info("{}", readerId);
-
-//        long parseReaderId = Long.parseLong(readerId);
-
+//        log.info("{}", readerId);
         favoriteReaderService.deleteFavoriteReader(request, readerId);
-
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("삭제완료");
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.DELELTE_FAVORITE_READER);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
-    
 
-
-    /////////////// 마이페이지 //////////////////
+    ///////////////////////////////////////////////
+    //              마이페이지 관련                //
+    //////////////////////////////////////////////
 
     /**
      * 시커 마이페이지
@@ -214,18 +221,13 @@ public class MemberController {
      */
     @GetMapping("/seeker/mypage")
     public ResponseEntity<?> seekerMypage(@RequestParam boolean isReader, @RequestParam String name, HttpServletRequest request) {
-
         MypageRequestDto seekerMypageRequestDto = MypageRequestDto.builder()
                 .isReader(isReader)
                 .name(name)
                 .build();
-        log.info("processing , {}", seekerMypageRequestDto.isReader());
-
         SeekerMypageResponseDto seekerMypageResponseDto = memberService.seekerMypage(request, seekerMypageRequestDto);
-
-        log.info("success");
-
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(seekerMypageResponseDto);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_SEEKER_MYPAGE, seekerMypageResponseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     /**
@@ -236,11 +238,9 @@ public class MemberController {
      */
     @GetMapping("/reader/mypage")
     public ResponseEntity<?> readerMypage(@Valid @RequestBody MypageRequestDto readerMypageRequestDto, HttpServletRequest request) {
-
         ReaderMypageResponseDto readerMypageResponseDto = memberService.readerMypage(request, readerMypageRequestDto);
-        log.info("readerMypage");
-
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(readerMypageResponseDto);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_READER_MYPAGE, readerMypageResponseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
 

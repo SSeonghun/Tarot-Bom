@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.room.service;
 
+import com.ssafy.tarotbom.domain.openvidu.service.OpenviduService;
 import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
 import com.ssafy.tarotbom.domain.reservation.repository.ReservationRepository;
 import com.ssafy.tarotbom.domain.room.dto.request.RoomEnterRequestDto;
@@ -7,7 +8,6 @@ import com.ssafy.tarotbom.domain.room.dto.request.RoomOpenRequestDto;
 import com.ssafy.tarotbom.domain.room.dto.response.RoomOpenResponseDto;
 import com.ssafy.tarotbom.domain.room.entity.Room;
 import com.ssafy.tarotbom.domain.room.entity.RoomStyle;
-import com.ssafy.tarotbom.domain.room.repository.RoomQueryRepository;
 import com.ssafy.tarotbom.domain.room.repository.RoomRepository;
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
@@ -22,7 +22,7 @@ public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
     private final ReservationRepository reservationRepository;
-    private final RoomQueryRepository roomQueryRepository;
+    private final OpenviduService openviduService;
 
     /** <pre>
      * public void oepnRoom(RoomOpenRequestDto dto)
@@ -42,7 +42,7 @@ public class RoomServiceImpl implements RoomService {
             }
         }
         RoomStyle roomStyle;
-        if(dto.getRoomStyle().equals("camera")){
+        if(dto.getRoomStyle().equals("CAM")){
             roomStyle = RoomStyle.CAM;
         } else{
             roomStyle = RoomStyle.GFX;
@@ -50,7 +50,7 @@ public class RoomServiceImpl implements RoomService {
         Room room = Room.builder()
                 .readerId(dto.getReaderId())
                 .seekerId(dto.getSeekerId())
-                .keyword(dto.getKeyword())
+                .keywords(dto.getKeyword())
                 .worry(dto.getWorry())
                 .roomStyle(roomStyle)
                 .build();
@@ -76,7 +76,6 @@ public class RoomServiceImpl implements RoomService {
      * public String enterRoom(RoomEtnerRequestDto dto)
      * dto로 입력된 정보를 기반으로 방 입장을 처리를 합니다.
      * 해당 roomId에 사용자가 입장 권한을 가지고 있는지, 혹은 이미 종료된 방인지를 판정한 후, 입장토큰을 반환합니다.
-     * 아직 LiveKit SDK가 적용되지 않았으므로, 임시로 String을 반환합니다.
      * </pre>  */
     @Override
     public String enterRoom(RoomEnterRequestDto dto) {
@@ -91,6 +90,6 @@ public class RoomServiceImpl implements RoomService {
             throw new BusinessException(ErrorCode.ROOM_NOT_YOUR_ROOM);
         }
         // 검증이 되었다면, 그 방에는 입장할 수 있는 것이다
-        return "방 입장 처리 완료";
+        return openviduService.getToken(dto.getUserId(), dto.getRoomId());
     }
 }

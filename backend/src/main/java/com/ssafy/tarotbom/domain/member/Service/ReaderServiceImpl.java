@@ -73,6 +73,7 @@ public class ReaderServiceImpl implements ReaderService{
     public ReaderDetatilResponseDto searchReaderDetail(long readerId) {
 
         Reader reader = readerRepository.findById(readerId);
+        Member memberReader = memberRepository.getReferenceById(readerId);
         // Optional : null 값 반환을 막기 위한 클래스
         Optional<ReviewReader> reviewReader = reviewReaderRepository.findById(readerId);
         
@@ -94,17 +95,26 @@ public class ReaderServiceImpl implements ReaderService{
         // int로 반환?
         int afterReader = (int) ChronoUnit.DAYS.between(createTime, now);
 
-
+        List<ReviewReader> reviewReaders = reviewReaderRepository.findByReader(Optional.of(memberReader));
+        List<ReviewReaderResponseDto> reviewList = reviewReaders.stream()
+                .map(review -> ReviewReaderResponseDto.builder()
+                        .reviewReaderId(String.valueOf(review.getReviewReaderId()))
+                        .seekerId(String.valueOf(review.getSeeker().getMemberId()))
+                        .readerId(String.valueOf(review.getReader().getMemberId()))
+                        .rating(review.getRating())
+                        .content(review.getContent())
+                        .createTime(review.getCreateTime())
+                        .updateTime(review.getUpdateTime())
+                        .build())
+                .collect(Collectors.toList());
 
         // todo: 상담횟수, 예약횟수, 리더가 된지 몇일? 비즈니스 로직 필요
 
-        log.info("{}", reader.getGrade().getCodeTypeId());
-        log.info("{}", reader.getGrade().getCodeDetailId());
+//        log.info("{}", reader.getGrade().getCodeTypeId());
+//        log.info("{}", reader.getGrade().getCodeDetailId());
         
         //todo: 리뷰 리스트 생성에서 넣어주기
         // 리뷰 리스트 생성
-
-
         ReaderDetatilResponseDto readerDetatilResponseDto = ReaderDetatilResponseDto
                 .builder()
                 .memberId(reader.getMemberId())
@@ -114,6 +124,7 @@ public class ReaderServiceImpl implements ReaderService{
                 .rating(reader.getRating())
                 .grade(reader.getGrade().getDetailDesc())
                 .price(reader.getPrice())
+                .reviews(reviewList)
                 .allConsertings(allConserting)
                 .allReaservations(allReaservations)
                 .afterReader(afterReader)

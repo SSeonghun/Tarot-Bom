@@ -1,6 +1,6 @@
 import axios from "axios";
 
-
+// const API_URL = "https://i11c208.p.ssafy.io/tarotbom/";
 const API_URL = "https://i11c208.p.ssafy.io/tarotbom/";
 
 const readerList = async (page: number, name: string) => {

@@ -5,6 +5,9 @@ import PrivateLink from './Common/PrivateLink'; // PrivateLink 가져오기
 import useStore from '../stores/store';
 
 
+const { info } = require("../API/userApi")
+
+
 
 
 
@@ -19,6 +22,7 @@ const Navbar: React.FC = () => {
           <Link to="/" className="text-white hover:text-gray-400">Home</Link>
         </div>
         <div className="space-x-4">
+          <button type="button" onClick={info}>test</button>
           <PrivateLink to="/booking">타로예약</PrivateLink>
           <PrivateLink to="/tarot-result">타로결과</PrivateLink>
           <PrivateLink to="/online">온라인 타로</PrivateLink>

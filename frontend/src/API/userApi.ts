@@ -1,13 +1,11 @@
 // userApi.ts
 import axios from "axios";
 
-
+// const API_URL = "https://i11c208.p.ssafy.io/tarotbom/user/";
 const API_URL = "https://i11c208.p.ssafy.io/tarotbom/user/";
-
 
 const signup = async (nickname: string, email: string, password: string) => {
   console.log(nickname, email, password);
-
 
   try {
     const response = await axios.post(API_URL + "signup", {
@@ -26,7 +24,6 @@ const signup = async (nickname: string, email: string, password: string) => {
 const login = async (email: string, password: string) => {
   console.log(API_URL + "login");
 
-
   try {
     const response = await axios.post(
       API_URL + "login",
@@ -39,15 +36,12 @@ const login = async (email: string, password: string) => {
       }
     );
 
-
-
     return response.data;
   } catch (error) {
     console.error("로그인 실패", error);
     throw error;
   }
 };
-
 
 const update = async (
   nickname: string,
@@ -166,7 +160,10 @@ const userQuit = async () => {
 
 const info = async () => {
   try {
-    const response = await axios.get(API_URL + "info");
+    const response = await axios.get(API_URL + "info/1",
+      {
+        withCredentials: true, // 쿠키를 포함하도록 설정
+      });
 
     return response.data;
   } catch (error) {

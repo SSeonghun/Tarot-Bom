@@ -48,6 +48,7 @@ public class BoardServiceImpl implements BoardService{
 
         return BoardWriteResDto.builder()
                 .memberId(saveBoard.getMemberId())
+                .boardId(saveBoard.getBoardId())
                 .title(saveBoard.getTitle())
                 .content(saveBoard.getContent())
                 .createTime(saveBoard.getCreateTime())

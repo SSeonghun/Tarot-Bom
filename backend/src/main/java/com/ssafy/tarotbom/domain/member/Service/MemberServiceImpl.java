@@ -74,6 +74,17 @@ public class MemberServiceImpl implements MemberService {
     @Value("${spring.mail.auth-code-expiration-millis}")
     private Long authCodeExpirationMillis;
 
+
+    /**
+     * 로그인 메서드
+     * JWT 인증 토큰 2개 발급
+     *
+     * @param loginReqDto
+     * @param response
+     * @return
+     * @throws BadCredentialsException
+     * @throws UsernameNotFoundException
+     */
     @Override
     @Transactional
     public LoginResponseDto login(LoginReqDto loginReqDto, HttpServletResponse response) throws BadCredentialsException, UsernameNotFoundException {
@@ -92,8 +103,7 @@ public class MemberServiceImpl implements MemberService {
 
         log.info("[MemberServiceImpl - login] loginReqDto : {}", loginReqDto.getEmail());
 
-//        CustomUserInfoDto info = modelMapper.map(member, CustomUserInfoDto.class);
-
+        // 반환 해주기 위한 DTO 생성
         CustomUserInfoDto info = CustomUserInfoDto.builder()
                 .memberId(member.getMemberId())
                 .email(member.getEmail())
@@ -103,16 +113,12 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
 
-        log.info("[MemberServiceImpl - login] CustomUserInfoDto : {}", info.getMemberType());
+//        log.info("[MemberServiceImpl - login] CustomUserInfoDto : {}", info.getMemberType());
         String accessToken = jwtUtil.createAccessToken(info);
-//        response.add(JwtUtil.AUTHORIZATION_HEADER, accessToken);
-
         String refreshToken = jwtUtil.createRefreshToken(info);
-//        response.addHeader("RefreshToken:", refreshToken);
 
-
-        log.info("[MemberServiceImpl - login] Access Token: {}", accessToken);
-        log.info("[MemberServiceImpl - login] Refresh Token : {}", refreshToken);
+//        log.info("[MemberServiceImpl - login] Access Token: {}", accessToken);
+//        log.info("[MemberServiceImpl - login] Refresh Token : {}", refreshToken);
 
         // 액세스 토큰 쿠키 설정
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
@@ -123,10 +129,10 @@ public class MemberServiceImpl implements MemberService {
 
         String storedRefreshToken = tokenService.getRefreshToken(member.getMemberId());
 
+        // 만약 리프레시 토큰이 있는데 다시 로그인하면 기존 리프레시 토큰 삭제
         if(storedRefreshToken != null) {
             tokenService.deleteRefreshToken(member.getMemberId());
         }
-
 
         // 리프레시 토큰 쿠키 설정
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
@@ -137,21 +143,19 @@ public class MemberServiceImpl implements MemberService {
 
         tokenService.saveRefreshToken(String.valueOf(member.getMemberId()), refreshToken, 7, TimeUnit.DAYS);
 
-        String memberId = tokenService.getRefreshToken(member.getMemberId());
-        log.info("[MemberServiceImpl-login] redisMemberId : {}", memberId );
+//        String memberId = tokenService.getRefreshToken(member.getMemberId());
+//        log.info("[MemberServiceImpl-login] redisMemberId : {}", memberId );
 
-        boolean isReader = false;
+        boolean isReader = false; // 리더 프로필이 있는지 없는지 확인하는 변수
         try {
             Long id = member.getMemberId();
             Reader reader = readerRepository.findById(id).orElseThrow(EntityNotFoundException::new);
             isReader = true;
         } catch (NumberFormatException | EntityNotFoundException e) {
             isReader = false;
-            log.info("{}", isReader);
         }
 
-        log.info("{}", isReader);
-
+//        log.info("isReader : {}", isReader);
 
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
@@ -166,18 +170,28 @@ public class MemberServiceImpl implements MemberService {
         return loginResponseDto;
     }
 
+    /**
+     * 로그아웃 메서드
+     * @param request
+     */
     @Override
     public void logout(HttpServletRequest request) {
 
         try {
             String email = cookieUtil.getMemberEmail(request);
             redisTool.deleteValue(AUTH_CODE_PREFIX+email);
-        } catch (Exception e) {
+        } catch (Exception e) { // todo: Exception으로 받는게 맞나?
             throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
     }
 
+    /**
+     * 회원 가입
+     * @param signupReqDto
+     * @return
+     * @throws BusinessException
+     */
     @Override
     @Transactional
     public boolean signup(SignupReqDto signupReqDto) throws BusinessException {
@@ -197,7 +211,14 @@ public class MemberServiceImpl implements MemberService {
             throw new BusinessException(ErrorCode.MEMBER_DUPLICATED);
         }
 
-        CodeDetail codeDetail = new CodeDetail("M01", "Seeker", "1"); // DB에 저장된 후에 코드 refactoring
+//        CodeDetail codeDetail = new CodeDetail("M01", "Seeker", "1"); // DB에 저장된 후에 코드 refactoring
+
+        CodeDetail codeDetail = CodeDetail
+                .builder()
+                .codeTypeId("1")
+                .codeDetailId("M01")
+                .detailDesc("Seaker")
+                .build();
 
         Member member = new Member(nickname, email, password, codeDetail);
         memberRepository.save(member);
@@ -206,6 +227,10 @@ public class MemberServiceImpl implements MemberService {
 
     }
 
+    /**
+     * 이메일 인증 번호 랜덤 생성 메서드
+     * @return
+     */
     private String createCode(){
         Random random = new Random();
         String randomNumber = "";
@@ -216,6 +241,11 @@ public class MemberServiceImpl implements MemberService {
         return randomNumber;
     }
 
+    /**
+     * 이메일 인증 번호 발송 메서드
+     * @param toEmail
+     * @return
+     */
     @Override
     public boolean sendCodeToEmail(String toEmail){
 
@@ -226,6 +256,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // 인증 코드 생성, 저장, 이메일 전송
+        // todo: 인증번호 발송 예쁘게 꾸미면 좋음
         String title = "유저 이메일 인증 번호";
         String authCode = this.createCode();
         String text = "타로봄에 오신 것을 환영합니다.\n\n"
@@ -245,6 +276,12 @@ public class MemberServiceImpl implements MemberService {
         return true;
     }
 
+    /**
+     * 인증번호 확인 메서드
+     * @param email
+     * @param authCode
+     * @return
+     */
     @Override
     public boolean verifyCode(String email, String authCode) {
 
@@ -256,12 +293,17 @@ public class MemberServiceImpl implements MemberService {
         if(!(redisAuthCode.equals(authCode))){
             throw new BusinessException(ErrorCode.MEMBER_INVALID_CODE);
         }
+        else {
+            redisTool.deleteValue(AUTH_CODE_PREFIX + email);
+        }
+
         return true;
     }
 
 
     /**
      * 엑세스 토큰 발급
+     * 리프레시 토큰만 있는 상황
      * @param loginReqDto
      * @return
      */
@@ -271,7 +313,11 @@ public class MemberServiceImpl implements MemberService {
         // 클라이언트에서 받은 토큰
         String refreshTokenReq = null;
         Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
+
+        if(cookies == null) { //토큰이 없을때
+            throw new BusinessException(ErrorCode.MEMBER_COOKIE_NOT_FOUNT);
+        }
+        else{ // 받은 쿠키들 중에서 refreshToken 찾기
             for (Cookie cookie : cookies) {
                 if ("refreshToken".equals(cookie.getName())) {
                     refreshTokenReq = cookie.getValue();
@@ -279,11 +325,14 @@ public class MemberServiceImpl implements MemberService {
                 }
             }
         }
+
+        // 토큰에서 맴버 아이디 추출
         Long memberIdFromToken = jwtUtil.getMemberId(refreshTokenReq);
 
-        // 레디스에서 받은 토큰
+        // 레디스에서 받은 토큰 에서 맴버 아이디 추출
         String memberIdToken = tokenService.getRefreshToken(memberIdFromToken);
 
+        // 토큰 인증하고, 두개의 토큰이 같으면
         if(refreshTokenReq == memberIdToken && jwtUtil.validateToken(refreshTokenReq) && jwtUtil.validateToken(memberIdToken)) {
 
             Member member = memberRepository.findMemberByMemberId(memberIdFromToken).orElseThrow(
@@ -309,8 +358,7 @@ public class MemberServiceImpl implements MemberService {
             return accessTokenCookie;
         }
 
-        return null;
-
+        throw new BusinessException(ErrorCode.COMMON_ETC);
     }
 
 
@@ -357,6 +405,8 @@ public class MemberServiceImpl implements MemberService {
 
     /**
      * 리더/시커 전환시 엑세스 토큰 재발급
+     * 이 엑세스 토큰을 기준으로 리더 시커 전환
+     * 1시간 유효인데 1시간이 지나면? -> 오류 발생 할듯
      * @return
      */
     @Override
@@ -424,13 +474,14 @@ public class MemberServiceImpl implements MemberService {
         long memberId = cookieUtil.getUserId(request);
         String email = cookieUtil.getMemberEmail(request);
 
-        long resultId = 0;
-
         // 최근 타로 결과 내역
         List<TarotResultGetResponseDto> tarotResultGetResponseDtos = tarotResultService.getAllTarotResultsBySeekerId(memberId);
 
         int[] category = new int[5];
 
+        // 최근 타로 내역 분석을 위한 로직
+        // 30개 까지만 조회하는데 30개 미만일때 처리
+        // todo: 타로 결과 조회 할때 limit 30개 걸면 될듯?
         if(tarotResultGetResponseDtos.size() < 30) {
             for (int i = 0; i < tarotResultGetResponseDtos.size(); i++) {
                 TarotResultGetResponseDto tarotResultGetResponseDto = tarotResultGetResponseDtos.get(i);
@@ -459,6 +510,7 @@ public class MemberServiceImpl implements MemberService {
             }
         }
 
+        // Map에 넣어서 넘겨줌 <카테고리, 횟수>
         Map<String, Integer> map = new HashMap<>();
 
         String[] str = {"G01", "G02", "G03", "G04", "G05"};
@@ -476,10 +528,9 @@ public class MemberServiceImpl implements MemberService {
         List<ReadReservationResponseDto> readReservationResponseDtos = reservationService.readReservation(request);
 
         log.info("isReader : {}", seekerMypageRequestDto.isReader());
-        // todo : 찜리스트 추가
         SeekerMypageResponseDto seekerMypageResponseDto = SeekerMypageResponseDto
                 .builder()
-                .isReader(seekerMypageRequestDto.isReader())
+                .isReader(seekerMypageRequestDto.isReader()) // 리더 프로필 만들기를 띄울 건지, 전환을 띄울 건지
                 .reservationList(readReservationResponseDtos)
                 .tarotResults(tarotResultGetResponseDtos)
                 .totalConserting(tarotResultGetResponseDtos.size())
@@ -491,6 +542,12 @@ public class MemberServiceImpl implements MemberService {
         return seekerMypageResponseDto;
     }
 
+    /**
+     * 각 카테고리별 분기 메서드
+     * 타로 결과에서 개수 세기 위한 메서드 분리
+     * @param str
+     * @return
+     */
     private int countCategory(String str) {
 
         int num = 0;
@@ -509,6 +566,12 @@ public class MemberServiceImpl implements MemberService {
         return num;
     }
 
+    /**
+     * 리더 마이페이지에 필요한 정보 비즈니스 로직
+     * @param request
+     * @param readerMypageReqeusetDto
+     * @return
+     */
     @Override
     public ReaderMypageResponseDto readerMypage(HttpServletRequest request, MypageRequestDto readerMypageReqeusetDto) {
 
@@ -516,7 +579,10 @@ public class MemberServiceImpl implements MemberService {
         String email = cookieUtil.getMemberEmail(request);
 
         Member reader = memberRepository.getReferenceById(memberId);
-
+        
+        if(reader.getReader() == null) { // 리더를 못찾음
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+        }
 
         // 최근 타로 결과 내역
         List<TarotResultGetResponseDto> tarotResultGetResponseDtos = tarotResultService.getAllTarotResultsByReaderId(memberId);
@@ -524,6 +590,8 @@ public class MemberServiceImpl implements MemberService {
         int[] category = new int[5];
         int[] montly = new int[12];
 
+        // 위의 시커 카테고리랑 같은 로직
+        // + 월별 타로 상담 횟수 추가
         if(tarotResultGetResponseDtos.size() < 30) {
             for (int i = 0; i < tarotResultGetResponseDtos.size(); i++) {
                 TarotResultGetResponseDto tarotResultGetResponseDto = tarotResultGetResponseDtos.get(i);
@@ -535,11 +603,11 @@ public class MemberServiceImpl implements MemberService {
                 LocalDateTime date = tarotResultGetResponseDto.getDate();
                 int month = date.getMonth().getValue() - 1;
 
-                log.info("{}", month);
+//                log.info("{}", month);
                 montly[month]++;
                 category[num]++;
 
-                log.info("{}", temp);
+//                log.info("{}", temp);
 
             }
         } else {
@@ -553,12 +621,12 @@ public class MemberServiceImpl implements MemberService {
                 LocalDateTime date = tarotResultGetResponseDto.getDate();
                 int month = date.getMonth().getValue();
 
-                log.info("{}", month);
+//                log.info("{}", month);
 
                 montly[month]++;
                 category[num]++;
 
-                log.info("{}", temp);
+//                log.info("{}", temp);
 
             }
         }
@@ -586,6 +654,7 @@ public class MemberServiceImpl implements MemberService {
                 .builder()
                 .categories(monthMap)
                 .build();
+
         // 예약 내역
         List<ReadReservationResponseDto> readReservationResponseDtos = reservationService.readReservation(request);
 
@@ -602,7 +671,6 @@ public class MemberServiceImpl implements MemberService {
                         .build())
                 .collect(Collectors.toList());
 
-        // todo : 리뷰 내역
         ReaderMypageResponseDto readerMypageResponseDto = ReaderMypageResponseDto
                 .builder()
                 .readReservationResponseDtoList(readReservationResponseDtos)
