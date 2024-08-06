@@ -85,7 +85,9 @@ public class BoardController {
     // 댓글 삭제하기
     @DeleteMapping("/{boardId}/comment/{commentId}")
     public ResponseEntity<ResultResponse> deleteComment(@PathVariable long boardId, @PathVariable long commentId){
-
+        CommentDeleteResDto result = commentService.deleteComment(boardId, commentId);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.COMMENT_DELETE_OK, result);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
 }

@@ -3,6 +3,7 @@ package com.ssafy.tarotbom.domain.board.service;
 import com.ssafy.tarotbom.domain.board.dto.request.CommentCreateReqDto;
 import com.ssafy.tarotbom.domain.board.dto.request.CommentUpdateReqDto;
 import com.ssafy.tarotbom.domain.board.dto.response.CommentCreateResDto;
+import com.ssafy.tarotbom.domain.board.dto.response.CommentDeleteResDto;
 import com.ssafy.tarotbom.domain.board.dto.response.CommentUpdateResDto;
 import com.ssafy.tarotbom.domain.board.entity.Board;
 import com.ssafy.tarotbom.domain.board.entity.Comment;
@@ -114,8 +115,20 @@ public class CommentServiceImpl implements CommentService{
                 .createTime(updateComment.getCreateTime())
                 .updateTime(updateComment.getUpdateTime())
                 .build();
-
     }
 
+    public CommentDeleteResDto deleteComment(long boardId, long commentId) {
+        // 게시글이 없는 경우 예외
+        Board board = boardRepository.findBoardByBoardId(boardId).orElseThrow(
+                () -> new BusinessException(ErrorCode.BOARD_EMPTY)
+        );
+
+        // 댓글 삭제
+        commentRepository.deleteById(commentId);
+
+        return CommentDeleteResDto.builder()
+                .commentId(commentId)
+                .build();
+    }
 
 }
