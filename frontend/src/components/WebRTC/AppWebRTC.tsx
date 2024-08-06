@@ -84,10 +84,10 @@ function AppWebRTC() {
         }
     }, [room]);
     useEffect(() => {
-        if (room && localTrack) {
-            room.localParticipant.setCamera(cameraDeviceId);
-            room.localParticipant.setMicrophone(audioDeviceId);
-        }
+        // if (room && localTrack) {
+        //     room.localParticipant.setCamera(cameraDeviceId);
+        //     room.localParticipant.setMicrophone(audioDeviceId);
+        // }
     }, [cameraDeviceId, audioDeviceId, room, localTrack]);
     async function joinRoom() {
         const room = new Room();
@@ -190,7 +190,7 @@ function AppWebRTC() {
         console.log('Saving drawing...');
         canvasRef.current?.saveDrawing();
     }
-
+    const roomId = roomName;
     return (
         <>
             {!room ? (
@@ -282,7 +282,7 @@ function AppWebRTC() {
                                 </div>
                             </div>
                             <div className="w-1/3">
-                                <ChatAndControls />
+                                <ChatAndControls roomId={roomId} />
                             </div>
                         </div>
                     </div>

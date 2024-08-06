@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import ControlsPanel from "./ControlsPanel";
-
-const ChatAndControls: React.FC = () => {
+import ChatComponent from "../Tools/ChatComponent";
+interface ChatAndControlsProps {
+    roomId: string;
+}
+const ChatAndControls: React.FC<ChatAndControlsProps> = ({ roomId }) => {
     const [isReportVisible, setReportVisible] = useState<boolean>(false);
     const reportRef = useRef<HTMLDivElement>(null);
     const [dragging, setDragging] = useState(false);
@@ -46,6 +49,7 @@ const ChatAndControls: React.FC = () => {
     return (
         <div className="bg-gray-100 p-4 flex flex-col h-full">
             {/* 채팅창 */}
+            <ChatComponent roomId={roomId} />
             <div className="relative flex-grow bg-blue-500 p-4" style={{ flex: '7 1 0' }}>
                 {/* 신고 버튼 */}
                 <button
