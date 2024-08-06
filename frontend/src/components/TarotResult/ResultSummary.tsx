@@ -4,7 +4,7 @@ import moneyImg from '../../assets/money.png';
 import HoverButton from '../../components/Common/HoverButton';
 import OpenAI from '../Common/OpenAI';
 import Loading from '../Common/Loading';
-import MusicPlayer from '../Common/MusicPlayer';
+import MusicPlayer from '../Common/MusicPlayerCopy';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
@@ -65,6 +65,7 @@ const ResultSummary: React.FC = () => {
               <p className="text-white text-3xl">결과를 기다리고 있습니다...</p>
               {/* 로딩 표시기 */}
               < Loading />
+
             </div>
           </div>
         )}
