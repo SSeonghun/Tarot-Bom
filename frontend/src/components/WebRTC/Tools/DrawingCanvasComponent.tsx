@@ -1,0 +1,176 @@
+import React, { useImperativeHandle, useRef, forwardRef, useEffect, ForwardedRef, useState } from 'react';
+import * as fabric from 'fabric';
+
+interface DrawingCanvasProps {
+    onUpdate: (data: any) => void;
+}
+
+export type DrawingCanvasHandle = {
+    getCanvas: () => fabric.Canvas | null;
+    clearCanvas: () => void;
+    saveDrawing: () => void;
+    loadDrawing: (json: any) => void;
+};
+
+const DrawingCanvasComponent = forwardRef<DrawingCanvasHandle, DrawingCanvasProps>(
+    ({ onUpdate }, ref: ForwardedRef<DrawingCanvasHandle>) => {
+        const canvasRef = useRef<fabric.Canvas | null>(null);
+        const [loading, setLoading] = useState<boolean>(false);
+
+        useImperativeHandle(ref, () => ({
+            getCanvas: () => canvasRef.current,
+            clearCanvas: () => {
+                if (canvasRef.current) {
+                    canvasRef.current.clear();
+                    console.log("Canvas cleared");
+                }
+            },
+            saveDrawing: async () => {
+                if (canvasRef.current) {
+                    const jsonData = canvasRef.current.toJSON();
+                    console.log("Saving drawing with JSON:", jsonData);
+                    onUpdate(jsonData);
+                }
+            },
+            loadDrawing: async (json: any) => {
+                if (canvasRef.current) {
+                    setLoading(true);
+                    console.log("Loading drawing with JSON:", json);
+                    try {
+                        console.log("Current canvas state before load:", canvasRef.current.toJSON());
+
+                        await new Promise<void>((resolve, reject) => {
+                            if (canvasRef.current) {
+                                canvasRef.current.loadFromJSON(json, () => {
+                                    canvasRef.current?.renderAll();
+                                    resolve();
+                                });
+                            } else {
+                                reject("Canvas not initialized");
+                            }
+                        });
+                        
+                        // Wait a bit and then click the canvas to force renderAll
+                        setTimeout(() => {
+                            const canvasElement = document.getElementById('drawingCanvas');
+                            if (canvasElement) {
+                                const event = new MouseEvent('click', {
+                                    view: window,
+                                    bubbles: true,
+                                    cancelable: true
+                                });
+                                canvasElement.dispatchEvent(event);
+                                console.log("Canvas clicked programmatically.");
+                            }
+                        }, 100); // Adjust the timeout if needed
+
+                        console.log("Canvas state after load:", canvasRef.current.toJSON());
+                        console.log("Canvas loaded and rendered with JSON:", json);
+                    } catch (error) {
+                        console.error("Error loading drawing:", error);
+                    } finally {
+                        setLoading(false);
+                    }
+                } else {
+                    console.error("Canvas is not initialized for loading");
+                }
+            }
+        }));
+
+        useEffect(() => {
+            // if (canvasRef.current) {
+            //     console.log("Canvas already initialized:", canvasRef.current);
+            //     canvasRef.current.isDrawingMode = true; // Ensure drawing mode is enabled
+            //     return;
+            // }
+
+            console.log("Initializing canvas...");
+            const canvas = new fabric.Canvas('drawingCanvas', {
+                isDrawingMode: true,
+                backgroundColor: 'transparent',
+            });
+            canvasRef.current = canvas;
+            console.log("Canvas initialized:", canvas);
+
+            const pencilBrush = new fabric.PencilBrush(canvas);
+            pencilBrush.color = 'black';
+            pencilBrush.width = 20;
+            canvas.freeDrawingBrush = pencilBrush;
+            console.log("Pencil brush configured:", pencilBrush);
+
+            canvas.on('path:created', () => {
+                if (canvasRef.current) {
+                    // lastDrawingRef.current = canvasRef.current.toJSON();
+                }
+            });
+
+            // Add click event to force renderAll
+            const handleCanvasClick = () => {
+                if (canvasRef.current) {
+                    canvasRef.current.renderAll();
+                    console.log("Canvas rendered after click.");
+                }
+            };
+
+            const canvasElement = document.getElementById('drawingCanvas');
+            if (canvasElement) {
+                canvasElement.addEventListener('click', handleCanvasClick);
+            }
+
+            return () => {
+                console.log("Disposing canvas...");
+                if (canvasRef.current) {
+                    canvasRef.current.dispose();
+                }
+            };
+
+        }, []);
+
+        return (
+            <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                <canvas
+                    id="drawingCanvas"
+                    style={{
+                        border: '1px solid #ccc',
+                        width: '100%',
+                        height: '100%',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        zIndex: 1,
+                        opacity: loading ? 0 : 1,
+                        transition: 'opacity 0.5s',
+                    }}
+                />
+                {loading && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: 'red',
+                            opacity: 0.5,
+                            zIndex: 2,
+                        }}
+                    >
+                        <div style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            color: 'white',
+                            fontSize: '24px',
+                            fontWeight: 'bold',
+                        }}>
+                            로딩 중...
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    }
+);
+
+export default DrawingCanvasComponent;
