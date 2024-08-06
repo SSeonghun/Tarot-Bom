@@ -20,9 +20,9 @@ public class Comment {
     private long commentId;
 
     /* @ManyToOne으로 연결 : 게시글 ID, 작성자 ID */
-    @NotNull
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id", columnDefinition = "int unsigned")
+    @JoinColumn(name = "board_id", columnDefinition = "int unsigned", insertable = false, updatable = false)
     private Board board;
 
     @NotNull
@@ -38,6 +38,11 @@ public class Comment {
 
     @Column(name = "update_time", columnDefinition = "timestamp")
     private LocalDateTime updateTime;
+
+    @NotNull
+    @Column(name = "board_id")
+    private long boardId;
+
 
     // create time, update time 자동갱신
     @PrePersist

@@ -11,6 +11,7 @@ public enum ErrorCode {
     // 기본형
     COMMON_ETC(HttpStatus.INTERNAL_SERVER_ERROR, "C001", "서버에 오류가 발생했습니다."),
     COMMON_NOT_FOUND(HttpStatus.NOT_FOUND, "C002", "요청한 리소스를 찾을 수 없습니다."),
+
     // Room
     ROOM_RESERVED_ALREADY_EXISTS(HttpStatus.CONFLICT, "R001", "이미 방이 생성된 예약입니다."),
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "R002", "방을 찾을 수 없습니다."),
@@ -32,10 +33,11 @@ public enum ErrorCode {
     BOARD_EMPTY(HttpStatus.NOT_FOUND, "B001", "게시글이 존재하지 않습니다."),
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "B002", "해당하는 게시글을 찾을 수 없습니다."),
     BOARD_NOT_YOUR_BOARD(HttpStatus.FORBIDDEN, "B003", "게시글을 수정할 권한이 없습니다."),
+    BOARD_DATA_INTEGRITY_VIOLATION(HttpStatus.CONFLICT, "B004", "무결성 제한"),
 
     // Dto
-    DTO_NOT_NULL(HttpStatus.BAD_REQUEST, "D001", "값이 Null일 수 없습니다.")
-
+    DTO_NOT_NULL(HttpStatus.BAD_REQUEST, "D001", "값이 Null일 수 없습니다."),
+    DTO_NOT_VALID(HttpStatus.BAD_REQUEST, "D002", "유효하지 않은 값입니다.")
 
     ;
     // ==== 에러 코드 정의 종료 ====
