@@ -1,6 +1,6 @@
 import React from 'react';
-import Card from './Card'
-import cardImg from '../../assets/tarot_images - 복사본/c01.jpg'
+import Card from './Card';
+import cardImg from '../../assets/tarot_images - 복사본/c01.jpg';
 
 // interface CardData {
 //   id: number;
@@ -31,34 +31,35 @@ import cardImg from '../../assets/tarot_images - 복사본/c01.jpg'
 //     fetchData();
 //   }, []);
 
+//
 const cards = Array.from({ length: 3 }, (_, index) => ({
   id: index,
   name: `ACE & CUPS`,
   detail: `야호 야호 야호 야호 야호 야호 야호 야호 야호 야호 야호 `,
   category: ['금전운'], // 더미 카테고리
-  imgUrl: cardImg, 
+  imgUrl: cardImg,
   hsize: 'h-10',
-  wsize: 'w-40'
+  wsize: 'w-40',
 }));
 
 const TarotResult: React.FC = () => {
   return (
     <div className=" col-span-10 text-black p-4 z-10 flex justify-center items-center">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-            {cards.map(card => (
-              <Card
-                key={card.id}
-                name={card.name}
-                detail={card.detail}
-                category={card.category}
-                imgUrl={card.imgUrl}
-                hsize={card.hsize}
-                wsize={card.wsize}
-              />
-            ))}
-          </div>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+        {cards.map((card) => (
+          <Card
+            key={card.id}
+            name={card.name}
+            detail={card.detail}
+            category={card.category}
+            imgUrl={card.imgUrl}
+            hsize={card.hsize}
+            wsize={card.wsize}
+          />
+        ))}
+      </div>
+    </div>
   );
-}
+};
 
 export default TarotResult;

@@ -3,20 +3,20 @@ import HoverButton from '../../Common/HoverButton';
 import CardImg from './CardImg.png';
 
 interface HomeCard {
-    name: string;
-    detail: string;
-    review: number;
-    category: [];
-    imgUrl: string;
-    hsize: string;
-    wsize: string;
+  name: string;
+  detail: string;
+  review: number;
+  category: [];
+  imgUrl: string;
+  hsize: string;
+  wsize: string;
 }
 
 const HomeCard: React.FC = () => {
   return (
-    <div className="flex items-center justify-center bg-gradient-to-br from-black to-black">
-      <div 
-        className="bg-black font-semibold text-center rounded-3xl border shadow-lg p-10 max-w-xs bg-cover bg-center hover:scale-105" 
+    <div className="flex items-center justify-center w- bg-gradient-to-br from-black rounded-3xl to-black">
+      <div
+        className="bg-black font-semibold text-center rounded-3xl border shadow-lg p-10 max-w-xs bg-cover bg-center hover:scale-105"
         style={{ backgroundImage: `url(${CardImg})` }}
       >
         <img
@@ -27,12 +27,19 @@ const HomeCard: React.FC = () => {
         <h1 className="text-lg text-white">John Doe</h1>
         <h3 className="text-sm text-gray-400">Creative Director</h3>
         <p className="text-xs mb-3 text-gray-400 mt-4">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          Lorem ipsum dolor sit amet, consectetur adipiscing eli
         </p>
-        <HoverButton label="detail" color="bg-red-500" hoverColor='bg-red-300' hsize='h-10' wsize='w-40' fontsize='text-base'></HoverButton>
+        <HoverButton
+          label="detail"
+          color="bg-violet-300"
+          hoverColor="bg-violet-500"
+          hsize="h-[40px]"
+          wsize="w-[100px]"
+          fontsize="text-base"
+        ></HoverButton>
       </div>
     </div>
   );
-}
+};
 
 export default HomeCard;

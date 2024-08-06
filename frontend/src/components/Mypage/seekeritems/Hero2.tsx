@@ -1,6 +1,7 @@
-import React from "react";
-import ResultSummary from "../../Common/ResultSummary";
+import React from 'react';
+import ResultSummary from '../../Common/ResultSummary';
 
+// TODO : props로 받아서 뿌려주기
 const Hero1: React.FC = () => {
   const date1 = new Date(2024, 4, 15);
   const date2 = new Date(2024, 4, 16);

@@ -1,8 +1,8 @@
-import React from "react";
-import Slider from "react-slick";
-import CalendarImo from "../../assets/img/달력.png";
-import ResultCard from "./ResultCard";
-import MusicPlayer from "./MusicPlayerCopy";
+import React from 'react';
+import Slider from 'react-slick';
+import CalendarImo from '../../assets/img/달력.png';
+import ResultCard from './ResultCard';
+import MusicPlayer from './MusicPlayerCopy';
 
 interface ResultSummaryProps {
   date: Date;
@@ -10,14 +10,16 @@ interface ResultSummaryProps {
 
 // ResultCard에 전달할 데이터 배열 정의
 const resultCards = [
-  { imgNum: 1, title: "THE FOOL" },
-  { imgNum: 2, title: "THE MAGICIAN" },
-  { imgNum: 3, title: "THE HIGH PRIESTESS" },
-  { imgNum: 1, title: "THE EMPRESS" },
-  { imgNum: 2, title: "THE EMPEROR" },
-  { imgNum: 3, title: "THE HIEROPHANT" },
-  { imgNum: 1, title: "THE LOVERS" },
+  { imgNum: 1, title: 'THE FOOL' },
+  { imgNum: 2, title: 'THE MAGICIAN' },
+  { imgNum: 3, title: 'THE HIGH PRIESTESS' },
+  { imgNum: 1, title: 'THE EMPRESS' },
+  { imgNum: 2, title: 'THE EMPEROR' },
+  { imgNum: 3, title: 'THE HIEROPHANT' },
+  { imgNum: 1, title: 'THE LOVERS' },
 ];
+
+// TODO : 각각 원하는 결과 뿌려주기 props로 받아서
 
 const ResultSummary: React.FC<ResultSummaryProps> = ({ date }) => {
   // 슬라이드 설정
@@ -44,10 +46,10 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({ date }) => {
   };
 
   // 날짜를 포맷팅
-  const formattedDate = date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  const formattedDate = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
 
   return (
@@ -68,16 +70,15 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({ date }) => {
       <div className="p-4">
         <h1 className="text-black text-[25px] font-bold">요약</h1>
         <p className="text-gray-800 text-[14px]">
-          이 세 가지 카드는 당신이 새로운 시작을 맞이하고 있으며, 이를
-          성공적으로 이끌기 위한 능력과 자원을 가지고 있음을 나타냅니다. 그러나
-          단순히 외부의 자원만이 아니라, 내면의 지혜와 직감을 따르는 것이
-          중요합니다. The Fool은 당신이 새로운 길을 떠날 준비가 되어 있음을, The
-          Magician은 당신이 성공할 능력과 자원을 가지고 있음을, 그리고 The High
-          Priestess는 직감과 내면의 지혜를 따르는 것이 중요하다는 것을
-          말해줍니다. 따라서, 새로운 기회를 맞이하며 자신감을 가지고 도전하되,
-          내면의 목소리를 듣고 신중하게 행동하는 것이 좋겠습니다.
+          이 세 가지 카드는 당신이 새로운 시작을 맞이하고 있으며, 이를 성공적으로 이끌기 위한 능력과
+          자원을 가지고 있음을 나타냅니다. 그러나 단순히 외부의 자원만이 아니라, 내면의 지혜와
+          직감을 따르는 것이 중요합니다. The Fool은 당신이 새로운 길을 떠날 준비가 되어 있음을, The
+          Magician은 당신이 성공할 능력과 자원을 가지고 있음을, 그리고 The High Priestess는 직감과
+          내면의 지혜를 따르는 것이 중요하다는 것을 말해줍니다. 따라서, 새로운 기회를 맞이하며
+          자신감을 가지고 도전하되, 내면의 목소리를 듣고 신중하게 행동하는 것이 좋겠습니다.
         </p>
       </div>
+      {/* TODO : YOUTUBE API 안됨 */}
       <div className="mt-4">
         <MusicPlayer />
       </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import Hero2Item from './items/Hero2Item';
 import FireWork from '../../assets/img/firework.png';
 
+// TODO : 데이터 뿌려주기
 // Hero2Item에 보낼때 props로 보내면 됨
 const Hero2: React.FC = () => {
   return (
