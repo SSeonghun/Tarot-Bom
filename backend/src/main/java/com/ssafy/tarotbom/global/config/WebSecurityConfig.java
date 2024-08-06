@@ -2,7 +2,7 @@ package com.ssafy.tarotbom.global.config;
 
 
 //import com.ssafy.tarotbom.domain.jwt.JwtUtil;
-import com.ssafy.tarotbom.domain.member.Service.TokenService;
+import com.ssafy.tarotbom.domain.member.service.TokenService;
 import com.ssafy.tarotbom.domain.member.jwt.JwtAuthFilter;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
 import com.ssafy.tarotbom.global.security.CustomUserDetailsService;
@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -69,7 +68,7 @@ public class WebSecurityConfig {
                     .requestMatchers("/user/login/**").permitAll() // 로그인 api
                     .requestMatchers("/user/emailCheck/**").permitAll()
                     .requestMatchers("/user/emails/**").permitAll() // 이메일 중복 검사
-//                    .requestMatchers("/**").permitAll()
+                    .requestMatchers("/**").permitAll()
                     .requestMatchers("/error/**").authenticated()
                     .anyRequest().authenticated(); // 위의 것 외에는 인증 없이 접근 불가
         });

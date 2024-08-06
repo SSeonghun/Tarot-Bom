@@ -2,6 +2,7 @@ package com.ssafy.tarotbom.global.error;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
@@ -16,7 +17,14 @@ public class GlobalExceptionHandler {
         log.error(ex.toString());
         ErrorCode errorCode = ex.getErrorCode();
         ErrorResponse errorResponse = ErrorResponse.of(errorCode);
-        return ResponseEntity.status(errorCode.getStatus()).body(errorResponse);
+        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    protected ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex){
+        log.error(ex.toString());
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.DTO_NOT_VALID);
+        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

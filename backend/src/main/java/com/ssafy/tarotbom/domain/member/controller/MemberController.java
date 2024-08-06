@@ -1,8 +1,8 @@
 package com.ssafy.tarotbom.domain.member.controller;
 
-import com.ssafy.tarotbom.domain.member.Service.FavoriteReaderService;
-import com.ssafy.tarotbom.domain.member.Service.MemberService;
-import com.ssafy.tarotbom.domain.member.Service.ReaderService;
+import com.ssafy.tarotbom.domain.member.service.FavoriteReaderService;
+import com.ssafy.tarotbom.domain.member.service.MemberService;
+import com.ssafy.tarotbom.domain.member.service.ReaderService;
 import com.ssafy.tarotbom.domain.member.dto.request.*;
 import com.ssafy.tarotbom.domain.member.dto.response.*;
 import com.ssafy.tarotbom.global.error.ErrorCode;
@@ -167,6 +167,12 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    /**
+     * 금주의 TOP 리더
+     * 기준은 상담횟수, 최대 10명
+     * @return SearchTopReaderResponseDto
+     */
+
     ///////////////////////////////////////////////
     //                리더 찜 관련                //
     //////////////////////////////////////////////
@@ -203,7 +209,7 @@ public class MemberController {
      */
     @DeleteMapping("/favorite/{readerId}")
     public ResponseEntity<?> deleteFavoriteReader(HttpServletRequest request, @PathVariable long readerId) {
-//        log.info("{}", readerId);
+        log.info("{}", readerId);
         favoriteReaderService.deleteFavoriteReader(request, readerId);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.DELELTE_FAVORITE_READER);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
@@ -243,7 +249,5 @@ public class MemberController {
         ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_READER_MYPAGE, readerMypageResponseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
-
-
 
 }

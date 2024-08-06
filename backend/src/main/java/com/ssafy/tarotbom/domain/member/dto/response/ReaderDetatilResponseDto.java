@@ -22,8 +22,8 @@ public class ReaderDetatilResponseDto {
     private int price;
 
     // 기존 리더 리스트DTO에 추가로 더 반환
-    private int allConsertings;
-    private int allReaservations;
+    private int allConsultings;
+    private int allReservations;
     private int afterReader;
 
     private List<ReviewReaderResponseDto> reviews;

@@ -1,4 +1,4 @@
-package com.ssafy.tarotbom.domain.member.Service;
+package com.ssafy.tarotbom.domain.member.service;
 
 import com.ssafy.tarotbom.domain.member.dto.request.FavoriteReaderRequestDto;
 import com.ssafy.tarotbom.domain.member.dto.response.FavoriteReaderListResponseDto;

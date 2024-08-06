@@ -27,6 +27,7 @@ public enum ErrorCode {
 
     // Favorite Reader
     FAVORITE_DUPLICATED(HttpStatus.CONFLICT, "F001", "이미 찜한 리더 입니다."),
+    FAVORITE_NOT_FOUND(HttpStatus.NOT_FOUND, "M007", "이미 없는 찜 목록입니다."),
 
     // Reservation
 
