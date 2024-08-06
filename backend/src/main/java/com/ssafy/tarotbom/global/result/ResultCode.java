@@ -48,7 +48,10 @@ public enum ResultCode {
     BOARD_WRITE_OK(HttpStatus.CREATED, "B001", "게시글 작성 성공"),
     BOARD_GET_OK(HttpStatus.OK,  "B002", "게시글 조회 성공"),
     BOARD_UPDATE_OK(HttpStatus.OK, "B003", "게시글 수정 성공"),
-    BOARD_DELETE_OK(HttpStatus.OK, "B004", "게시글 삭제 성공")
+    BOARD_DELETE_OK(HttpStatus.OK, "B004", "게시글 삭제 성공"),
+
+    // Comment
+    COMMENT_CREATE_OK(HttpStatus.CREATED, "B005", "댓글 작성 성공" )
 
     ;
     // ==== 응답 코드 정의 종료 ====

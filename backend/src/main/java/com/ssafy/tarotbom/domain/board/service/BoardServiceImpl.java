@@ -8,8 +8,6 @@ import com.ssafy.tarotbom.domain.board.entity.Board;
 import com.ssafy.tarotbom.domain.board.entity.Comment;
 import com.ssafy.tarotbom.domain.board.repository.BoardRepository;
 import com.ssafy.tarotbom.domain.board.repository.CommentRepository;
-import com.ssafy.tarotbom.domain.member.entity.Member;
-import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import jakarta.validation.Valid;
@@ -19,8 +17,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,7 +30,7 @@ public class BoardServiceImpl implements BoardService{
     private final CommentRepository commentRepository;
 
     // 게시판 생성 시 : memberId, 카테고리(공지, 카드정보 등), 제목, 내용
-    // 게시판 생성 성공하면 결과로 해당 정보 알려줌.
+    // 게시판 생성 성공하면 결과로 해당 정보(멤버Id, 게시판Id, 제목, 내용, 생성시간, 카테고리, 댓글 수, 좋아요 수 알려줌.
     @Transactional
     @Override
     public BoardWriteResDto createBoard(@Valid BoardWriteReqDto boardWriteReqDto) {
@@ -68,6 +66,7 @@ public class BoardServiceImpl implements BoardService{
             throw new BusinessException(ErrorCode.BOARD_EMPTY);
         }
 
+
         return boards.stream().map(board -> BoardListResDto.builder()
                         .boardId(board.getBoardId())
                         .memberId(board.getMemberId())
@@ -90,7 +89,6 @@ public class BoardServiceImpl implements BoardService{
         );
 
         List<Comment> comments = commentRepository.findByBoardId(boardId);
-
         List<BoardCommentDto> commentList = comments.stream().map(comment -> BoardCommentDto.builder()
                         .commentId(comment.getCommentId())
                         .boardId(comment.getBoardId())
@@ -124,11 +122,21 @@ public class BoardServiceImpl implements BoardService{
             throw new BusinessException(ErrorCode.BOARD_NOT_YOUR_BOARD);
         }
 
-        return BoardUpdateResDto.builder()
+        Board updateBoard = Board.builder()
                 .boardId(board.getBoardId())
-                .title(board.getTitle())
-                .content(board.getContent())
+                .memberId(reqDto.getMemberId())
+                .category(reqDto.getCategory())
+                .title(reqDto.getTitle())
+                .content(reqDto.getContent())
                 .createTime(board.getCreateTime())
+                .build();
+
+        boardRepository.save(updateBoard);
+
+        return BoardUpdateResDto.builder()
+                .boardId(updateBoard.getBoardId())
+                .title(updateBoard.getTitle())
+                .content(updateBoard.getContent())
                 .updateTime(board.getUpdateTime())
                 .build();
     }
@@ -148,5 +156,7 @@ public class BoardServiceImpl implements BoardService{
             throw new BusinessException(ErrorCode.BOARD_DATA_INTEGRITY_VIOLATION);
         }
     }
+
+
 
 }
