@@ -41,8 +41,8 @@ const Booking: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-purple-800 p-6 rounded-lg shadow-lg max-w-6xl w-full mx-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <div className="bg-purple-800 p-6 rounded-lg shadow-lg max-w-6xl w-full mx-4 z-10">
         <div className="flex flex-col items-center">
           <Name />
         </div>
