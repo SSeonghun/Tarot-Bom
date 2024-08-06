@@ -208,7 +208,7 @@ public class MemberController {
      */
     @DeleteMapping("/favorite/{readerId}")
     public ResponseEntity<?> deleteFavoriteReader(HttpServletRequest request, @PathVariable long readerId) {
-//        log.info("{}", readerId);
+        log.info("{}", readerId);
         favoriteReaderService.deleteFavoriteReader(request, readerId);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.DELELTE_FAVORITE_READER);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
@@ -248,7 +248,5 @@ public class MemberController {
         ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_READER_MYPAGE, readerMypageResponseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
-
-
 
 }

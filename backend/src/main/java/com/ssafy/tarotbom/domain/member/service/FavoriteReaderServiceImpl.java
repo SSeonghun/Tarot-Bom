@@ -6,6 +6,7 @@ import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
 import com.ssafy.tarotbom.domain.member.entity.FavoriteReader;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
+import com.ssafy.tarotbom.domain.member.repository.FavoriteReaderQueryRepository;
 import com.ssafy.tarotbom.domain.member.repository.FavoriteReaderRepository;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
@@ -13,6 +14,7 @@ import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
     private final ReaderRepository readerRepository;
     private final MemberRepository memberRepository;
     private final FavoriteReaderRepository favoriteReaderRepository;
+    private final FavoriteReaderQueryRepository favoriteReaderQueryRepository;
     private final CookieUtil cookieUtil;
 
     /**
@@ -38,29 +41,32 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
      */
     @Override
     public void addFavoriteReader(FavoriteReaderRequestDto favoriteReaderRequestDto) {
-
-        Reader reader = readerRepository.findById(favoriteReaderRequestDto.getReaderId());
-        Optional<Member> seeker = memberRepository.findMemberByMemberId(favoriteReaderRequestDto.getSeekerId());
+        long seekerId = favoriteReaderRequestDto.getSeekerId();
+        long readerId = favoriteReaderRequestDto.getReaderId();
+//
+//        Reader reader = readerRepository.findByMemberId(favoriteReaderRequestDto.getReaderId());
+//        Optional<Member> seeker = memberRepository.findMemberByMemberId(favoriteReaderRequestDto.getSeekerId());
 
         // 해당 맴버 찜목록 조회
         // 만약 이미 찜한 리더면 오류 던지기
-        List<FavoriteReader> favoriteReaders = favoriteReaderRepository.findBySeeker(seeker.get());
-        for(int i = 0; i < favoriteReaders.size(); i++) {
-            long readerId = favoriteReaders.get(i).getReader().getMemberId();
-            if(favoriteReaders.get(i).getReader().getMemberId() == favoriteReaderRequestDto.getReaderId()){
-                throw new BusinessException(ErrorCode.FAVORITE_DUPLICATED);
-            }
+//        List<FavoriteReader> favoriteReaders = favoriteReaderRepository.findBySeeker(seeker.get());
+//        for(int i = 0; i < favoriteReaders.size(); i++) {
+//            long readerId = favoriteReaders.get(i).getReader().getMemberId();
+//            if(favoriteReaders.get(i).getReader().getMemberId() == favoriteReaderRequestDto.getReaderId()){
+//                throw new BusinessException(ErrorCode.FAVORITE_DUPLICATED);
+//            }
+//        }
+        if(favoriteReaderRepository.findBySeekerIdAndReaderId(seekerId, readerId) != null) {
+            log.info("이미 찜한 조합 : {} -> {}", seekerId, readerId);
+            throw new BusinessException(ErrorCode.FAVORITE_DUPLICATED);
         }
-
+        // 이미 찜한 조합이 아니라면 새롭게 등록
         FavoriteReader favoriteReader = FavoriteReader
                 .builder()
-                .reader(reader.getMember())
-                .seeker(seeker.get())
-                .createTime(LocalDateTime.now())
+                .readerId(readerId)
+                .seekerId(seekerId)
                 .build();
-
         favoriteReaderRepository.save(favoriteReader);
-
     }
 
     /**
@@ -91,7 +97,7 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
         for (FavoriteReader favoriteReader : favoriteReaders) {
             long readerId = favoriteReader.getReader().getMemberId();
 
-            Optional<Reader> readerOptional = Optional.ofNullable(readerRepository.findById(readerId));
+            Optional<Reader> readerOptional = Optional.ofNullable(readerRepository.findByMemberId(readerId));
             if (readerOptional.isEmpty()) {
                 // 적절한 예외 처리
                 throw new RuntimeException("Reader not found");
@@ -134,19 +140,14 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
      * @param readerId
      */
     @Override
+    @Transactional
     public void deleteFavoriteReader(HttpServletRequest request, long readerId) {
-
         long seekerId = cookieUtil.getUserId(request);
-
-        Optional<FavoriteReader> favoriteReaderOptional = favoriteReaderRepository.findBySeeker_MemberIdAndReader_MemberId(seekerId, readerId);
-
-        if (favoriteReaderOptional.isEmpty()) {
-            // 적절한 예외 처리
-            throw new RuntimeException("Favorite reader not found");
+        if(favoriteReaderQueryRepository.deleteBySeekerIdAndReaderId(seekerId, readerId) == 0) {
+            // 삭제 실패한 경우, Exception 발생
+            throw new BusinessException(ErrorCode.FAVORITE_NOT_FOUND);
         }
-
-        favoriteReaderRepository.delete(favoriteReaderOptional.get());
-
+        // 정상적으로 삭제되었다면 exception을 출력하지 않음
     }
 
 

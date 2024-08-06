@@ -51,9 +51,9 @@ public class ReviewServiceImpl implements ReviewService {
         List<ReviewReaderDto> reviewReaderDtos = reviewReaders.stream()
                 .map(reviewReader -> ReviewReaderDto.builder()
                         .reviewReaderId(reviewReader.getReviewReaderId())
-                        .seekerId(reviewReader.getSeeker().getMemberId())
-                        .readerId(reviewReader.getReader().getMemberId())
-                        .resultId(reviewReader.getResult().getResultId())
+                        .seekerId(reviewReader.getSeekerId())
+                        .readerId(reviewReader.getReaderId())
+                        .resultId(reviewReader.getResultId())
                         .rating(reviewReader.getRating())
                         .content(reviewReader.getContent())
                         .createTime(reviewReader.getCreateTime())
@@ -73,7 +73,7 @@ public class ReviewServiceImpl implements ReviewService {
         long seekerId = cookieUtil.getUserId(request);
 
         // 해당 reader의 rating을 갱신한다
-        Reader reader = readerRepository.findById(reviewAddRequestDto.getReaderId());
+        Reader reader = readerRepository.findByMemberId(reviewAddRequestDto.getReaderId());
         double readerRating = reader.getRating();
         int reviewCount = reviewReaderRepository.countByReaderId(reader.getMemberId());
         readerRating = (readerRating*reviewCount+reviewAddRequestDto.getRating())/(reviewCount+1);

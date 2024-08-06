@@ -9,5 +9,6 @@ import java.util.Optional;
 
 public interface FavoriteReaderRepository extends JpaRepository<FavoriteReader, Long> {
     List<FavoriteReader> findBySeeker(Member seeker);
+    FavoriteReader findBySeekerIdAndReaderId(Long seekerId, Long readerId);
     Optional<FavoriteReader> findBySeeker_MemberIdAndReader_MemberId(Long seekerId, Long readerId);
 }
