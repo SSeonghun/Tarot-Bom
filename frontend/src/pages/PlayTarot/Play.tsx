@@ -13,7 +13,7 @@ const Play: React.FC = () => {
 
   return (
     <div className="flex min-h-screen page">
-      <div className="flex-1 flex items-center justify-center relative">
+      <div className="flex-1 flex items-center justify-center relative mt-24">
         <div className="absolute top-12 left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center w-[calc(100%-10rem)] max-w-5xl">
           {/* 매트 배경 */}
           <div className="relative flex flex-col w-full p-6 bg-gray-800 bg-opacity-70 rounded-lg shadow-xl">
@@ -28,7 +28,7 @@ const Play: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="relative w-96 ml-6">
+      <div className="relative w-96 ml-6 mt-20">
         <Chatting />
       </div>
     </div>

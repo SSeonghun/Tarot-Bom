@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@heroicons/react": "^2.1.5",
+    "@livekit/components-react": "^2.4.3",
+    "@livekit/components-styles": "^1.0.12",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
