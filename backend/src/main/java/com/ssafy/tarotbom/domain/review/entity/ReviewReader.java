@@ -21,20 +21,17 @@ public class ReviewReader {
     private long reviewReaderId;
 
     /* @ManyToOne으로 연결 : 시커/리더ID */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seeker_id", columnDefinition = "int unsigned")
+    @JoinColumn(name = "seeker_id", columnDefinition = "int unsigned", insertable = false, updatable = false)
     private Member seeker;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reader_id", columnDefinition = "int unsigned")
+    @JoinColumn(name = "reader_id", columnDefinition = "int unsigned", insertable = false, updatable = false)
     private Member reader;
 
     /* @OneToOne으로 연결 : 타로결과ID */
-    @NotNull
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "result_id", columnDefinition = "int unsigned")
+    @JoinColumn(name = "result_id", columnDefinition = "int unsigned", insertable = false, updatable = false)
     private TarotResult result;
 
     @NotNull
@@ -49,6 +46,18 @@ public class ReviewReader {
 
     @Column(name = "update_time", columnDefinition = "timestamp")
     private LocalDateTime updateTime;
+
+    @NotNull
+    @Column(name = "seeker_id", columnDefinition = "int unsigned")
+    private long seekerId;
+
+    @NotNull
+    @Column(name = "reader_id", columnDefinition = "int unsigned")
+    private long readerId;
+
+    @NotNull
+    @Column(name = "result_id", columnDefinition = "int unsigned")
+    private long resultId;
 
     // create time, update time 자동갱신
     @PrePersist

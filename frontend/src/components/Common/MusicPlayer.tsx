@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react";
-// import youtubeMusic from '../../API/api'
+import React, { useEffect, useState } from 'react';
 
+
+
+const { youtubeMusic } = require('../../API/api')
 // props 타입 정의
+
 interface MusicPlayerProps {
   width: number; // width
   height: number; // height

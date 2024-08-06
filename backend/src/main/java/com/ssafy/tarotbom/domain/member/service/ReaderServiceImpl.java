@@ -1,4 +1,4 @@
-package com.ssafy.tarotbom.domain.member.Service;
+package com.ssafy.tarotbom.domain.member.service;
 
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderDetatilResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
@@ -45,7 +45,13 @@ public class ReaderServiceImpl implements ReaderService{
 
         //todo: 리더 쪽 테이블 확인
         return readers.stream()
-                .map(reader -> new ReaderListResponseDto(reader.getMember().getMemberId(),reader.getMember().getNickname(), reader.getMember().getMemberType().getCodeDetailId() ,reader.getKeyword().getCodeDetailId(), reader.getIntro(), reader.getRating(), reader.getGrade().getCodeDetailId(), reader.getPrice()))
+                .map(reader -> new ReaderListResponseDto(reader.getMember().getMemberId()
+                        ,reader.getMember().getNickname()
+                        , reader.getMember().getMemberType().getCodeDetailId()
+                        ,reader.getKeyword().getCodeDetailId(), reader.getIntro()
+                        ,reader.getRating()
+                        , reader.getGrade().getCodeDetailId()
+                        ,reader.getPrice()))
                 .collect(Collectors.toList());
     }
 
@@ -71,24 +77,26 @@ public class ReaderServiceImpl implements ReaderService{
      */
     @Override
     public ReaderDetatilResponseDto searchReaderDetail(long readerId) {
-
-        Reader reader = readerRepository.findById(readerId);
+        Reader reader = readerRepository.findByMemberId(readerId);
         Member memberReader = memberRepository.getReferenceById(readerId);
         // Optional : null 값 반환을 막기 위한 클래스
         Optional<ReviewReader> reviewReader = reviewReaderRepository.findById(readerId);
         
         // 리더 이름을 가져오기위함
-        Optional<Member> isMember = memberRepository.findMemberByMemberId(readerId);
-        
-        // todo: 값이 없을경우 있나? 그래도 처리
-        // 값이 있으면
-        Member member = isMember.get();
+//        Optional<Member> isMember = memberRepository.findMemberByMemberId(readerId);
+//
+//        // todo: 값이 없을경우 있나? 그래도 처리
+//        // 값이 있으면
+//        Member member = isMember.get();
+        Member member = reader.getMember();
 
-        List<Reservation> reservations = reservationRepository.findAllByReaderId(readerId);
-        int allReaservations = reservations.size();
+//        List<Reservation> reservations = reservationRepository.findAllByReaderId(readerId);
+//        int allReservations = reservations.size();
+        int allReservations = reservationRepository.countByReaderId(readerId);
 
-        List<TarotResult> tarotResults = tarotResultRepository.findAllByReaderId(readerId);
-        int allConserting = tarotResults.size();
+//        List<TarotResult> tarotResults = tarotResultRepository.findAllByReaderId(readerId);
+//        int allConsulting = tarotResults.size();
+        int allConsulting = tarotResultRepository.countByReaderId(readerId);
 
         LocalDateTime createTime = reader.getCreateTime();
         LocalDateTime now = LocalDateTime.now();
@@ -99,8 +107,8 @@ public class ReaderServiceImpl implements ReaderService{
         List<ReviewReaderResponseDto> reviewList = reviewReaders.stream()
                 .map(review -> ReviewReaderResponseDto.builder()
                         .reviewReaderId(String.valueOf(review.getReviewReaderId()))
-                        .seekerId(String.valueOf(review.getSeeker().getMemberId()))
-                        .readerId(String.valueOf(review.getReader().getMemberId()))
+                        .seekerId(String.valueOf(review.getSeekerId()))
+                        .readerId(String.valueOf(review.getReaderId()))
                         .rating(review.getRating())
                         .content(review.getContent())
                         .createTime(review.getCreateTime())
@@ -119,14 +127,14 @@ public class ReaderServiceImpl implements ReaderService{
                 .builder()
                 .memberId(reader.getMemberId())
                 .name(member.getNickname())
-                .keyword(reader.getKeyword().getDetailDesc())
+                .keyword(reader.getKeywords())
                 .intro(reader.getIntro())
                 .rating(reader.getRating())
-                .grade(reader.getGrade().getDetailDesc())
+                .grade(reader.getGradeCode())
                 .price(reader.getPrice())
                 .reviews(reviewList)
-                .allConsertings(allConserting)
-                .allReaservations(allReaservations)
+                .allConsultings(allConsulting)
+                .allReservations(allReservations)
                 .afterReader(afterReader)
                 .build();
 
