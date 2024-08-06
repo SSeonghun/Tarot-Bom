@@ -23,6 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/chat")
 public class ChatController {
 
+    /* [해야할 일]
+    1) 서비스에서 메시지 보내기 금자
+    2) request, response dto 분리
+    3) ReponseEntity로 응답 금지 (웹소켓은 http가 아님)
+    4) 응답 형식 통일 (이건 만들어서 주겠음)
+    5) convertAndSend에서 맨 처음에 슬래쉬 붙이기
+    +) 채팅 Redis에 저장
+    +) WebSocket 프로토콜 과정 알아보기 (handshake 과정에서 http 사용한다는 거)
+    * */
 
     private final ChatRoomService chatRoomService;
 
