@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import "./Graphic.css";
-import cardBackImage from "../../assets/card-back.png";
+import React, { useEffect, useState } from 'react';
+import './Graphic.css';
+import cardBackImage from '../../assets/card-back.png';
 
+// TODO : 타로 결과를 위한 axios로 서버로 넘겨주기
 // 비복원 추출을 위한 유틸리티 함수
 const getRandomCard = (excludeCards: number[]): number => {
   const availableCards = Array.from({ length: 78 }, (_, index) => index).filter(
@@ -18,9 +19,9 @@ const Graphic: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     };
   }, []);
 
@@ -71,7 +72,7 @@ const Graphic: React.FC = () => {
                   key={index}
                   onClick={() => handleCardClick(index)} // 클릭 핸들러 추가
                   className={`w-24 h-36 bg-cover bg-center rounded-lg absolute transition-transform duration-300 ease-in-out transform hover:scale-125 ${
-                    removingCards.includes(index) ? "animate-card-remove" : ""
+                    removingCards.includes(index) ? 'animate-card-remove' : ''
                   }`} // 애니메이션 클래스 추가
                   style={{
                     backgroundImage: `url(${cardBackImage})`,

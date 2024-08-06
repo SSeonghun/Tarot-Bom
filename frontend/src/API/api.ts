@@ -1,14 +1,24 @@
-import axios from "axios";
+import axios from 'axios';
 
 // const API_URL = "https://i11c208.p.ssafy.io/tarotbom/";
-const API_URL = "https://i11c208.p.ssafy.io/tarotbom/";
+const API_URL = 'http://localhost/tarotbom/';
 
-const readerList = async (page: number, name: string) => {
+const readerList = async () => {
   try {
-    const response = await axios.post(`${API_URL}reader/list`);
+    const response = await axios.get(`${API_URL}user/reader/list`);
     return response.data;
   } catch (error) {
-    console.error("전체 리더 목록 조회 실패", error);
+    console.error('전체 리더 목록 조회 실패', error);
+    throw error;
+  }
+};
+
+const readerDetail = async (readerId: number) => {
+  try {
+    const response = await axios.get(`${API_URL}user/reader/detail/${readerId}`);
+    return response.data;
+  } catch (error) {
+    console.error('리더 상세 조회 실패');
     throw error;
   }
 };
@@ -36,7 +46,7 @@ const result = async (
     });
     return response.data;
   } catch (error) {
-    console.error("결과 조회 실패", error);
+    console.error('결과 조회 실패', error);
     throw error;
   }
 };
@@ -61,7 +71,7 @@ const declaration = async (
 
     return response.data;
   } catch (error) {
-    console.error("신고 실패", error);
+    console.error('신고 실패', error);
     throw error;
   }
 };
@@ -71,7 +81,7 @@ const cardInfo = async (cardId: number) => {
     const response = await axios.get(`${API_URL}card/info/${cardId}`);
     return response.data;
   } catch (error) {
-    console.error("카드 조회 실패");
+    console.error('카드 조회 실패');
     throw error;
   }
 };
@@ -100,11 +110,11 @@ const cardInfo = async (cardId: number) => {
 //   }
 // }
 
-const youtubeMusic = async (searchQuery: string) => { // searchQuery를 매개변수로 받음
+const youtubeMusic = async (searchQuery: string) => {
+  // searchQuery를 매개변수로 받음
   try {
-    const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY
+    const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
 
-    
     const response = await axios({
       method: 'get',
       url: 'https://www.googleapis.com/youtube/v3/search',
@@ -113,8 +123,8 @@ const youtubeMusic = async (searchQuery: string) => { // searchQuery를 매개�
         part: 'snippet',
         type: 'video',
         q: `노래 ${searchQuery}`, // searchQuery를 사용
-        maxResults: 1
-      }
+        maxResults: 1,
+      },
     });
     const videoId = response.data.items[0].id.videoId;
     const videoData = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
@@ -123,7 +133,6 @@ const youtubeMusic = async (searchQuery: string) => { // searchQuery를 매개�
     console.error('유튜브 뮤직 검색 실패', error);
     throw error;
   }
-}
+};
 
-
-export  { readerList, result, declaration, cardInfo, youtubeMusic };
+export { readerList, result, declaration, cardInfo, youtubeMusic, readerDetail };

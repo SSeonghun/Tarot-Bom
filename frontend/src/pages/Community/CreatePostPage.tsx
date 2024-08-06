@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// TODO : axios
 const CreatePostPage: React.FC = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -13,13 +14,13 @@ const CreatePostPage: React.FC = () => {
   useEffect(() => {
     const isLoggedIn = true; // 이 값은 실제 로그인 상태에 따라 설정되어야 합니다.
     const loggedInUser = 'User123'; // 이 값은 실제 로그인된 사용자에 의해 설정되어야 합니다.
-    
+
     if (isLoggedIn) {
       setAuthor(loggedInUser);
     } else {
       setAuthor('Anonymous');
     }
-    
+
     // 현재 날짜로 초기화
     const today = new Date().toISOString().split('T')[0];
     setDate(today);
@@ -53,7 +54,9 @@ const CreatePostPage: React.FC = () => {
         </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Title
+            </label>
             <input
               id="title"
               type="text"
@@ -64,7 +67,9 @@ const CreatePostPage: React.FC = () => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="content" className="block text-sm font-medium text-gray-700">Content</label>
+            <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+              Content
+            </label>
             <textarea
               id="content"
               value={content}
@@ -75,7 +80,9 @@ const CreatePostPage: React.FC = () => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+              Category
+            </label>
             <input
               id="category"
               type="text"
@@ -86,7 +93,9 @@ const CreatePostPage: React.FC = () => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="author" className="block text-sm font-medium text-gray-700">Author</label>
+            <label htmlFor="author" className="block text-sm font-medium text-gray-700">
+              Author
+            </label>
             <input
               id="author"
               type="text"
@@ -96,7 +105,9 @@ const CreatePostPage: React.FC = () => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
+            <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+              Date
+            </label>
             <input
               id="date"
               type="date"

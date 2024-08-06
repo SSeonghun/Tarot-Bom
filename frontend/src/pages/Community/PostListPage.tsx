@@ -11,6 +11,8 @@ interface Post {
   category: string; // 추가된 필드
 }
 
+// TODO : axios!!!!!!!!! 데이터 뿌려주기
+
 const PostListPage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -22,16 +24,86 @@ const PostListPage: React.FC = () => {
     // 실제 데이터를 가져오는 API 호출을 할 수 있습니다.
     // 예시로 하드코딩된 데이터를 사용합니다.
     const fetchedPosts: Post[] = [
-      { id: 1, title: 'First Post', content: 'This is the first post.', author: 'Alice', date: '2023-01-01', category: 'Technology' },
-      { id: 2, title: 'Second Post', content: 'This is the second post.', author: 'Bob', date: '2023-01-02', category: 'Health' },
-      { id: 3, title: 'Third Post', content: 'This is the third post.', author: 'Charlie', date: '2023-01-03', category: 'Technology' },
-      { id: 4, title: 'Fourth Post', content: 'This is the fourth post.', author: 'David', date: '2023-01-04', category: 'Lifestyle' },
-      { id: 5, title: 'Fifth Post', content: 'This is the fifth post.', author: 'Eve', date: '2023-01-05', category: 'Health' },
-      { id: 6, title: 'Sixth Post', content: 'This is the sixth post.', author: 'Frank', date: '2023-01-06', category: 'Lifestyle' },
-      { id: 7, title: 'Seventh Post', content: 'This is the seventh post.', author: 'Grace', date: '2023-01-07', category: 'Technology' },
-      { id: 8, title: 'Eighth Post', content: 'This is the eighth post.', author: 'Hank', date: '2023-01-08', category: 'Health' },
-      { id: 9, title: 'Ninth Post', content: 'This is the ninth post.', author: 'Ivy', date: '2023-01-09', category: 'Lifestyle' },
-      { id: 10, title: 'Tenth Post', content: 'This is the tenth post.', author: 'Jack', date: '2023-01-10', category: 'Technology' },
+      {
+        id: 1,
+        title: 'First Post',
+        content: 'This is the first post.',
+        author: 'Alice',
+        date: '2023-01-01',
+        category: 'Technology',
+      },
+      {
+        id: 2,
+        title: 'Second Post',
+        content: 'This is the second post.',
+        author: 'Bob',
+        date: '2023-01-02',
+        category: 'Health',
+      },
+      {
+        id: 3,
+        title: 'Third Post',
+        content: 'This is the third post.',
+        author: 'Charlie',
+        date: '2023-01-03',
+        category: 'Technology',
+      },
+      {
+        id: 4,
+        title: 'Fourth Post',
+        content: 'This is the fourth post.',
+        author: 'David',
+        date: '2023-01-04',
+        category: 'Lifestyle',
+      },
+      {
+        id: 5,
+        title: 'Fifth Post',
+        content: 'This is the fifth post.',
+        author: 'Eve',
+        date: '2023-01-05',
+        category: 'Health',
+      },
+      {
+        id: 6,
+        title: 'Sixth Post',
+        content: 'This is the sixth post.',
+        author: 'Frank',
+        date: '2023-01-06',
+        category: 'Lifestyle',
+      },
+      {
+        id: 7,
+        title: 'Seventh Post',
+        content: 'This is the seventh post.',
+        author: 'Grace',
+        date: '2023-01-07',
+        category: 'Technology',
+      },
+      {
+        id: 8,
+        title: 'Eighth Post',
+        content: 'This is the eighth post.',
+        author: 'Hank',
+        date: '2023-01-08',
+        category: 'Health',
+      },
+      {
+        id: 9,
+        title: 'Ninth Post',
+        content: 'This is the ninth post.',
+        author: 'Ivy',
+        date: '2023-01-09',
+        category: 'Lifestyle',
+      },
+      {
+        id: 10,
+        title: 'Tenth Post',
+        content: 'This is the tenth post.',
+        author: 'Jack',
+        date: '2023-01-10',
+        category: 'Technology',
+      },
     ];
     setPosts(fetchedPosts);
   }, []);
@@ -41,9 +113,8 @@ const PostListPage: React.FC = () => {
     setCurrentPage(1); // 필터링 시 첫 페이지로 리셋
   };
 
-  const filteredPosts = selectedCategory === 'All'
-    ? posts
-    : posts.filter(post => post.category === selectedCategory);
+  const filteredPosts =
+    selectedCategory === 'All' ? posts : posts.filter((post) => post.category === selectedCategory);
 
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
@@ -72,7 +143,9 @@ const PostListPage: React.FC = () => {
 
         {/* 분류 선택 UI 추가 */}
         <div className="mb-4">
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">Filter by Category</label>
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+            Filter by Category
+          </label>
           <select
             id="category"
             value={selectedCategory}
@@ -124,11 +197,13 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, paginate, currentPa
           &laquo;
         </button>
       )}
-      {pageNumbers.map(number => (
+      {pageNumbers.map((number) => (
         <button
           key={number}
           onClick={() => paginate(number)}
-          className={`mx-1 px-3 py-1 rounded-md ${currentPage === number ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+          className={`mx-1 px-3 py-1 rounded-md ${
+            currentPage === number ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'
+          }`}
         >
           {number}
         </button>

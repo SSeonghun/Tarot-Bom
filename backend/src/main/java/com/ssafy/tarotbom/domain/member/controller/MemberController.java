@@ -144,10 +144,11 @@ public class MemberController {
      * 전체 리더조회
      * @return
      */
+    // TODO : 프로필 이미지 관련 수정 필요
     @GetMapping("/reader/list")
     public  ResponseEntity<?> searchAllReader() {
         List<ReaderListResponseDto> readerList = readerService.searchAllReader();
-//        log.info("readerListsize : {}", readerList.size());
+        log.info("readerListsize : {}", readerList.size());
 //        log.info("readerList : {}", readerList.get(0).getMemberId());
         ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_ALL_READER, readerList);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
@@ -228,6 +229,7 @@ public class MemberController {
      */
     @GetMapping("/seeker/mypage")
     public ResponseEntity<?> seekerMypage(@RequestParam boolean isReader, @RequestParam String name, HttpServletRequest request) {
+        log.info("seekerMypage");
         MypageRequestDto seekerMypageRequestDto = MypageRequestDto.builder()
                 .isReader(isReader)
                 .name(name)

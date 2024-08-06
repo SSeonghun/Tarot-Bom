@@ -1,13 +1,12 @@
-import React from "react";
-import HoverButton from "../Common/HoverButton";
+import React from 'react';
+import HoverButton from '../Common/HoverButton';
 
-import ReaderProfile1 from "../../assets/img/ReaderProfile1.png";
-import Profile from "../../assets/img/profile2.png";
-import Seed from "../../assets/img/seed.png";
+import ReaderProfile1 from '../../assets/img/ReaderProfile1.png';
+import Profile from '../../assets/img/profile2.png';
+import Seed from '../../assets/img/seed.png';
 
+// TODO : 데이터 뿌려주기
 const Hero1: React.FC = () => {
-
-  
   return (
     <div className="relative bg-black bg-opacity-70">
       <img
@@ -25,9 +24,7 @@ const Hero1: React.FC = () => {
           <img src={Seed} alt="grade" className="w-auto h-10" title="등급" />
           <h1 className="text-5xl text-white mt-5 font-bold">김싸피</h1>
         </div>
-        <p className="text-[15px] mt-3 text-white font-semibold">
-          TAROT READER
-        </p>
+        <p className="text-[15px] mt-3 text-white font-semibold">TAROT READER</p>
         <div className="mt-5">
           <HoverButton
             label="예약하기"
