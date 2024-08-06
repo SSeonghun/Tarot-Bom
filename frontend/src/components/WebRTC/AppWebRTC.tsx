@@ -14,23 +14,23 @@ type TrackInfo = {
 };
 
 let APPLICATION_SERVER_URL = "";
-let LIVEKIT_URL = "ws://localhost:7880/";
+let LIVEKIT_URL = "";
 configureUrls();
 
 function configureUrls() {
     if (!APPLICATION_SERVER_URL) {
         if (window.location.hostname === "localhost") {
-            APPLICATION_SERVER_URL = "http://localhost:6080/";
+            APPLICATION_SERVER_URL = "https://localhost/";
         } else {
-            APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6080/";
+            APPLICATION_SERVER_URL = "https://" + window.location.hostname + "/";
         }
     }
 
     if (!LIVEKIT_URL) {
         if (window.location.hostname === "localhost") {
-            LIVEKIT_URL = "ws://localhost:7880/";
+            LIVEKIT_URL = "ws://localhost/";
         } else {
-            LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
+            LIVEKIT_URL = "wss://" + window.location.hostname + "/";
         }
     }
 }
