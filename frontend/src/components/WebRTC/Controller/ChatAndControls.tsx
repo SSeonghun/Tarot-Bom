@@ -103,7 +103,10 @@ const ChatAndControls: React.FC = () => {
             {/* 화면 통제 */}
             {/* <div /> */}
             <div className="bg-gray-300 flex-grow" style={{ flex: '1 1 0' }}>
-                <ControlsPanel />
+            <ControlsPanel
+                onCameraChange={(deviceId) => console.log('Camera changed to:', deviceId)}
+                onAudioChange={(deviceId) => console.log('Audio changed to:', deviceId)}
+            />
             </div>
             
         </div>

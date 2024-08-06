@@ -52,6 +52,8 @@ function AppWebRTC() {
     // const [drawingData, setDrawingData] = useState<any>(null);
     const [participantName, setParticipantName] = useState("Participant" + Math.floor(Math.random() * 100));
     const [roomName, setRoomName] = useState("Test Room");
+    const [cameraDeviceId, setCameraDeviceId] = useState<string | null>(null);
+    const [audioDeviceId, setAudioDeviceId] = useState<string | null>(null);
 
     const canvasRef = useRef<DrawingCanvasHandle | null>(null);
 
@@ -81,7 +83,12 @@ function AppWebRTC() {
             console.log('Room is undefined, no event listeners attached.');
         }
     }, [room]);
-
+    useEffect(() => {
+        if (room && localTrack) {
+            room.localParticipant.setCamera(cameraDeviceId);
+            room.localParticipant.setMicrophone(audioDeviceId);
+        }
+    }, [cameraDeviceId, audioDeviceId, room, localTrack]);
     async function joinRoom() {
         const room = new Room();
         setRoom(room);

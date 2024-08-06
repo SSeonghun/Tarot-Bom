@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
 
-const ControlsPanel: React.FC = () => {
+interface ControlsPanelProps {
+    onCameraChange: (deviceId: string | null) => void;
+    onAudioChange: (deviceId: string | null) => void;
+}
+
+const ControlsPanel: React.FC<ControlsPanelProps> = ({ onCameraChange, onAudioChange }) => {
     const [selectedTab, setSelectedTab] = useState<'camera' | 'audio' | 'screen' | null>(null);
     const [cameraDevices, setCameraDevices] = useState<MediaDeviceInfo[]>([]);
     const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
     const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
     const [selectedAudio, setSelectedAudio] = useState<string | null>(null);
-    const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
-    const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
+    //const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
+    //const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
 
     useEffect(() => {
         const fetchDevices = async () => {
@@ -18,38 +23,48 @@ const ControlsPanel: React.FC = () => {
 
         fetchDevices();
     }, []);
+    useEffect(() => {
+        if (selectedCamera !== null) {
+            onCameraChange(selectedCamera);
+        }
+    }, [selectedCamera, onCameraChange]);
 
     useEffect(() => {
-        const switchCamera = async (deviceId: string) => {
-            if (videoStream) {
-                videoStream.getTracks().forEach(track => track.stop());
-            }
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { deviceId: { exact: deviceId } }
-            });
-            setVideoStream(stream);
-        };
-
-        if (selectedCamera) {
-            switchCamera(selectedCamera);
+        if (selectedAudio !== null) {
+            onAudioChange(selectedAudio);
         }
-    }, [selectedCamera]);
+    }, [selectedAudio, onAudioChange]);
+    // useEffect(() => {
+    //     const switchCamera = async (deviceId: string) => {
+    //         if (videoStream) {
+    //             videoStream.getTracks().forEach(track => track.stop());
+    //         }
+    //         const stream = await navigator.mediaDevices.getUserMedia({
+    //             video: { deviceId: { exact: deviceId } }
+    //         });
+    //         setVideoStream(stream);
+    //     };
 
-    useEffect(() => {
-        const switchAudio = async (deviceId: string) => {
-            if (audioStream) {
-                audioStream.getTracks().forEach(track => track.stop());
-            }
-            const stream = await navigator.mediaDevices.getUserMedia({
-                audio: { deviceId: { exact: deviceId } }
-            });
-            setAudioStream(stream);
-        };
+    //     if (selectedCamera) {
+    //         switchCamera(selectedCamera);
+    //     }
+    // }, [selectedCamera]);
 
-        if (selectedAudio) {
-            switchAudio(selectedAudio);
-        }
-    }, [selectedAudio]);
+    // useEffect(() => {
+    //     const switchAudio = async (deviceId: string) => {
+    //         if (audioStream) {
+    //             audioStream.getTracks().forEach(track => track.stop());
+    //         }
+    //         const stream = await navigator.mediaDevices.getUserMedia({
+    //             audio: { deviceId: { exact: deviceId } }
+    //         });
+    //         setAudioStream(stream);
+    //     };
+
+    //     if (selectedAudio) {
+    //         switchAudio(selectedAudio);
+    //     }
+    // }, [selectedAudio]);
 
     const handleTabClick = (tab: 'camera' | 'audio' | 'screen') => {
         setSelectedTab(prevTab => prevTab === tab ? null : tab);

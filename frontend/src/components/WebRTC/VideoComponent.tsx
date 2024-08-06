@@ -1,5 +1,4 @@
 import { LocalVideoTrack, RemoteVideoTrack } from "livekit-client";
-import "./VideoComponent.css";
 import { useEffect, useRef } from "react";
 
 interface VideoComponentProps {
