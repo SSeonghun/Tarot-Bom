@@ -42,6 +42,10 @@ public enum ErrorCode {
     BOARD_NOT_YOUR_BOARD(HttpStatus.FORBIDDEN, "B003", "게시글을 수정할 권한이 없습니다."),
     BOARD_DATA_INTEGRITY_VIOLATION(HttpStatus.CONFLICT, "B004", "무결성 제한"),
 
+    // Comment
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "C001", "해당하는 댓글을 찾을 수 없습니다."),
+    COMMENT_NOT_YOUR_COMMENT(HttpStatus.FORBIDDEN, "C002", "댓글을 수정할 권한이 없습니다."),
+
     // Dto
     DTO_NOT_NULL(HttpStatus.BAD_REQUEST, "D001", "값이 Null일 수 없습니다."),
     DTO_NOT_VALID(HttpStatus.BAD_REQUEST, "D002", "유효하지 않은 값입니다.")
