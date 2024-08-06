@@ -250,4 +250,15 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    /**
+     * TOP 리더 송출
+     * @return List<TopReaderResponseDto>
+     */
+    @GetMapping("/reader/top")
+    public ResponseEntity<ResultResponse> readerTop() {
+        List<TopReaderResponseDto> topReaderResponseDtoList = readerService.searchTopReader();
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_TOP_READER, topReaderResponseDtoList);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
 }

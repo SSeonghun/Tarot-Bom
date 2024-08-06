@@ -27,6 +27,7 @@ public enum ResultCode {
     // Reader
     SEARCH_ALL_READER(HttpStatus.OK, "E001", "전체 리더를 조회했습니다."),
     SEARCH_READER_DETAIL(HttpStatus.OK, "E002", "리더 정보 조회에 성공했습니다."),
+    SEARCH_TOP_READER(HttpStatus.OK, "E003", "탑 리더 정보 조회에 성공했습니다."),
 
     // Favorite Reader
     FAVORITE_READER_ADD(HttpStatus.CREATED, "F001", "리더를 찜했습니다."),
