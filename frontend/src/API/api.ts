@@ -104,4 +104,4 @@ const youtubeMusic = async (searchQuery: string) => { // searchQuery를 매개�
 }
 
 
-export { readerList, result, declaration, cardInfo, youtubeMusic };
+export  { readerList, result, declaration, cardInfo, youtubeMusic };
