@@ -2,7 +2,7 @@ import React from "react";
 import Slider from "react-slick";
 import CalendarImo from "../../assets/img/달력.png";
 import ResultCard from "./ResultCard";
-import MusicPlayer from "./MusicPlayer";
+import MusicPlayer from "./MusicPlayerCopy";
 
 interface ResultSummaryProps {
   date: Date;
