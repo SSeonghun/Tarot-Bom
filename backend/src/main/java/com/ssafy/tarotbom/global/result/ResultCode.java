@@ -16,36 +16,37 @@ public enum ResultCode {
     ROOM_ENTERED(HttpStatus.OK, "R002", "방에 입장했습니다."),
 
     // Member
-    LOGIN_OK(HttpStatus.OK, "M200", "로그인 성공"),
-    SIGNUP_OK(HttpStatus.CREATED, "M201", "회원가입 성공"),
-    EMAIL_SEND_OK(HttpStatus.ACCEPTED, "M202", "이메일 전송"),
-    VALIDATION_NUMBER_OK(HttpStatus.OK, "M004", "인증번호 인증 성공"),
-    READER_JOIN_OK(HttpStatus.CREATED, "M005", "리더 프로필 만들기 성공"),
-    CHANGE_READER_SEEKER_OK(HttpStatus.OK, "M006", "리더/시커 전환 성공"),
-    LOGOUT_OK(HttpStatus.OK , "M007", "로그아웃 성공"),
+    LOGIN_OK(HttpStatus.OK, "M200", "로그인 했습니다."),
+    SIGNUP_OK(HttpStatus.CREATED, "M201", "회원가입에 성공했습니다."),
+    EMAIL_SEND_OK(HttpStatus.ACCEPTED, "M202", "이메일 전송에 성공했습니다."),
+    VALIDATION_NUMBER_OK(HttpStatus.OK, "M004", "인증번호로 인증이 완료되었습니다."),
+    READER_JOIN_OK(HttpStatus.CREATED, "M005", "리더 프로필을 만들었습니다."),
+    CHANGE_READER_SEEKER_OK(HttpStatus.OK, "M006", "리더/시커 전환이 완료되었습니다."),
+    LOGOUT_OK(HttpStatus.OK , "M007", "로그아웃 했습니다."),
 
     // Reader
-    SEARCH_ALL_READER(HttpStatus.OK, "E001", "전체 리더 조회 성공"),
-    SEARCH_READER_DETAIL(HttpStatus.OK, "E002", "리더 상세 조회 성공"),
+    SEARCH_ALL_READER(HttpStatus.OK, "E001", "전체 리더를 조회했습니다."),
+    SEARCH_READER_DETAIL(HttpStatus.OK, "E002", "리더 정보 조회에 성공했습니다."),
 
     // Favorite Reader
-    FAVORITE_READER_ADD(HttpStatus.CREATED, "F001", "리더 찜하기 완료"),
-    SEARCH_ALL_FAVORITE_READER(HttpStatus.OK, "F002", "찜한 리더 전체 조회"),
-    DELELTE_FAVORITE_READER(HttpStatus.OK, "F003", "찜한 리더 삭제 성공"),
+    FAVORITE_READER_ADD(HttpStatus.CREATED, "F001", "리더를 찜했습니다."),
+    SEARCH_ALL_FAVORITE_READER(HttpStatus.OK, "F002", "찜한 리더 리스트를 불러왔습니다."),
+    DELELTE_FAVORITE_READER(HttpStatus.OK, "F003", "리더 찜을 삭제했습니다."),
 
     // Mypage
-    SEARCH_SEEKER_MYPAGE(HttpStatus.OK, "Y001", "시커 마이페이지 조회"),
-    SEARCH_READER_MYPAGE(HttpStatus.OK, "Y002", "리더 마이페이지 조회"),
+    SEARCH_SEEKER_MYPAGE(HttpStatus.OK, "Y001", "시커 마이페이지를 조회합니다."),
+    SEARCH_READER_MYPAGE(HttpStatus.OK, "Y002", "리더 마이페이지 조회합니다."),
 
 
 
     // Tarot
-    TAROT_CARD_INFO_FOUND(HttpStatus.OK, "T001", "카드 조회 성공"),
-    TAROT_CARD_RESULT_SAVED(HttpStatus.CREATED, "T002", "타로 결과 저장 성공"),
-    TAROT_CARD_RESULT_FOUND(HttpStatus.OK, "T003", "타로 결과 조회 성공"),
+    TAROT_CARD_INFO_FOUND(HttpStatus.OK, "T001", "카드를 조회했스빈다."),
+    TAROT_CARD_RESULT_SAVED(HttpStatus.CREATED, "T002", "타로 결과를 저장했습니다."),
+    TAROT_CARD_RESULT_FOUND(HttpStatus.OK, "T003", "타로 결과를 조회했습니다."),
 
 
     ;
+
     // ==== 응답 코드 정의 종료 ====
 
     private final HttpStatus status;

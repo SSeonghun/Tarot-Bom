@@ -1,6 +1,6 @@
 package com.ssafy.tarotbom.domain.member.jwt;
 
-import com.ssafy.tarotbom.domain.member.Service.TokenService;
+import com.ssafy.tarotbom.domain.member.service.TokenService;
 import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
 import com.ssafy.tarotbom.global.security.CustomUserDetails;
 import com.ssafy.tarotbom.global.security.CustomUserDetailsService;

@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Date;
@@ -59,8 +62,9 @@ public class JwtUtil {
         claims.put("email", member.getEmail());
         claims.put("memberType", member.getMemberType().getCodeDetailId());
 
-        ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime tokenValidity = now.plusSeconds(expireTime);
+        LocalDateTime now = LocalDateTime.now();
+        log.info("LocalDateTime NOW : {}", now.toString());
+        LocalDateTime tokenValidity = now.plusSeconds(expireTime);
 
 //        return BEARER_PREFIX +
 //                Jwts.builder()
@@ -69,11 +73,13 @@ public class JwtUtil {
 //                    .setExpiration(Date.from(tokenValidity.toInstant())) // 토큰 만료 시간
 //                    .signWith(key, SignatureAlgorithm.HS256) // 암호화 알고리즘으로 토큰 암호화
 //                    .compact(); // 토큰을 문자열 형태로 반환
-
+        log.info("IssuedAt : {}", now.toString());
+        log.info("IssuedAt : {}", tokenValidity.toString());
+        log.info(Date.from(now.toInstant(ZoneOffset.of("+09:00"))).toString());
         return Jwts.builder()
                         .setClaims(claims)
-                        .setIssuedAt(Date.from(now.toInstant())) // 토큰 발행 시간
-                        .setExpiration(Date.from(tokenValidity.toInstant())) // 토큰 만료 시간
+                        .setIssuedAt(Date.from(now.toInstant(ZoneOffset.of("+09:00")))) // 토큰 발행 시간
+                        .setExpiration(Date.from(tokenValidity.toInstant(ZoneOffset.of("+09:00")))) // 토큰 만료 시간
                         .signWith(key, SignatureAlgorithm.HS256) // 암호화 알고리즘으로 토큰 암호화
                         .compact(); // 토큰을 문자열 형태로 반환
     }

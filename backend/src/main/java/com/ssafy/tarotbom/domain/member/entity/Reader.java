@@ -32,7 +32,7 @@ public class Reader {
     private int price;
 
     /* @OneToOne과 각종 어노테이션을 통해 member_id를 Member의 pk와 연결  */
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "member_id", columnDefinition = "int unsigned")
     private Member member;
@@ -43,12 +43,11 @@ public class Reader {
     * */
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="keyword") // 자신분야
+    @JoinColumn(name="keyword", insertable = false, updatable = false) // 자신분야
     private CodeDetail keyword;
 
-    @NotNull
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="grade") // 공통코드
+    @JoinColumn(name="grade", insertable = false, updatable = false) // 공통코드
     private CodeDetail grade;
 
     @ColumnDefault("0")
@@ -60,6 +59,12 @@ public class Reader {
 
     @Column(name = "update_time", columnDefinition = "timestamp")
     private LocalDateTime updateTime;
+
+    @Column(name = "keyword", columnDefinition = "char(3)")
+    private String keywords;
+
+    @Column(name = "grade", columnDefinition="char(3)")
+    private String gradeCode;
 
     // create time, update time 자동갱신
     @PrePersist
