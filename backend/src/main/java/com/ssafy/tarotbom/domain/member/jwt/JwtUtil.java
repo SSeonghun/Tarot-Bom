@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Date;
@@ -59,7 +60,7 @@ public class JwtUtil {
         claims.put("email", member.getEmail());
         claims.put("memberType", member.getMemberType().getCodeDetailId());
 
-        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         ZonedDateTime tokenValidity = now.plusSeconds(expireTime);
 
 //        return BEARER_PREFIX +
