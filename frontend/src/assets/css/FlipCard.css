@@ -41,3 +41,25 @@
   height: 600px; /* 회전 시 카드 높이 증가 */
   margin-left: 550px; /* 원하는 만큼 왼쪽으로 이동 */
 }
+
+.highlight {
+  display: inline;
+  box-shadow: inset 0 -25px 0 #212121;
+  /*-10px은 highlight의 두께*/
+}
+
+/* 애니메이션 관련 CSS */
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out forwards;
+}

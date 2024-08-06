@@ -76,32 +76,28 @@ const cardInfo = async (cardId: number) => {
   }
 };
 
+// const youtubeMusic = async (searchQuery: string) => { // searchQuery를 매개변수로 받음
+//   try {
+//     const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY
 
+//     const response = await axios({
+//       method: 'get',
+//       url: 'https://www.googleapis.com/youtube/v3/search',
+//       params: {
+//         key: `${YOUTUBE_API_KEY}`,
+//         part: 'snippet',
+//         type: 'video',
+//         q: `노래 ${searchQuery}`, // searchQuery를 사용
+//         maxResults: 1
+//       }
+//     });
+//     const videoId = response.data.items[0].id.videoId;
+//     const videoData = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+//     return videoData;
+//   } catch (error) {
+//     console.error('유튜브 뮤직 검색 실패', error);
+//     throw error;
+//   }
+// }
 
-const youtubeMusic = async (searchQuery: string) => { // searchQuery를 매개변수로 받음
-  try {
-    const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY
-
-    
-    const response = await axios({
-      method: 'get',
-      url: 'https://www.googleapis.com/youtube/v3/search',
-      params: {
-        key: `${YOUTUBE_API_KEY}`,
-        part: 'snippet',
-        type: 'video',
-        q: `노래 ${searchQuery}`, // searchQuery를 사용
-        maxResults: 1
-      }
-    });
-    const videoId = response.data.items[0].id.videoId;
-    const videoData = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
-    return videoData;
-  } catch (error) {
-    console.error('유튜브 뮤직 검색 실패', error);
-    throw error;
-  }
-}
-
-
-export { readerList, result, declaration, cardInfo, youtubeMusic };
+export { readerList, result, declaration, cardInfo };
