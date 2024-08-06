@@ -84,11 +84,13 @@ public class ReaderServiceImpl implements ReaderService{
         // 값이 있으면
         Member member = isMember.get();
 
-        List<Reservation> reservations = reservationRepository.findAllByReaderId(readerId);
-        int allReaservations = reservations.size();
+//        List<Reservation> reservations = reservationRepository.findAllByReaderId(readerId);
+//        int allReservations = reservations.size();
+        int allReservations = reservationRepository.countByReaderId(readerId);
 
-        List<TarotResult> tarotResults = tarotResultRepository.findAllByReaderId(readerId);
-        int allConserting = tarotResults.size();
+//        List<TarotResult> tarotResults = tarotResultRepository.findAllByReaderId(readerId);
+//        int allConsulting = tarotResults.size();
+        int allConsulting = tarotResultRepository.countByReaderId(readerId);
 
         LocalDateTime createTime = reader.getCreateTime();
         LocalDateTime now = LocalDateTime.now();
@@ -125,8 +127,8 @@ public class ReaderServiceImpl implements ReaderService{
                 .grade(reader.getGrade().getDetailDesc())
                 .price(reader.getPrice())
                 .reviews(reviewList)
-                .allConsertings(allConserting)
-                .allReaservations(allReaservations)
+                .allConsultings(allConsulting)
+                .allReservations(allReservations)
                 .afterReader(afterReader)
                 .build();
 

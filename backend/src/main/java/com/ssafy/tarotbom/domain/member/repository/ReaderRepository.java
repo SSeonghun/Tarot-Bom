@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface ReaderRepository extends JpaRepository<Reader, Long> {
     Reader findById(long id);
+    <S extends Reader> S save(S reader);
 
     @Query("SELECT r FROM Reader r JOIN FETCH r.member m JOIN FETCH r.keyword k JOIN FETCH r.grade g")
     List<Reader> findAllWithMemberKeywordAndGrade();
+
 }

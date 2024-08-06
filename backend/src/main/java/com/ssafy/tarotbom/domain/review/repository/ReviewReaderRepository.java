@@ -9,5 +9,6 @@ import java.util.Optional;
 
 public interface ReviewReaderRepository extends JpaRepository<ReviewReader, Long> {
     List<ReviewReader> findByReader(Optional<Member> reader);
+    int countByReaderId(long readerId);
 //    List<ReviewReader> findByMemberId(long readerId);
 }

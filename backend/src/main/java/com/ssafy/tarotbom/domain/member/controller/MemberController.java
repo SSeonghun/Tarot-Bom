@@ -166,6 +166,12 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    /**
+     * 금주의 TOP 리더
+     * 기준은 상담횟수, 최대 10명
+     * @return SearchTopReaderResponseDto
+     */
+
     ///////////////////////////////////////////////
     //                리더 찜 관련                //
     //////////////////////////////////////////////

@@ -13,6 +13,7 @@ import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
 import com.ssafy.tarotbom.domain.tarot.repository.TarotResultRepository;
 import com.ssafy.tarotbom.global.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
@@ -66,41 +67,26 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public void addReview(HttpServletRequest request, ReviewAddRequestDto reviewAddRequestDto) {
 
         long seekerId = cookieUtil.getUserId(request);
 
-        Optional<Member> reader = memberRepository.findMemberByMemberId(reviewAddRequestDto.getReaderId());
-        Optional<Member> member = memberRepository.findMemberByMemberId(seekerId);
-        TarotResult result = tarotResultRepository.findByResultId(reviewAddRequestDto.getResultId());
+        // 해당 reader의 rating을 갱신한다
+        Reader reader = readerRepository.findById(reviewAddRequestDto.getReaderId());
+        double readerRating = reader.getRating();
+        int reviewCount = reviewReaderRepository.countByReaderId(reader.getMemberId());
+        readerRating = (readerRating*reviewCount+reviewAddRequestDto.getRating())/(reviewCount+1);
+        reader = reader.toBuilder().rating(readerRating).build();
+        readerRepository.save(reader);
 
-        Optional<Member> optReader = Optional.ofNullable(readerRepository.findById(reviewAddRequestDto.getReaderId()).getMember());
-
-        List<ReviewReader> reviewReaders = reviewReaderRepository.findByReader(optReader);
-
-        //리뷰 내역 조회후 평균
-        // 처음 등록되는 거면
-
-        double rating = 0;
-
-        // 처음 등록
-        if(reviewReaders.size() == 0) {
-            rating = reviewAddRequestDto.getRating();
-        } else { // 등록 되어있다면 평균을 다시 계산
-            double totalRating = optReader.get().getReader().getRating() * reviewReaders.size();
-            totalRating += reviewAddRequestDto.getRating();
-            rating = totalRating / (reviewReaders.size() + 1);
-        }
-        // todo: rating int -> double
         ReviewReader reviewReader = ReviewReader
                 .builder()
-                .reader(reader.get())
-                .seeker(member.get())
-                .rating((int) rating)
+                .readerId(reviewAddRequestDto.getReaderId())
+                .seekerId(seekerId)
+                .rating(reviewAddRequestDto.getRating())
                 .content(reviewAddRequestDto.getContent())
-                .createTime(LocalDateTime.now())
-                .updateTime(LocalDateTime.now())
-                .result(result)
+                .resultId(reviewAddRequestDto.getResultId())
                 .build();
 
         reviewReaderRepository.save(reviewReader);
