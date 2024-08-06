@@ -23,8 +23,8 @@ function VideoComponent({ track, participantIdentity, local = false }: VideoComp
 
     return (
         
-        <div id={"camera-" + participantIdentity} className="video-container">
-        <div className="participant-data">
+        <div id={"camera-" + participantIdentity} className="relative bg-gray-800 aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+        <div className="absolute top-0 left-0 p-1 bg-gray-100 text-gray-600 font-bold rounded-br-lg">
             <p>{participantIdentity + (local ? " (You)" : "")}</p>
         </div>
         <video ref={videoElement} id={track.sid}></video>
