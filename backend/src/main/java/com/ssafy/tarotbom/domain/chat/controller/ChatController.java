@@ -41,7 +41,6 @@ public class ChatController {
         log.info("message2 : {} messageRoom : {} messageSender : {}", message.getMessage(), message.getRoomId(), message.getSenderId());
         ResultResponse resultResponse = ResultResponse.of(ResultCode.COMMON_OK, message);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
-
     }
 
 

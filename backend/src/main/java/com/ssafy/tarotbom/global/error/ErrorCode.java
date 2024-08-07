@@ -36,6 +36,7 @@ public enum ErrorCode {
     REVIEW_ALREADY_EXISTS(HttpStatus.CONFLICT, "V001", "이미 작성된 리뷰가 있습니다."),
 
 
+
     // Tarot
     TAROT_CARD_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "T001", "해당하는 타로 카드를 찾을 수 없습니다."),
     TAROT_RESULT_NOT_FOUND(HttpStatus.NOT_FOUND, "T002", "해당하는 타로 결과를 찾을 수 없습니다."),
@@ -48,7 +49,8 @@ public enum ErrorCode {
     BOARD_DATA_INTEGRITY_VIOLATION(HttpStatus.CONFLICT, "B004", "무결성 제한"),
 
     // Comment
-
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "C001", "해당하는 댓글을 찾을 수 없습니다."),
+    COMMENT_NOT_YOUR_COMMENT(HttpStatus.FORBIDDEN, "C002", "댓글을 수정할 권한이 없습니다."),
 
     // Dto
     DTO_NOT_NULL(HttpStatus.BAD_REQUEST, "D001", "값이 Null일 수 없습니다."),

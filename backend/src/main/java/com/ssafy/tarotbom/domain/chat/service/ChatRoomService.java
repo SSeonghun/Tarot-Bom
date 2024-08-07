@@ -35,7 +35,7 @@ public class ChatRoomService {
         if(ChatMessageReqDto.MessageType.ENTER.equals(message.getMessageType())){
             message.setMessage(message.getSenderId()  + "님이 입장하였습니다.");
         }
-        messagingTemplate.convertAndSend("sub/chat/room/" + message.getRoomId(), message);
+        messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
         log.info("sendMessage : {}", message.getMessage());
 
     }
