@@ -1,13 +1,14 @@
 import React from 'react';
 import MainBg from '../../assets/mainBg.png';
 import HoverButton from '../Common/HoverButton';
+import PrivateLink from '../Common/PrivateLink';
 
 // Main Section 1
 const Hero1: React.FC = () => {
   return (
     <div className="relative w-screen min-h-screen bg-black">
       <img className="w-full h-screen object-cover opacity-90" src={MainBg} alt="Main Background" />
-
+ 
       {/* Overlay */}
       <div
         className="absolute inset-0 flex flex-col items-end justify-center text-end text-white px-4"
@@ -22,15 +23,16 @@ const Hero1: React.FC = () => {
           여러분의 삶에 새로운 통찰과 방향을 제시합니다.
         </p>
         <div className="space-y-6 space-x-4">
-          {/* TODO: 버튼연결 */}
-          <HoverButton
-            label="지금 만나보세요!"
-            color="bg-gray-300"
-            hoverColor="bg-gray-500"
-            hsize="h-12"
-            wsize="w-48"
-            fontsize="text-lg"
-          />
+          <PrivateLink to="/online">
+            <HoverButton
+              label="지금 만나보세요!"
+              color="bg-gray-300"
+              hoverColor="bg-gray-500"
+              hsize="h-12"
+              wsize="w-48"
+              fontsize="text-lg"
+            />
+          </PrivateLink>
         </div>
       </div>
 

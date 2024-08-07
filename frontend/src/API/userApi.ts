@@ -173,7 +173,12 @@ const info = async () => {
 
 const logout = async () => {
   try {
-    const response = await axios.post(API_URL + 'logout');
+    const response = await axios.delete(API_URL + 'logout',
+
+      {
+        withCredentials: true, // 쿠키를 포함하도록 설정
+      }
+    );
 
     return response.data;
   } catch (error) {
