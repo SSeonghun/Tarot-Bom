@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Room, RoomEvent, LocalVideoTrack, RemoteTrack, RemoteTrackPublication, RemoteParticipant } from 'livekit-client';
+import { Room, RoomEvent, LocalVideoTrack, LocalAudioTrack,RemoteTrack, RemoteTrackPublication, RemoteParticipant } from 'livekit-client';
 import VideoComponent from './VideoComponent';
 import AudioComponent from './AudioComponent';
 import TaroSelect from './TaroSelect';
@@ -48,7 +48,8 @@ const cards = Array.from({ length: 3 }, (_, index) => ({
 
 function AppWebRTC() {
     const [room, setRoom] = useState<Room | undefined>(undefined);
-    const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(undefined);
+    const [localVideoTrack, setLocalVideoTrack] = useState<LocalVideoTrack | undefined>(undefined);
+    const [localAudioTrack, setLocalAudioTrack] = useState<LocalAudioTrack | undefined>(undefined);
     const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
     // const [drawingData, setDrawingData] = useState<any>(null);
     const [participantName, setParticipantName] = useState("Participant" + Math.floor(Math.random() * 100));
@@ -89,11 +90,101 @@ function AppWebRTC() {
         }
     }, [room]);
     useEffect(() => {
-        // if (room && localTrack) {
-        //     room.localParticipant.setCamera(cameraDeviceId);
-        //     room.localParticipant.setMicrophone(audioDeviceId);
-        // }
-    }, [cameraDeviceId, audioDeviceId, room, localTrack]);
+        const setupTracks = async () => {
+            if (!cameraDeviceId || !room) {
+                console.log('No camera device ID or room. Skipping video setup.');
+                return;
+            }
+
+            console.log('Setting up video track with device ID:', cameraDeviceId);
+            const videoStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: cameraDeviceId } });
+            const videoTrack = new LocalVideoTrack(videoStream.getVideoTracks()[0]);
+            await room.localParticipant.publishTrack(videoTrack);
+
+            setLocalVideoTrack(videoTrack);
+            console.log('Video track published:', videoTrack);
+        };
+
+        setupTracks();
+    }, [cameraDeviceId, room]);
+
+    useEffect(() => {
+        const setupAudio = async () => {
+            if (!audioDeviceId || !room) {
+                console.log('No audio device ID or room. Skipping audio setup.');
+                return;
+            }
+
+            console.log('Setting up audio track with device ID:', audioDeviceId);
+            const audioStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: audioDeviceId } });
+            const audioTrack = new LocalAudioTrack(audioStream.getAudioTracks()[0]);
+            await room.localParticipant.publishTrack(audioTrack);
+
+            setLocalAudioTrack(audioTrack);
+            console.log('Audio track published:', audioTrack);
+        };
+
+        setupAudio();
+    }, [audioDeviceId, room]);
+    const handleCameraChange = async (deviceId: string | null) => {
+        setCameraDeviceId(deviceId);
+        console.log('Camera device ID changed to:', deviceId);
+
+        if (!deviceId || !room) {
+            console.log('No device ID or room. Skipping camera setup.');
+            return;
+        }
+
+        // Stop and remove the current video track if exists
+        if (localVideoTrack) {
+            console.log('Unpublishing and stopping current video track:', localVideoTrack);
+            await room.localParticipant.unpublishTrack(localVideoTrack);
+            localVideoTrack.stop();
+        }
+
+        // Create and publish a new video track
+        try {
+            console.log('Setting up new video track.');
+            const videoStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId } });
+            const videoTrack = new LocalVideoTrack(videoStream.getVideoTracks()[0]);
+            await room.localParticipant.publishTrack(videoTrack);
+            setLocalVideoTrack(videoTrack);
+            console.log('New video track published:', videoTrack);
+        } catch (error) {
+            console.error("Error setting up new camera track:", error);
+        }
+    };
+
+    const handleAudioChange = async (deviceId: string | null) => {
+        setAudioDeviceId(deviceId);
+        console.log('Audio device ID changed to:', deviceId);
+
+        if (!deviceId || !room) {
+            console.log('No device ID or room. Skipping audio setup.');
+            return;
+        }
+
+        // Stop and remove the current audio track if exists
+        if (localAudioTrack) {
+            console.log('Unpublishing and stopping current audio track:', localAudioTrack);
+            await room.localParticipant.unpublishTrack(localAudioTrack);
+            localAudioTrack.stop();
+        }
+
+        // Create and publish a new audio track
+        try {
+            console.log('Setting up new audio track.');
+            const audioStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId } });
+            const audioTrack = new LocalAudioTrack(audioStream.getAudioTracks()[0]);
+            await room.localParticipant.publishTrack(audioTrack);
+            setLocalAudioTrack(audioTrack);
+            console.log('New audio track published:', audioTrack);
+        } catch (error) {
+            console.error("Error setting up new audio track:", error);
+        }
+    };
+
+
     const handleVideoDoubleClick = (videoId: string) => {
         console.log(`Video double-clicked: ${videoId}`);
         if (maximizedVideo === videoId) {
@@ -135,7 +226,8 @@ function AppWebRTC() {
             const localVideoTrack = room.localParticipant.videoTrackPublications.values().next().value.videoTrack;
             console.log('Local video track:', localVideoTrack);
 
-            setLocalTrack(localVideoTrack);
+            setLocalVideoTrack(localVideoTrack);
+
         } catch (error) {
             console.error("Error connecting to the room:", (error as Error).message);
             await leaveRoom();
@@ -146,7 +238,8 @@ function AppWebRTC() {
         console.log('Leaving room...');
         await room?.disconnect();
         setRoom(undefined);
-        setLocalTrack(undefined);
+        setLocalVideoTrack(undefined);
+        setLocalAudioTrack(undefined);
         setRemoteTracks([]);
         console.log('Room disconnected and state reset.');
     }
@@ -289,14 +382,14 @@ function AppWebRTC() {
                         <div className='flex h-screen'>
                             <div className="flex-1">
                                 <div id="layout-container" className="grid grid-cols-auto-fit gap-4 w-full max-w-4xl h-full">
-                                    {localTrack && (
+                                    {localVideoTrack && (
                                         <ResizeComponent
                                         videoId="local"
                                         isMaximized={maximizedVideo === 'local'}
                                         isMinimized={maximizedVideo !== null && maximizedVideo !== 'local'}
                                         onDoubleClick={() => handleVideoDoubleClick('local')}
                                     >
-                                        <VideoComponent track={localTrack} participantIdentity={participantName} local={true} />
+                                        <VideoComponent track={localVideoTrack} participantIdentity={participantName} local={true} />
                                         </ResizeComponent>
                                     )}
                                     {remoteTracks.map((remoteTrack) =>
@@ -333,6 +426,8 @@ function AppWebRTC() {
                                 participantName={participantName}
                                 room={room}
                                 handleSendChatMessage={handleSendChatMessage}
+                                onCameraChange={handleCameraChange}
+                                onAudioChange={handleAudioChange}
                             />)}
                             </div>
                         </div>

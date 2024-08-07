@@ -7,8 +7,17 @@ interface ChatAndControlsProps {
     participantName: string; // 추가: participantName을 받습니다
     room: Room | undefined; // 추가: room을 받습니다
     handleSendChatMessage: (message: string) => void;
+    onCameraChange: (deviceId: string | null) => void; // 추가
+    onAudioChange: (deviceId: string | null) => void; // 추가
 }
-const ChatAndControls: React.FC<ChatAndControlsProps> = ({ roomId, participantName, room, handleSendChatMessage }) => {
+const ChatAndControls: React.FC<ChatAndControlsProps> = ({ 
+    roomId, 
+    participantName, 
+    room, 
+    handleSendChatMessage,
+    onCameraChange, // 추가
+    onAudioChange // 추가
+ }) => {
     const [isReportVisible, setReportVisible] = useState<boolean>(false);
     const reportRef = useRef<HTMLDivElement>(null);
     const [dragging, setDragging] = useState(false);
@@ -117,8 +126,8 @@ const ChatAndControls: React.FC<ChatAndControlsProps> = ({ roomId, participantNa
             {/* <div /> */}
             <div className="bg-gray-300 flex-grow" style={{ flex: '1 1 0' }}>
             <ControlsPanel
-                onCameraChange={(deviceId) => console.log('Camera changed to:', deviceId)}
-                onAudioChange={(deviceId) => console.log('Audio changed to:', deviceId)}
+                onCameraChange={onCameraChange}
+                onAudioChange={onAudioChange}
             />
             </div>
             
