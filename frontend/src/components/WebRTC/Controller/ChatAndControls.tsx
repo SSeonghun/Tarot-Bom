@@ -1,10 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import ControlsPanel from "./ControlsPanel";
 import ChatComponent from "../Tools/ChatComponent";
+import { Room } from "livekit-client";
 interface ChatAndControlsProps {
     roomId: string;
+    participantName: string; // 추가: participantName을 받습니다
+    room: Room | undefined; // 추가: room을 받습니다
+    handleSendChatMessage: (message: string) => void;
 }
-const ChatAndControls: React.FC<ChatAndControlsProps> = ({ roomId }) => {
+const ChatAndControls: React.FC<ChatAndControlsProps> = ({ roomId, participantName, room, handleSendChatMessage }) => {
     const [isReportVisible, setReportVisible] = useState<boolean>(false);
     const reportRef = useRef<HTMLDivElement>(null);
     const [dragging, setDragging] = useState(false);
@@ -49,7 +53,12 @@ const ChatAndControls: React.FC<ChatAndControlsProps> = ({ roomId }) => {
     return (
         <div className="bg-gray-100 p-4 flex flex-col h-full">
             {/* 채팅창 */}
-            <ChatComponent roomId={roomId} />
+            <ChatComponent 
+                roomId={roomId}
+                participantName={participantName}
+                room={room}
+                handleSendChatMessage={handleSendChatMessage} 
+            />
             <div className="relative flex-grow bg-blue-500 p-4" style={{ flex: '7 1 0' }}>
                 {/* 신고 버튼 */}
                 <button

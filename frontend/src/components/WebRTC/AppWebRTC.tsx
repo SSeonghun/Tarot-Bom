@@ -20,7 +20,7 @@ configureUrls();
 function configureUrls() {
     if (!APPLICATION_SERVER_URL) {
         if (window.location.hostname === "localhost") {
-            APPLICATION_SERVER_URL = "https://localhost/";
+            APPLICATION_SERVER_URL = "http://localhost:6080/";
         } else {
             APPLICATION_SERVER_URL = "https://" + window.location.hostname + "/";
         }
@@ -28,7 +28,7 @@ function configureUrls() {
 
     if (!LIVEKIT_URL) {
         if (window.location.hostname === "localhost") {
-            LIVEKIT_URL = "ws://localhost/";
+            LIVEKIT_URL = "ws://localhost:7880/";
         } else {
             LIVEKIT_URL = "wss://" + window.location.hostname + "/";
         }
@@ -69,12 +69,14 @@ function AppWebRTC() {
 
                 try {
                     const jsonData = JSON.parse(jsonString);
-                    console.log('Parsed JSON data:', jsonData);
-
-                    // 그림을 캔버스에 로드
-                    console.log('Attempting to load drawing to canvas:', canvasRef.current);
-                    await canvasRef.current?.loadDrawing(jsonData);
-                    console.log('Drawing loaded successfully to canvas.');
+                    if (jsonData.type === 'text') {
+                        // Handle chat message
+                        console.log('Received chat message:', jsonData);
+                    } else if (jsonData.type === 'drawing') {
+                        // Handle drawing data
+                        await canvasRef.current?.loadDrawing(jsonData.content);
+                        console.log('Drawing loaded successfully to canvas.');
+                    }    
                 } catch (error) {
                     console.error('Error parsing JSON data:', error);
                 }
@@ -160,13 +162,28 @@ function AppWebRTC() {
         console.log('Token received:', data.token);
         return data.token;
     }
-
+    async function handleSendChatMessage(message: string) {
+        if (room?.localParticipant.publishData) {
+            const chatMessage = JSON.stringify({
+                type: 'text',
+                content: message,
+                //timestamp: new Date()
+            });
+            console.log(message)
+            const uint8ArrayData = new TextEncoder().encode(chatMessage);
+            try {
+                await room.localParticipant.publishData(uint8ArrayData);
+                console.log('Chat message successfully sent.');
+            } catch (error) {
+                console.error('Error sending chat message:', error);
+            }
+        } else {
+            console.error('Room or publishData function is undefined.');
+        }
+    }
     async function handleDrawingUpdate(data: any) {
         // Combine the last drawing data with the new update
         // const combinedData = { ...lastDrawingData, ...data };
-        
-        
-    
         if (room?.localParticipant.publishData) {
             const dataToSend = JSON.stringify(data);
         const uint8ArrayData = new TextEncoder().encode(dataToSend);
@@ -282,7 +299,12 @@ function AppWebRTC() {
                                 </div>
                             </div>
                             <div className="w-1/3">
-                                <ChatAndControls roomId={roomId} />
+                            <ChatAndControls
+                                roomId={roomName} // 또는 적절한 roomId 값
+                                participantName={participantName}
+                                room={room}
+                                handleSendChatMessage={handleSendChatMessage}
+                            />
                             </div>
                         </div>
                     </div>
