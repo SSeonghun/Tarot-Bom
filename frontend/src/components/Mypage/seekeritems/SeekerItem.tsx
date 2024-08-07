@@ -1,16 +1,16 @@
-import React from "react";
-import HoverButton from "../../Common/HoverButton";
-import Hero1 from "./Hero1";
-import Hero2 from "./Hero2";
-import Hero3 from "./Hero3";
+import React from 'react';
+import HoverButton from '../../Common/HoverButton';
+import Hero1 from './Hero1';
+import Hero2 from './Hero2';
+import Hero3 from './Hero3';
 
-const ReaderMypage: React.FC = () => {
+// TODO : props 인터페이스 및 값 받기
+
+const SeekerItem: React.FC = () => {
   return (
     <div className="container p-4 mx-auto">
       <div className="flex flex-row items-center justify-between">
-        <h1 className="text-black font-bold text-[50px] m-4">
-          김싸피님 마이페이지
-        </h1>
+        <h1 className="text-black font-bold text-[50px] m-4">김싸피님 마이페이지</h1>
         <div className="m-4">
           <HoverButton
             label="리더 프로필 만들기"
@@ -23,21 +23,18 @@ const ReaderMypage: React.FC = () => {
         </div>
       </div>
       <hr className="border-black border-[2px]" />
+
+      {/* // TODO : 각각 원하는 값 넘겨주기 Hero1 => 예약내역, 분석, 찜리스트  , Hero2 => 최근 타로내역 */}
       <div className="mt-3">
         <Hero1 />
       </div>
-      <h1 className="text-black font-bold text-[50px] mt-[100px] ms-4 me-4 mb-4">
-        최근 타로 내역
-      </h1>
+      <h1 className="text-black font-bold text-[50px] mt-[100px] ms-4 me-4 mb-4">최근 타로 내역</h1>
       <hr className="border-black border-[2px]" />
       <div className="mt-3">
         <Hero2 />
-      </div>
-      <div className="mt-3">
-        <Hero3 />
       </div>
     </div>
   );
 };
 
-export default ReaderMypage;
+export default SeekerItem;

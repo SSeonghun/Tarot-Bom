@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import Booking from '../../components/Booking/Booking';
 
 const TarotResult: React.FC = () => {
-  
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
@@ -11,10 +10,10 @@ const TarotResult: React.FC = () => {
   }, []);
 
   return (
-    <>
+    <div>
       <Booking />
-    </>
+    </div>
   );
-}
+};
 
 export default TarotResult;

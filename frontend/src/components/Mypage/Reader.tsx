@@ -1,9 +1,10 @@
-import React from "react";
-import ReaderItem from "./Readeritems/ReaderItem";
+import React from 'react';
+import ReaderItem from './Readeritems/ReaderItem';
 
-import ReaderBg from "../../assets/img/readermypage.png";
-import Profile from "../../assets/img/profile2.png";
+import ReaderBg from '../../assets/img/readermypage.png';
+import Profile from '../../assets/img/profile2.png';
 
+// TODO : axios로 데이터 받아오기
 const ReaderMypage: React.FC = () => {
   return (
     <div className="relative w-screen h-screen">
@@ -11,8 +12,8 @@ const ReaderMypage: React.FC = () => {
         className="absolute inset-0 z-0 opacity-80"
         style={{
           backgroundImage: `url(${ReaderBg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       ></div>
       <div className="absolute inset-0 z-10 bg-black opacity-50"></div>
@@ -28,6 +29,7 @@ const ReaderMypage: React.FC = () => {
 
       <div className="relative h-fit bg-black z-30 ">
         <div className="h-fit bg-white mx-[100px] relative flex flex-col -top-[450px] rounded-xl bg-opacity-55">
+          {/* TODO :여기서 props로 넘겨주기 */}
           <ReaderItem />
         </div>
       </div>

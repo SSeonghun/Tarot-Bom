@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+// TODO : axios로 서버 저장
 const CreateReader: React.FC = () => {
   const [step, setStep] = useState<number>(1);
   const [isChecked, setIsChecked] = useState<boolean>(false);
@@ -25,8 +26,8 @@ const CreateReader: React.FC = () => {
   };
 
   const toggleInterest = (interest: string) => {
-    setSelectedInterests(prev =>
-      prev.includes(interest) ? prev.filter(i => i !== interest) : [...prev, interest]
+    setSelectedInterests((prev) =>
+      prev.includes(interest) ? prev.filter((i) => i !== interest) : [...prev, interest]
     );
   };
 
@@ -35,9 +36,15 @@ const CreateReader: React.FC = () => {
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         {/* 단계 표시기 */}
         <div className="flex justify-between mb-6">
-          <div className={`flex-1 h-2 ${step >= 1 ? 'bg-blue-500' : 'bg-gray-300'} mx-1 rounded`}></div>
-          <div className={`flex-1 h-2 ${step >= 2 ? 'bg-blue-500' : 'bg-gray-300'} mx-1 rounded`}></div>
-          <div className={`flex-1 h-2 ${step >= 3 ? 'bg-blue-500' : 'bg-gray-300'} mx-1 rounded`}></div>
+          <div
+            className={`flex-1 h-2 ${step >= 1 ? 'bg-blue-500' : 'bg-gray-300'} mx-1 rounded`}
+          ></div>
+          <div
+            className={`flex-1 h-2 ${step >= 2 ? 'bg-blue-500' : 'bg-gray-300'} mx-1 rounded`}
+          ></div>
+          <div
+            className={`flex-1 h-2 ${step >= 3 ? 'bg-blue-500' : 'bg-gray-300'} mx-1 rounded`}
+          ></div>
         </div>
 
         {step === 1 && (
@@ -87,7 +94,9 @@ const CreateReader: React.FC = () => {
                     key={interest}
                     onClick={() => toggleInterest(interest)}
                     className={`px-4 py-2 rounded-lg shadow-md transition-colors duration-300 ${
-                      selectedInterests.includes(interest) ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
+                      selectedInterests.includes(interest)
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200 text-gray-700'
                     }`}
                   >
                     {interest}

@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 // 컴포넌트
-import LikeCard from "../Cards/LikeCard"; // 좋아요 카드 컴포넌트
-import HoverButton from "../Common/HoverButton"; // 호버 버튼 컴포넌트
-import Slider from "react-slick"; // 슬라이더 컴포넌트
+import LikeCard from '../Cards/LikeCard'; // 좋아요 카드 컴포넌트
+import HoverButton from '../Common/HoverButton'; // 호버 버튼 컴포넌트
+import Slider from 'react-slick'; // 슬라이더 컴포넌트
 // css
-import "slick-carousel/slick/slick.css"; // 슬릭 슬라이더 기본 스타일
-import "slick-carousel/slick/slick-theme.css"; // 슬릭 슬라이더 테마 스타일
-import "../../assets/css/FadeInOut.css"; // 사용자 정의 애니메이션 CSS 파일
+import 'slick-carousel/slick/slick.css'; // 슬릭 슬라이더 기본 스타일
+import 'slick-carousel/slick/slick-theme.css'; // 슬릭 슬라이더 테마 스타일
+import '../../assets/css/FadeInOut.css'; // 사용자 정의 애니메이션 CSS 파일
 
 // 슬라이더 설정
 const settings = {
@@ -26,7 +26,7 @@ const BookMatching: React.FC = () => {
 
   // 상태 추가: 선택된 버튼의 레이블과 두 번째 입력 필드의 표시 여부를 제어
   const [showSecondInput, setShowSecondInput] = useState<boolean>(false);
-  const [animationClass, setAnimationClass] = useState<string>("fade-out");
+  const [animationClass, setAnimationClass] = useState<string>('fade-out');
   const [onLoad, setOnLoad] = useState<boolean>(false); // 처음에 컴포넌트 띄울때 에니메이션
 
   /*
@@ -35,7 +35,7 @@ const BookMatching: React.FC = () => {
    */
   useEffect(() => {
     if (!showSecondInput) {
-      setAnimationClass("fade-out");
+      setAnimationClass('fade-out');
     }
   }, [showSecondInput]);
 
@@ -53,7 +53,7 @@ const BookMatching: React.FC = () => {
     >
       <h2 className="text-2xl font-bold mt-10 mb-4 text-center">TOP 리더</h2>
 
-      <div className="w-full h-[250px]" style={{ overflow: "hidden" }}>
+      <div className="w-full h-[250px]" style={{ overflow: 'hidden' }}>
         {/* 슬라이더 컴포넌트 */}
         <Slider {...settings}>
           {/* 10개의 LikeCard 컴포넌트를 슬라이드에 표시 */}
@@ -65,6 +65,7 @@ const BookMatching: React.FC = () => {
         </Slider>
       </div>
 
+      {/* TODO : 리더 검색이든, 찜리스트든 예약 페이지로 이동 */}
       <div className="flex flex-col items-center mt-5">
         <h2 className="text-2xl font-bold mb-4">리더 검색하기</h2>
         <div className="flex flex-row gap-4">

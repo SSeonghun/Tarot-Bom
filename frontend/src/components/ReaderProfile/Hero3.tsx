@@ -2,6 +2,7 @@ import React from 'react';
 import CardBackground from '../../assets/img/card.png';
 import Hero3item from './items/Hero3item';
 
+// TODO : 데이터 뿌려주기
 const SeekerMypage: React.FC = () => {
   return (
     <div className="container p-4 mx-auto relative flex flex-col justify-center items-center">
