@@ -80,9 +80,9 @@ public class MemberController {
      * @param signupReqDto
      * @return
      */
-    @PostMapping("/signup")
+    @PostMapping("/signup/seeker")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupReqDto signupReqDto){
-        log.info("SingupDto : {}", signupReqDto.getEmail());
+        log.info("SignupDto : {}", signupReqDto.getEmail());
         memberService.signup(signupReqDto);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.SIGNUP_OK);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
@@ -91,7 +91,7 @@ public class MemberController {
     /**
      * 시커 회원정보 수정
      *  */
-    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/update/seeker", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> updateMember(@ModelAttribute UpdateMemberRequestDto updateMemberRequestDto, HttpServletRequest request) {
         log.info("update member");
         log.info("dto : {}, {}", updateMemberRequestDto.getNickname(), updateMemberRequestDto.getPassword());
@@ -116,6 +116,12 @@ public class MemberController {
     /**
      * 리더 프로필 정보 수정
      * */
+    @PostMapping("/update/reader")
+    public ResponseEntity<ResultResponse> updateReader(@RequestBody UpdateReaderRequestDto updateReaderRequestDto, HttpServletRequest request) {
+        memberService.updateReader(updateReaderRequestDto, request);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.READER_UPDATED);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
 
     /**
      * 리더 시커 전환

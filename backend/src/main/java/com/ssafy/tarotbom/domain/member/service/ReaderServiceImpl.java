@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.member.service;
 
+import com.ssafy.tarotbom.domain.member.dto.request.UpdateReaderRequestDto;
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderDetatilResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.ReviewReaderResponseDto;
@@ -15,6 +16,7 @@ import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
 import com.ssafy.tarotbom.domain.review.repository.ReviewReaderRepository;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
 import com.ssafy.tarotbom.domain.tarot.repository.TarotResultRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -162,4 +164,5 @@ public class ReaderServiceImpl implements ReaderService{
         }
         return result;
     }
+
 }

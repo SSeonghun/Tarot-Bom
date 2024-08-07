@@ -365,6 +365,29 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
+    @Override
+    public void updateReader(UpdateReaderRequestDto updateReaderRequestDto, HttpServletRequest request) {
+        long memberId = cookieUtil.getUserId(request);
+        Reader reader = readerRepository.findByMemberId(memberId);
+        if(reader == null) {
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+        String newIntro = updateReaderRequestDto.getIntro();
+        String newKeyword = updateReaderRequestDto.getKeyword();
+        if(!updateReaderRequestDto.getIntro().isEmpty()) {
+            newIntro = updateReaderRequestDto.getIntro();
+        }
+        if(!updateReaderRequestDto.getKeyword().isEmpty()) {
+            newKeyword = updateReaderRequestDto.getKeyword();
+        }
+        reader = reader.toBuilder()
+                .intro(newIntro)
+                .keywords(newKeyword)
+                .build();
+
+        readerRepository.save(reader);
+    }
+
     /**
      * 리더 만들기
      * @param readerJoinRequestDto

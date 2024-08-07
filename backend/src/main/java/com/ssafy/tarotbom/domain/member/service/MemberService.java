@@ -16,6 +16,7 @@ public interface MemberService{
     void sendCodeToEmail(String toEmail);
     void verifyCode(String code, String authCode);
     void updateMember(UpdateMemberRequestDto updateMemberRequestDto, MultipartFile profileImage, HttpServletRequest request);
+    void updateReader(UpdateReaderRequestDto updateReaderRequestDto, HttpServletRequest request);
     Cookie createAceessToken(LoginReqDto loginReqDto, HttpServletResponse response, HttpServletRequest request);
 
     void readerJoin(HttpServletRequest request, ReaderJoinRequestDto readerJoinRequestDto);
