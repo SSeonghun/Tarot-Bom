@@ -52,8 +52,8 @@ public enum ResultCode {
 
     // Comment
     COMMENT_CREATE_OK(HttpStatus.CREATED, "C001", "댓글 작성 성공" ),
-    COMMENT_UPDATE_OK(HttpStatus.OK, "C002", "댓글 수정 성공")
-
+    COMMENT_UPDATE_OK(HttpStatus.OK, "C002", "댓글 수정 성공"),
+    COMMENT_DELETE_OK(HttpStatus.OK, "C003", "댓글 삭제 성공")
     ;
 
     // ==== 응답 코드 정의 종료 ====
