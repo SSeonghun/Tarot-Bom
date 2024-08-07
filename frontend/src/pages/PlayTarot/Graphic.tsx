@@ -1,11 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import './Graphic.css';
-import cardBackImage from '../../assets/card-back.png';
+import React, { useEffect, useState } from "react";
+import "./Graphic.css";
+import cardBackImage from "../../assets/card-back.png";
+import { useLocation, useNavigate } from "react-router-dom";
 
-// TODO : 타로 결과를 위한 axios로 서버로 넘겨주기
+interface MatchingState {
+  selectReader: string | null;
+  selectedLabel: string | null;
+  worry: string;
+}
+
 // 비복원 추출을 위한 유틸리티 함수
 const getRandomCard = (excludeCards: number[]): number => {
-  const availableCards = Array.from({ length: 78 }, (_, index) => index).filter(
+  const availableCards = Array.from({ length: 79 }, (_, index) => index).filter(
     (card) => !excludeCards.includes(card)
   );
   const randomIndex = Math.floor(Math.random() * availableCards.length);
@@ -13,15 +19,31 @@ const getRandomCard = (excludeCards: number[]): number => {
 };
 
 const Graphic: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [matchingState, setMatchingState] = useState<MatchingState | null>(
+    null
+  );
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [cardImages, setCardImages] = useState<Record<number, number>>({});
   const [removingCards, setRemovingCards] = useState<number[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedCard, setSelectedCard] = useState<number[]>([]); // `selectedCard`를 상태로 관리
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    const state = location.state as MatchingState;
+    if (!state) {
+      navigate("/"); // 상태가 없을 경우 리디렉션
+    } else {
+      setMatchingState(state);
+    }
+  }, [location.state, navigate]);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, []);
 
@@ -31,17 +53,17 @@ const Graphic: React.FC = () => {
 
     // 랜덤 카드 선택
     const randomCard = getRandomCard([...selectedCards, index]);
+    console.log("Random Card:", randomCard);
 
-    // 선택된 카드와 랜덤 카드 상태 업데이트
-    setSelectedCards([...selectedCards, index]);
-    setCardImages((prev) => ({ ...prev, [index]: randomCard }));
+    // 상태 업데이트 삭제를 위한
+    setSelectedCards((prevSelectedCards) => [...prevSelectedCards, index]);
+    setCardImages((prevCardImages) => ({
+      ...prevCardImages,
+      [index]: randomCard,
+    }));
 
-    // 카드가 뽑히는 애니메이션 후 카드 제거 애니메이션
-    setTimeout(() => {
-      setRemovingCards([...removingCards, index]); // 클릭한 카드만 제거 상태 업데이트
-    }, 3000);
-
-    console.log(`Selected card number: ${randomCard}`);
+    // 뽑힌 카드 저장
+    setSelectedCard((prevSelectedCard) => [...prevSelectedCard, randomCard]); // `selectedCard` 상태 업데이트
   };
 
   // 모달 열기
@@ -49,6 +71,21 @@ const Graphic: React.FC = () => {
 
   // 모달 닫기
   const closeModal = () => setIsModalOpen(false);
+
+  if (!matchingState) {
+    return <div>로딩 중...</div>;
+  }
+
+  const submitClick = () => {
+    // `selectedCard`, `worry`, `category`를 TarotResult로 전달
+    navigate("/tarot-result", {
+      state: {
+        selectedCard: selectedCard,
+        worry: matchingState.worry, // worry 전달
+        category: matchingState.selectedLabel || "기본 카테고리", // category 전달, 기본값 설정
+      },
+    });
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4 page">
@@ -72,7 +109,7 @@ const Graphic: React.FC = () => {
                   key={index}
                   onClick={() => handleCardClick(index)} // 클릭 핸들러 추가
                   className={`w-24 h-36 bg-cover bg-center rounded-lg absolute transition-transform duration-300 ease-in-out transform hover:scale-125 ${
-                    removingCards.includes(index) ? 'animate-card-remove' : ''
+                    removingCards.includes(index) ? "animate-card-remove" : ""
                   }`} // 애니메이션 클래스 추가
                   style={{
                     backgroundImage: `url(${cardBackImage})`,
@@ -89,6 +126,12 @@ const Graphic: React.FC = () => {
           className="fixed bottom-4 right-4 bg-blue-500 text-white px-4 py-2 rounded shadow-lg hover:bg-blue-600 transition-colors duration-300"
         >
           열기
+        </button>
+        <button
+          onClick={submitClick}
+          className="fixed bottom-4 right-28 bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          결과보기
         </button>
         {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

@@ -1,74 +1,81 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 // 컴포넌트
-import HoverButton from '../Common/HoverButton';
+import HoverButton from "../Common/HoverButton";
 // css
-import '../../assets/css/FadeInOut.css'; // CSS 파일을 가져옴
+import "../../assets/css/FadeInOut.css"; // CSS 파일을 가져옴
 
 const RandomMatching: React.FC = () => {
   const [selected, setSelected] = useState<boolean>(false);
-  const [selectedLabel, setSelectedLabel] = useState<string | null>(null); // 카테고리를 어떤걸 선택했는지 나타내는 변수 (밑에 변수 떄문에 useState)
-  const [showSecondInput, setShowSecondInput] = useState<boolean>(false); // 카테고리를 설정해야 고민을 입력할수 있게 설정하는 변수
-  const [animationClass, setAnimationClass] = useState<string>('fade-out'); // 에니메이션 유지 변수
-  const [onLoad, setOnLoad] = useState<boolean>(false); // 처음에 컴포넌트 띄울때 에니메이션
-  const worryArea = useRef<HTMLTextAreaElement | null>(null); // 고민 내용 변수
-  const value = useRef<string | null>(null);
+  const [selectReader, setSelectReader] = useState<string | null>(null);
+  const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
+  const [showSecondInput, setShowSecondInput] = useState<boolean>(false);
+  const worryArea = useRef<HTMLTextAreaElement | null>(null);
+
+  const navigate = useNavigate();
 
   /*
-  카테고리 설정 버튼 함수
-  이함수가 실행되면 고민 설정 부분이 나타남
-  */
+   카테고리 설정 버튼 함수
+   이 함수가 실행되면 고민 설정 부분이 나타남
+   */
   const handleButtonClick = (label: string) => {
-    if (label === 'AI리더' || label === '리더매칭') {
-      value.current = label;
-      // setSelectedLabel(label);
+    if (label === "AI리더" || label === "리더매칭") {
+      setSelectReader(label);
       setSelected(true);
     } else {
       setShowSecondInput(true);
       setSelectedLabel(label);
     }
-
-    setAnimationClass('fade-in');
   };
 
-  /* 
-  매칭 시작 버튼 함수
-  반응형 변수인 카테고리 정보와, 고민내용을 받아 어딘가에 저장해야 할듯
-  */
   const submit = () => {
     if (worryArea.current) {
-      if (worryArea.current.value === '') {
-        // TODO : 고민을 입력하지 않으면
-        console.log('여기 Alert으로 고민 입력하라고 띄우기');
+      if (worryArea.current.value === "") {
+        // TODO: 고민을 입력하지 않으면 경고를 띄우기
+        alert("고민을 입력해 주세요.");
         return;
       }
 
       // 정상 접근
-      console.log('선택된 카테고리 : ' + selectedLabel);
-      console.log('고민 : ' + worryArea.current.value);
+      console.log("리더 유형: " + selectReader);
+      console.log("선택된 카테고리: " + selectedLabel);
+      console.log("고민: " + worryArea.current.value);
+
+      if (selectReader === "AI리더") {
+        // navigate to the desired path with state
+        navigate(`/online/graphic`, {
+          state: {
+            selectReader: selectReader,
+            selectedLabel: selectedLabel,
+            worry: worryArea.current.value,
+          },
+        });
+      } else if (selectReader === "리더매칭") {
+        // navigate to a different path with state
+        navigate(`/different/path`, {
+          state: {
+            selectReader: selectReader,
+            selectedLabel: selectedLabel,
+            worry: worryArea.current.value,
+          },
+        });
+      }
     }
   };
 
-  /*
-  컴포넌트가 onMounted 될때 애니메이션 효과 실행 하기위한 함수
-  */
-  useEffect(() => {
-    setOnLoad(true);
-
-    return () => {
-      setOnLoad(false);
-    };
-  }, []);
-
   // 카테고리 구조체
-  const buttonLabels = ['연애운', '직장운', '재물운', '건강운', '가족운', '기타'];
+  const buttonLabels = [
+    "연애운",
+    "직장운",
+    "재물운",
+    "건강운",
+    "가족운",
+    "기타",
+  ];
 
   return (
-    <div
-      className={`bg-white w-[700px] h-[500px] -mt-20 flex items-center justify-center rounded-md ${
-        onLoad ? 'button-fade-in' : 'fade-out-clear'
-      }`}
-    >
+    <div className="bg-white w-[700px] h-[500px] -mt-20 flex items-center justify-center rounded-md fade-in">
       <div className="flex flex-col items-center">
         <div className="flex flex-row gap-4 mb-5">
           {!selected && (
@@ -80,7 +87,7 @@ const RandomMatching: React.FC = () => {
                 hsize="h-12"
                 wsize="w-48"
                 fontsize="text-lg"
-                onClick={() => handleButtonClick('리더매칭')}
+                onClick={() => handleButtonClick("리더매칭")}
               />
               <HoverButton
                 label="AI리더"
@@ -89,13 +96,13 @@ const RandomMatching: React.FC = () => {
                 hsize="h-12"
                 wsize="w-48"
                 fontsize="text-lg"
-                onClick={() => handleButtonClick('AI리더')}
+                onClick={() => handleButtonClick("AI리더")}
               />
             </>
           )}
         </div>
 
-        <h2 className="text-2xl font-bold mb-4">{value.current}</h2>
+        <h2 className="text-2xl font-bold mb-4">{selectReader}</h2>
 
         {selectedLabel && (
           <h3 className="text-xl font-semibold mb-4" id="category">
@@ -122,7 +129,7 @@ const RandomMatching: React.FC = () => {
         )}
 
         {showSecondInput && (
-          <div className={`mt-5 ${animationClass} text-center`}>
+          <div className="mt-5 text-center">
             <textarea
               placeholder="고민"
               className="border border-gray-300 rounded-lg p-3 w-full h-28 resize-none"
@@ -137,7 +144,6 @@ const RandomMatching: React.FC = () => {
               hsize="h-12"
               wsize="w-48"
               fontsize="text-lg"
-              // TODO : axios 처리
               onClick={submit}
             />
           </div>
