@@ -1,14 +1,99 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Client, IMessage } from '@stomp/stompjs';
+import HoverButton from '../Common/HoverButton';
+import LoadingModal from '../Common/MatchingLoading';
+import MatchingConfirmationModal from '../Common/MatchingReady'; // 매칭 확인 모달
+import useStore from '../../stores/store';
 import ReaderItem from './Readeritems/ReaderItem';
 import ReaderBg from '../../assets/img/readermypage.png';
 import Profile from '../../assets/img/profile2.png';
 
-// TODO : axios로 데이터 받아오기
 const ReaderMypage: React.FC = () => {
-    
+  const [connected, setConnected] = useState<boolean>(false);
+  const [socketMessage, setSocketMessage] = useState<string | null>(null);
+  const [matchLoading, setMatchLoading] = useState<boolean>(false); // 로딩 상태 추가
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false); // 매칭 확인 모달 상태 추가
+
+  const client = useRef<Client | null>(null);
+
+  const { userInfo } = useStore();
+  const memberId = userInfo?.memberId ?? 0;
+
+  useEffect(() => {
+    client.current = new Client({
+      brokerURL: 'ws://localhost/tarotbom/ws-stomp',
+      onConnect: () => {
+        console.log('Connected to WebSocket');
+        setConnected(true);
+
+        if (memberId) {
+          client.current?.subscribe(`/sub/matching/status/${memberId}`, (message: IMessage) => {
+            const receivedMessage = JSON.parse(message.body);
+            console.log('Received message:', receivedMessage);
+            setSocketMessage(receivedMessage);
+
+            if (receivedMessage.code === 'M02') {
+              setMatchLoading(false);
+              setShowConfirmation(true); // 매칭 확인 모달 열기
+            }
+          });
+        }
+      },
+      onStompError: (frame) => {
+        console.error('Broker reported error: ' + frame.headers['message']);
+        console.error('Additional details: ' + frame.body);
+      },
+    });
+
+    client.current.activate();
+
+    return () => {
+      client.current?.deactivate();
+    };
+  }, [memberId]);
+
+  useEffect(() => {
+    if (socketMessage) {
+      console.log('Socket message updated:', socketMessage);
+    }
+  }, [socketMessage]);
+
+  const handleRandomMatching = () => {
+    if (connected && client.current) {
+      const payload = {
+        keyword: 'G01',
+        roomStyle: 'CAM',
+        memberType: 'reader',
+        memberId,
+        worry: 'Sample worry',
+      };
+
+      setMatchLoading(true); // 매칭 요청 시 로딩 시작
+
+      client.current.publish({
+        destination: '/pub/matching/start',
+        body: JSON.stringify(payload),
+      });
+
+      console.log('Random matching request sent:', payload);
+    } else {
+      console.error('STOMP client is not connected');
+    }
+  };
+
+  const handleCloseConfirmation = () => {
+    setShowConfirmation(false); // 매칭 확인 모달 닫기
+  };
 
   return (
     <div className="relative w-screen h-screen">
+      <LoadingModal isOpen={matchLoading} />
+      <MatchingConfirmationModal
+        isOpen={showConfirmation}
+        matchData={socketMessage}
+        onClose={handleCloseConfirmation}
+      />
+
       <div
         className="absolute inset-0 z-0 opacity-80"
         style={{
@@ -26,11 +111,21 @@ const ReaderMypage: React.FC = () => {
           <h1 className="text-white text-[40px] font-bold mt-5">김싸피</h1>
           <h3 className="text-white">TAROT READER</h3>
         </div>
+        <div className="-mt-[200px]">
+          <HoverButton
+            label="랜덤 매칭 시작"
+            color="bg-gray-300"
+            hoverColor="bg-gray-500"
+            hsize="h-12"
+            wsize="w-48"
+            fontsize="text-lg"
+            onClick={handleRandomMatching}
+          />
+        </div>
       </div>
 
-      <div className="relative h-fit bg-black z-30 ">
+      <div className="relative h-fit bg-black z-30">
         <div className="h-fit bg-white mx-[100px] relative flex flex-col -top-[450px] rounded-xl bg-opacity-55">
-          {/* TODO :여기서 props로 넘겨주기 */}
           <ReaderItem />
         </div>
       </div>

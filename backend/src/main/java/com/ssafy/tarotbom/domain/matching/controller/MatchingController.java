@@ -10,6 +10,7 @@ import com.ssafy.tarotbom.domain.matching.service.MatchingService;
 import com.ssafy.tarotbom.domain.openvidu.service.OpenviduService;
 import com.ssafy.tarotbom.global.socket.SocketCode;
 import com.ssafy.tarotbom.global.socket.SocketResponse;
+import com.ssafy.tarotbom.global.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,17 +29,19 @@ public class MatchingController {
     private final MatchingService matchingService;
     private final SimpMessageSendingOperations sendingOperation;
     private final OpenviduService openviduService;
+    private final CookieUtil cookieUtil;
 
     @Value("${matching.status.path}")
     private String matchingStatusPath;
 
     @MessageMapping("/start")
     public synchronized void startMatching(MatchingStartRequestDto dto){
+
         // [0] 이미 매칭 중인 멤버인지 확인함과 동시에 매칭중임을 표기
         // 만일 이미 매칭 중인 멤버라면 돌려보낸다.
         if (!matchingService.setMatchingStatusStart(dto.getMemberId())){
             SocketResponse socketResponse = SocketResponse.of(SocketCode.MATCHING_ALREADY_PROCESSING);
-            log.info("이미 매칭 중인 회원 : {}", dto.getMemberId());
+            log.info("start 이미 매칭 중인 회원 : {}", dto.getMemberId());
             sendingOperation.convertAndSend(matchingStatusPath+dto.getMemberId(), socketResponse);
             return;
         }
@@ -81,7 +84,7 @@ public class MatchingController {
         MatchingInfoDto myDto = dto.getMemberDto();
         MatchingInfoDto candidateDto = dto.getCandidateDto();
         if(dto.getStatus().equals("accepted")){
-            log.info("매칭 확인 : {} - 상대방 : {}", myDto.getMemberId(), candidateDto.getMemberId());
+            log.info("confirm 매칭 확인 : {} - 상대방 : {}", myDto.getMemberId(), candidateDto.getMemberId());
             if(matchingService.confirmMatching(myDto, candidateDto)){
                 // 매칭이 성사되었다면, 매칭 큐에서 두 객체를 제거하고 방을 생성
                 matchingService.removeFromMatchingQueue(myDto, candidateDto);
