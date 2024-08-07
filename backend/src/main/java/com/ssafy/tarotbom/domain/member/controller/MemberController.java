@@ -114,6 +114,10 @@ public class MemberController {
     }
 
     /**
+     * 리더 프로필 정보 수정
+     * */
+
+    /**
      * 리더 시커 전환
      * @param request
      * @param response
@@ -145,7 +149,6 @@ public class MemberController {
      * 전체 리더조회
      * @return
      */
-    // TODO : 프로필 이미지 관련 수정 필요
     @GetMapping("/reader/list")
     public  ResponseEntity<?> searchAllReader() {
         List<ReaderListResponseDto> readerList = readerService.searchAllReader();

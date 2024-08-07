@@ -50,6 +50,7 @@ public class ReaderServiceImpl implements ReaderService{
         //todo: 리더 쪽 테이블 확인
         return readers.stream()
                 .map(reader -> new ReaderListResponseDto(reader.getMemberId()
+                        ,reader.getMember().getProfileUrl()
                         ,reader.getMember().getNickname()
                         ,reader.getKeywords(), reader.getIntro()
                         ,reader.getRating()

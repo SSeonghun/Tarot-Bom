@@ -36,6 +36,8 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final com.ssafy.tarotbom.domain.member.entity.QMember writer;
 
+    public final NumberPath<Long> writerId = createNumber("writerId", Long.class);
+
     public QComment(String variable) {
         this(Comment.class, forVariable(variable), INITS);
     }

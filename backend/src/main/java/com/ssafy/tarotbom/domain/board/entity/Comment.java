@@ -20,14 +20,12 @@ public class Comment {
     private long commentId;
 
     /* @ManyToOne으로 연결 : 게시글 ID, 작성자 ID */
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", columnDefinition = "int unsigned", insertable = false, updatable = false)
     private Board board;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "writer_id", columnDefinition = "int unsigned")
+    @JoinColumn(name = "writer_id", columnDefinition = "int unsigned", insertable = false, updatable = false)
     private Member writer;
 
     @Column(name = "content", length = 150)
@@ -40,8 +38,12 @@ public class Comment {
     private LocalDateTime updateTime;
 
     @NotNull
-    @Column(name = "board_id")
+    @Column(name = "board_id", columnDefinition = "int unsigned")
     private long boardId;
+
+    @NotNull
+    @Column(name = "writer_id", columnDefinition = "int unsigned")
+    private long writerId;
 
 
     // create time, update time 자동갱신

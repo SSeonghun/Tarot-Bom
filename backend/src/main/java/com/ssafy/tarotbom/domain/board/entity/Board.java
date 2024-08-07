@@ -28,12 +28,12 @@ public class Board {
 
     /* @ManyToOne으로 연결 : 작성자ID, 게시글유형 */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", insertable = false, updatable = false)
+    @JoinColumn(name = "member_id", columnDefinition = "int unsigned", insertable = false, updatable = false)
     private Member member;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_type", insertable = false, updatable = false)
+    @JoinColumn(name = "board_type", columnDefinition = "char(3)", insertable = false, updatable = false)
     private CodeDetail boardType;
 
     @NotNull
@@ -67,11 +67,11 @@ public class Board {
     List<Likely> likelyList;
 
     @NotNull
-    @Column(name = "member_id")
+    @Column(name = "member_id", columnDefinition = "int unsigned")
     private long memberId;
 
     @NotNull
-    @Column(name = "board_type")
+    @Column(name = "board_type", columnDefinition = "char(3)")
     private String category;
 
 
