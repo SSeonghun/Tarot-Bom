@@ -40,8 +40,12 @@ public enum ResultCode {
 
 
 
+    // Review
+    REVIEW_ADDED(HttpStatus.CREATED, "V001", "리뷰를 작성했습니다."),
+    REVIEW_LOADED(HttpStatus.OK, "V002", "리뷰를 불러왔습니다."),
+
     // Tarot
-    TAROT_CARD_INFO_FOUND(HttpStatus.OK, "T001", "카드를 조회했스빈다."),
+    TAROT_CARD_INFO_FOUND(HttpStatus.OK, "T001", "카드를 조회했습니다."),
     TAROT_CARD_RESULT_SAVED(HttpStatus.CREATED, "T002", "타로 결과를 저장했습니다."),
     TAROT_CARD_RESULT_FOUND(HttpStatus.OK, "T003", "타로 결과를 조회했습니다."),
 

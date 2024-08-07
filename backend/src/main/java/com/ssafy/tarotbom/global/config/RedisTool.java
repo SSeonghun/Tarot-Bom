@@ -47,7 +47,4 @@ public class RedisTool {
         return !value.equals("false");
     }
 
-//    public void publish(ChannelTopic topic, ChatMessageReqDto message){
-//        redisTemplate.convertAndSend(topic.getTopic(), message);
-//    }
 }

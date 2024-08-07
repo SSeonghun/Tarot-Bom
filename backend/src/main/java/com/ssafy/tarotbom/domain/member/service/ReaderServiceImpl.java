@@ -49,12 +49,11 @@ public class ReaderServiceImpl implements ReaderService{
 
         //todo: 리더 쪽 테이블 확인
         return readers.stream()
-                .map(reader -> new ReaderListResponseDto(reader.getMember().getMemberId()
+                .map(reader -> new ReaderListResponseDto(reader.getMemberId()
                         ,reader.getMember().getNickname()
-                        , reader.getMember().getMemberType().getCodeDetailId()
-                        ,reader.getKeyword().getCodeDetailId(), reader.getIntro()
+                        ,reader.getKeywords(), reader.getIntro()
                         ,reader.getRating()
-                        , reader.getGrade().getCodeDetailId()
+                        , reader.getGradeCode()
                         ,reader.getPrice()))
                 .collect(Collectors.toList());
     }

@@ -52,7 +52,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 String newAccessToken = jwtUtil.createAccessToken(CustomUserInfoDto.builder()
                         .memberId(userDetails.getMemberId())
                         .email(userDetails.getEmail())
-                        .memberType(userDetails.getMemberType())
+                        .memberTypeId(userDetails.getMemberTypeId())
                         .build());
 
                 Cookie newAccessTokenCookie = new Cookie("accessToken", newAccessToken);

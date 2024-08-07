@@ -60,22 +60,11 @@ public class JwtUtil {
 
         claims.put("memberId", member.getMemberId());
         claims.put("email", member.getEmail());
-        claims.put("memberType", member.getMemberType().getCodeDetailId());
+        claims.put("memberType", member.getMemberTypeId());
 
         LocalDateTime now = LocalDateTime.now();
-        log.info("LocalDateTime NOW : {}", now.toString());
         LocalDateTime tokenValidity = now.plusSeconds(expireTime);
 
-//        return BEARER_PREFIX +
-//                Jwts.builder()
-//                    .setClaims(claims)
-//                    .setIssuedAt(Date.from(now.toInstant())) // 토큰 발행 시간
-//                    .setExpiration(Date.from(tokenValidity.toInstant())) // 토큰 만료 시간
-//                    .signWith(key, SignatureAlgorithm.HS256) // 암호화 알고리즘으로 토큰 암호화
-//                    .compact(); // 토큰을 문자열 형태로 반환
-        log.info("IssuedAt : {}", now.toString());
-        log.info("IssuedAt : {}", tokenValidity.toString());
-        log.info(Date.from(now.toInstant(ZoneOffset.of("+09:00"))).toString());
         return Jwts.builder()
                         .setClaims(claims)
                         .setIssuedAt(Date.from(now.toInstant(ZoneOffset.of("+09:00")))) // 토큰 발행 시간

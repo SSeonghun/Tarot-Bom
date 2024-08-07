@@ -27,7 +27,7 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         List<String> memberTypes = new ArrayList<>();
-        memberTypes.add("ROLE_" + member.getMemberType().getCodeDetailId()); // Spring Security에서 권한 식별할 때 ROLE_을 붙임
+        memberTypes.add("ROLE_" + member.getMemberTypeId()); // Spring Security에서 권한 식별할 때 ROLE_을 붙임
 
         return memberTypes.stream()
                 .map(SimpleGrantedAuthority::new) // GrantedAuthority의 구현체로 문자열을 객체로 반환
@@ -46,8 +46,8 @@ public class CustomUserDetails implements UserDetails {
 
     public String getEmail() {return String.valueOf(member.getEmail());}
 
-    public CodeDetail getMemberType() {
-        return member.getMemberType(); // 변경된 부분
+    public String getMemberTypeId() {
+        return member.getMemberTypeId(); // 변경된 부분
     }
 
     public long getMemberId() {return member.getMemberId();}

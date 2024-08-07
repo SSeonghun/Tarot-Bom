@@ -17,5 +17,5 @@ public class CustomUserInfoDto {
     private String nickname;
     private String email;
     private String password;
-    private CodeDetail memberType;
+    private String memberTypeId;
 }

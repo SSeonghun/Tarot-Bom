@@ -13,6 +13,9 @@ public interface TarotResultService {
     public TarotResultSaveResponseDto saveTarotResult(TarotResultSaveRequestDto dto);
     public TarotResultGetResponseDto getTarotResult(long resultId, long userId);
     public List<TarotResultGetResponseDto> getAllTarotResultsBySeekerId(long userId);
+    public List<TarotResultGetResponseDto> getAllTarotResultsBySeekerId(long userId, int limit);
 
     List<TarotResultGetResponseDto> getAllTarotResultsByReaderId(long memberId);
+    List<TarotResultGetResponseDto> getAllTarotResultsByReaderId(long memberId, int limit);
+
 }

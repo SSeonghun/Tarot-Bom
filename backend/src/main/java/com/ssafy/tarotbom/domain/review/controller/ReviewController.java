@@ -4,6 +4,7 @@ import com.ssafy.tarotbom.domain.review.dto.request.ReviewAddRequestDto;
 import com.ssafy.tarotbom.domain.review.dto.response.ReviewResponseDto;
 import com.ssafy.tarotbom.domain.review.service.ReviewService;
 import com.ssafy.tarotbom.global.result.ResultCode;
+import com.ssafy.tarotbom.global.result.ResultResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,15 +29,14 @@ public class ReviewController {
     public ResponseEntity<?> getReviewE(@Valid @PathVariable long readerId) {
 
         ReviewResponseDto reviewResponseDto = reviewService.getAllReviews(readerId);
-
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(reviewResponseDto);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.REVIEW_LOADED, reviewResponseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     @PutMapping("/add")
     public ResponseEntity<?> addReview (@RequestBody ReviewAddRequestDto reviewAddRequestDto, HttpServletRequest request) {
-
         reviewService.addReview(request, reviewAddRequestDto);
-
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("ok");
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.REVIEW_ADDED);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 }

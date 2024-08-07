@@ -43,19 +43,7 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
     public void addFavoriteReader(FavoriteReaderRequestDto favoriteReaderRequestDto) {
         long seekerId = favoriteReaderRequestDto.getSeekerId();
         long readerId = favoriteReaderRequestDto.getReaderId();
-//
-//        Reader reader = readerRepository.findByMemberId(favoriteReaderRequestDto.getReaderId());
-//        Optional<Member> seeker = memberRepository.findMemberByMemberId(favoriteReaderRequestDto.getSeekerId());
 
-        // 해당 맴버 찜목록 조회
-        // 만약 이미 찜한 리더면 오류 던지기
-//        List<FavoriteReader> favoriteReaders = favoriteReaderRepository.findBySeeker(seeker.get());
-//        for(int i = 0; i < favoriteReaders.size(); i++) {
-//            long readerId = favoriteReaders.get(i).getReader().getMemberId();
-//            if(favoriteReaders.get(i).getReader().getMemberId() == favoriteReaderRequestDto.getReaderId()){
-//                throw new BusinessException(ErrorCode.FAVORITE_DUPLICATED);
-//            }
-//        }
         if(favoriteReaderRepository.findBySeekerIdAndReaderId(seekerId, readerId) != null) {
             log.info("이미 찜한 조합 : {} -> {}", seekerId, readerId);
             throw new BusinessException(ErrorCode.FAVORITE_DUPLICATED);
@@ -78,14 +66,10 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
     public FavoriteReaderListResponseDto searchFavoriteReader(HttpServletRequest request) {
 
         long seekerId = cookieUtil.getUserId(request);
-
         Optional<Member> seeker = memberRepository.findMemberByMemberId(seekerId);
-
-        if (seeker.isEmpty()) {
-            // 적절한 예외 처리
-            throw new RuntimeException("Seeker not found");
+        if(seeker.isEmpty()){ // 만일 DB에 없는 시커라면 예외를 반환
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
-
         // 해당 시커의 찜 목록
         List<FavoriteReader> favoriteReaders = favoriteReaderRepository.findBySeeker(seeker.get());
 
@@ -93,36 +77,25 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
 
         // favoriteReaderList 초기화
         List<ReaderListResponseDto> favoriteReaderList = new ArrayList<>();
-
         for (FavoriteReader favoriteReader : favoriteReaders) {
-            long readerId = favoriteReader.getReader().getMemberId();
-
-            Optional<Reader> readerOptional = Optional.ofNullable(readerRepository.findByMemberId(readerId));
-            if (readerOptional.isEmpty()) {
-                // 적절한 예외 처리
-                throw new RuntimeException("Reader not found");
+            Reader reader =  favoriteReader.getReader();
+            if(reader == null) {
+                // 연결이 끊어진 객체를 발견했다면 DB에서 삭제, 다음으로 진행
+                favoriteReaderRepository.deleteByReaderId(favoriteReader.getReaderId());
+                continue;
             }
-            Reader reader = readerOptional.get();
-
-            Optional<Member> readerNameOptional = memberRepository.findMemberByMemberId(readerId);
-            if (readerNameOptional.isEmpty()) {
-                // 적절한 예외 처리
-                throw new RuntimeException("Member not found");
-            }
-            Member readerName = readerNameOptional.get();
-
+            // 연결이 끊어진 객체가 아니라면 값을 반환한다
+            long readerId = favoriteReader.getReaderId();
             ReaderListResponseDto readerTemp = ReaderListResponseDto
                     .builder()
                     .memberId(readerId)
-                    .name(readerName.getNickname())
-                    .memberType("M03")  // 하드코딩된 값. 필요에 따라 변경
-                    .keyword(reader.getKeyword().getCodeDetailId())
+                    .name(reader.getMember().getNickname())
+                    .keyword(reader.getKeywords())
                     .intro(reader.getIntro())
                     .rating(reader.getRating())
-                    .grade(reader.getGrade().getCodeDetailId())
+                    .grade(reader.getGradeCode())
                     .price(reader.getPrice())
                     .build();
-
             favoriteReaderList.add(readerTemp);
         }
 
@@ -149,6 +122,4 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
         }
         // 정상적으로 삭제되었다면 exception을 출력하지 않음
     }
-
-
 }

@@ -20,7 +20,7 @@ public class ReaderMypageResponseDto {
     private String email;
 
     // 요약 관련
-    private int totalConserting;
+    private int totalConsulting;
     private ReaderAnalyzeDto categoryanalyze;
     private ReaderAnalyzeDto monthlyanalyze;
     // 예약 내역
