@@ -103,18 +103,13 @@ public class MemberServiceImpl implements MemberService {
         CustomUserInfoDto info = CustomUserInfoDto.builder()
                 .memberId(member.getMemberId())
                 .email(member.getEmail())
-                .memberType(member.getMemberType())
+                .memberTypeId(member.getMemberTypeId())
                 .password(member.getPassword())
                 .nickname(member.getNickname())
                 .build();
 
-
-//        log.info("[MemberServiceImpl - login] CustomUserInfoDto : {}", info.getMemberType());
         String accessToken = jwtUtil.createAccessToken(info);
         String refreshToken = jwtUtil.createRefreshToken(info);
-
-//        log.info("[MemberServiceImpl - login] Access Token: {}", accessToken);
-//        log.info("[MemberServiceImpl - login] Refresh Token : {}", refreshToken);
 
         // 액세스 토큰 쿠키 설정
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
@@ -139,9 +134,6 @@ public class MemberServiceImpl implements MemberService {
 
         tokenService.saveRefreshToken(String.valueOf(member.getMemberId()), refreshToken, 7, TimeUnit.DAYS);
 
-//        String memberId = tokenService.getRefreshToken(member.getMemberId());
-//        log.info("[MemberServiceImpl-login] redisMemberId : {}", memberId );
-
         boolean isReader = false; // 리더 프로필이 있는지 없는지 확인하는 변수
         try {
             Long id = member.getMemberId();
@@ -151,8 +143,6 @@ public class MemberServiceImpl implements MemberService {
             isReader = false;
         }
 
-//        log.info("isReader : {}", isReader);
-
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
 
@@ -161,8 +151,8 @@ public class MemberServiceImpl implements MemberService {
                 .email(email)
                 .name(name)
                 .isReader(isReader)
+                .profileUrl(member.getProfileUrl())
                 .build();
-
         return loginResponseDto;
     }
 
@@ -172,14 +162,8 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public void logout(HttpServletRequest request) {
-
-        try {
-            String email = cookieUtil.getMemberEmail(request);
-            redisTool.deleteValue(AUTH_CODE_PREFIX+email);
-        } catch (Exception e) { // todo: Exception으로 받는게 맞나?
-            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
-        }
-
+        String email = cookieUtil.getMemberEmail(request);
+        redisTool.deleteValue(AUTH_CODE_PREFIX+email);
     }
 
     /**
@@ -190,7 +174,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     @Transactional
-    public boolean signup(SignupReqDto signupReqDto) throws BusinessException {
+    public void signup(SignupReqDto signupReqDto) throws BusinessException {
         BCryptPasswordEncoder bcrypasswordEncoder = new BCryptPasswordEncoder();
 
         String nickname = signupReqDto.getNickname();
@@ -207,19 +191,13 @@ public class MemberServiceImpl implements MemberService {
             throw new BusinessException(ErrorCode.MEMBER_DUPLICATED);
         }
 
-//        CodeDetail codeDetail = new CodeDetail("M01", "Seeker", "1"); // DB에 저장된 후에 코드 refactoring
-
-        CodeDetail codeDetail = CodeDetail
-                .builder()
-                .codeTypeId("1")
-                .codeDetailId("M01")
-                .detailDesc("Seaker")
+        Member member = Member.builder()
+                .nickname(nickname)
+                .email(email)
+                .password(password)
+                .memberTypeId("M01")
                 .build();
-
-        Member member = new Member(nickname, email, password, codeDetail);
         memberRepository.save(member);
-
-        return true;
 
     }
 
@@ -243,7 +221,7 @@ public class MemberServiceImpl implements MemberService {
      * @return
      */
     @Override
-    public boolean sendCodeToEmail(String toEmail){
+    public void sendCodeToEmail(String toEmail){
 
         // 이메일 중복 검사
         Optional<Member> findMemberByEmail = memberRepository.findMemberByEmail(toEmail);
@@ -258,18 +236,14 @@ public class MemberServiceImpl implements MemberService {
         String text = "타로봄에 오신 것을 환영합니다.\n\n"
                 + "      인증 번호는\n\n" +"         " + authCode + "\n\n         입니다.";
 
-
         // 이미 인증 번호를 보내 레디스 서버에 인증번호가 있음
         String pinNum = redisTool.getValues(AUTH_CODE_PREFIX + toEmail);
         if(pinNum != null) {
             // 해당 레디스 키를 삭제하고 재발급
             redisTool.deleteValue(AUTH_CODE_PREFIX + toEmail);
         }
-
         redisTool.setValues(AUTH_CODE_PREFIX + toEmail , authCode, Duration.ofMillis(authCodeExpirationMillis));
         emailTool.sendEmail(toEmail, title, text);
-
-        return true;
     }
 
     /**
@@ -279,24 +253,14 @@ public class MemberServiceImpl implements MemberService {
      * @return
      */
     @Override
-    public boolean verifyCode(String email, String authCode) {
-
+    public void verifyCode(String email, String authCode) {
         log.info("verify emails {}" , email);
         String redisAuthCode = redisTool.getValues((AUTH_CODE_PREFIX + email));
         log.info("redis get pinNumber : {} ",redisAuthCode);
-//        if(!(redisTool.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode))){
-//            throw new BusinessException(ErrorCode.MEMBER_INVALID_CODE);
-//        }
-        if(!(Integer.parseInt(redisAuthCode) == Integer.parseInt(authCode))){
+        if(Integer.parseInt(redisAuthCode) != Integer.parseInt(authCode)){
             throw new BusinessException(ErrorCode.MEMBER_INVALID_CODE);
         }
-//        else {
-//            redisTool.deleteValue(AUTH_CODE_PREFIX + email);
-//        }
-
-        return true;
     }
-
 
     /**
      * 엑세스 토큰 발급
@@ -312,9 +276,9 @@ public class MemberServiceImpl implements MemberService {
         Cookie[] cookies = request.getCookies();
 
         if(cookies == null) { //토큰이 없을때
-            throw new BusinessException(ErrorCode.MEMBER_COOKIE_NOT_FOUNT);
+            throw new BusinessException(ErrorCode.MEMBER_COOKIE_NOT_FOUND);
         }
-        else{ // 받은 쿠키들 중에서 refreshToken 찾기
+        else { // 받은 쿠키들 중에서 refreshToken 찾기
             for (Cookie cookie : cookies) {
                 if ("refreshToken".equals(cookie.getName())) {
                     refreshTokenReq = cookie.getValue();
@@ -330,7 +294,7 @@ public class MemberServiceImpl implements MemberService {
         String memberIdToken = tokenService.getRefreshToken(memberIdFromToken);
 
         // 토큰 인증하고, 두개의 토큰이 같으면
-        if(refreshTokenReq == memberIdToken && jwtUtil.validateToken(refreshTokenReq) && jwtUtil.validateToken(memberIdToken)) {
+        if(refreshTokenReq.equals(memberIdToken) && jwtUtil.validateToken(refreshTokenReq) && jwtUtil.validateToken(memberIdToken)) {
 
             Member member = memberRepository.findMemberByMemberId(memberIdFromToken).orElseThrow(
                     () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
@@ -339,7 +303,7 @@ public class MemberServiceImpl implements MemberService {
             CustomUserInfoDto info = CustomUserInfoDto.builder()
                     .memberId(member.getMemberId())
                     .email(member.getEmail())
-                    .memberType(member.getMemberType())
+                    .memberTypeId(member.getMemberTypeId())
                     .password(member.getPassword())
                     .nickname(member.getNickname())
                     .build();
@@ -364,26 +328,12 @@ public class MemberServiceImpl implements MemberService {
      * @param readerJoinRequestDto
      */
     @Override
-    public void readerJoin(ReaderJoinRequestDto readerJoinRequestDto) {
+    public void readerJoin(HttpServletRequest request, ReaderJoinRequestDto readerJoinRequestDto) {
         // 기본 코드 초기화
         // todo: 이거 코드를 여기서 만들어서 넣는게 아닌 이미 만들어진 코드를 적용시키는 개념? 으로 가야할듯
-        CodeDetail defaultCode = CodeDetail.builder()
-                .codeDetailId("CO1")
-                .codeTypeId("3")
-                .detailDesc("기본")
-                .build();
-
-        defaultCode = codeDetailRepository.save(defaultCode);
-
-        // 키워드 코드 조회 및 처리
-        Optional<CodeDetail> keywordOpt = codeDetailRepository.findById(readerJoinRequestDto.getKeyword());
-//        if (!keywordOpt.isPresent()) {
-//            throw new BusinessException(ErrorCode.KEYWORD_NOT_FOUND); // 적절한 예외 처리
-//        }
-        CodeDetail keyword = keywordOpt.get();
-
         // 회원 조회
-        Member member = memberRepository.findById(readerJoinRequestDto.getSeekerId())
+        long memberId = cookieUtil.getUserId(request);
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)); // 적절한 예외 처리
 
         // 리더 객체 생성 후 저장
@@ -392,13 +342,11 @@ public class MemberServiceImpl implements MemberService {
                 .createTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
                 .intro(readerJoinRequestDto.getIntro())
-                .keyword(keyword)
-                .grade(defaultCode)
+                .keywords(readerJoinRequestDto.getKeyword())
+                .gradeCode("C01")
                 .build();
-
         readerRepository.save(reader);
     }
-
 
     /**
      * 리더/시커 전환시 엑세스 토큰 재발급
@@ -415,28 +363,23 @@ public class MemberServiceImpl implements MemberService {
 
         log.info("{}, {}, {}", memberId, type, email);
 
-        CodeDetail memberCode = null;
-
-        if(type.equals("M01")) { //seaker
-            memberCode = CodeDetail
-                    .builder()
-                    .codeDetailId("M03")
-                    .codeTypeId("0")
-                    .detailDesc("리더")
-                    .build();
-        } else if(type.equals("M03")) { //reader
-            memberCode = CodeDetail
-                    .builder()
-                    .codeDetailId("M01")
-                    .codeTypeId("0")
-                    .detailDesc("시커")
-                    .build();
+        String changedType = null;
+        if(type.equals("M01")) {
+            // 기존에 시커였던 경우 : 리더 프로필이 있는지 확인한다
+            if(!readerRepository.existsByMemberId(memberId)){
+                throw new BusinessException(ErrorCode.MEMBER_YOU_ARE_NOT_READER);
+            }
+            // 있다면 변경해준다
+            changedType = "M02";
+        } else if(type.equals("M02")) {
+            // 리더였던 경우 : 시커 프로필은 무조건 있으므로 바로 바꿔준다
+            changedType = "M01";
         }
-
+        log.info("권한 변경 : {} -> {}", type, changedType);
         CustomUserInfoDto member = CustomUserInfoDto
                 .builder()
                 .memberId(memberId)
-                .memberType(memberCode)
+                .memberTypeId(changedType)
                 .email(email)
                 .build();
 
@@ -454,8 +397,6 @@ public class MemberServiceImpl implements MemberService {
         newTokenCookie.setSecure(true);
         newTokenCookie.setMaxAge(60 * 60); // 1시간 유효
         newTokenCookie.setPath("/"); // 경로 설정
-
-
         return newTokenCookie;
     }
 
@@ -465,46 +406,28 @@ public class MemberServiceImpl implements MemberService {
      * @return
      */
     @Override
-    public SeekerMypageResponseDto seekerMypage(HttpServletRequest request, MypageRequestDto seekerMypageRequestDto) {
+    public SeekerMypageResponseDto seekerMypage(HttpServletRequest request) {
 
         // 아이디 가져오기
         long memberId = cookieUtil.getUserId(request);
         String email = cookieUtil.getMemberEmail(request);
 
         // 최근 타로 결과 내역
-        List<TarotResultGetResponseDto> tarotResultGetResponseDtos = tarotResultService.getAllTarotResultsBySeekerId(memberId);
+        List<TarotResultGetResponseDto> tarotResultGetResponseDtos = tarotResultService.getAllTarotResultsBySeekerId(memberId, 30);
 
         int[] category = new int[5];
 
         // 최근 타로 내역 분석을 위한 로직
         // 30개 까지만 조회하는데 30개 미만일때 처리
-        // todo: 타로 결과 조회 할때 limit 30개 걸면 될듯?
-        if(tarotResultGetResponseDtos.size() < 30) {
-            for (int i = 0; i < tarotResultGetResponseDtos.size(); i++) {
-                TarotResultGetResponseDto tarotResultGetResponseDto = tarotResultGetResponseDtos.get(i);
 
-                // 30개의 키워드 확인
-                String temp = tarotResultGetResponseDto.getKeyword();
-                int num = countCategory(temp);
+        for (int i = 0; i < tarotResultGetResponseDtos.size(); i++) {
+            TarotResultGetResponseDto tarotResultGetResponseDto = tarotResultGetResponseDtos.get(i);
+            // 30개의 키워드 확인
+            String temp = tarotResultGetResponseDto.getKeyword();
+            int num = countCategory(temp);
+            category[num]++;
+            log.info("{}", temp);
 
-                category[num]++;
-
-                log.info("{}", temp);
-
-            }
-        } else {
-            for (int i = 0; i < 30; i++) {
-                TarotResultGetResponseDto tarotResultGetResponseDto = tarotResultGetResponseDtos.get(i);
-
-                // 30개의 키워드 확인
-                String temp = tarotResultGetResponseDto.getKeyword();
-                int num = countCategory(temp);
-
-                category[num]++;
-
-                log.info("{}", temp);
-
-            }
         }
 
         // Map에 넣어서 넘겨줌 <카테고리, 횟수>
@@ -523,17 +446,23 @@ public class MemberServiceImpl implements MemberService {
 
         // 예약 내역
         List<ReadReservationResponseDto> readReservationResponseDtos = reservationService.readReservation(request);
-
-        log.info("isReader : {}", seekerMypageRequestDto.isReader());
+        Member member = memberRepository.findMemberByMemberId(memberId).get();
+        boolean isReader;
+         if(member.getMemberTypeId().equals("M01")){
+             isReader = false;
+         } else {
+             isReader = true;
+         }
+        log.info("isReader : {}", isReader);
         SeekerMypageResponseDto seekerMypageResponseDto = SeekerMypageResponseDto
                 .builder()
-                .isReader(seekerMypageRequestDto.isReader()) // 리더 프로필 만들기를 띄울 건지, 전환을 띄울 건지
+                .isReader(isReader) // 리더 프로필 만들기를 띄울 건지, 전환을 띄울 건지
                 .reservationList(readReservationResponseDtos)
                 .tarotResults(tarotResultGetResponseDtos)
-                .totalConserting(tarotResultGetResponseDtos.size())
+                .totalConsulting(tarotResultGetResponseDtos.size())
                 .email(email)
                 .analyze(seekerAnalyzeDto)
-                .name(seekerMypageRequestDto.getName())
+                .name(member.getNickname())
                 .build();
 
         return seekerMypageResponseDto;
@@ -566,11 +495,10 @@ public class MemberServiceImpl implements MemberService {
     /**
      * 리더 마이페이지에 필요한 정보 비즈니스 로직
      * @param request
-     * @param readerMypageReqeusetDto
      * @return
      */
     @Override
-    public ReaderMypageResponseDto readerMypage(HttpServletRequest request, MypageRequestDto readerMypageReqeusetDto) {
+    public ReaderMypageResponseDto readerMypage(HttpServletRequest request) {
 
         long memberId = cookieUtil.getUserId(request);
         String email = cookieUtil.getMemberEmail(request);
@@ -582,50 +510,30 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // 최근 타로 결과 내역
-        List<TarotResultGetResponseDto> tarotResultGetResponseDtos = tarotResultService.getAllTarotResultsByReaderId(memberId);
+        List<TarotResultGetResponseDto> tarotResultGetResponseDtos = tarotResultService.getAllTarotResultsByReaderId(memberId, 30);
 
         int[] category = new int[5];
         int[] montly = new int[12];
 
         // 위의 시커 카테고리랑 같은 로직
         // + 월별 타로 상담 횟수 추가
-        if(tarotResultGetResponseDtos.size() < 30) {
-            for (int i = 0; i < tarotResultGetResponseDtos.size(); i++) {
-                TarotResultGetResponseDto tarotResultGetResponseDto = tarotResultGetResponseDtos.get(i);
 
-                // 30개의 키워드 확인
-                String temp = tarotResultGetResponseDto.getKeyword();
-                int num = countCategory(temp);
+        for (int i = 0; i < tarotResultGetResponseDtos.size(); i++) {
+            TarotResultGetResponseDto tarotResultGetResponseDto = tarotResultGetResponseDtos.get(i);
 
-                LocalDateTime date = tarotResultGetResponseDto.getDate();
-                int month = date.getMonth().getValue() - 1;
+            // 30개의 키워드 확인
+            String temp = tarotResultGetResponseDto.getKeyword();
+            int num = countCategory(temp);
+
+            LocalDateTime date = tarotResultGetResponseDto.getDate();
+            int month = date.getMonth().getValue() - 1;
 
 //                log.info("{}", month);
-                montly[month]++;
-                category[num]++;
+            montly[month]++;
+            category[num]++;
 
 //                log.info("{}", temp);
 
-            }
-        } else {
-            for (int i = 0; i < 30; i++) {
-                TarotResultGetResponseDto tarotResultGetResponseDto = tarotResultGetResponseDtos.get(i);
-
-                // 30개의 키워드 확인
-                String temp = tarotResultGetResponseDto.getKeyword();
-                int num = countCategory(temp);
-
-                LocalDateTime date = tarotResultGetResponseDto.getDate();
-                int month = date.getMonth().getValue();
-
-//                log.info("{}", month);
-
-                montly[month]++;
-                category[num]++;
-
-//                log.info("{}", temp);
-
-            }
         }
 
         Map<String, Integer> map = new HashMap<>();
@@ -659,8 +567,8 @@ public class MemberServiceImpl implements MemberService {
         List<ReviewReaderResponseDto> reviewList = reviewReaders.stream()
                 .map(review -> ReviewReaderResponseDto.builder()
                         .reviewReaderId(String.valueOf(review.getReviewReaderId()))
-                        .seekerId(String.valueOf(review.getSeeker().getMemberId()))
-                        .readerId(String.valueOf(review.getReader().getMemberId()))
+                        .seekerId(String.valueOf(review.getSeekerId()))
+                        .readerId(String.valueOf(review.getReaderId()))
                         .rating(review.getRating())
                         .content(review.getContent())
                         .createTime(review.getCreateTime())
@@ -673,19 +581,15 @@ public class MemberServiceImpl implements MemberService {
                 .readReservationResponseDtoList(readReservationResponseDtos)
                 .tarotResultGetResponseDtos(tarotResultGetResponseDtos)
                 .email(email)
-                .totalConserting(tarotResultGetResponseDtos.size())
+                .totalConsulting(tarotResultGetResponseDtos.size())
                 .categoryanalyze(analyzeDto)
                 .monthlyanalyze(monthlyDto)
-                .name(readerMypageReqeusetDto.getName())
+                .name(reader.getNickname())
                 .reviewReaderResponseDtos(reviewList)
                 .build();
 
 
         return readerMypageResponseDto;
     }
-
-
-
-
 
 }

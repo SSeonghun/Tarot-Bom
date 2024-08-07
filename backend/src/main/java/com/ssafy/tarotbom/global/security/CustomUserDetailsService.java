@@ -34,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .nickname(member.getNickname())
                 .email(member.getEmail())
                 .password(member.getPassword()) // 암호화된 비밀번호는 보안상 취급 주의
-                .memberType(member.getMemberType())
+                .memberTypeId(member.getMemberTypeId())
                 .build();
 
         return new CustomUserDetails(dto);

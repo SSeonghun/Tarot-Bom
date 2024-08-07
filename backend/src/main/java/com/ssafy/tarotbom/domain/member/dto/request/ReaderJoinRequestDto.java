@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReaderJoinRequestDto {
-    private long seekerId;
     private String keyword;
     private String intro;
 }

@@ -24,7 +24,7 @@ public class SeekerMypageResponseDto {
     private List<ReadReservationResponseDto> reservationList; // 예약 내역
 
     // 요약 정보
-    private int totalConserting;
+    private int totalConsulting;
     private SeekerAnalyzeDto analyze;
 
     //////최근 타로 내역

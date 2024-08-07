@@ -5,7 +5,6 @@ import com.ssafy.tarotbom.domain.member.service.MemberService;
 import com.ssafy.tarotbom.domain.member.service.ReaderService;
 import com.ssafy.tarotbom.domain.member.dto.request.*;
 import com.ssafy.tarotbom.domain.member.dto.response.*;
-import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.result.ResultCode;
 import com.ssafy.tarotbom.global.result.ResultResponse;
 import jakarta.servlet.http.Cookie;
@@ -42,9 +41,9 @@ public class MemberController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
-        LoginResponseDto result = memberService.login(loginReqDto, response);
-
-        return ResponseEntity.status(ResultCode.LOGIN_OK.getStatus()).body(result);
+        LoginResponseDto loginResponseDto = memberService.login(loginReqDto, response);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.LOGIN_OK, loginResponseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     /**
@@ -54,12 +53,10 @@ public class MemberController {
      */
     @PostMapping("/emails/verifications")
     public ResponseEntity<?> sendMessage(@Valid @RequestBody EmailReqDto emailReqDto){
-        log.info("email Varification");
-        if(memberService.sendCodeToEmail(emailReqDto.getEmail())){
-            return ResponseEntity.status(ResultCode.EMAIL_SEND_OK.getStatus()).body(null);
-        }else{
-            return ResponseEntity.status(ErrorCode.COMMON_NOT_FOUND.getStatus()).body(null);
-        }
+        log.info("email verification");
+        memberService.sendCodeToEmail(emailReqDto.getEmail());
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.EMAIL_SEND_OK);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     /**
@@ -69,15 +66,10 @@ public class MemberController {
      */
     @PostMapping("/emails/check")
     public ResponseEntity<?> verifyCode(@Valid @RequestBody EmailCheckReqDto emailcheckReqDto){
-
         log.info("pinNumber : {} ", emailcheckReqDto.getVerificationCode());
-
         memberService.verifyCode(emailcheckReqDto.getEmail(), emailcheckReqDto.getVerificationCode());
-        if(memberService.verifyCode(emailcheckReqDto.getEmail(), emailcheckReqDto.getVerificationCode())){
-            return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(null);
-        }else {
-            return ResponseEntity.status(ErrorCode.COMMON_NOT_FOUND.getStatus()).body(null);
-        }
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.VALIDATION_NUMBER_OK);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     /**
@@ -88,12 +80,9 @@ public class MemberController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupReqDto signupReqDto){
         log.info("SingupDto : {}", signupReqDto.getEmail());
-        if(memberService.signup(signupReqDto)) {
-            return ResponseEntity.status(ResultCode.SIGNUP_OK.getStatus()).body(null);
-        }else{
-            return ResponseEntity.status(ErrorCode.COMMON_NOT_FOUND.getStatus()).body(null);
-        }
-
+        memberService.signup(signupReqDto);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.SIGNUP_OK);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     /**
@@ -102,10 +91,8 @@ public class MemberController {
      * @return
      */
     @PostMapping("/readerjoin")
-    public ResponseEntity<?> readerJoin(@Valid @RequestBody ReaderJoinRequestDto readerJoinRequestDto) {
-
-        memberService.readerJoin(readerJoinRequestDto);
-
+    public ResponseEntity<?> readerJoin(@Valid @RequestBody ReaderJoinRequestDto readerJoinRequestDto, HttpServletRequest request) {
+        memberService.readerJoin(request, readerJoinRequestDto);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.READER_JOIN_OK);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
@@ -118,20 +105,15 @@ public class MemberController {
      */
     @PostMapping("/changeAccessToken")
     public ResponseEntity<?> changeAccessToken(HttpServletRequest request, HttpServletResponse response){
-
         Cookie newAccessToken = memberService.changeAccessToken(request);
-
         response.addCookie(newAccessToken);
-
         ResultResponse resultResponse = ResultResponse.of(ResultCode.CHANGE_READER_SEEKER_OK);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     @DeleteMapping("/logout")
     public ResponseEntity<?> logout (HttpServletRequest request) {
-
         memberService.logout(request);
-
         ResultResponse resultResponse = ResultResponse.of(ResultCode.LOGOUT_OK);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
@@ -232,13 +214,9 @@ public class MemberController {
      * @return
      */
     @GetMapping("/seeker/mypage")
-    public ResponseEntity<?> seekerMypage(@RequestParam boolean isReader, @RequestParam String name, HttpServletRequest request) {
+    public ResponseEntity<?> seekerMypage(HttpServletRequest request) {
         log.info("seekerMypage");
-        MypageRequestDto seekerMypageRequestDto = MypageRequestDto.builder()
-                .isReader(isReader)
-                .name(name)
-                .build();
-        SeekerMypageResponseDto seekerMypageResponseDto = memberService.seekerMypage(request, seekerMypageRequestDto);
+        SeekerMypageResponseDto seekerMypageResponseDto = memberService.seekerMypage(request);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_SEEKER_MYPAGE, seekerMypageResponseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
@@ -250,8 +228,8 @@ public class MemberController {
      * @return
      */
     @GetMapping("/reader/mypage")
-    public ResponseEntity<?> readerMypage(@Valid @RequestBody MypageRequestDto readerMypageRequestDto, HttpServletRequest request) {
-        ReaderMypageResponseDto readerMypageResponseDto = memberService.readerMypage(request, readerMypageRequestDto);
+    public ResponseEntity<?> readerMypage(HttpServletRequest request) {
+        ReaderMypageResponseDto readerMypageResponseDto = memberService.readerMypage(request);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_READER_MYPAGE, readerMypageResponseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }

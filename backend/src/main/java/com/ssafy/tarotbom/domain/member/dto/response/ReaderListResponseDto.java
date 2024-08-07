@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class ReaderListResponseDto {
     private long memberId;
     private String name;
-    private String memberType;
     private String keyword;
     private String intro;
     private double rating;

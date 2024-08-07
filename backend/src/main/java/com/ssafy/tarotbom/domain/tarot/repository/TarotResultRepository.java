@@ -12,4 +12,5 @@ public interface TarotResultRepository extends JpaRepository<TarotResult, Long> 
     public List<TarotResult> findAllBySeekerId(Long seekerId);
     public List<TarotResult> findAllByReaderId(Long readerId);
     public int countByReaderId(Long readerId);
+    public List<TarotResult> findTop30AllBySeekerId(Long readerId);
 }

@@ -12,6 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MypageRequestDto {
-    private boolean isReader; // 리더 가입 여부
+    private boolean reader; // 리더 가입 여부
     private String name;
 }

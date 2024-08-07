@@ -14,18 +14,18 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public interface MemberService{
     LoginResponseDto login(LoginReqDto loginReqDto, HttpServletResponse response);
-    boolean signup(SignupReqDto signupReqDto);
-    boolean sendCodeToEmail(String toEmail);
-    boolean verifyCode(String code, String authCode);
+    void signup(SignupReqDto signupReqDto);
+    void sendCodeToEmail(String toEmail);
+    void verifyCode(String code, String authCode);
     Cookie createAceessToken(LoginReqDto loginReqDto, HttpServletResponse response, HttpServletRequest request);
 
-    void readerJoin(ReaderJoinRequestDto readerJoinRequestDto);
+    void readerJoin(HttpServletRequest request, ReaderJoinRequestDto readerJoinRequestDto);
 
     Cookie changeAccessToken(HttpServletRequest request);
 
-    SeekerMypageResponseDto seekerMypage(HttpServletRequest request, MypageRequestDto seekerMypageRequestDto);
+    SeekerMypageResponseDto seekerMypage(HttpServletRequest request);
 
-    ReaderMypageResponseDto readerMypage(HttpServletRequest request, MypageRequestDto readerMypageReqeusetDto);
+    ReaderMypageResponseDto readerMypage(HttpServletRequest request);
 
     void logout(HttpServletRequest request);
 }
