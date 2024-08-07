@@ -151,6 +151,7 @@ public class MemberServiceImpl implements MemberService {
                 .email(email)
                 .name(name)
                 .isReader(isReader)
+                .profileUrl(member.getProfileUrl())
                 .build();
         return loginResponseDto;
     }
@@ -337,7 +338,7 @@ public class MemberServiceImpl implements MemberService {
 
         // 리더 객체 생성 후 저장
         Reader reader = Reader.builder()
-                .memberId(memberId)
+                .member(member)
                 .createTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
                 .intro(readerJoinRequestDto.getIntro())
@@ -346,7 +347,6 @@ public class MemberServiceImpl implements MemberService {
                 .build();
         readerRepository.save(reader);
     }
-
 
     /**
      * 리더/시커 전환시 엑세스 토큰 재발급
@@ -363,23 +363,6 @@ public class MemberServiceImpl implements MemberService {
 
         log.info("{}, {}, {}", memberId, type, email);
 
-//        CodeDetail memberCode = null;
-//
-//        if(type.equals("M01")) { //seaker
-//            memberCode = CodeDetail
-//                    .builder()
-//                    .codeDetailId("M02")
-//                    .codeTypeId("0")
-//                    .detailDesc("리더")
-//                    .build();
-//        } else if(type.equals("M02")) { //reader
-//            memberCode = CodeDetail
-//                    .builder()
-//                    .codeDetailId("M01")
-//                    .codeTypeId("0")
-//                    .detailDesc("시커")
-//                    .build();
-//        }
         String changedType = null;
         if(type.equals("M01")) {
             // 기존에 시커였던 경우 : 리더 프로필이 있는지 확인한다
@@ -512,7 +495,6 @@ public class MemberServiceImpl implements MemberService {
     /**
      * 리더 마이페이지에 필요한 정보 비즈니스 로직
      * @param request
-     * @param readerMypageReqeusetDto
      * @return
      */
     @Override
@@ -609,9 +591,5 @@ public class MemberServiceImpl implements MemberService {
 
         return readerMypageResponseDto;
     }
-
-
-
-
 
 }

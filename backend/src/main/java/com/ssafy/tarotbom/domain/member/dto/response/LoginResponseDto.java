@@ -9,5 +9,6 @@ import lombok.*;
 public class LoginResponseDto {
     private String name;
     private String email;
+    private String profileUrl;
     private boolean isReader;
 }
