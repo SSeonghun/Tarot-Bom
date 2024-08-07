@@ -350,12 +350,13 @@ public class MemberServiceImpl implements MemberService {
                 throw new BusinessException(ErrorCode.MEMBER_PROFILE_UPLOAD_FAILED);
             }
         }
+        log.info("새 프로필 이미지 링크 : {}", newProfileUrl);
         // 마지막으로 닉네임 등록
         if(!updateMemberRequestDto.getNickname().isEmpty()){
             newNickname = updateMemberRequestDto.getNickname();
         }
         // 이제 바뀌거나 바뀌지 않은 내용을 기반으로 업로드를 시도한다
-        member = member.builder()
+        member = member.toBuilder()
                 .nickname(newNickname)
                 .password(newPassword)
                 .profileUrl(newProfileUrl)
