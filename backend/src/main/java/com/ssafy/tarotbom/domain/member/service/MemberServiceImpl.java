@@ -148,6 +148,7 @@ public class MemberServiceImpl implements MemberService {
 
         LoginResponseDto loginResponseDto = LoginResponseDto
                 .builder()
+                .memberId(member.getMemberId())
                 .email(email)
                 .name(name)
                 .isReader(isReader)
