@@ -73,11 +73,14 @@ public class MatchingServiceImpl implements MatchingService {
     public MatchingInfoDto searchToMatching(MatchingInfoDto myDto) {
         BlockingQueue<MatchingInfoDto> searchQueue;
         // 현재 dto가 seeker라면 reader 큐에서, reader라면 그 반대의 큐에서 찾아야 한다
+
+
         if (myDto.getMemberType().equals("reader")) {
             searchQueue = seekerMatchingQueue;
         } else {
             searchQueue = readerMatchingQueue;
         }
+        log.info("searchQueue size : {}",searchQueue.size());
         // 매칭 상대를 찾기 위한 큐 순회 시작
         synchronized(searchQueue) {
             for (MatchingInfoDto candidateDto : searchQueue) {
