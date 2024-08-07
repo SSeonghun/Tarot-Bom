@@ -138,7 +138,7 @@ const ControlsPanel: React.FC<ControlsPanelProps> = ({ onCameraChange, onAudioCh
                     <div>
                         <h3 className="text-lg font-bold mb-2">화면 전환 기능 준비</h3>
                         {/* 화면 전환 기능은 나중에 구현 */}
-                        <ResizeComponent/>
+                        {/* <ResizeComponent/> */}
                     </div>
                 )}
             </div>

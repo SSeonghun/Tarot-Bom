@@ -7,6 +7,7 @@ import cardImg from '../../assets/tarot_images - 복사본/c01.jpg';
 import ChatAndControls from './Controller/ChatAndControls';
 import MainBg from '../../assets/mainBg.png';
 import DrawingCanvasComponent, { DrawingCanvasHandle } from './Tools/DrawingCanvasComponent';
+import ResizeComponent from './Controller/ResizeComponent';
 
 type TrackInfo = {
     trackPublication: RemoteTrackPublication;
@@ -54,6 +55,8 @@ function AppWebRTC() {
     const [roomName, setRoomName] = useState("Test Room");
     const [cameraDeviceId, setCameraDeviceId] = useState<string | null>(null);
     const [audioDeviceId, setAudioDeviceId] = useState<string | null>(null);
+    const [maximizedVideo, setMaximizedVideo] = useState<string | null>(null);
+    const [isChatVisible, setIsChatVisible] = useState<boolean>(true);
 
     const canvasRef = useRef<DrawingCanvasHandle | null>(null);
 
@@ -91,6 +94,16 @@ function AppWebRTC() {
         //     room.localParticipant.setMicrophone(audioDeviceId);
         // }
     }, [cameraDeviceId, audioDeviceId, room, localTrack]);
+    const handleVideoDoubleClick = (videoId: string) => {
+        console.log(`Video double-clicked: ${videoId}`);
+        if (maximizedVideo === videoId) {
+            setMaximizedVideo(null);
+            setIsChatVisible(true);
+        } else {
+            setMaximizedVideo(videoId);
+            setIsChatVisible(false);
+        }
+    };
     async function joinRoom() {
         const room = new Room();
         setRoom(room);
@@ -186,8 +199,9 @@ function AppWebRTC() {
         // const combinedData = { ...lastDrawingData, ...data };
         if (room?.localParticipant.publishData) {
             const dataToSend = JSON.stringify(data);
-        const uint8ArrayData = new TextEncoder().encode(dataToSend);
-        try {
+            const uint8ArrayData = new TextEncoder().encode(dataToSend);
+            console.log('Sending drawing update:', data);
+            try {
             await room.localParticipant.publishData(uint8ArrayData);
             console.log('Data successfully sent.');
         } catch (error) {
@@ -207,7 +221,6 @@ function AppWebRTC() {
         console.log('Saving drawing...');
         canvasRef.current?.saveDrawing();
     }
-    const roomId = roomName;
     return (
         <>
             {!room ? (
@@ -277,15 +290,30 @@ function AppWebRTC() {
                             <div className="flex-1">
                                 <div id="layout-container" className="grid grid-cols-auto-fit gap-4 w-full max-w-4xl h-full">
                                     {localTrack && (
+                                        <ResizeComponent
+                                        videoId="local"
+                                        isMaximized={maximizedVideo === 'local'}
+                                        isMinimized={maximizedVideo !== null && maximizedVideo !== 'local'}
+                                        onDoubleClick={() => handleVideoDoubleClick('local')}
+                                    >
                                         <VideoComponent track={localTrack} participantIdentity={participantName} local={true} />
+                                        </ResizeComponent>
                                     )}
                                     {remoteTracks.map((remoteTrack) =>
                                         remoteTrack.trackPublication.kind === "video" ? (
+                                            <ResizeComponent
+                                                    key={remoteTrack.trackPublication.trackSid}
+                                                    videoId={remoteTrack.trackPublication.trackSid}
+                                                    isMaximized={maximizedVideo === remoteTrack.trackPublication.trackSid}
+                                                    isMinimized={maximizedVideo !== null && maximizedVideo !== remoteTrack.trackPublication.trackSid}
+                                                    onDoubleClick={() => handleVideoDoubleClick(remoteTrack.trackPublication.trackSid)}
+                                                >
                                             <VideoComponent
                                                 key={remoteTrack.trackPublication.trackSid}
                                                 track={remoteTrack.trackPublication.videoTrack!}
                                                 participantIdentity={remoteTrack.participantIdentity}
                                             />
+                                            </ResizeComponent>
                                         ) : (
                                             <AudioComponent
                                                 key={remoteTrack.trackPublication.trackSid}
@@ -299,12 +327,13 @@ function AppWebRTC() {
                                 </div>
                             </div>
                             <div className="w-1/3">
+                            {isChatVisible && (
                             <ChatAndControls
                                 roomId={roomName} // 또는 적절한 roomId 값
                                 participantName={participantName}
                                 room={room}
                                 handleSendChatMessage={handleSendChatMessage}
-                            />
+                            />)}
                             </div>
                         </div>
                     </div>
