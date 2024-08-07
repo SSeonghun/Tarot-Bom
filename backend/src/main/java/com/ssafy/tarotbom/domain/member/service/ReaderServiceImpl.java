@@ -3,9 +3,11 @@ package com.ssafy.tarotbom.domain.member.service;
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderDetatilResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.ReviewReaderResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.TopReaderResponseDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
+import com.ssafy.tarotbom.domain.member.repository.ReaderQueryRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
 import com.ssafy.tarotbom.domain.reservation.repository.ReservationRepository;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,6 +36,7 @@ public class ReaderServiceImpl implements ReaderService{
     private final MemberRepository memberRepository;
     private final ReservationRepository reservationRepository;
     private final TarotResultRepository tarotResultRepository;
+    private final ReaderQueryRepository readerQueryRepository;
 
     /**
      * 리더 리스트 전체 반환
@@ -139,5 +143,23 @@ public class ReaderServiceImpl implements ReaderService{
                 .build();
 
         return readerDetatilResponseDto;
+    }
+
+    @Override
+    public List<TopReaderResponseDto> searchTopReader() {
+        List<Reader> queryResult =  readerQueryRepository.findTopReader();
+        List<TopReaderResponseDto> result = new ArrayList<>();
+        for(Reader reader : queryResult)  {
+            result.add(TopReaderResponseDto
+                    .builder()
+                    .nickname(reader.getMember().getNickname())
+                    .readerId(reader.getMemberId())
+                    .intro(reader.getIntro())
+                    .rating(reader.getRating())
+                    .keyword(reader.getKeywords())
+                    .build()
+            );
+        }
+        return result;
     }
 }
