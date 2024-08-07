@@ -1,24 +1,31 @@
-import axios from 'axios';
+import axios from "axios";
 
 // const API_URL = "https://i11c208.p.ssafy.io/tarotbom/";
-const API_URL = 'http://localhost/tarotbom/';
+const API_URL = "http://localhost/tarotbom/";
 
 const readerList = async () => {
   try {
-    const response = await axios.get(`${API_URL}user/reader/list`);
+    const response = await axios.get(`${API_URL}user/reader/list`, {
+      withCredentials: true, // 쿠키를 포함하도록 설정
+    });
     return response.data;
   } catch (error) {
-    console.error('전체 리더 목록 조회 실패', error);
+    console.error("전체 리더 목록 조회 실패", error);
     throw error;
   }
 };
 
 const readerDetail = async (readerId: number) => {
   try {
-    const response = await axios.get(`${API_URL}user/reader/detail/${readerId}`);
+    const response = await axios.get(
+      `${API_URL}user/reader/detail/${readerId}`,
+      {
+        withCredentials: true, // 쿠키를 포함하도록 설정
+      }
+    );
     return response.data;
   } catch (error) {
-    console.error('리더 상세 조회 실패');
+    console.error("리더 상세 조회 실패");
     throw error;
   }
 };
@@ -46,7 +53,7 @@ const result = async (
     });
     return response.data;
   } catch (error) {
-    console.error('결과 조회 실패', error);
+    console.error("결과 조회 실패", error);
     throw error;
   }
 };
@@ -71,17 +78,19 @@ const declaration = async (
 
     return response.data;
   } catch (error) {
-    console.error('신고 실패', error);
+    console.error("신고 실패", error);
     throw error;
   }
 };
 
 const cardInfo = async (cardId: number) => {
   try {
-    const response = await axios.get(`${API_URL}card/info/${cardId}`);
+    const response = await axios.get(`${API_URL}card/info/${cardId}`, {
+      withCredentials: true, // 쿠키를 포함하도록 설정
+    });
     return response.data;
   } catch (error) {
-    console.error('카드 조회 실패');
+    console.error("카드 조회 실패");
     throw error;
   }
 };
@@ -116,12 +125,12 @@ const youtubeMusic = async (searchQuery: string) => {
     const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
 
     const response = await axios({
-      method: 'get',
-      url: 'https://www.googleapis.com/youtube/v3/search',
+      method: "get",
+      url: "https://www.googleapis.com/youtube/v3/search",
       params: {
         key: `${YOUTUBE_API_KEY}`,
-        part: 'snippet',
-        type: 'video',
+        part: "snippet",
+        type: "video",
         q: `노래 ${searchQuery}`, // searchQuery를 사용
         maxResults: 1,
       },
@@ -130,9 +139,16 @@ const youtubeMusic = async (searchQuery: string) => {
     const videoData = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
     return videoData;
   } catch (error) {
-    console.error('유튜브 뮤직 검색 실패', error);
+    console.error("유튜브 뮤직 검색 실패", error);
     throw error;
   }
 };
 
-export { readerList, result, declaration, cardInfo, youtubeMusic, readerDetail };
+export {
+  readerList,
+  result,
+  declaration,
+  cardInfo,
+  youtubeMusic,
+  readerDetail,
+};

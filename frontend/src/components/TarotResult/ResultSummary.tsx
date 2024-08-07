@@ -1,47 +1,70 @@
-import React, { useState } from 'react';
-import cardBg from '../../assets/img/card.png';
-import moneyImg from '../../assets/money.png';
-import HoverButton from '../../components/Common/HoverButton';
-import OpenAI from '../Common/OpenAI';
-import Loading from '../Common/Loading';
-import MusicPlayer from '../Common/MusicPlayerCopy';
-import ReactMarkdown from 'react-markdown';
-import remarkBreaks from 'remark-breaks';
-import remarkGfm from 'remark-gfm';
+import React, { useState, useEffect } from "react";
+import cardBg from "../../assets/img/card.png";
+import moneyImg from "../../assets/money.png";
+import HoverButton from "../../components/Common/HoverButton";
+import OpenAI from "../Common/OpenAI";
+import Loading from "../Common/Loading";
+import MusicPlayer from "../Common/MusicPlayerCopy";
+import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
+import remarkGfm from "remark-gfm";
 
-const category = '금전운';
+const { cardInfo } = require("../../API/api");
+
+const category = "금전운";
 
 interface CardData {
-  id: number;
   name: string;
-  detail: string;
+  desc: string;
+  imgUrl: string;
 }
 
-const cards: CardData[] = Array.from({ length: 3 }, (_, index) => ({
-  id: index,
-  name: `ACE & CUPS`,
-  detail: `야호 야호 야호 야호 야호 야호 야호 야호 야호 야호 야호 `,
-}));
+interface ResultSummaryProps {
+  selectedCard: CardData[];
+  worry: string;
+  category: string;
+}
 
-const ResultSummary: React.FC = () => {
-  const [summary, setSummary] = useState<string>('');
+const ResultSummary: React.FC<ResultSummaryProps> = ({
+  selectedCard,
+  worry,
+  category,
+}) => {
+  const [summary, setSummary] = useState<string>("");
+  const [cards, setCards] = useState<CardData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const handleSummaryGenerated = (generatedSummary: string) => {
-    console.log(summary)
     setSummary(generatedSummary);
+    setLoading(false); // 요약 생성 후 로딩 상태를 false로 변경
   };
 
   return (
     <div className="relative flex flex-col items-center p-10">
-      {/* OpenAI 컴포넌트는 한번만 호출됩니다 */}
-      <OpenAI cards={cards.map(card => ({ name: card.name, category }))} onSummaryGenerated={handleSummaryGenerated} />
+      <OpenAI
+        cards={selectedCard}
+        onSummaryGenerated={handleSummaryGenerated}
+        worry={worry}
+        category={category}
+        // selectedCards={selectedCard}
+      />
 
       <div className="relative w-full max-w-3xl">
-        <img src={cardBg} alt="Background" className="w-full h-auto object-cover" />
+        <img
+          src={cardBg}
+          alt="Background"
+          className="w-full h-auto object-cover"
+        />
         <div className="absolute inset-12 bg-white bg-opacity-20 border shadow-lg p-3 bg-cover"></div>
-       
-        {summary ? (
-          // summary 있을 때
+
+        {loading ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+            <div className="flex flex-col items-center">
+              <p className="text-white text-3xl">결과를 기다리고 있습니다...</p>
+              <Loading />
+            </div>
+          </div>
+        ) : summary ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
             <div className="text-4xl font-bold text-white p-4 rounded-lg flex flex-row">
               <img src={moneyImg} alt="moneyImg" className="w-8 h-8 mr-2" />
@@ -55,18 +78,14 @@ const ResultSummary: React.FC = () => {
                 {summary.replace(/\n/g, "\n\n")}
               </ReactMarkdown>
             </div>
-            <p className="mt-5 text-lg font-bold text-white">타로 결과에 어울리는 음악을 들어보세요!</p>
+            <p className="mt-5 text-lg font-bold text-white">
+              타로 결과에 어울리는 음악을 들어보세요!
+            </p>
             <MusicPlayer />
           </div>
-        ) : ( 
-          // summary 없을 때
+        ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-            <div className="flex flex-col items-center">
-              <p className="text-white text-3xl">결과를 기다리고 있습니다...</p>
-              {/* 로딩 표시기 */}
-              < Loading />
-
-            </div>
+            <p className="text-white text-3xl">카드를 선택해 주세요.</p>
           </div>
         )}
       </div>
