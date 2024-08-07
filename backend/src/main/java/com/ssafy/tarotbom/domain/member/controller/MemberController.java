@@ -166,12 +166,16 @@ public class MemberController {
         ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_READER_DETAIL, readerDetatilResponseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
-
     /**
-     * 금주의 TOP 리더
-     * 기준은 상담횟수, 최대 10명
-     * @return SearchTopReaderResponseDto
+     * TOP 리더 송출
+     * @return List<TopReaderResponseDto>
      */
+    @GetMapping("/reader/top")
+    public ResponseEntity<ResultResponse> readerTop() {
+        List<TopReaderResponseDto> topReaderResponseDtoList = readerService.searchTopReader();
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_TOP_READER, topReaderResponseDtoList);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
 
     ///////////////////////////////////////////////
     //                리더 찜 관련                //
@@ -247,17 +251,6 @@ public class MemberController {
     public ResponseEntity<?> readerMypage(@Valid @RequestBody MypageRequestDto readerMypageRequestDto, HttpServletRequest request) {
         ReaderMypageResponseDto readerMypageResponseDto = memberService.readerMypage(request, readerMypageRequestDto);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_READER_MYPAGE, readerMypageResponseDto);
-        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
-    }
-
-    /**
-     * TOP 리더 송출
-     * @return List<TopReaderResponseDto>
-     */
-    @GetMapping("/reader/top")
-    public ResponseEntity<ResultResponse> readerTop() {
-        List<TopReaderResponseDto> topReaderResponseDtoList = readerService.searchTopReader();
-        ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_TOP_READER, topReaderResponseDtoList);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
