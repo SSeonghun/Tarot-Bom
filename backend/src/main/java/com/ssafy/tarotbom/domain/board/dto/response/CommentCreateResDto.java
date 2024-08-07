@@ -14,5 +14,4 @@ public class CommentCreateResDto {
     private long boardId;
     private String content;
     private LocalDateTime createTime;
-    private LocalDateTime updateTime;
 }

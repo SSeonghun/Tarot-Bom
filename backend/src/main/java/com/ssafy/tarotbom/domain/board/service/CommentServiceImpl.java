@@ -69,7 +69,6 @@ public class CommentServiceImpl implements CommentService{
                 .boardId(comment.getBoardId())
                 .content(comment.getContent())
                 .createTime(comment.getCreateTime())
-                .updateTime(comment.getUpdateTime())
                 .build();
     }
 
@@ -92,28 +91,28 @@ public class CommentServiceImpl implements CommentService{
         }
 
         // 수정을 요청한 댓글을 찾을 수 없는 경우 예외
-        commentRepository.findById(reqDto.getCommentId()).orElseThrow(
+        Comment comment = commentRepository.findById(reqDto.getCommentId()).orElseThrow(
                 () -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND)
         );
 
         // 댓글 수정하기
         Comment updateComment = Comment.builder()
+                .commentId(reqDto.getCommentId())
                 .boardId(reqDto.getBoardId())
                 .writer(member)
                 .content(reqDto.getContent())
+                .createTime(comment.getCreateTime())
                 .build();
 
         // 수정한 댓글 저장
         commentRepository.save(updateComment);
 
-        // 결과 반환 : 댓글Id, 게시판Id, 멤버Id, 내용, 생성시간, 수정시간
+        // 결과 반환 : 댓글Id, 게시판Id, 멤버Id, 내용
         return CommentUpdateResDto.builder()
                 .commentId(updateComment.getCommentId())
                 .boardId(updateComment.getBoardId())
                 .memberId(updateComment.getWriter().getMemberId())
                 .content(updateComment.getContent())
-                .createTime(updateComment.getCreateTime())
-                .updateTime(updateComment.getUpdateTime())
                 .build();
     }
 

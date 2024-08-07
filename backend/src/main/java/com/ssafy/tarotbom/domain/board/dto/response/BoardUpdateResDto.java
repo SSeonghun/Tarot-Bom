@@ -17,6 +17,6 @@ public class BoardUpdateResDto {
     private long boardId;
     private String title;
     private String content;
-    private LocalDateTime createTime;
     private LocalDateTime updateTime;
+
 }
