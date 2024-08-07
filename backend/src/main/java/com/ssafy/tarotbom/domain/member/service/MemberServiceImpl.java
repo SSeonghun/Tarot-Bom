@@ -386,6 +386,9 @@ public class MemberServiceImpl implements MemberService {
                 .gradeCode("C01") // 공통코드 1번으로 전환 완료
                 .build();
         readerRepository.save(reader);
+        // 이후 기존 멤버 객체의 공통코드도 바꾼다
+        member = member.toBuilder().memberTypeId("M02").build();
+        memberRepository.save(member);
     }
 
     /**

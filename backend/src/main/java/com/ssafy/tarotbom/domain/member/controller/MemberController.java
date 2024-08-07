@@ -91,8 +91,8 @@ public class MemberController {
     /**
      * 시커 회원정보 수정
      *  */
-    @PostMapping(value = "/update")
-    public ResponseEntity<ResultResponse> updateMember(HttpServletRequest request, @ModelAttribute UpdateMemberRequestDto updateMemberRequestDto) {
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResultResponse> updateMember(@ModelAttribute UpdateMemberRequestDto updateMemberRequestDto, HttpServletRequest request) {
         log.info("update member");
         log.info("dto : {}, {}", updateMemberRequestDto.getNickname(), updateMemberRequestDto.getPassword());
         log.info("profileImage : {}", updateMemberRequestDto.getProfileImage());
