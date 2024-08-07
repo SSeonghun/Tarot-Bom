@@ -12,10 +12,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.transform.Result;
 import java.util.List;
 
 @Slf4j
@@ -77,11 +80,24 @@ public class MemberController {
      * @param signupReqDto
      * @return
      */
-    @PostMapping("/signup")
+    @PostMapping("/signup/seeker")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupReqDto signupReqDto){
-        log.info("SingupDto : {}", signupReqDto.getEmail());
+        log.info("SignupDto : {}", signupReqDto.getEmail());
         memberService.signup(signupReqDto);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.SIGNUP_OK);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    /**
+     * 시커 회원정보 수정
+     *  */
+    @PostMapping(value = "/update/seeker", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResultResponse> updateMember(@ModelAttribute UpdateMemberRequestDto updateMemberRequestDto, HttpServletRequest request) {
+        log.info("update member");
+        log.info("dto : {}, {}", updateMemberRequestDto.getNickname(), updateMemberRequestDto.getPassword());
+        log.info("profileImage : {}", updateMemberRequestDto.getProfileImage());
+        memberService.updateMember(updateMemberRequestDto, updateMemberRequestDto.getProfileImage(), request);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.MEMBER_UPDATED);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
@@ -94,6 +110,16 @@ public class MemberController {
     public ResponseEntity<?> readerJoin(@Valid @RequestBody ReaderJoinRequestDto readerJoinRequestDto, HttpServletRequest request) {
         memberService.readerJoin(request, readerJoinRequestDto);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.READER_JOIN_OK);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    /**
+     * 리더 프로필 정보 수정
+     * */
+    @PostMapping("/update/reader")
+    public ResponseEntity<ResultResponse> updateReader(@RequestBody UpdateReaderRequestDto updateReaderRequestDto, HttpServletRequest request) {
+        memberService.updateReader(updateReaderRequestDto, request);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.READER_UPDATED);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
@@ -111,6 +137,9 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    /**
+     * 로그아웃
+     * */
     @DeleteMapping("/logout")
     public ResponseEntity<?> logout (HttpServletRequest request) {
         memberService.logout(request);
@@ -126,7 +155,6 @@ public class MemberController {
      * 전체 리더조회
      * @return
      */
-    // TODO : 프로필 이미지 관련 수정 필요
     @GetMapping("/reader/list")
     public  ResponseEntity<?> searchAllReader() {
         List<ReaderListResponseDto> readerList = readerService.searchAllReader();

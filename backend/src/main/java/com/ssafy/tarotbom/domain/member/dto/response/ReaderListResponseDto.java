@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReaderListResponseDto {
     private long memberId;
+    private String profileUrl;
     private String name;
     private String keyword;
     private String intro;

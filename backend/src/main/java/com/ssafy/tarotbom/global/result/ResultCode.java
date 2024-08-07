@@ -23,11 +23,13 @@ public enum ResultCode {
     READER_JOIN_OK(HttpStatus.CREATED, "M005", "리더 프로필을 만들었습니다."),
     CHANGE_READER_SEEKER_OK(HttpStatus.OK, "M006", "리더/시커 전환이 완료되었습니다."),
     LOGOUT_OK(HttpStatus.OK , "M007", "로그아웃 했습니다."),
+    MEMBER_UPDATED(HttpStatus.OK, "M008", "기본 프로필 정보를 수정했습니다."),
 
     // Reader
     SEARCH_ALL_READER(HttpStatus.OK, "E001", "전체 리더를 조회했습니다."),
     SEARCH_READER_DETAIL(HttpStatus.OK, "E002", "리더 정보 조회에 성공했습니다."),
     SEARCH_TOP_READER(HttpStatus.OK, "E003", "탑 리더 정보 조회에 성공했습니다."),
+    READER_UPDATED(HttpStatus.OK, "E004", "리더 프로필 정보를 수정했습니다."),
 
     // Favorite Reader
     FAVORITE_READER_ADD(HttpStatus.CREATED, "F001", "리더를 찜했습니다."),
