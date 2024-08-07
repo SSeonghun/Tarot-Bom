@@ -2,27 +2,41 @@ import React, { useEffect, useState } from 'react';
 import MypageBackground from '../../assets/img/mypageback.png';
 import Profile from '../../assets/img/profile2.png';
 import SeekerItem from './seekeritems/SeekerItem';
+import useUserStore from '../../stores/store';
+import { seekerMypage } from '../../API/userApi';
 
-const { seekerMypage } = require('../../API/userApi');
+// UserInfo 인터페이스 정의
+interface UserInfo {
+  nickname: string;
+  isReader: boolean;
+}
 
 const Seeker: React.FC = () => {
+  const store = useUserStore();
+  const [data, setData] = useState<any>(null); // 상태 추가
+
   useEffect(() => {
     // Function to fetch data
     const fetchData = async () => {
       try {
-        // TODO: 이름이랑, 리더 여부 넘겨줘야함
-        const data = seekerMypage();
-        console.log(data);
+        const userInfo = store.userInfo as UserInfo; // userInfo를 UserInfo 타입으로 캐스팅
+        const nickname = userInfo?.nickname;
+        const isReader = userInfo?.isReader;
+        
+        if (nickname) { // nickname이 존재할 때만 API 호출
+          const fetchedData = await seekerMypage(nickname, isReader); // 데이터 가져오기
+          console.log(fetchedData);
+          setData(fetchedData); // 가져온 데이터를 상태에 저장
+        }
       } catch (error) {
         console.error('Error fetching data', error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [store.userInfo]);
 
   return (
-    // TODO: 반환되는 형식에 맞게 설정
     <div className="relative w-screen h-screen">
       <div
         className="absolute inset-0 z-0 opacity-80"
@@ -45,8 +59,8 @@ const Seeker: React.FC = () => {
 
       <div className="relative h-fit bg-gray-700 z-30">
         <div className="h-fit bg-white mx-[100px] relative flex flex-col -top-[450px] rounded-xl bg-opacity-55">
-          {/* TODO : 여기에 거의 모든 값을 넘겨줘야함 props로 */}
-          <SeekerItem />
+          {/* 가져온 데이터를 SeekerItem에 props로 전달 */}
+          {data && <SeekerItem data={data} />}
         </div>
       </div>
     </div>

@@ -52,6 +52,12 @@ const Login: React.FC = () => {
       const result = await login(email, password);
       console.log("로그인 성공", result);
       store.loginUser();
+      store.userInfoSet({
+        nickname: result.data.name,
+        email: result.data.email,
+        isReader: result.data.reader
+
+      })
       
       // window.location.href = "/";
       navigate("/");
