@@ -4,9 +4,10 @@ import { persist, PersistOptions } from 'zustand/middleware';
 // 사용자 상태 인터페이스 정의
 interface UserState {
   isLoggedIn: boolean; // 로그인 여부
-  user: string | null; // 사용자 정보 (null일 수 있음)
+  userInfo: { nickname: string | undefined; email: string | undefined; isReader: boolean | undefined } | undefined; // 사용자 정보 (null일 수 있음)
   loginUser: () => void; // 로그인 함수
   logoutUser: () => void; // 로그아웃 함수
+  userInfoSet: (info: { nickname: string | undefined; email: string | undefined; isReader: undefined | undefined }) => void; // 사용자 정보 설정 함수
 }
 
 // Zustand 스토어 생성
@@ -14,9 +15,10 @@ const useUserStore = create<UserState>()(
   persist(
     (set) => ({
       isLoggedIn: false,
-      user: null,
+      userInfo: undefined,
       loginUser: () => set({ isLoggedIn: true }), // 로그인 함수
-      logoutUser: () => set({ isLoggedIn: false }), // 로그아웃 함수
+      logoutUser: () => set({ isLoggedIn: false, userInfo: undefined }), // 로그아웃 함수
+      userInfoSet: (info) => set({ userInfo: info }), // 사용자 정보 설정 함수
     }),
     {
       name: 'user-storage', // 로컬 스토리지에 저장될 키
