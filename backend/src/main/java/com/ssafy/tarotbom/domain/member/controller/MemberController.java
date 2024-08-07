@@ -12,10 +12,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.transform.Result;
 import java.util.List;
 
 @Slf4j
@@ -86,6 +89,19 @@ public class MemberController {
     }
 
     /**
+     * 시커 회원정보 수정
+     *  */
+    @PostMapping(value = "/update")
+    public ResponseEntity<ResultResponse> updateMember(HttpServletRequest request, @ModelAttribute UpdateMemberRequestDto updateMemberRequestDto) {
+        log.info("update member");
+        log.info("dto : {}, {}", updateMemberRequestDto.getNickname(), updateMemberRequestDto.getPassword());
+        log.info("profileImage : {}", updateMemberRequestDto.getProfileImage());
+        memberService.updateMember(updateMemberRequestDto, updateMemberRequestDto.getProfileImage(), request);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.MEMBER_UPDATED);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    /**
      * 리더 만들기 요청
      * @param readerJoinRequestDto
      * @return
@@ -111,6 +127,9 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    /**
+     * 로그아웃
+     * */
     @DeleteMapping("/logout")
     public ResponseEntity<?> logout (HttpServletRequest request) {
         memberService.logout(request);

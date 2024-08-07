@@ -25,6 +25,7 @@ public enum ErrorCode {
     MEMBER_INVALID_EMAIL(HttpStatus.INTERNAL_SERVER_ERROR, "M005", "Runtime : 이메일 전송에 실패하였습니다."),
     MEMBER_COOKIE_NOT_FOUND(HttpStatus.NOT_FOUND, "M006", "쿠키를 찾지 못했습니다"),
     MEMBER_YOU_ARE_NOT_READER(HttpStatus.FORBIDDEN, "M008", "리더가 아닌 사용자입니다."),
+    MEMBER_PROFILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M009", "프로필 이미지 업로드에 실패했습니다."),
 
     // Favorite Reader
     FAVORITE_DUPLICATED(HttpStatus.CONFLICT, "F001", "이미 찜한 리더 입니다."),

@@ -38,7 +38,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -60,6 +62,7 @@ public class MemberServiceImpl implements MemberService {
     private final ReservationService reservationService;
     private final TarotResultService tarotResultService;
     private final ReviewReaderRepository reviewReaderRepository;
+    private final S3Service s3Service;
 
     private final RedisTool redisTool;
     private final EmailTool emailTool;
@@ -323,6 +326,43 @@ public class MemberServiceImpl implements MemberService {
         throw new BusinessException(ErrorCode.COMMON_ETC);
     }
 
+    /**
+     * 유저 정보 수정 (프로필 사진 포함)
+     * */
+    @Override
+    public void updateMember(UpdateMemberRequestDto updateMemberRequestDto, MultipartFile profileImage, HttpServletRequest request) {
+        long memberId = cookieUtil.getUserId(request);
+        Member member = memberRepository.findMemberByMemberId(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        String newPassword = member.getPassword();
+        String newProfileUrl = member.getProfileUrl();
+        String newNickname = member.getNickname();
+        // 우선은 password를 encrypt하여 수정한다
+        if(!updateMemberRequestDto.getPassword().isEmpty()) {
+            BCryptPasswordEncoder bcrypasswordEncoder = new BCryptPasswordEncoder();
+            newPassword = bcrypasswordEncoder.encode(updateMemberRequestDto.getPassword());
+        }
+        // 사진이 업로드된 경우, 링크를 만들어 받는다
+        if(!profileImage.isEmpty()){
+            try {
+                newProfileUrl = s3Service.upload(profileImage, "profile");
+            } catch (IOException e) {
+                throw new BusinessException(ErrorCode.MEMBER_PROFILE_UPLOAD_FAILED);
+            }
+        }
+        // 마지막으로 닉네임 등록
+        if(!updateMemberRequestDto.getNickname().isEmpty()){
+            newNickname = updateMemberRequestDto.getNickname();
+        }
+        // 이제 바뀌거나 바뀌지 않은 내용을 기반으로 업로드를 시도한다
+        member = member.builder()
+                .nickname(newNickname)
+                .password(newPassword)
+                .profileUrl(newProfileUrl)
+                .build();
+
+        memberRepository.save(member);
+    }
 
     /**
      * 리더 만들기
@@ -331,7 +371,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void readerJoin(HttpServletRequest request, ReaderJoinRequestDto readerJoinRequestDto) {
         // 기본 코드 초기화
-        // todo: 이거 코드를 여기서 만들어서 넣는게 아닌 이미 만들어진 코드를 적용시키는 개념? 으로 가야할듯
         // 회원 조회
         long memberId = cookieUtil.getUserId(request);
         Member member = memberRepository.findById(memberId)
@@ -344,7 +383,7 @@ public class MemberServiceImpl implements MemberService {
                 .updateTime(LocalDateTime.now())
                 .intro(readerJoinRequestDto.getIntro())
                 .keywords(readerJoinRequestDto.getKeyword())
-                .gradeCode("C01")
+                .gradeCode("C01") // 공통코드 1번으로 전환 완료
                 .build();
         readerRepository.save(reader);
     }

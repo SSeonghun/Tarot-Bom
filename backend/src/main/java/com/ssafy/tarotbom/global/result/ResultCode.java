@@ -23,6 +23,7 @@ public enum ResultCode {
     READER_JOIN_OK(HttpStatus.CREATED, "M005", "리더 프로필을 만들었습니다."),
     CHANGE_READER_SEEKER_OK(HttpStatus.OK, "M006", "리더/시커 전환이 완료되었습니다."),
     LOGOUT_OK(HttpStatus.OK , "M007", "로그아웃 했습니다."),
+    MEMBER_UPDATED(HttpStatus.OK, "M008", "기본 프로필 정보를 수정했습니다."),
 
     // Reader
     SEARCH_ALL_READER(HttpStatus.OK, "E001", "전체 리더를 조회했습니다."),
