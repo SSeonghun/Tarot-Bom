@@ -1,18 +1,28 @@
 import React from 'react';
 import HoverButton from '../../Common/HoverButton';
 import CardImg from './CardImg.png';
+import PrivateLink from '../../Common/PrivateLink';
 
 interface HomeCard {
   name: string;
   detail: string;
   review: number;
-  category: [];
+  category: string[];
   imgUrl: string;
   hsize: string;
   wsize: string;
+  onClick: () => void;
 }
 
-const HomeCard: React.FC = () => {
+const HomeCard: React.FC<HomeCard> = ({
+  name,
+  detail,
+  review,
+  category,
+  imgUrl,
+  hsize,
+  wsize,
+}) => {
   return (
     <div className="flex items-center justify-center w- bg-gradient-to-br from-black rounded-3xl to-black">
       <div
@@ -24,19 +34,22 @@ const HomeCard: React.FC = () => {
           src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
           alt="popular reader"
         />
-        <h1 className="text-lg text-white">John Doe</h1>
+        <h1 className="text-lg text-white">{name}</h1>
         <h3 className="text-sm text-gray-400">Creative Director</h3>
         <p className="text-xs mb-3 text-gray-400 mt-4">
-          Lorem ipsum dolor sit amet, consectetur adipiscing eli
+          {detail}
         </p>
-        <HoverButton
-          label="detail"
-          color="bg-violet-300"
-          hoverColor="bg-violet-500"
-          hsize="h-[40px]"
-          wsize="w-[100px]"
-          fontsize="text-base"
-        ></HoverButton>
+
+        {/* <PrivateLink to="/reader-profile"> */}
+          <HoverButton
+            label="detail"
+            color="bg-violet-300"
+            hoverColor="bg-violet-500"
+            hsize="h-[40px]"
+            wsize="w-[100px]"
+            fontsize="text-base"
+          ></HoverButton>
+        {/* </PrivateLink> */}
       </div>
     </div>
   );

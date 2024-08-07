@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useUserStore from '../../stores/store';
+
+const boardWrite =  require('../../API/boardsApi');
 
 // TODO : axios
 const CreatePostPage: React.FC = () => {
@@ -9,14 +12,15 @@ const CreatePostPage: React.FC = () => {
   const [date, setDate] = useState('');
   const [category, setCategory] = useState('');
   const navigate = useNavigate();
+  const store = useUserStore();
 
   // 로그인 여부를 확인하는 함수 (예시, 실제로는 API 호출 등을 통해 확인)
   useEffect(() => {
-    const isLoggedIn = true; // 이 값은 실제 로그인 상태에 따라 설정되어야 합니다.
-    const loggedInUser = 'User123'; // 이 값은 실제 로그인된 사용자에 의해 설정되어야 합니다.
-
+    const isLoggedIn = store.isLoggedIn; // 이 값은 실제 로그인 상태에 따라 설정되어야 합니다.
+    const loggedInUser = store.userInfo; // 이 값은 실제 로그인된 사용자에 의해 설정되어야 합니다.
+    console.log(store.isLoggedIn)
     if (isLoggedIn) {
-      setAuthor(loggedInUser);
+      // setAuthor(loggedInUser);
     } else {
       setAuthor('Anonymous');
     }

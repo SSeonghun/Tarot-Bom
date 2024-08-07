@@ -5,9 +5,7 @@ const API_URL = "http://localhost/tarotbom/";
 
 const readerList = async () => {
   try {
-    const response = await axios.get(`${API_URL}user/reader/list`, {
-      withCredentials: true, // 쿠키를 포함하도록 설정
-    });
+    const response = await axios.get(`${API_URL}user/reader/list`);
     return response.data;
   } catch (error) {
     console.error("전체 리더 목록 조회 실패", error);
@@ -17,18 +15,28 @@ const readerList = async () => {
 
 const readerDetail = async (readerId: number) => {
   try {
-    const response = await axios.get(
-      `${API_URL}user/reader/detail/${readerId}`,
-      {
-        withCredentials: true, // 쿠키를 포함하도록 설정
-      }
-    );
+    const response = await axios.get(`${API_URL}user/reader/detail/${readerId}`);
     return response.data;
   } catch (error) {
     console.error("리더 상세 조회 실패");
     throw error;
   }
 };
+
+const readerTop = async () => {
+  try {
+    const response = await axios.get(`${API_URL}user/reader/top`,
+      {
+        withCredentials: true, // 쿠키를 포함하도록 설정
+      }
+    );
+    console.log(response)
+    return response.data;
+  } catch (error) {
+    console.log('탑 리더 조회 실패', error);
+    throw error;
+  }
+}
 
 const result = async (
   readerId: number,
@@ -47,7 +55,7 @@ const result = async (
       date,
       keyword,
       memo,
-      summary,
+      summary, 
       music,
       roomId,
     });
@@ -144,11 +152,4 @@ const youtubeMusic = async (searchQuery: string) => {
   }
 };
 
-export {
-  readerList,
-  result,
-  declaration,
-  cardInfo,
-  youtubeMusic,
-  readerDetail,
-};
+export { readerList, result, declaration, cardInfo, youtubeMusic, readerDetail };
