@@ -6,7 +6,13 @@ import Hero3 from './Hero3';
 
 // TODO : props 인터페이스 및 값 받기
 
-const SeekerItem: React.FC = () => {
+
+interface SeekerItemProps {
+  data: any; // 필요한 타입으로 변경
+}
+
+
+const SeekerItem: React.FC<SeekerItemProps> = () => {
   return (
     <div className="container p-4 mx-auto">
       <div className="flex flex-row items-center justify-between">

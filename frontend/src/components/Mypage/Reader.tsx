@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReaderItem from './Readeritems/ReaderItem';
-
 import ReaderBg from '../../assets/img/readermypage.png';
 import Profile from '../../assets/img/profile2.png';
 
 // TODO : axios로 데이터 받아오기
 const ReaderMypage: React.FC = () => {
+    
+
   return (
     <div className="relative w-screen h-screen">
       <div
