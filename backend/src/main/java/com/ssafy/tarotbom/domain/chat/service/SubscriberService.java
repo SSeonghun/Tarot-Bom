@@ -11,7 +11,6 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-// Topic별 메시지 전송 분리
 @Slf4j
 @RequiredArgsConstructor
 @Service
