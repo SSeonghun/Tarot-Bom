@@ -1,14 +1,15 @@
 package com.ssafy.tarotbom.domain.member.service;
 
+import com.ssafy.tarotbom.domain.member.dto.ReaderAbstractReviewDto;
 import com.ssafy.tarotbom.domain.member.dto.ReaderAnalyzeDto;
 import com.ssafy.tarotbom.domain.member.dto.SeekerAnalyzeDto;
 import com.ssafy.tarotbom.domain.member.dto.request.*;
-import com.ssafy.tarotbom.domain.member.dto.response.ReaderMypageResponseDto;
-import com.ssafy.tarotbom.domain.member.dto.response.ReviewReaderResponseDto;
-import com.ssafy.tarotbom.domain.member.dto.response.SeekerMypageResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.*;
+import com.ssafy.tarotbom.domain.member.entity.FavoriteReader;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
+import com.ssafy.tarotbom.domain.member.repository.FavoriteReaderRepository;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
@@ -23,7 +24,6 @@ import com.ssafy.tarotbom.global.code.entity.repository.CodeDetailRepository;
 import com.ssafy.tarotbom.global.config.RedisTool;
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
-import com.ssafy.tarotbom.domain.member.dto.response.LoginResponseDto;
 import com.ssafy.tarotbom.global.util.CookieUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
@@ -69,6 +69,7 @@ public class MemberServiceImpl implements MemberService {
     private final CookieUtil cookieUtil;
 
     private static final String AUTH_CODE_PREFIX = "AuthCode:";
+    private final FavoriteReaderRepository favoriteReaderRepository;
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private Long authCodeExpirationMillis;
@@ -338,7 +339,7 @@ public class MemberServiceImpl implements MemberService {
         String newProfileUrl = member.getProfileUrl();
         String newNickname = member.getNickname();
         // 우선은 password를 encrypt하여 수정한다
-        if(!updateMemberRequestDto.getPassword().isEmpty()) {
+        if(updateMemberRequestDto.getPassword() != null) {
             BCryptPasswordEncoder bcrypasswordEncoder = new BCryptPasswordEncoder();
             newPassword = bcrypasswordEncoder.encode(updateMemberRequestDto.getPassword());
         }
@@ -352,7 +353,7 @@ public class MemberServiceImpl implements MemberService {
         }
         log.info("새 프로필 이미지 링크 : {}", newProfileUrl);
         // 마지막으로 닉네임 등록
-        if(!updateMemberRequestDto.getNickname().isEmpty()){
+        if(updateMemberRequestDto.getNickname() != null){
             newNickname = updateMemberRequestDto.getNickname();
         }
         // 이제 바뀌거나 바뀌지 않은 내용을 기반으로 업로드를 시도한다
@@ -399,7 +400,10 @@ public class MemberServiceImpl implements MemberService {
         long memberId = cookieUtil.getUserId(request);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)); // 적절한 예외 처리
-
+        // 만일 이미 리더 프로필이 있는 유저라면 exception을 발생시킨다
+        if(readerRepository.existsByMemberId(memberId)) {
+            throw new BusinessException(ErrorCode.MEMBER_ALREADY_READER);
+        }
         // 리더 객체 생성 후 저장
         Reader reader = Reader.builder()
                 .member(member)
@@ -520,13 +524,34 @@ public class MemberServiceImpl implements MemberService {
          } else {
              isReader = true;
          }
-        log.info("isReader : {}", isReader);
+        // log.info("isReader : {}", isReader);
+
+        // 찜 리스트
+        List<ReaderListResponseDto> favoriteReaderList = new ArrayList<>();
+        List<FavoriteReader> queryList = favoriteReaderRepository.findBySeekerId(memberId);
+        for(FavoriteReader favoriteReader : queryList) {
+            Reader reader = favoriteReader.getReader();
+            Member readerInfo = reader.getMember();
+            favoriteReaderList.add(
+                        ReaderListResponseDto.builder()
+                                .memberId(reader.getMemberId())
+                                .profileUrl(readerInfo.getProfileUrl())
+                                .name(readerInfo.getNickname())
+                                .keyword(reader.getKeywords())
+                                .intro(reader.getIntro())
+                                .rating(reader.getRating())
+                                .grade(reader.getGradeCode())
+                                .build()
+            );
+        }
+
         SeekerMypageResponseDto seekerMypageResponseDto = SeekerMypageResponseDto
                 .builder()
                 .isReader(isReader) // 리더 프로필 만들기를 띄울 건지, 전환을 띄울 건지
                 .reservationList(readReservationResponseDtos)
                 .tarotResults(tarotResultGetResponseDtos)
                 .totalConsulting(tarotResultGetResponseDtos.size())
+                .favoriteReaderList(favoriteReaderList)
                 .email(email)
                 .analyze(seekerAnalyzeDto)
                 .name(member.getNickname())
@@ -630,18 +655,22 @@ public class MemberServiceImpl implements MemberService {
         // 예약 내역
         List<ReadReservationResponseDto> readReservationResponseDtos = reservationService.readReservation(request);
 
+        // 리뷰
         List<ReviewReader> reviewReaders = reviewReaderRepository.findByReader(Optional.of(reader));
-        List<ReviewReaderResponseDto> reviewList = reviewReaders.stream()
-                .map(review -> ReviewReaderResponseDto.builder()
-                        .reviewReaderId(String.valueOf(review.getReviewReaderId()))
-                        .seekerId(String.valueOf(review.getSeekerId()))
-                        .readerId(String.valueOf(review.getReaderId()))
-                        .rating(review.getRating())
-                        .content(review.getContent())
-                        .createTime(review.getCreateTime())
-                        .updateTime(review.getUpdateTime())
-                        .build())
-                .collect(Collectors.toList());
+        List<ReaderAbstractReviewDto> reviewList = new ArrayList<>();
+        for(ReviewReader reviewReader : reviewReaders) {
+           reviewList.add(
+                   ReaderAbstractReviewDto.builder()
+                           .reviewReaderId(reviewReader.getReviewReaderId())
+                           .seekerId(reviewReader.getSeekerId())
+                           .seekerName(reviewReader.getSeeker().getNickname())
+                           .seekerProfileUrl(reviewReader.getSeeker().getProfileUrl())
+                           .readerId(reviewReader.getReaderId())
+                           .rating(reviewReader.getRating())
+                           .content(reviewReader.getContent())
+                           .build()
+           );
+        }
 
         ReaderMypageResponseDto readerMypageResponseDto = ReaderMypageResponseDto
                 .builder()
@@ -654,7 +683,6 @@ public class MemberServiceImpl implements MemberService {
                 .name(reader.getNickname())
                 .reviewReaderResponseDtos(reviewList)
                 .build();
-
 
         return readerMypageResponseDto;
     }

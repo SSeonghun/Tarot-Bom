@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.member.service;
 
+import com.ssafy.tarotbom.domain.member.dto.ReaderAbstractReviewDto;
 import com.ssafy.tarotbom.domain.member.dto.request.UpdateReaderRequestDto;
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderDetatilResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
@@ -96,12 +97,8 @@ public class ReaderServiceImpl implements ReaderService{
 //        Member member = isMember.get();
         Member member = reader.getMember();
 
-//        List<Reservation> reservations = reservationRepository.findAllByReaderId(readerId);
-//        int allReservations = reservations.size();
         int allReservations = reservationRepository.countByReaderId(readerId);
 
-//        List<TarotResult> tarotResults = tarotResultRepository.findAllByReaderId(readerId);
-//        int allConsulting = tarotResults.size();
         int allConsulting = tarotResultRepository.countByReaderId(readerId);
 
         LocalDateTime createTime = reader.getCreateTime();
@@ -110,17 +107,33 @@ public class ReaderServiceImpl implements ReaderService{
         int afterReader = (int) ChronoUnit.DAYS.between(createTime, now);
 
         List<ReviewReader> reviewReaders = reviewReaderRepository.findByReader(Optional.of(memberReader));
-        List<ReviewReaderResponseDto> reviewList = reviewReaders.stream()
-                .map(review -> ReviewReaderResponseDto.builder()
-                        .reviewReaderId(String.valueOf(review.getReviewReaderId()))
-                        .seekerId(String.valueOf(review.getSeekerId()))
-                        .readerId(String.valueOf(review.getReaderId()))
-                        .rating(review.getRating())
-                        .content(review.getContent())
-                        .createTime(review.getCreateTime())
-                        .updateTime(review.getUpdateTime())
-                        .build())
-                .collect(Collectors.toList());
+
+        List<ReaderAbstractReviewDto> reviewList = new ArrayList<>();
+        for(ReviewReader review : reviewReaders) {
+            reviewList.add(
+                    ReaderAbstractReviewDto.builder()
+                            .reviewReaderId(review.getReviewReaderId())
+                            .seekerId(review.getSeekerId())
+                            .seekerName(review.getSeeker().getNickname())
+                            .seekerProfileUrl(review.getSeeker().getProfileUrl())
+                            .readerId(review.getReaderId())
+                            .rating(review.getRating())
+                            .content(review.getContent())
+                            .build()
+            );
+        }
+
+//        List<ReviewReaderResponseDto> reviewList = reviewReaders.stream()
+//                .map(review -> ReviewReaderResponseDto.builder()
+//                        .reviewReaderId(String.valueOf(review.getReviewReaderId()))
+//                        .seekerId(String.valueOf(review.getSeekerId()))
+//                        .readerId(String.valueOf(review.getReaderId()))
+//                        .rating(review.getRating())
+//                        .content(review.getContent())
+//                        .createTime(review.getCreateTime())
+//                        .updateTime(review.getUpdateTime())
+//                        .build())
+//                .collect(Collectors.toList());
 
         // todo: 상담횟수, 예약횟수, 리더가 된지 몇일? 비즈니스 로직 필요
 
@@ -137,6 +150,7 @@ public class ReaderServiceImpl implements ReaderService{
                 .intro(reader.getIntro())
                 .rating(reader.getRating())
                 .grade(reader.getGradeCode())
+                .profileUrl(reader.getMember().getProfileUrl())
                 .price(reader.getPrice())
                 .reviews(reviewList)
                 .allConsultings(allConsulting)
@@ -155,6 +169,7 @@ public class ReaderServiceImpl implements ReaderService{
             result.add(TopReaderResponseDto
                     .builder()
                     .nickname(reader.getMember().getNickname())
+                    .profileUrl(reader.getMember().getProfileUrl())
                     .readerId(reader.getMemberId())
                     .intro(reader.getIntro())
                     .rating(reader.getRating())

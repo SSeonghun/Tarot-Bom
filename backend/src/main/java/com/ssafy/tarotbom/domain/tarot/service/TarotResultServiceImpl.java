@@ -13,6 +13,8 @@ import com.ssafy.tarotbom.domain.tarot.repository.TarotResultQueryRepository;
 import com.ssafy.tarotbom.domain.tarot.repository.TarotResultRepository;
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
+import com.ssafy.tarotbom.global.util.CookieUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ public class TarotResultServiceImpl implements TarotResultService {
     private final TarotResultRepository tarotResultRepository;
     private final TarotResultCardRepository tarotResultCardRepository;
     private final TarotResultQueryRepository tarotResultQueryRepository;
+    private final CookieUtil cookieUtil;
     /** <pre>
      * public void saveTarotResult(TarotResultSaveRequestDto dto)
      * dto로 입력된 정보를 기반으로 타로 결과를 저장합니다.
@@ -86,20 +89,21 @@ public class TarotResultServiceImpl implements TarotResultService {
     /** <pre>
      * public void getTarotResult(long resultId)
      * resultId를 기반으로 타로 결과를 반환합니다. 카드의 정보도 함께 반환합니다.
-     * 요청한 유저의 ID가 타로 결과에 포함되어있지 않다면 볼 수 없습니다. (구현 예정)
      * </pre>
      * */
     @Override
     @Transactional
-    public TarotResultGetResponseDto getTarotResult(long resultId, long userId) {
+    public TarotResultGetResponseDto getTarotResult(long resultId, HttpServletRequest request) {
         log.info("요청 받음 : getTarotResult");
         TarotResult tarotResult = tarotResultRepository.findById(resultId).orElse(null);
+        long memberId = cookieUtil.getUserId(request);
         if(tarotResult == null) { // 검색 결과가 없다면 null을 반환
             throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_FOUND);
         }
-//        if(tarotResult.getReaderId() != userId && tarotResult.getSeekerId() != userId){
-//            throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_YOUR_RESULT);
-//        }
+        log.info("seeker : {}, reader : {}", tarotResult.getReaderId(), tarotResult.getSeekerId());
+        if(tarotResult.getReaderId() != memberId && tarotResult.getSeekerId() != memberId){
+            throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_YOUR_RESULT);
+        }
         List<TarotResultCardDto> cards = new ArrayList<>();
         // 우선 카드 리스트 정보부터 채운다
         for(TarotResultCard c : tarotResult.getCardList()){
@@ -274,4 +278,5 @@ public class TarotResultServiceImpl implements TarotResultService {
                 })
                 .collect(Collectors.toList());
     }
+
 }

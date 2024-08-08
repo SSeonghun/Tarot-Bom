@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
-
-// TODO : axios로 서버 저장
+import { useNavigate } from 'react-router-dom';
+const { readerJoin } = require("../../API/api");
+//  : axios로 서버 저장
 const CreateReader: React.FC = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState<number>(1);
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [introduction, setIntroduction] = useState<string>('');
-
   const interests = ['연애운', '금전운', '직장운', '취업운', '가족운', '기타'];
-
+  const interestscode=["G01","G02","G03","G04","G05"]
+  const handleaxios=()=>{
+    const selectedCodes = selectedInterests.map(interest => {
+      const index = interests.indexOf(interest);
+      return index !== -1 ? interestscode[index] : '';
+    }).filter(code => code).join(','); // 빈 코드 제거
+    console.log(selectedCodes)
+    // 서버에 데이터 전송
+    readerJoin(selectedCodes, introduction);
+    navigate('/')
+  }
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
@@ -90,7 +101,7 @@ const CreateReader: React.FC = () => {
               <h3 className="text-lg font-semibold mb-2">관심분야</h3>
               <div className="grid grid-cols-2 gap-2">
                 {interests.map((interest) => (
-                  <button
+                  <button 
                     key={interest}
                     onClick={() => toggleInterest(interest)}
                     className={`px-4 py-2 rounded-lg shadow-md transition-colors duration-300 ${
@@ -143,7 +154,7 @@ const CreateReader: React.FC = () => {
               </button>
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded shadow-lg hover:bg-blue-600 transition-colors duration-300"
-                disabled
+                onClick={handleaxios}
               >
                 완료
               </button>
