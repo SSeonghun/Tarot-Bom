@@ -55,8 +55,6 @@ public class MatchingController {
                 .memberType(dto.getMemberType())
                 .worry(dto.getWorry())
                 .build();
-        // 이후 적절한 매칭 대기열에 현재 dto를 삽입
-        matchingService.offerToMatchingQueue(myDto);
         MatchingInfoDto candidateDto = matchingService.searchToMatching(myDto);
         if(candidateDto != null){ // 바로 찾을 수 있었다면 매칭 확인 매커니즘으로 넘어간다
             // 매칭 확인 요청을 보내는 메서드 호출

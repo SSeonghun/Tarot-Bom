@@ -1,11 +1,11 @@
 package com.ssafy.tarotbom.domain.reservation.comtroller;
 
-import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.reservation.dto.request.AddReservationsRequestDto;
-import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResoneseDto;
+import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResponseDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.service.ReservationService;
 import com.ssafy.tarotbom.global.result.ResultCode;
+import com.ssafy.tarotbom.global.result.ResultResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +29,14 @@ public class ReservationController {
      * @return
      */
     @PostMapping("/add")
-    public ResponseEntity<AddReservationsResoneseDto> addReservation(@Valid @RequestBody AddReservationsRequestDto addReservationsRequestDto){
+    public ResponseEntity<ResultResponse> addReservation(@Valid @RequestBody AddReservationsRequestDto addReservationsRequestDto){
 
         log.info("reservation Controller");
-        AddReservationsResoneseDto addReservationsResoneseDto = reservationService.addReservation(addReservationsRequestDto);
+        AddReservationsResponseDto addReservationsResponseDto = reservationService.addReservation(addReservationsRequestDto);
 
-        log.info("response : {} ", addReservationsResoneseDto.getRoomId());
-
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(addReservationsResoneseDto);
+        log.info("response : {} ", addReservationsResponseDto.getRoomId());
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.VALIDATION_NUMBER_OK, addReservationsResponseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     /**
@@ -47,12 +47,9 @@ public class ReservationController {
      */
     @GetMapping("/find")
     public ResponseEntity<List<ReadReservationResponseDto>> getReservationsByReader(HttpServletRequest request) {
-        // Member 객체는 실제로는 서비스나 다른 방법으로 가져와야 합니다.
 
         List<ReadReservationResponseDto> reservations = reservationService.readReservation(request);
-
         log.info("size : {}", reservations.size());
-
         return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(reservations);
     }
 
