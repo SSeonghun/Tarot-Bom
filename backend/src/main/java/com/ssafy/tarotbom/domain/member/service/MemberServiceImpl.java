@@ -399,7 +399,10 @@ public class MemberServiceImpl implements MemberService {
         long memberId = cookieUtil.getUserId(request);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)); // 적절한 예외 처리
-
+        // 만일 이미 리더 프로필이 있는 유저라면 exception을 발생시킨다
+        if(readerRepository.existsByMemberId(memberId)) {
+            throw new BusinessException(ErrorCode.MEMBER_ALREADY_READER);
+        }
         // 리더 객체 생성 후 저장
         Reader reader = Reader.builder()
                 .member(member)
