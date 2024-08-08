@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddReservationsResoneseDto {
+public class AddReservationsResponseDto {
     private long roomId;
 //    private String state;
 }

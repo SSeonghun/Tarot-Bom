@@ -26,6 +26,7 @@ public enum ErrorCode {
     MEMBER_COOKIE_NOT_FOUND(HttpStatus.NOT_FOUND, "M006", "쿠키를 찾지 못했습니다"),
     MEMBER_YOU_ARE_NOT_READER(HttpStatus.FORBIDDEN, "M008", "리더가 아닌 사용자입니다."),
     MEMBER_PROFILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M009", "프로필 이미지 업로드에 실패했습니다."),
+    MEMBER_ALREADY_READER(HttpStatus.CONFLICT, "M010", "이미 리더 프로필이 있는 회원입니다."),
 
     // Favorite Reader
     FAVORITE_DUPLICATED(HttpStatus.CONFLICT, "F001", "이미 찜한 리더 입니다."),
@@ -35,8 +36,6 @@ public enum ErrorCode {
 
     // Review
     REVIEW_ALREADY_EXISTS(HttpStatus.CONFLICT, "V001", "이미 작성된 리뷰가 있습니다."),
-
-
 
     // Tarot
     TAROT_CARD_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "T001", "해당하는 타로 카드를 찾을 수 없습니다."),
