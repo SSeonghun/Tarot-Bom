@@ -32,7 +32,6 @@ public class ReservationController {
     public ResponseEntity<ResultResponse> addReservation(@Valid @RequestBody AddReservationsRequestDto addReservationsRequestDto){
         log.info("reservation Controller");
         AddReservationsResponseDto addReservationsResponseDto = reservationService.addReservation(addReservationsRequestDto);
-
         log.info("response : {} ", addReservationsResponseDto.getRoomId());
         ResultResponse resultResponse = ResultResponse.of(ResultCode.RESERVATION_ADDED, addReservationsResponseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);

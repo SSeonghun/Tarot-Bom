@@ -30,11 +30,24 @@ public class MatchingInfoDto {
             // inConfirm, worry 외의 모든 값을 확인한다
             return canDto.getKeyword().equals(this.getKeyword())
                     && canDto.getRoomStyle().equals(this.getRoomStyle())
-                    && canDto.getMatchedTime().equals(this.getMatchedTime())
+//                    && canDto.getMatchedTime().equals(this.getMatchedTime())
                     && canDto.getMemberType().equals(this.getMemberType())
                     && (canDto.getMemberId() == this.getMemberId());
         } else {
             return false;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "MatchingInfoDto{" +
+                "keyword='" + keyword + '\'' +
+                ", roomStyle='" + roomStyle + '\'' +
+                ", matchedTime=" + matchedTime +
+                ", memberType='" + memberType + '\'' +
+                ", memberId=" + memberId +
+                ", inConfirm=" + inConfirm +
+                ", worry='" + worry + '\'' +
+                '}';
     }
 }

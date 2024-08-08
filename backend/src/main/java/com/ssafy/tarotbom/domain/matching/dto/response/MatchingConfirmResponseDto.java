@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MatchingConfirmResponseDto {
-    private MatchingInfoDto myDto;
+    private MatchingInfoDto memberDto;
     private MatchingInfoDto candidateDto;
 }

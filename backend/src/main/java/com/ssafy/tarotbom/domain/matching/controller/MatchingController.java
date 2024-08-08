@@ -78,6 +78,8 @@ public class MatchingController {
 
     @MessageMapping("/confirm")
     public void confirmMatching(MatchingConfirmRequestDto dto){
+
+        log.info("{}",dto);
         MatchingInfoDto myDto = dto.getMemberDto();
         MatchingInfoDto candidateDto = dto.getCandidateDto();
         if(dto.getStatus().equals("accepted")){
@@ -125,7 +127,7 @@ public class MatchingController {
 
     @MessageMapping("/cancel")
     public void cancelMatching(MatchingInfoDto dto) {
-        log.info("매칭을 취소함 : {}", dto.getMemberId());
+        log.info("cancel 매칭을 취소함 : {}", dto.getMemberId());
         matchingService.removeFromMatchingQueue(dto);
         matchingService.setMatchingStatusEnd(dto.getMemberId());
         SocketResponse socketResponse = SocketResponse.of(SocketCode.MATCHING_CANCELED, dto);
@@ -136,7 +138,7 @@ public class MatchingController {
         // dto1에 대한 작업
         dto1 = dto1.toBuilder().inConfirm(true).build();
         MatchingConfirmResponseDto responseDto1 = MatchingConfirmResponseDto.builder()
-                .myDto(dto1)
+                .memberDto(dto1)
                 .candidateDto(dto2)
                 .build();
         SocketResponse socketResponse = SocketResponse.of(SocketCode.MATCHING_MATCHED, responseDto1);
@@ -144,7 +146,7 @@ public class MatchingController {
         // dto2에 대한 작업
         dto2 = dto2.toBuilder().inConfirm(true).build();
         MatchingConfirmResponseDto responseDto2 = MatchingConfirmResponseDto.builder()
-                .myDto(dto2)
+                .memberDto(dto2)
                 .candidateDto(dto1)
                 .build();
         socketResponse = SocketResponse.of(SocketCode.MATCHING_MATCHED, responseDto2);

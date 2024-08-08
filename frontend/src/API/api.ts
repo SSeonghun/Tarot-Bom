@@ -1,11 +1,14 @@
 import axios from "axios";
+import { log } from "console";
 
 // const API_URL = "https://i11c208.p.ssafy.io/tarotbom/";
 const API_URL = "http://localhost/tarotbom/";
 
 const readerList = async () => {
   try {
-    const response = await axios.get(`${API_URL}user/reader/list`);
+    const response = await axios.get(`${API_URL}user/reader/list`, {
+      withCredentials: true, // 쿠키를 포함하도록 설정
+    });
     return response.data;
   } catch (error) {
     console.error("전체 리더 목록 조회 실패", error);
@@ -13,30 +16,31 @@ const readerList = async () => {
   }
 };
 
+const readerTop = async () => {
+  try {
+    const response = await axios.get(`${API_URL}user/reader/top`, {
+      withCredentials: true, // 쿠키를 포함하도록 설정
+    });
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.log("탑 리더 조회 실패", error);
+    throw error;
+  }
+};
+
 const readerDetail = async (readerId: number) => {
   try {
-    const response = await axios.get(`${API_URL}user/reader/detail/${readerId}`);
-    return response.data;
+    const response = await axios.get(
+      `${API_URL}user/reader/detail/${readerId}`
+    );
+
+    return response.data.data;
   } catch (error) {
     console.error("리더 상세 조회 실패");
     throw error;
   }
 };
-
-const readerTop = async () => {
-  try {
-    const response = await axios.get(`${API_URL}user/reader/top`,
-      {
-        withCredentials: true, // 쿠키를 포함하도록 설정
-      }
-    );
-    console.log(response)
-    return response.data;
-  } catch (error) {
-    console.log('탑 리더 조회 실패', error);
-    throw error;
-  }
-}
 
 const result = async (
   readerId: number,
@@ -55,7 +59,7 @@ const result = async (
       date,
       keyword,
       memo,
-      summary, 
+      summary,
       music,
       roomId,
     });
@@ -99,6 +103,27 @@ const cardInfo = async (cardId: number) => {
     return response.data;
   } catch (error) {
     console.error("카드 조회 실패");
+    throw error;
+  }
+};
+
+const readerJoin = async (keyword: string, intro: string) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}user/readerjoin`,
+      {
+        keyword,
+        intro,
+      },
+      {
+        withCredentials: true, // 요청에 쿠키를 포함하도록 설정
+      }
+    );
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log(keyword, intro);
+    console.log("리더 등록 실패", error);
     throw error;
   }
 };
@@ -152,4 +177,13 @@ const youtubeMusic = async (searchQuery: string) => {
   }
 };
 
-export { readerList, result, declaration, cardInfo, youtubeMusic, readerDetail };
+export {
+  readerJoin,
+  readerList,
+  result,
+  declaration,
+  cardInfo,
+  youtubeMusic,
+  readerDetail,
+  readerTop,
+};

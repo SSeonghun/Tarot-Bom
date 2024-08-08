@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.member.dto.response;
 
+import com.ssafy.tarotbom.domain.member.dto.ReaderAbstractReviewDto;
 import com.ssafy.tarotbom.domain.member.dto.ReaderAnalyzeDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
@@ -28,6 +29,11 @@ public class ReaderMypageResponseDto {
 
     // 타로 내역
     private List<TarotResultGetResponseDto> tarotResultGetResponseDtos;
+<<<<<<< HEAD
 
     private List<ReviewReaderResponseDto> reviewReaderResponseDtos;
+=======
+    
+    private List<ReaderAbstractReviewDto> reviewReaderResponseDtos;
+>>>>>>> 2e7a8d7e4462f5365a62232a5b7399315e1b25e7
 }

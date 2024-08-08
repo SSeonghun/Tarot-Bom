@@ -76,8 +76,10 @@ public class MatchingServiceImpl implements MatchingService {
 
 
         if (myDto.getMemberType().equals("reader")) {
+            log.info("seekerMatchingQueue");
             searchQueue = seekerMatchingQueue;
         } else {
+            log.info("ReaderMatchingQueue");
             searchQueue = readerMatchingQueue;
         }
         log.info("searchQueue size : {}",searchQueue.size());
@@ -130,6 +132,7 @@ public class MatchingServiceImpl implements MatchingService {
                 // 실패한 경우 로그 출력
                 log.info("큐에서 dto 지우기 실패 : {} ", removeDto.getMemberId());
             }
+            log.info("{}", removeQueue.peek());
         }
     }
 

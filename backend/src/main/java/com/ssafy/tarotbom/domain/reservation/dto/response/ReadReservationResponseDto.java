@@ -16,6 +16,12 @@ import java.time.LocalDateTime;
 public class ReadReservationResponseDto {
     private long reservationId;
     private long seekerId;
+    private String seekerName;
+    private String seekerProfileUrl;
     private long readerId;
+    private String readerName;
+    private String readerProfileUrl;
+    private String status;
+    private String keyword;
     private LocalDateTime startTime;
 }

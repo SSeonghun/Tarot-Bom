@@ -9,4 +9,13 @@ public class MatchingConfirmRequestDto {
     private MatchingInfoDto memberDto;
     private MatchingInfoDto candidateDto;
     private String status;
+
+    @Override
+    public String toString() {
+        return "MatchingConfirmRequestDto{" +
+                "memberDto=" + memberDto +
+                ", candidateDto=" + candidateDto +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

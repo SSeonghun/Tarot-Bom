@@ -5,6 +5,7 @@ import './login.css';
 import InputField from '../../components/login_signup/InputField';
 import SubmitButton from '../../components/login_signup/SubmitButton';
 import useUserStore from '../../stores/store';
+import ProfileImg from '../../components/login_signup/ProfileImg';
 
 const { login } = require('../../API/userApi');
 
@@ -50,13 +51,15 @@ const Login: React.FC = () => {
       const result = await login(email, password);
       console.log('로그인 성공', result);
       store.loginUser();
+      
+      const profileImageUrl = result.data.profile_url ? result.data.profile_url : 'https://cdn3d.iconscout.com/3d/premium/thumb/avatar-profile-7377413-5979215.png?f=webp';
       store.userInfoSet({
         memberId: result.data.memberId,
         nickname: result.data.name,
         email: result.data.email,
         isReader: result.data.reader,
+        profileImg : profileImageUrl
       });
-
       // window.location.href = "/";
       navigate('/');
     } catch (error) {

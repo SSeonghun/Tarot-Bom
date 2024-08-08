@@ -1,14 +1,30 @@
-import React, { useState } from 'react';
-
-// TODO : axios로 서버 저장
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+const { readerJoin } = require("../../API/api");
+//  : axios로 서버 저장
 const CreateReader: React.FC = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState<number>(1);
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
-  const [introduction, setIntroduction] = useState<string>('');
+  const [introduction, setIntroduction] = useState<string>("");
+  const interests = ["연애운", "금전운", "직장운", "취업운", "가족운", "기타"];
+  const interestscode = ["G01", "G02", "G03", "G04", "G05"];
 
-  const interests = ['연애운', '금전운', '직장운', '취업운', '가족운', '기타'];
-
+  //TODO: 키워드가 안들어감
+  const handleaxios = () => {
+    const selectedCodes = selectedInterests
+      .map((interest) => {
+        const index = interests.indexOf(interest);
+        return index !== -1 ? interestscode[index] : "";
+      })
+      .filter((code) => code)
+      .join(","); // 빈 코드 제거
+    console.log(selectedCodes);
+    // 서버에 데이터 전송
+    readerJoin(selectedCodes, introduction);
+    navigate("/");
+  };
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
@@ -27,7 +43,9 @@ const CreateReader: React.FC = () => {
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests((prev) =>
-      prev.includes(interest) ? prev.filter((i) => i !== interest) : [...prev, interest]
+      prev.includes(interest)
+        ? prev.filter((i) => i !== interest)
+        : [...prev, interest]
     );
   };
 
@@ -37,13 +55,19 @@ const CreateReader: React.FC = () => {
         {/* 단계 표시기 */}
         <div className="flex justify-between mb-6">
           <div
-            className={`flex-1 h-2 ${step >= 1 ? 'bg-blue-500' : 'bg-gray-300'} mx-1 rounded`}
+            className={`flex-1 h-2 ${
+              step >= 1 ? "bg-blue-500" : "bg-gray-300"
+            } mx-1 rounded`}
           ></div>
           <div
-            className={`flex-1 h-2 ${step >= 2 ? 'bg-blue-500' : 'bg-gray-300'} mx-1 rounded`}
+            className={`flex-1 h-2 ${
+              step >= 2 ? "bg-blue-500" : "bg-gray-300"
+            } mx-1 rounded`}
           ></div>
           <div
-            className={`flex-1 h-2 ${step >= 3 ? 'bg-blue-500' : 'bg-gray-300'} mx-1 rounded`}
+            className={`flex-1 h-2 ${
+              step >= 3 ? "bg-blue-500" : "bg-gray-300"
+            } mx-1 rounded`}
           ></div>
         </div>
 
@@ -51,7 +75,8 @@ const CreateReader: React.FC = () => {
           <div className="flex flex-col items-center">
             <h2 className="text-2xl font-bold mb-6 text-center">유의사항</h2>
             <p className="mb-4">
-              여기에 유의사항 내용을 적습니다. 유의사항 내용을 자세히 읽고 동의해주세요.
+              여기에 유의사항 내용을 적습니다. 유의사항 내용을 자세히 읽고
+              동의해주세요.
             </p>
             <div className="flex items-center mb-6">
               <input
@@ -95,8 +120,8 @@ const CreateReader: React.FC = () => {
                     onClick={() => toggleInterest(interest)}
                     className={`px-4 py-2 rounded-lg shadow-md transition-colors duration-300 ${
                       selectedInterests.includes(interest)
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-200 text-gray-700'
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     {interest}
@@ -143,7 +168,7 @@ const CreateReader: React.FC = () => {
               </button>
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded shadow-lg hover:bg-blue-600 transition-colors duration-300"
-                disabled
+                onClick={handleaxios}
               >
                 완료
               </button>

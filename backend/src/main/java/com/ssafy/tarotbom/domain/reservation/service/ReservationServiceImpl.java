@@ -54,7 +54,6 @@ public class ReservationServiceImpl implements ReservationService{
             // 만일 입력으로 들어온 예약상태가 있다면 그 내용으로 갱신한다
             status = addReservationsRequestDto.getStatus();
         }
-
         long seekerId = addReservationsRequestDto.getSeekerId();
         long readerId = addReservationsRequestDto.getReaderId();
         log.info("sts : {}", status);
@@ -74,6 +73,7 @@ public class ReservationServiceImpl implements ReservationService{
                 .price(addReservationsRequestDto.getPrice())
                 .statusCode(status)
                 .build();
+
         reservation = reservationRepository.save(reservation);
         log.info("예약 생성 : {}", reservation.getReservationId());
         // 예약을 등록한 후, 그에 맞게 room을 생성한다
@@ -107,7 +107,6 @@ public class ReservationServiceImpl implements ReservationService{
 
         log.info("memberId : {}", memberId);
         List<Reservation> reservations = null;
-
         if(memberType.equals("M02")) {
             reservations = reservationRepository.findAllByReaderId(memberId);
         } else if (memberType.equals("M01")) {
@@ -115,16 +114,7 @@ public class ReservationServiceImpl implements ReservationService{
         }
 
         log.info("reservations_reader : {}", reservations.size());
-        
-        // ReadReservationResponseDto로 변환
-        // 남은 예약 내역은 시간으로 판단
-//        return reservations.stream()
-//                .map(reservation -> ReadReservationResponseDto.builder()
-//                        .reservationId(reservation.getReservationId())
-//                        .seekerId(reservation.getSeekerId())
-//                        .startTime(reservation.getStartTime())
-//                        .build())
-//                .collect(Collectors.toList());
+
         List<ReadReservationResponseDto> respondList = new ArrayList<>();
         for(Reservation reservation : reservations) {
             // 이미 상담이 끝난 예약은 송출하지 않는다
@@ -145,7 +135,6 @@ public class ReservationServiceImpl implements ReservationService{
 
     @Override
     public int deleteReservation(long reservationId) {
-
         try {
             reservationRepository.deleteById(reservationId);
             return 1;

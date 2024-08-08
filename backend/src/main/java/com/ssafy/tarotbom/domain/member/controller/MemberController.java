@@ -108,6 +108,7 @@ public class MemberController {
      */
     @PostMapping("/readerjoin")
     public ResponseEntity<?> readerJoin(@Valid @RequestBody ReaderJoinRequestDto readerJoinRequestDto, HttpServletRequest request) {
+        log.info("readerJoid : {} ", readerJoinRequestDto.getKeyword());
         memberService.readerJoin(request, readerJoinRequestDto);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.READER_JOIN_OK);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
