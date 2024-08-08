@@ -42,7 +42,7 @@ public class MatchingController {
             SocketResponse socketResponse = SocketResponse.of(SocketCode.MATCHING_ALREADY_PROCESSING);
             log.info("start 이미 매칭 중인 회원 : {}", dto.getMemberId());
             sendingOperation.convertAndSend(matchingStatusPath+dto.getMemberId(), socketResponse);
-//            return;
+            return;
         }
         // [1] 초기 매칭 대상자 찾기
         // 매칭 요청을 한 객체에 대해 dto를 생성
@@ -78,6 +78,8 @@ public class MatchingController {
 
     @MessageMapping("/confirm")
     public void confirmMatching(MatchingConfirmRequestDto dto){
+
+        log.info("{}",dto);
         MatchingInfoDto myDto = dto.getMemberDto();
         MatchingInfoDto candidateDto = dto.getCandidateDto();
         if(dto.getStatus().equals("accepted")){
@@ -136,7 +138,7 @@ public class MatchingController {
         // dto1에 대한 작업
         dto1 = dto1.toBuilder().inConfirm(true).build();
         MatchingConfirmResponseDto responseDto1 = MatchingConfirmResponseDto.builder()
-                .myDto(dto1)
+                .memberDto(dto1)
                 .candidateDto(dto2)
                 .build();
         SocketResponse socketResponse = SocketResponse.of(SocketCode.MATCHING_MATCHED, responseDto1);
@@ -144,7 +146,7 @@ public class MatchingController {
         // dto2에 대한 작업
         dto2 = dto2.toBuilder().inConfirm(true).build();
         MatchingConfirmResponseDto responseDto2 = MatchingConfirmResponseDto.builder()
-                .myDto(dto2)
+                .memberDto(dto2)
                 .candidateDto(dto1)
                 .build();
         socketResponse = SocketResponse.of(SocketCode.MATCHING_MATCHED, responseDto2);
