@@ -1,12 +1,28 @@
 import React from 'react';
 import HoverButton from '../Common/HoverButton';
-
 import ReaderProfile1 from '../../assets/img/ReaderProfile1.png';
-import Profile from '../../assets/img/profile2.png';
-import Seed from '../../assets/img/seed.png';
 
-// TODO : 데이터 뿌려주기
-const Hero1: React.FC = () => {
+interface Hero1Props {
+  name: string; // String -> string으로 수정
+  profileUrl: string;
+  grade: string;
+}
+
+const Hero1: React.FC<Hero1Props> = ({
+  name,
+  profileUrl,
+  grade,
+}) => {
+  // grade를 매핑하는 객체
+  const gradeMapping: { [key: string]: string } = {
+    C01: '새싹',
+    C02: '중수',
+    C03: '마스터',
+  };
+
+  // grade에 따라 표시할 텍스트를 결정
+  const gradeText = gradeMapping[grade] || grade; // 매핑된 값이 없으면 원래 값 사용
+
   return (
     <div className="relative bg-black bg-opacity-70">
       <img
@@ -16,13 +32,12 @@ const Hero1: React.FC = () => {
       />
 
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-        {/* 지금은 예뻐보이게 이렇게 하지만 그냥 이미지 가져와서 crop 하는게 맞는듯함 이미지 크기 150 x 150 */}
         <div className="bg-black bg-opacity-50 p-2 rounded-full backdrop-filter backdrop-blur-sm">
-          <img src={Profile} alt="Profile" className="w-32 h-32 rounded-full" />
+          <img src={profileUrl} alt="Profile" className="w-32 h-32 rounded-full" />
         </div>
         <div className="flex flex-row items-end">
-          <img src={Seed} alt="grade" className="w-auto h-10" title="등급" />
-          <h1 className="text-5xl text-white mt-5 font-bold">김싸피</h1>
+          <div className="w-auto h-10">{gradeText}</div> {/* 매핑된 텍스트 사용 */}
+          <h1 className="text-5xl text-white mt-5 font-bold">{name}</h1>
         </div>
         <p className="text-[15px] mt-3 text-white font-semibold">TAROT READER</p>
         <div className="mt-5">

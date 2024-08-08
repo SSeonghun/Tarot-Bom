@@ -17,8 +17,6 @@ const settings = {
   arrows: false,
 };
 
-// TODO : 금주의 탑리더 axios로 데이터 받아오기
-
 const { readerTop } = require('../../API/api');
 
 const Hero3: React.FC = () => {
@@ -30,7 +28,6 @@ const Hero3: React.FC = () => {
   const navigate = useNavigate();
 
   // 원하는 개수만큼 HomeCard를 반복해서 생성하기 위해 배열을 사용
-  const homeCards = Array.from({ length: 10 }); // 카드의 개수를 10개로 설정
 
   useEffect(() => {
     const loadReaders = async () => {
@@ -56,8 +53,6 @@ const Hero3: React.FC = () => {
       <h1 className="text-white text-5xl font-bold mb-[50px] mt-[50px]">
         금주의 Top 리더를 확인해 보세요!
       </h1>
-
-      {/* TODO : 클릭시 해당 리더로 이동하게 연결 */}
       <div className="w-[1200px] mb-10" style={{ overflow: 'hidden' }}>
         <Slider {...settings}>
         {loading ? (
@@ -68,19 +63,21 @@ const Hero3: React.FC = () => {
               readers.map((reader) => (
                 <HomeCard
                   key={reader.memberId}
-                  name={reader.name}
+                  name={reader.nickname}
                   detail={reader.intro}
-                  review={0} // 리뷰 데이터가 없으면 기본값 0
-                  category={['Category1']} // 카테고리 예시
-                  // TODO : 이미지처리
-                  imgUrl="https://via.placeholder.com/150" // 더미 이미지 URL
+                  // review={0}
+                  category={reader.keyword} // 카테고리 예시
+                  // TODO : 이미지처리 - 했는데 잘 나오나 나중에 확인
+                  rating={reader.rating}
+                  imgUrl={reader.profileUrl}
                   hsize="h-10"
                   wsize="w-40"
-                  onClick={() => handleCardClick(reader.memberId)} // 클릭 핸들러 전달
+                  readerId = {reader.readerId}
+                  // onClick={() => handleCardClick(reader.memberId)} // 클릭 핸들러 전달
                 />
               ))
             )}
-          
+         
         </Slider>
       </div>
 

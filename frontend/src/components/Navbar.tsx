@@ -5,8 +5,8 @@ import PrivateLink from './Common/PrivateLink'; // PrivateLink 가져오기
 import useStore from '../stores/store';
 import imgg from '../assets/Witch_On_Broom-removebg-preview.png';
 
-// TODO : axios
-const { info } = require('../API/userApi');
+// TODO : 홈 바꾸기
+
 const { logout } = require('../API/userApi');
 
 const Navbar: React.FC = () => {
@@ -14,9 +14,7 @@ const Navbar: React.FC = () => {
   const store = useStore();
   const [dropdownOpen, setDropdownOpen] = useState(false); // 드롭다운 상태
 
-  const mvSeekerMyage = () => {
-    navigate('/seeker-mypage');
-  };
+  const userInfo = store.userInfo;
 
   const handleLogout = async () => {
     try {
@@ -24,6 +22,7 @@ const Navbar: React.FC = () => {
       console.log("로그아웃 성공", result);
       store.logoutUser();
       navigate("/");
+
     } catch (error) {
       console.error("로그아웃 중 오류 발생", error);
     }
@@ -32,6 +31,7 @@ const Navbar: React.FC = () => {
   // 드롭다운 열기/닫기 함수
   const toggleDropdown = () => {
     setDropdownOpen(prev => !prev);
+    console.log(userInfo?.profileImg);
   };
 
   // 클릭 시 드롭다운 닫기
@@ -74,17 +74,17 @@ const Navbar: React.FC = () => {
           {store.isLoggedIn ? (
             <div className="relative inline-block text-left dropdown">
               <button onClick={toggleDropdown} className="focus:outline-none">
-                <img src={imgg} alt="마이페이지" style={{ width: '40px', height: '40px' }} className="cursor-pointer" />
+                <img src={userInfo?.profileImg} alt="마이페이지" style={{ width: '40px', height: '40px' }} className="cursor-pointer" />
               </button>
               {dropdownOpen && (
                 <div className="absolute right-0 w-48 mt-2 bg-gray-300 rounded-md shadow-lg">
                   <div className="flex items-center px-4 py-3">
                     <div>
-                      <img src={imgg} alt="마이페이지" style={{ width: '40px', height: '40px' }} className="cursor-pointer" />
+                      <img src={userInfo?.profileImg} alt="마이페이지" style={{ width: '40px', height: '40px' }} className="cursor-pointer" />
                     </div>
                     <div className='flex flex-col'>
-                      <span className="block text-xs text-gray-900 dark:text-white">Bonnie Green</span>
-                      <span className="block text-xs text-gray-500 truncate dark:text-gray-400">name@flowbite.com</span>
+                      <span className="block text-xs text-gray-900 dark:text-white">{ userInfo?.nickname }</span>
+                      <span className="block text-xs text-gray-500 truncate dark:text-gray-400">{ userInfo?.email }</span>
                     </div>
                   </div>
                   <hr className='border-black'></hr>
