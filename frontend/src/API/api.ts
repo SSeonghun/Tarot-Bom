@@ -31,8 +31,10 @@ const readerTop = async () => {
 
 const readerDetail = async (readerId: number) => {
   try {
-    const response = await axios.get(`${API_URL}user/reader/detail/${readerId}`);
-    
+    const response = await axios.get(
+      `${API_URL}user/reader/detail/${readerId}`
+    );
+
     return response.data.data;
   } catch (error) {
     console.error("리더 상세 조회 실패");
@@ -175,4 +177,13 @@ const youtubeMusic = async (searchQuery: string) => {
   }
 };
 
-export { readerJoin, readerList, result, result_get, declaration, cardInfo, youtubeMusic, readerDetail, readerTop };
+export {
+  readerJoin,
+  readerList,
+  result,
+  declaration,
+  cardInfo,
+  youtubeMusic,
+  readerDetail,
+  readerTop,
+};
