@@ -338,7 +338,7 @@ public class MemberServiceImpl implements MemberService {
         String newProfileUrl = member.getProfileUrl();
         String newNickname = member.getNickname();
         // 우선은 password를 encrypt하여 수정한다
-        if(!updateMemberRequestDto.getPassword().isEmpty()) {
+        if(updateMemberRequestDto.getPassword() != null) {
             BCryptPasswordEncoder bcrypasswordEncoder = new BCryptPasswordEncoder();
             newPassword = bcrypasswordEncoder.encode(updateMemberRequestDto.getPassword());
         }
@@ -352,7 +352,7 @@ public class MemberServiceImpl implements MemberService {
         }
         log.info("새 프로필 이미지 링크 : {}", newProfileUrl);
         // 마지막으로 닉네임 등록
-        if(!updateMemberRequestDto.getNickname().isEmpty()){
+        if(updateMemberRequestDto.getNickname() != null){
             newNickname = updateMemberRequestDto.getNickname();
         }
         // 이제 바뀌거나 바뀌지 않은 내용을 기반으로 업로드를 시도한다

@@ -19,6 +19,7 @@ public class ReaderDetatilResponseDto {
     private String intro;
     private double rating;
     private String grade;
+    private String profileUrl;
     private int price;
 
     // 기존 리더 리스트DTO에 추가로 더 반환

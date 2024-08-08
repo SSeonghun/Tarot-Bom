@@ -137,6 +137,7 @@ public class ReaderServiceImpl implements ReaderService{
                 .intro(reader.getIntro())
                 .rating(reader.getRating())
                 .grade(reader.getGradeCode())
+                .profileUrl(reader.getMember().getProfileUrl())
                 .price(reader.getPrice())
                 .reviews(reviewList)
                 .allConsultings(allConsulting)
@@ -155,6 +156,7 @@ public class ReaderServiceImpl implements ReaderService{
             result.add(TopReaderResponseDto
                     .builder()
                     .nickname(reader.getMember().getNickname())
+                    .profileUrl(reader.getMember().getProfileUrl())
                     .readerId(reader.getMemberId())
                     .intro(reader.getIntro())
                     .rating(reader.getRating())
