@@ -2,19 +2,16 @@
 import React, { useEffect, useState } from "react";
 import Title from "../../components/TarotResult/Title";
 import ResultSummary from "../../components/TarotResult/ResultSummary";
+import { useLocation } from "react-router-dom";
 
-//TODO: result_get에 보낼 resultId 받아 오기
-const { cardInfo,result_get } = require("../../API/api");
+const { cardInfo } = require("../../API/api");
 
-interface ResultData {
-  summary: string;
-  keyword: string;
-  cards: {
-    cardId: number;
-    sequence: number;
-    direction: string;
-  }[];
+interface TarotResultState {
+  selectedCard: number[];
+  worry: string;
+  category: string;
 }
+
 interface CardData {
   name: string;
   desc: string;
@@ -22,17 +19,17 @@ interface CardData {
 }
 
 const TarotResult: React.FC = () => {
+  const location = useLocation();
+  const state = location.state as TarotResultState;
   const [cards, setCards] = useState<CardData[]>([]);
-  const [resultData, setResultData] = useState<ResultData | null>(null);
+
   useEffect(() => {
-    const fetchAndLoadData = async () => {
+    const loadCardData = async () => {
       try {
-        const fetchedResultData: ResultData = await result_get(1);
-        setResultData(fetchedResultData);
         const cardDetails: CardData[] = [];
-        console.log(fetchedResultData)
-        for (const card of fetchedResultData.cards) {
-          const response = await cardInfo(card.cardId); // Assuming cardId needs an increment
+
+        for (const cardId of state.selectedCard) {
+          const response = await cardInfo(cardId + 1); // Assuming cardId needs an increment
           cardDetails.push({
             imgUrl: response.data.imageUrl,
             name: response.data.cardName,
@@ -41,52 +38,33 @@ const TarotResult: React.FC = () => {
         }
 
         setCards(cardDetails); // Update state after all cards are fetched
-    }catch (error) {
+      } catch (error) {
         console.error("Error fetching card data:", error);
       }
     };
-      fetchAndLoadData()
-  
-  }, []);
 
+    if (state.selectedCard.length > 0) {
+      loadCardData();
+    } else {
+    }
+  }, [state.selectedCard]);
 
-  if (!resultData) {
-    return <div>잘못된 접근입니다.</div>; // resultData가 null일 때 이 메시지를 보여줍니다.
+  // `selectedCard`, `worry`, `category`가 전달되지 않았을 경우 처리
+  if (!state || !state.selectedCard || !state.worry || !state.category) {
+    return <div>잘못된 접근입니다.</div>;
   }
+
   return (
-   
     <div className="relative w-screen min-h-screen bg-black">
       <Title selectedCard={cards} />
       {/* 결과 요약 */}
       <ResultSummary
         selectedCard={cards}
-        worry={resultData.summary}
-        category={resultData.keyword}
+        worry={state.worry}
+        category={state.category}
       />
     </div>
   );
 };
 
 export default TarotResult;
-  // `selectedCard`, `worry`, `category`가 전달되지 않았을 경우 처리
-  // if (!state || !state.selectedCard || !state.worry || !state.category) {
-  //   return <div>잘못된 접근입니다.</div>;
-  // }
-  // if (state && state.selectedCard && state.selectedCard.length > 0) {
-  // } else {
-  //} 
-  //else{
-  // return <div>잘못된 접근입니다.</div>;
-  //}
-  //if (resultData) {
-  // console.log(setState)
-  // if (state) {
-  //   console.log(state){}
-  //const location = useLocation();
-  // const state = location.state as TarotResultState |null;
-  // interface TarotResultState {
-  //   selectedCard: number[];
-  //   worry: string;
-  //   category: string;
-  // }
-  //import { useLocation } from "react-router-dom";
