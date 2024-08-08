@@ -1,8 +1,7 @@
 package com.ssafy.tarotbom.domain.reservation.comtroller;
 
-import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.reservation.dto.request.AddReservationsRequestDto;
-import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResoneseDto;
+import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResponseDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.service.ReservationService;
 import com.ssafy.tarotbom.global.result.ResultCode;
@@ -29,10 +28,10 @@ public class ReservationController {
      * @return
      */
     @PostMapping("/add")
-    public ResponseEntity<AddReservationsResoneseDto> addReservation(@Valid @RequestBody AddReservationsRequestDto addReservationsRequestDto){
+    public ResponseEntity<AddReservationsResponseDto> addReservation(@Valid @RequestBody AddReservationsRequestDto addReservationsRequestDto){
 
         log.info("reservation Controller");
-        AddReservationsResoneseDto addReservationsResoneseDto = reservationService.addReservation(addReservationsRequestDto);
+        AddReservationsResponseDto addReservationsResoneseDto = reservationService.addReservation(addReservationsRequestDto);
 
         log.info("response : {} ", addReservationsResoneseDto.getRoomId());
 

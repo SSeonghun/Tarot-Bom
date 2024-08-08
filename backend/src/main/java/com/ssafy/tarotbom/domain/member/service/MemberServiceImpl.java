@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.member.service;
 
+import com.ssafy.tarotbom.domain.member.dto.ReaderAbstractReviewDto;
 import com.ssafy.tarotbom.domain.member.dto.ReaderAnalyzeDto;
 import com.ssafy.tarotbom.domain.member.dto.SeekerAnalyzeDto;
 import com.ssafy.tarotbom.domain.member.dto.request.*;
@@ -654,18 +655,22 @@ public class MemberServiceImpl implements MemberService {
         // 예약 내역
         List<ReadReservationResponseDto> readReservationResponseDtos = reservationService.readReservation(request);
 
+        // 리뷰
         List<ReviewReader> reviewReaders = reviewReaderRepository.findByReader(Optional.of(reader));
-        List<ReviewReaderResponseDto> reviewList = reviewReaders.stream()
-                .map(review -> ReviewReaderResponseDto.builder()
-                        .reviewReaderId(String.valueOf(review.getReviewReaderId()))
-                        .seekerId(String.valueOf(review.getSeekerId()))
-                        .readerId(String.valueOf(review.getReaderId()))
-                        .rating(review.getRating())
-                        .content(review.getContent())
-                        .createTime(review.getCreateTime())
-                        .updateTime(review.getUpdateTime())
-                        .build())
-                .collect(Collectors.toList());
+        List<ReaderAbstractReviewDto> reviewList = new ArrayList<>();
+        for(ReviewReader reviewReader : reviewReaders) {
+           reviewList.add(
+                   ReaderAbstractReviewDto.builder()
+                           .reviewReaderId(reviewReader.getReviewReaderId())
+                           .seekerId(reviewReader.getSeekerId())
+                           .seekerName(reviewReader.getSeeker().getNickname())
+                           .seekerProfileUrl(reviewReader.getSeeker().getProfileUrl())
+                           .readerId(reviewReader.getReaderId())
+                           .rating(reviewReader.getRating())
+                           .content(reviewReader.getContent())
+                           .build()
+           );
+        }
 
         ReaderMypageResponseDto readerMypageResponseDto = ReaderMypageResponseDto
                 .builder()
@@ -678,7 +683,6 @@ public class MemberServiceImpl implements MemberService {
                 .name(reader.getNickname())
                 .reviewReaderResponseDtos(reviewList)
                 .build();
-
 
         return readerMypageResponseDto;
     }

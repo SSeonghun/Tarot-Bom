@@ -3,7 +3,7 @@ package com.ssafy.tarotbom.domain.reservation.service;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.reservation.dto.request.AddReservationsRequestDto;
-import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResoneseDto;
+import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResponseDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
 import com.ssafy.tarotbom.domain.reservation.repository.ReservationRepository;
@@ -43,7 +43,7 @@ public class ReservationServiceImpl implements ReservationService{
      * @return
      */
     @Override
-    public AddReservationsResoneseDto addReservation(AddReservationsRequestDto addReservationsRequestDto) {
+    public AddReservationsResponseDto addReservation(AddReservationsRequestDto addReservationsRequestDto) {
 
         // 예약 시 방생성
 
@@ -143,7 +143,7 @@ public class ReservationServiceImpl implements ReservationService{
 
         reservationRepository.save(reservation);
 
-        AddReservationsResoneseDto addReservationsResoneseDto = AddReservationsResoneseDto
+        AddReservationsResponseDto addReservationsResoneseDto = AddReservationsResponseDto
                 .builder()
                 .roomId(roomId)
                 .build();
@@ -165,8 +165,7 @@ public class ReservationServiceImpl implements ReservationService{
         log.info("memberId : {}", memberId);
 
         List<Reservation> reservations = null;
-
-        if(memberType.equals("M03")) {
+        if(memberType.equals("M02")) {
             reservations = reservationRepository.findAllByReaderId(memberId);
         } else if (memberType.equals("M01")) {
             reservations = reservationRepository.findAllBySeekerId(memberId);
