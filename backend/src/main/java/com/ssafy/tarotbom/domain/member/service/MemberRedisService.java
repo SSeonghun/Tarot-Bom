@@ -1,13 +1,9 @@
-package com.ssafy.tarotbom.global.config;
+package com.ssafy.tarotbom.domain.member.service;
 
-import com.ssafy.tarotbom.domain.chat.dto.request.ChatMessageReqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +13,9 @@ import java.time.Duration;
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class RedisTool {
+public class MemberRedisService {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public void setValues(String key, String data){
-        ValueOperations<String, Object> values = redisTemplate.opsForValue();
-        values.set(key, data);
-    }
     public void setValues(String key, String data, Duration duration){
         ValueOperations<String, Object> values = redisTemplate.opsForValue();
         values.set(key, data, duration);
@@ -41,10 +33,6 @@ public class RedisTool {
     // 레디스 키 삭제
     public void deleteValue(String key) {
         redisTemplate.delete(key);
-    }
-
-    public boolean checkExistsValue(String value){
-        return !value.equals("false");
     }
 
 }

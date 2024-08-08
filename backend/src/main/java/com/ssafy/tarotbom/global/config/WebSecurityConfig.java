@@ -3,8 +3,8 @@ package com.ssafy.tarotbom.global.config;
 
 //import com.ssafy.tarotbom.domain.jwt.JwtUtil;
 import com.ssafy.tarotbom.domain.member.service.TokenService;
-import com.ssafy.tarotbom.domain.member.jwt.JwtAuthFilter;
-import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
+import com.ssafy.tarotbom.global.filter.JwtAuthFilter;
+import com.ssafy.tarotbom.global.util.JwtUtil;
 import com.ssafy.tarotbom.global.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
