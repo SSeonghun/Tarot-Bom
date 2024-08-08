@@ -63,7 +63,7 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
      * @return
      */
     @Override
-    public FavoriteReaderListResponseDto searchFavoriteReader(HttpServletRequest request) {
+    public List<ReaderListResponseDto> searchFavoriteReader(HttpServletRequest request) {
 
         long seekerId = cookieUtil.getUserId(request);
         Optional<Member> seeker = memberRepository.findMemberByMemberId(seekerId);
@@ -98,13 +98,13 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
                     .build();
             favoriteReaderList.add(readerTemp);
         }
+//
+//        FavoriteReaderListResponseDto favoriteReaderListResponseDto = FavoriteReaderListResponseDto
+//                .builder()
+//                .readerListResponseDtos(favoriteReaderList)
+//                .build();
 
-        FavoriteReaderListResponseDto favoriteReaderListResponseDto = FavoriteReaderListResponseDto
-                .builder()
-                .readerListResponseDtos(favoriteReaderList)
-                .build();
-
-        return favoriteReaderListResponseDto;
+        return favoriteReaderList;
     }
 
     /**

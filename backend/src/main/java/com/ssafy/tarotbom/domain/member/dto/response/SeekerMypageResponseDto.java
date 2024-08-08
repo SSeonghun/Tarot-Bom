@@ -36,6 +36,7 @@ public class SeekerMypageResponseDto {
     // + 카테고리별 수치도 넘겨줘야 할듯
 
     //todo: 찜리스트
+    private List<FavoriteReaderListResponseDto> favoriteReaderList;
     /////////
     // 찜리스트 영역
     ////////
