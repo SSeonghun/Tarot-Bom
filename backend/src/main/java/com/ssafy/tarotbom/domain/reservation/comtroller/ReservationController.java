@@ -45,10 +45,12 @@ public class ReservationController {
      * @return
      */
     @GetMapping("/find")
-    public ResponseEntity<List<ReadReservationResponseDto>> getReservationsByReader(HttpServletRequest request) {
+    public ResponseEntity<ResultResponse> getReservationsByReader(HttpServletRequest request) {
+        // todo : 예약정보 송출할 때 단순 ID만 송출하지 말고, 여러 정보 담아서 보내기
         List<ReadReservationResponseDto> reservations = reservationService.readReservation(request);
         log.info("size : {}", reservations.size());
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(reservations);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.RESERVATION_FOUND, reservations);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     /**
