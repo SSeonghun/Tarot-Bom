@@ -30,12 +30,11 @@ public class ReservationController {
      */
     @PostMapping("/add")
     public ResponseEntity<ResultResponse> addReservation(@Valid @RequestBody AddReservationsRequestDto addReservationsRequestDto){
-
         log.info("reservation Controller");
         AddReservationsResponseDto addReservationsResponseDto = reservationService.addReservation(addReservationsRequestDto);
 
         log.info("response : {} ", addReservationsResponseDto.getRoomId());
-        ResultResponse resultResponse = ResultResponse.of(ResultCode.VALIDATION_NUMBER_OK, addReservationsResponseDto);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.RESERVATION_ADDED, addReservationsResponseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
@@ -47,7 +46,6 @@ public class ReservationController {
      */
     @GetMapping("/find")
     public ResponseEntity<List<ReadReservationResponseDto>> getReservationsByReader(HttpServletRequest request) {
-
         List<ReadReservationResponseDto> reservations = reservationService.readReservation(request);
         log.info("size : {}", reservations.size());
         return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(reservations);

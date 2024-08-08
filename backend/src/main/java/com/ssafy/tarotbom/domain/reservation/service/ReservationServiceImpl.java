@@ -62,7 +62,7 @@ public class ReservationServiceImpl implements ReservationService{
         log.info("seeker_id : {}", seekerId);
 
         // 입력받은 readerId, seekerId가 유효한지 검사
-        if(!readerRepository.existsByMemberId(readerId) || (seekerId != 0 && memberRepository.existsByMemberId(seekerId))) {
+        if(!readerRepository.existsByMemberId(readerId) || (seekerId != 0 && !memberRepository.existsByMemberId(seekerId))) {
             throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
         Reservation reservation = Reservation
@@ -74,7 +74,6 @@ public class ReservationServiceImpl implements ReservationService{
                 .price(addReservationsRequestDto.getPrice())
                 .statusCode(status)
                 .build();
-
         reservation = reservationRepository.save(reservation);
         log.info("예약 생성 : {}", reservation.getReservationId());
         // 예약을 등록한 후, 그에 맞게 room을 생성한다
@@ -88,11 +87,11 @@ public class ReservationServiceImpl implements ReservationService{
                 .reservationId(reservation.getReservationId())
                 .build();
         RoomOpenResponseDto roomOpenResponseDto = roomService.openRoom(openRoomRequestDto);
-        AddReservationsResponseDto addReservationsResoneseDto = AddReservationsResponseDto
+        AddReservationsResponseDto addReservationsResponseDto = AddReservationsResponseDto
                 .builder()
                 .roomId(roomOpenResponseDto.getRoomId())
                 .build();
-        return addReservationsResoneseDto;
+        return addReservationsResponseDto;
     }
 
     /**

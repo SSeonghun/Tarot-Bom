@@ -6,12 +6,14 @@ import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name="reservation")
 @Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder(toBuilder = true)
@@ -56,9 +58,8 @@ public class Reservation {
     private LocalDateTime updateTime;
 
     // 단순 쿼리를 위한 string column 생성
-    
     @Column(name = "room_id", columnDefinition = "int unsigned")
-    private long roomId;
+    private Long roomId;
 
     @Column(name = "seeker_id", columnDefinition = "int unsigned")
     private long seekerId;

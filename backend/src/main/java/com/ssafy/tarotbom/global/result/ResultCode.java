@@ -41,7 +41,7 @@ public enum ResultCode {
     SEARCH_READER_MYPAGE(HttpStatus.OK, "Y002", "리더 마이페이지 조회합니다."),
 
     // Reservation
-    RESERVATION_ADDED(HttpStatus.CREATED, "S001", "예약을 추가했습니다."),
+    RESERVATION_ADDED(HttpStatus.CREATED, "S001", "예약을 등록했습니다."),
 
     // Review
     REVIEW_ADDED(HttpStatus.CREATED, "V001", "리뷰를 작성했습니다."),
