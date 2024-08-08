@@ -52,6 +52,10 @@ dependencies {
 	// email 라이브러리
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.0.5'
 
+	// email
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
@@ -64,7 +68,6 @@ dependencies {
 
 	// aws
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
 
 	// livekit
 	implementation 'io.livekit:livekit-server:0.5.11'

@@ -24,6 +24,8 @@ import com.ssafy.tarotbom.global.config.RedisTool;
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.util.CookieUtil;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,13 +33,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.freemarker.SpringTemplateLoader;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -57,18 +64,23 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final ReaderRepository readerRepository;
-    private final CodeDetailRepository codeDetailRepository;
     private final ReservationService reservationService;
     private final TarotResultService tarotResultService;
     private final ReviewReaderRepository reviewReaderRepository;
     private final S3Service s3Service;
+    private final SpringTemplateEngine springTemplateEngine;
 
     private final RedisTool redisTool;
     private final EmailTool emailTool;
+    private final JavaMailSender emailSender;
     private final CookieUtil cookieUtil;
 
     private static final String AUTH_CODE_PREFIX = "AuthCode:";
     private final FavoriteReaderRepository favoriteReaderRepository;
+    private final SpringTemplateEngine templateEngine;
+
+    @Value("${spring.mail.username}")
+    private String emailAddress;
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private Long authCodeExpirationMillis;
@@ -233,12 +245,34 @@ public class MemberServiceImpl implements MemberService {
             throw new BusinessException(ErrorCode.MEMBER_DUPLICATED);
         }
 
+
         // 인증 코드 생성, 저장, 이메일 전송
         // todo: 인증번호 발송 예쁘게 꾸미면 좋음
+/*
         String title = "유저 이메일 인증 번호";
         String authCode = this.createCode();
         String text = "타로봄에 오신 것을 환영합니다.\n\n"
                 + "      인증 번호는\n\n" +"         " + authCode + "\n\n         입니다.";
+*/
+
+        String authNum = createCode();
+        try {
+            MimeMessage mimeMessage = emailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+            mimeMessageHelper.setTo(toEmail); // 메일 수신자
+            mimeMessageHelper.setSubject("[타로:봄] 인증 번호 입니다."); // 메일 제목
+
+            mimeMessageHelper.setText(setContext(authNum), true); // 메일 본문 내용, HTML
+            emailSender.send(mimeMessage);
+
+            log.info("success");
+
+        } catch(MessagingException e){
+            log.info("fail");
+            throw new BusinessException(ErrorCode.EMAIL_SEND_FAIL);
+        }
+
+
 
         // 이미 인증 번호를 보내 레디스 서버에 인증번호가 있음
         String pinNum = redisTool.getValues(AUTH_CODE_PREFIX + toEmail);
@@ -246,8 +280,15 @@ public class MemberServiceImpl implements MemberService {
             // 해당 레디스 키를 삭제하고 재발급
             redisTool.deleteValue(AUTH_CODE_PREFIX + toEmail);
         }
-        redisTool.setValues(AUTH_CODE_PREFIX + toEmail , authCode, Duration.ofMillis(authCodeExpirationMillis));
-        emailTool.sendEmail(toEmail, title, text);
+        redisTool.setValues(AUTH_CODE_PREFIX + toEmail , authNum, Duration.ofMillis(authCodeExpirationMillis));
+    }
+    /**
+     * thymeleaf를 통한 html 적용
+     */
+    public String setContext(String authNum){
+        Context context = new Context();
+        context.setVariable("code", authNum);
+        return templateEngine.process("email", context);
     }
 
     /**
