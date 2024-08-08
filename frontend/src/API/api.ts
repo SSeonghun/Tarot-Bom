@@ -3,6 +3,27 @@ import axios from "axios";
 // const API_URL = "https://i11c208.p.ssafy.io/tarotbom/";
 const API_URL = "http://localhost/tarotbom/";
 
+const readerJoin = async(
+  keyword:string,
+  intro:string,
+) =>{
+  try {
+    const response = await axios.post(`${API_URL}user/readerjoin`,{
+      keyword,
+      intro,
+    },
+    {
+      withCredentials: true, // 요청에 쿠키를 포함하도록 설정
+    })
+    console.log(response)
+    return response
+  } catch(error){
+    console.log(keyword,intro)
+    console.log("리더 등록 실패",error);
+    throw error;
+  }
+}
+
 const readerList = async () => {
   try {
     const response = await axios.get(`${API_URL}user/reader/list`);
@@ -197,4 +218,4 @@ const youtubeMusic = async (searchQuery: string) => {
   }
 };
 
-export { readerList, result, result_get, declaration, cardInfo, youtubeMusic, readerDetail };
+export { readerJoin, readerList, result, result_get, declaration, cardInfo, youtubeMusic, readerDetail };

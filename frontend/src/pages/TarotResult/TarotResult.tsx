@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Title from "../../components/TarotResult/Title";
 import ResultSummary from "../../components/TarotResult/ResultSummary";
 
-
+//TODO: result_get에 보낼 resultId 받아 오기
 const { cardInfo,result_get } = require("../../API/api");
 
 interface ResultData {
