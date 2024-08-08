@@ -21,6 +21,7 @@ import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -129,15 +130,10 @@ public class ReservationServiceImpl implements ReservationService{
     }
 
     @Override
-    public int deleteReservation(long reservationId) {
-        try {
-            reservationRepository.deleteById(reservationId);
-            return 1;
-        } catch (Exception e) {
-            throw new BusinessException(ErrorCode.COMMON_NOT_FOUND);
+    @Transactional
+    public void deleteReservation(long reservationId) {
+        if(reservationRepository.deleteAllByReservationId(reservationId) == 0){
+            throw new BusinessException(ErrorCode.RESERVATION_NOT_FOUND);
         }
-
     }
-
-
 }

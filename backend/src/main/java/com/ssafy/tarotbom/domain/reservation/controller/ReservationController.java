@@ -45,7 +45,6 @@ public class ReservationController {
      */
     @GetMapping("/find")
     public ResponseEntity<ResultResponse> getReservations(HttpServletRequest request) {
-        // todo : 예약정보 송출할 때 단순 ID만 송출하지 말고, 여러 정보 담아서 보내기
         List<ReadReservationResponseDto> reservations = reservationService.readReservation(request);
         log.info("size : {}", reservations.size());
         ResultResponse resultResponse = ResultResponse.of(ResultCode.RESERVATION_FOUND, reservations);
@@ -53,23 +52,18 @@ public class ReservationController {
     }
 
     /**
-     * 
-     * 클라이언트가 reservationId를 가지고 있지 않음
-     * 리더, 시커 아이디 랑 시작 시간 정보로 삭제 해야 할듯
-     * roomID는 고유 값이니 이걸로 삭제 하면 될듯
-     * 
+     * 예약 방 삭제
      * @param reservationId
      * @param request
      * @return
      */
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<?> deleteReservation(@Valid @PathVariable long reservationId, HttpServletRequest request) {
-
-        log.info("reservationId : {}" , reservationId);
+        log.info("delete reservation - reservationId : {}" , reservationId);
         // 예약 번호 반환
         reservationService.deleteReservation(reservationId);
-
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("삭제완료");
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.RESERVATION_DELETED);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
 }

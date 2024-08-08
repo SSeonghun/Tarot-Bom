@@ -33,6 +33,7 @@ public enum ErrorCode {
     FAVORITE_NOT_FOUND(HttpStatus.NOT_FOUND, "M007", "이미 없는 찜 목록입니다."),
 
     // Reservation
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "S001", "예약을 찾을 수 없습니다."),
 
     // Review
     REVIEW_ALREADY_EXISTS(HttpStatus.CONFLICT, "V001", "이미 작성된 리뷰가 있습니다."),
