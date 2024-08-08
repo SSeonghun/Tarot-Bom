@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import ResizeComponent from "./ResizeComponent";
 
 interface ControlsPanelProps {
-    onCameraChange: (deviceId: string | null) => void;
-    onAudioChange: (deviceId: string | null) => void;
+    onCameraChange: (deviceId: string | null, stream: MediaStream | null) => void;
+    onAudioChange: (deviceId: string | null, stream: MediaStream | null) => void;
 }
 
 const ControlsPanel: React.FC<ControlsPanelProps> = ({ onCameraChange, onAudioChange }) => {
@@ -12,7 +11,8 @@ const ControlsPanel: React.FC<ControlsPanelProps> = ({ onCameraChange, onAudioCh
     const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
     const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
     const [selectedAudio, setSelectedAudio] = useState<string | null>(null);
-
+    const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
+    const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
 
     useEffect(() => {
         const fetchDevices = async () => {
@@ -23,22 +23,55 @@ const ControlsPanel: React.FC<ControlsPanelProps> = ({ onCameraChange, onAudioCh
 
         fetchDevices();
     }, []);
-    useEffect(() => {
-        if (selectedCamera !== null) {
-            onCameraChange(selectedCamera);
-            setSelectedTab(null); // 탭 닫기
-        }
-    }, [selectedCamera, onCameraChange]);
 
     useEffect(() => {
-        if (selectedAudio !== null) {
-            onAudioChange(selectedAudio);
+        const switchCamera = async (deviceId: string | null) => {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
+            if (deviceId) {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { deviceId: { exact: deviceId } }
+                });
+                setVideoStream(stream);
+                onCameraChange(deviceId, stream);
+            } else {
+                setVideoStream(null);
+                onCameraChange(null, null);
+            }
+        };
+
+        if (selectedCamera !== null) {
+            switchCamera(selectedCamera);
             setSelectedTab(null); // 탭 닫기
         }
-    }, [selectedAudio, onAudioChange]);
-   
+    }, [selectedCamera, videoStream, onCameraChange]);
+
+    useEffect(() => {
+        const switchAudio = async (deviceId: string | null) => {
+            if (audioStream) {
+                audioStream.getTracks().forEach(track => track.stop());
+            }
+            if (deviceId) {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: { deviceId: { exact: deviceId } }
+                });
+                setAudioStream(stream);
+                onAudioChange(deviceId, stream);
+            } else {
+                setAudioStream(null);
+                onAudioChange(null, null);
+            }
+        };
+
+        if (selectedAudio !== null) {
+            switchAudio(selectedAudio);
+            setSelectedTab(null); // 탭 닫기
+        }
+    }, [selectedAudio, audioStream, onAudioChange]);
+
     const handleTabClick = (tab: 'camera' | 'audio' | 'screen') => {
-        setSelectedTab(prevTab => prevTab === tab ? null : tab);
+        setSelectedTab(prevTab => (prevTab === tab ? null : tab));
     };
 
     return (
@@ -58,7 +91,7 @@ const ControlsPanel: React.FC<ControlsPanelProps> = ({ onCameraChange, onAudioCh
                         <ul>
                             <li>
                                 <button
-                                    onClick={() => setSelectedCamera('')}
+                                    onClick={() => setSelectedCamera(null)}
                                     className="block p-2 mb-2 bg-gray-200 hover:bg-gray-300 w-full text-left"
                                 >
                                     카메라 없음
@@ -84,7 +117,7 @@ const ControlsPanel: React.FC<ControlsPanelProps> = ({ onCameraChange, onAudioCh
                         <ul>
                             <li>
                                 <button
-                                    onClick={() => setSelectedAudio('')}
+                                    onClick={() => setSelectedAudio(null)}
                                     className="block p-2 mb-2 bg-gray-200 hover:bg-gray-300 w-full text-left"
                                 >
                                     마이크 없음
@@ -119,8 +152,7 @@ const ControlsPanel: React.FC<ControlsPanelProps> = ({ onCameraChange, onAudioCh
                     onClick={() => handleTabClick('camera')}
                     className={`flex-1 p-2 ${selectedTab === 'camera' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
                 >
-                    <img src="" alt="" />
-                    카메라 
+                    카메라
                 </button>
                 <button
                     onClick={() => handleTabClick('audio')}
@@ -140,36 +172,3 @@ const ControlsPanel: React.FC<ControlsPanelProps> = ({ onCameraChange, onAudioCh
 };
 
 export default ControlsPanel;
-    //const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
-    //const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
- // useEffect(() => {
-    //     const switchCamera = async (deviceId: string) => {
-    //         if (videoStream) {
-    //             videoStream.getTracks().forEach(track => track.stop());
-    //         }
-    //         const stream = await navigator.mediaDevices.getUserMedia({
-    //             video: { deviceId: { exact: deviceId } }
-    //         });
-    //         setVideoStream(stream);
-    //     };
-
-    //     if (selectedCamera) {
-    //         switchCamera(selectedCamera);
-    //     }
-    // }, [selectedCamera]);
-
-    // useEffect(() => {
-    //     const switchAudio = async (deviceId: string) => {
-    //         if (audioStream) {
-    //             audioStream.getTracks().forEach(track => track.stop());
-    //         }
-    //         const stream = await navigator.mediaDevices.getUserMedia({
-    //             audio: { deviceId: { exact: deviceId } }
-    //         });
-    //         setAudioStream(stream);
-    //     };
-
-    //     if (selectedAudio) {
-    //         switchAudio(selectedAudio);
-    //     }
-    // }, [selectedAudio]);

@@ -58,6 +58,7 @@ function AppWebRTC() {
     const [audioDeviceId, setAudioDeviceId] = useState<string | null>(null);
     const [maximizedVideo, setMaximizedVideo] = useState<string | null>(null);
     const [isChatVisible, setIsChatVisible] = useState<boolean>(true);
+    const [isCanvasVisible, setIsCanvasVisible] = useState<boolean>(false); // 캔버스 표시 상태 관리
 
     const canvasRef = useRef<DrawingCanvasHandle | null>(null);
 
@@ -128,28 +129,21 @@ function AppWebRTC() {
     }, [audioDeviceId, room]);
     const handleCameraChange = async (deviceId: string | null) => {
         setCameraDeviceId(deviceId);
-        console.log('Camera device ID changed to:', deviceId);
-
-        if (!deviceId || !room) {
-            console.log('No device ID or room. Skipping camera setup.');
-            return;
-        }
-
+        if (!deviceId || !room) return;
+    
         // Stop and remove the current video track if exists
         if (localVideoTrack) {
-            console.log('Unpublishing and stopping current video track:', localVideoTrack);
             await room.localParticipant.unpublishTrack(localVideoTrack);
             localVideoTrack.stop();
         }
-
+    
+    
         // Create and publish a new video track
         try {
-            console.log('Setting up new video track.');
             const videoStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId } });
             const videoTrack = new LocalVideoTrack(videoStream.getVideoTracks()[0]);
             await room.localParticipant.publishTrack(videoTrack);
             setLocalVideoTrack(videoTrack);
-            console.log('New video track published:', videoTrack);
         } catch (error) {
             console.error("Error setting up new camera track:", error);
         }
@@ -157,33 +151,24 @@ function AppWebRTC() {
 
     const handleAudioChange = async (deviceId: string | null) => {
         setAudioDeviceId(deviceId);
-        console.log('Audio device ID changed to:', deviceId);
-
-        if (!deviceId || !room) {
-            console.log('No device ID or room. Skipping audio setup.');
-            return;
-        }
-
+        if (!deviceId || !room) return;
+    
         // Stop and remove the current audio track if exists
         if (localAudioTrack) {
-            console.log('Unpublishing and stopping current audio track:', localAudioTrack);
             await room.localParticipant.unpublishTrack(localAudioTrack);
             localAudioTrack.stop();
         }
-
+    
         // Create and publish a new audio track
         try {
-            console.log('Setting up new audio track.');
             const audioStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId } });
             const audioTrack = new LocalAudioTrack(audioStream.getAudioTracks()[0]);
             await room.localParticipant.publishTrack(audioTrack);
             setLocalAudioTrack(audioTrack);
-            console.log('New audio track published:', audioTrack);
         } catch (error) {
             console.error("Error setting up new audio track:", error);
         }
     };
-
 
     const handleVideoDoubleClick = (videoId: string) => {
         console.log(`Video double-clicked: ${videoId}`);
@@ -364,9 +349,13 @@ function AppWebRTC() {
                     </div>
                 </div>
             ) : (
-                <div className="flex flex-col justify-center items-center h-full" id="room">
-                    <div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                <div className="flex flex-col justify-center items-center h-full relative" id="room">
+                    {isCanvasVisible && (
+                <div className="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
+                                        <DrawingCanvasComponent onUpdate={handleDrawingUpdate} ref={canvasRef} />
+                                    </div> )}
+                    <div className="flex flex-col h-full w-full relative">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 p-4">
                             {cards.map(card => (
                                 <TaroSelect
                                     key={card.id}
@@ -379,10 +368,11 @@ function AppWebRTC() {
                                 />
                             ))}
                         </div>
-                        <div className='flex h-screen'>
-                            <div className="flex-1">
-                                <div id="layout-container" className="grid grid-cols-auto-fit gap-4 w-full max-w-4xl h-full">
+                        <div className='flex flex-grow h-full'>
+                            <div className="flex-1 relative">
+                                <div id="layout-container" className="absolute inset-0 w-full h-full flex items-center justify-center">
                                     {localVideoTrack && (
+                                        <div className="absolute">
                                         <ResizeComponent
                                         videoId="local"
                                         isMaximized={maximizedVideo === 'local'}
@@ -391,9 +381,11 @@ function AppWebRTC() {
                                     >
                                         <VideoComponent track={localVideoTrack} participantIdentity={participantName} local={true} />
                                         </ResizeComponent>
+                                        </div>
                                     )}
-                                    {remoteTracks.map((remoteTrack) =>
+                                    {remoteTracks.map((remoteTrack,index) =>
                                         remoteTrack.trackPublication.kind === "video" ? (
+                                            <div key={remoteTrack.trackPublication.trackSid} className="absolute" style={{ transform: `translate(${index * 150}px, ${index * 150}px)` }}> {/* 비디오 위치 조정 주석 추가 */}
                                             <ResizeComponent
                                                     key={remoteTrack.trackPublication.trackSid}
                                                     videoId={remoteTrack.trackPublication.trackSid}
@@ -407,6 +399,7 @@ function AppWebRTC() {
                                                 participantIdentity={remoteTrack.participantIdentity}
                                             />
                                             </ResizeComponent>
+                                            </div>
                                         ) : (
                                             <AudioComponent
                                                 key={remoteTrack.trackPublication.trackSid}
@@ -414,9 +407,7 @@ function AppWebRTC() {
                                             />
                                         )
                                     )}
-                                    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                                        <DrawingCanvasComponent onUpdate={handleDrawingUpdate} ref={canvasRef} />
-                                    </div>
+                                    
                                 </div>
                             </div>
                             <div className="w-1/3">
@@ -432,7 +423,7 @@ function AppWebRTC() {
                             </div>
                         </div>
                     </div>
-                    <div className="relative w-full max-w-4xl px-5 mb-5">
+                    <div className="relative w-full max-w-4xl px-5 mb-5 z-50">
                         <button
                             className="absolute top-0 right-0 mt-4 mr-4 font-bold text-white bg-red-500 border border-red-500 rounded hover:bg-red-600 px-4 py-2"
                             onClick={leaveRoom}>
@@ -447,6 +438,13 @@ function AppWebRTC() {
                             className="absolute top-0 right-0 mt-4 mr-28 font-bold text-white bg-green-500 border border-green-500 rounded hover:bg-green-600 px-4 py-2"
                             onClick={saveDrawing}>
                             그림 저장
+                        </button>
+                        {/* 토글 버튼 */}
+                        <button 
+                            className="fixed bottom-4 right-4 bg-blue-500 text-white px-4 py-2 rounded" 
+                            onClick={() => setIsCanvasVisible(!isCanvasVisible)}
+                        >
+                            {isCanvasVisible ? 'Hide Canvas' : 'Show Canvas'}
                         </button>
                     </div>
                 </div>

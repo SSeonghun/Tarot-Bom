@@ -88,6 +88,8 @@ const DrawingCanvasComponent = forwardRef<DrawingCanvasHandle, DrawingCanvasProp
             const canvas = new fabric.Canvas('drawingCanvas', {
                 isDrawingMode: true,
                 backgroundColor: 'transparent',
+                width: window.innerWidth, // 캔버스의 물리적 크기 설정
+                height: window.innerHeight, // 캔버스의 물리적 크기 설정
             });
             canvasRef.current = canvas;
             console.log("Canvas initialized:", canvas);
@@ -127,17 +129,11 @@ const DrawingCanvasComponent = forwardRef<DrawingCanvasHandle, DrawingCanvasProp
         }, []);
 
         return (
-            <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            <div className="fixed top-0 left-0 w-screen h-screen z-50">
                 <canvas
                     id="drawingCanvas"
+                    className="fixed top-0 left-0 w-screen h-screen z-50 border-none"
                     style={{
-                        border: '1px solid #ccc',
-                        width: '100%',
-                        height: '100%',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        zIndex: 1,
                         opacity: loading ? 0 : 1,
                         transition: 'opacity 0.5s',
                     }}
