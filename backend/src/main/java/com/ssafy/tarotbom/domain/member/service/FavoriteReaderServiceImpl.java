@@ -98,11 +98,6 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
                     .build();
             favoriteReaderList.add(readerTemp);
         }
-//
-//        FavoriteReaderListResponseDto favoriteReaderListResponseDto = FavoriteReaderListResponseDto
-//                .builder()
-//                .readerListResponseDtos(favoriteReaderList)
-//                .build();
 
         return favoriteReaderList;
     }
