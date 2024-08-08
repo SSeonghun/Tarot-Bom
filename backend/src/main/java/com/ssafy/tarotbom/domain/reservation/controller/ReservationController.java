@@ -1,10 +1,11 @@
-package com.ssafy.tarotbom.domain.reservation.comtroller;
+package com.ssafy.tarotbom.domain.reservation.controller;
 
 import com.ssafy.tarotbom.domain.reservation.dto.request.AddReservationsRequestDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResponseDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.service.ReservationService;
 import com.ssafy.tarotbom.global.result.ResultCode;
+import com.ssafy.tarotbom.global.result.ResultResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,51 +29,41 @@ public class ReservationController {
      * @return
      */
     @PostMapping("/add")
-    public ResponseEntity<AddReservationsResponseDto> addReservation(@Valid @RequestBody AddReservationsRequestDto addReservationsRequestDto){
-
+    public ResponseEntity<ResultResponse> addReservation(@Valid @RequestBody AddReservationsRequestDto addReservationsRequestDto){
         log.info("reservation Controller");
-        AddReservationsResponseDto addReservationsResoneseDto = reservationService.addReservation(addReservationsRequestDto);
-
-        log.info("response : {} ", addReservationsResoneseDto.getRoomId());
-
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(addReservationsResoneseDto);
+        AddReservationsResponseDto addReservationsResponseDto = reservationService.addReservation(addReservationsRequestDto);
+        log.info("response : {} ", addReservationsResponseDto.getRoomId());
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.RESERVATION_ADDED, addReservationsResponseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     /**
-     * memberId로 검색하니까 리더 시커 구분 없이 예약 내역 조회
-     * 리더가 리더예약도 하고 시커 예약도 하면?
+     * 예약 조회 메서드
+     * 현재 유저의 토큰에 기록된 시커/리더 여부에 따라 다른 결과를 전송
      * @param request
      * @return
      */
     @GetMapping("/find")
-    public ResponseEntity<List<ReadReservationResponseDto>> getReservationsByReader(HttpServletRequest request) {
-        // Member 객체는 실제로는 서비스나 다른 방법으로 가져와야 합니다.
-
+    public ResponseEntity<ResultResponse> getReservations(HttpServletRequest request) {
         List<ReadReservationResponseDto> reservations = reservationService.readReservation(request);
-
         log.info("size : {}", reservations.size());
-
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body(reservations);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.RESERVATION_FOUND, reservations);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     /**
-     * 
-     * 클라이언트가 reservationId를 가지고 있지 않음
-     * 리더, 시커 아이디 랑 시작 시간 정보로 삭제 해야 할듯
-     * roomID는 고유 값이니 이걸로 삭제 하면 될듯
-     * 
+     * 예약 방 삭제
      * @param reservationId
      * @param request
      * @return
      */
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<?> deleteReservation(@Valid @PathVariable long reservationId, HttpServletRequest request) {
-
-        log.info("reservationId : {}" , reservationId);
+        log.info("delete reservation - reservationId : {}" , reservationId);
         // 예약 번호 반환
         reservationService.deleteReservation(reservationId);
-
-        return ResponseEntity.status(ResultCode.VALIDATION_NUMBER_OK.getStatus()).body("삭제완료");
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.RESERVATION_DELETED);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
 }

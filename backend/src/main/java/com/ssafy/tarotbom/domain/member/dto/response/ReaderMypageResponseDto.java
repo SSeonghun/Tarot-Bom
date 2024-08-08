@@ -29,6 +29,5 @@ public class ReaderMypageResponseDto {
 
     // 타로 내역
     private List<TarotResultGetResponseDto> tarotResultGetResponseDtos;
-    
     private List<ReaderAbstractReviewDto> reviewReaderResponseDtos;
 }

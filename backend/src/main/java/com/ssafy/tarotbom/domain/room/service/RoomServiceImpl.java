@@ -37,7 +37,7 @@ public class RoomServiceImpl implements RoomService {
         // 만일 예약을 기반으로 방을 생성하는 거라면, 기존 예약 정보에 방 ID가 포함되어있는지 확인 必
         if(roomType.equals("reserve")){
             res = reservationRepository.findByReservationId(dto.getReservationId());
-            if(res.getRoomId() != 0){
+            if(res.getRoomId() != null){
                 throw new BusinessException(ErrorCode.ROOM_RESERVED_ALREADY_EXISTS);
             }
         }
