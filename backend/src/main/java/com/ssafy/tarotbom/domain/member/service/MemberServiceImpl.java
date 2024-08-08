@@ -8,7 +8,7 @@ import com.ssafy.tarotbom.domain.member.dto.response.*;
 import com.ssafy.tarotbom.domain.member.entity.FavoriteReader;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
-import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
+import com.ssafy.tarotbom.global.util.JwtUtil;
 import com.ssafy.tarotbom.domain.member.repository.FavoriteReaderRepository;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
@@ -18,10 +18,7 @@ import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
 import com.ssafy.tarotbom.domain.review.repository.ReviewReaderRepository;
 import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
 import com.ssafy.tarotbom.domain.tarot.service.TarotResultService;
-import com.ssafy.tarotbom.global.code.entity.CodeDetail;
-import com.ssafy.tarotbom.domain.member.email.EmailTool;
 import com.ssafy.tarotbom.global.code.entity.repository.CodeDetailRepository;
-import com.ssafy.tarotbom.global.config.RedisTool;
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.util.CookieUtil;
@@ -45,7 +42,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -64,8 +60,8 @@ public class MemberServiceImpl implements MemberService {
     private final ReviewReaderRepository reviewReaderRepository;
     private final S3Service s3Service;
 
-    private final RedisTool redisTool;
-    private final EmailTool emailTool;
+    private final MemberRedisService memberRedisService;
+    private final EmailService emailService;
     private final CookieUtil cookieUtil;
 
     private static final String AUTH_CODE_PREFIX = "AuthCode:";
@@ -168,7 +164,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void logout(HttpServletRequest request) {
         String email = cookieUtil.getMemberEmail(request);
-        redisTool.deleteValue(AUTH_CODE_PREFIX+email);
+        memberRedisService.deleteValue(AUTH_CODE_PREFIX+email);
     }
 
     /**
@@ -242,13 +238,13 @@ public class MemberServiceImpl implements MemberService {
                 + "      인증 번호는\n\n" +"         " + authCode + "\n\n         입니다.";
 
         // 이미 인증 번호를 보내 레디스 서버에 인증번호가 있음
-        String pinNum = redisTool.getValues(AUTH_CODE_PREFIX + toEmail);
+        String pinNum = memberRedisService.getValues(AUTH_CODE_PREFIX + toEmail);
         if(pinNum != null) {
             // 해당 레디스 키를 삭제하고 재발급
-            redisTool.deleteValue(AUTH_CODE_PREFIX + toEmail);
+            memberRedisService.deleteValue(AUTH_CODE_PREFIX + toEmail);
         }
-        redisTool.setValues(AUTH_CODE_PREFIX + toEmail , authCode, Duration.ofMillis(authCodeExpirationMillis));
-        emailTool.sendEmail(toEmail, title, text);
+        memberRedisService.setValues(AUTH_CODE_PREFIX + toEmail , authCode, Duration.ofMillis(authCodeExpirationMillis));
+        emailService.sendEmail(toEmail, title, text);
     }
 
     /**
@@ -260,7 +256,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void verifyCode(String email, String authCode) {
         log.info("verify emails {}" , email);
-        String redisAuthCode = redisTool.getValues((AUTH_CODE_PREFIX + email));
+        String redisAuthCode = memberRedisService.getValues((AUTH_CODE_PREFIX + email));
         log.info("redis get pinNumber : {} ",redisAuthCode);
         if(Integer.parseInt(redisAuthCode) != Integer.parseInt(authCode)){
             throw new BusinessException(ErrorCode.MEMBER_INVALID_CODE);

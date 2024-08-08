@@ -1,5 +1,6 @@
-package com.ssafy.tarotbom.domain.member.jwt;
+package com.ssafy.tarotbom.global.filter;
 
+import com.ssafy.tarotbom.global.util.JwtUtil;
 import com.ssafy.tarotbom.domain.member.service.TokenService;
 import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
 import com.ssafy.tarotbom.global.security.CustomUserDetails;

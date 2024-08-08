@@ -1,4 +1,4 @@
-package com.ssafy.tarotbom.domain.member.jwt;
+package com.ssafy.tarotbom.global.util;
 
 import com.ssafy.tarotbom.domain.member.dto.request.CustomUserInfoDto;
 import io.jsonwebtoken.*;
@@ -11,9 +11,7 @@ import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Date;
 
