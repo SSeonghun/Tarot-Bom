@@ -6,6 +6,7 @@ import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultSaveResponseDto;
 import com.ssafy.tarotbom.domain.tarot.service.TarotResultService;
 import com.ssafy.tarotbom.global.result.ResultCode;
 import com.ssafy.tarotbom.global.result.ResultResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ public class TarotResultController {
     private final TarotResultService tarotResultService;
 
     @GetMapping("/search/{resultId}")
-    public ResponseEntity<ResultResponse> getTarotResult(@PathVariable("resultId") long resultId) {
-        TarotResultGetResponseDto result = tarotResultService.getTarotResult(resultId, 1);
+    public ResponseEntity<ResultResponse> getTarotResult(@PathVariable("resultId") long resultId, HttpServletRequest request) {
+        TarotResultGetResponseDto result = tarotResultService.getTarotResult(resultId, request);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.TAROT_CARD_RESULT_FOUND, result);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
@@ -31,7 +32,7 @@ public class TarotResultController {
 
         TarotResultSaveResponseDto result = tarotResultService.saveTarotResult(dto);
 
-        ResultResponse resultResponse = ResultResponse.of(ResultCode.TAROT_CARD_RESULT_SAVED);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.TAROT_CARD_RESULT_SAVED, result);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 

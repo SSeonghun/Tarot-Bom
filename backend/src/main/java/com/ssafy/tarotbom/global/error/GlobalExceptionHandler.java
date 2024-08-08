@@ -43,7 +43,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception ex){
-        log.error(ex.toString());
+//        log.error(ex.toString());
+        ex.printStackTrace();
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.COMMON_ETC);
         return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
     }
