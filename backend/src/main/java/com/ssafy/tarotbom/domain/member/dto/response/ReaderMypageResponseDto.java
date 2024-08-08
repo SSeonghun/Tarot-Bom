@@ -28,8 +28,8 @@ public class ReaderMypageResponseDto {
 
     // 타로 내역
     private List<TarotResultGetResponseDto> tarotResultGetResponseDtos;
-
-    // todo : 리뷰 내역
+    
+    // 결제 내역
     private List<ReviewReaderResponseDto> reviewReaderResponseDtos;
     // todo : 결제 내역
 }
