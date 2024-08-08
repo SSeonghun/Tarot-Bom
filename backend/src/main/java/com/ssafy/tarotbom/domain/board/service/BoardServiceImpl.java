@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,7 +61,7 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = true)
     @Override
     public List<BoardListResDto> getListBoard() {
-        List<Board> boards = boardRepository.findAll();
+        List<Board> boards = boardRepository.findAll(Sort.by(Sort.Direction.DESC, "createTime"));
 
         if(boards.isEmpty()){
             throw new BusinessException(ErrorCode.BOARD_EMPTY);
