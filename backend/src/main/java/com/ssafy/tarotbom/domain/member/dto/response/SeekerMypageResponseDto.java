@@ -31,17 +31,7 @@ public class SeekerMypageResponseDto {
     private List<TarotResultGetResponseDto> tarotResults;
 
     //todo: 카테고리별 최대 퍼센트, 카테고리
-    //private int bestPercent; // 카테고리별 최대 퍼센트
-    //private String bestCategory; // 제일 많은 카테고리
-    // + 카테고리별 수치도 넘겨줘야 할듯
 
-    //todo: 찜리스트
     private List<ReaderListResponseDto> favoriteReaderList;
-    /////////
-    // 찜리스트 영역
-    ////////
-
-
-
 
 }
