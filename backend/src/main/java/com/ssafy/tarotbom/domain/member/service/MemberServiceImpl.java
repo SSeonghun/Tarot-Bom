@@ -3,12 +3,12 @@ package com.ssafy.tarotbom.domain.member.service;
 import com.ssafy.tarotbom.domain.member.dto.ReaderAnalyzeDto;
 import com.ssafy.tarotbom.domain.member.dto.SeekerAnalyzeDto;
 import com.ssafy.tarotbom.domain.member.dto.request.*;
-import com.ssafy.tarotbom.domain.member.dto.response.ReaderMypageResponseDto;
-import com.ssafy.tarotbom.domain.member.dto.response.ReviewReaderResponseDto;
-import com.ssafy.tarotbom.domain.member.dto.response.SeekerMypageResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.*;
+import com.ssafy.tarotbom.domain.member.entity.FavoriteReader;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
 import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
+import com.ssafy.tarotbom.domain.member.repository.FavoriteReaderRepository;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
@@ -23,7 +23,6 @@ import com.ssafy.tarotbom.global.code.entity.repository.CodeDetailRepository;
 import com.ssafy.tarotbom.global.config.RedisTool;
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
-import com.ssafy.tarotbom.domain.member.dto.response.LoginResponseDto;
 import com.ssafy.tarotbom.global.util.CookieUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
@@ -69,6 +68,7 @@ public class MemberServiceImpl implements MemberService {
     private final CookieUtil cookieUtil;
 
     private static final String AUTH_CODE_PREFIX = "AuthCode:";
+    private final FavoriteReaderRepository favoriteReaderRepository;
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private Long authCodeExpirationMillis;
@@ -520,13 +520,34 @@ public class MemberServiceImpl implements MemberService {
          } else {
              isReader = true;
          }
-        log.info("isReader : {}", isReader);
+        // log.info("isReader : {}", isReader);
+
+        // 찜 리스트
+        List<ReaderListResponseDto> favoriteReaderList = new ArrayList<>();
+        List<FavoriteReader> queryList = favoriteReaderRepository.findBySeekerId(memberId);
+        for(FavoriteReader favoriteReader : queryList) {
+            Reader reader = favoriteReader.getReader();
+            Member readerInfo = reader.getMember();
+            favoriteReaderList.add(
+                        ReaderListResponseDto.builder()
+                                .memberId(reader.getMemberId())
+                                .profileUrl(readerInfo.getProfileUrl())
+                                .name(readerInfo.getNickname())
+                                .keyword(reader.getKeywords())
+                                .intro(reader.getIntro())
+                                .rating(reader.getRating())
+                                .grade(reader.getGradeCode())
+                                .build()
+            );
+        }
+
         SeekerMypageResponseDto seekerMypageResponseDto = SeekerMypageResponseDto
                 .builder()
                 .isReader(isReader) // 리더 프로필 만들기를 띄울 건지, 전환을 띄울 건지
                 .reservationList(readReservationResponseDtos)
                 .tarotResults(tarotResultGetResponseDtos)
                 .totalConsulting(tarotResultGetResponseDtos.size())
+                .favoriteReaderList(favoriteReaderList)
                 .email(email)
                 .analyze(seekerAnalyzeDto)
                 .name(member.getNickname())

@@ -211,8 +211,8 @@ public class MemberController {
      */
     @GetMapping("/favorite/list")
     public ResponseEntity<?> searchFavoriteReader(HttpServletRequest request) {
-        FavoriteReaderListResponseDto favoriteReaderListResponseDto = favoriteReaderService.searchFavoriteReader(request);
-        ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_ALL_FAVORITE_READER, favoriteReaderListResponseDto);
+        List<ReaderListResponseDto> readerListResponseDtos = favoriteReaderService.searchFavoriteReader(request);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_ALL_FAVORITE_READER, readerListResponseDtos);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
