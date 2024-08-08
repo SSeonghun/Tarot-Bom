@@ -1,18 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Client, IMessage } from '@stomp/stompjs';
-import HoverButton from '../Common/HoverButton';
-import LoadingModal from '../Common/MatchingLoading';
-import MatchingConfirmationModal from '../Common/MatchingReady'; // 매칭 확인 모달
-import useStore from '../../stores/store';
-import ReaderItem from './Readeritems/ReaderItem';
-import ReaderBg from '../../assets/img/readermypage.png';
-import Profile from '../../assets/img/profile2.png';
+import React, { useState, useEffect, useRef } from "react";
+import { Client, IMessage } from "@stomp/stompjs";
+import HoverButton from "../Common/HoverButton";
+import LoadingModal from "../Common/MatchingLoading";
+import MatchingConfirmationModal from "../Common/MatchingReady"; // 매칭 확인 모달
+import useStore from "../../stores/store";
+import ReaderItem from "./Readeritems/ReaderItem";
+import ReaderBg from "../../assets/img/readermypage.png";
+import Profile from "../../assets/img/profile2.png";
 
 const ReaderMypage: React.FC = () => {
   const [connected, setConnected] = useState<boolean>(false);
   const [socketMessage, setSocketMessage] = useState<string | null>(null);
   const [matchLoading, setMatchLoading] = useState<boolean>(false); // 로딩 상태 추가
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false); // 매칭 확인 모달 상태 추가
+  const [pendingPayload, setPendingPayload] = useState<any>(null); // 매칭 요청 페이로드 상태 추가
 
   const client = useRef<Client | null>(null);
 
@@ -21,27 +22,30 @@ const ReaderMypage: React.FC = () => {
 
   useEffect(() => {
     client.current = new Client({
-      brokerURL: 'ws://localhost/tarotbom/ws-stomp',
+      brokerURL: "ws://localhost/tarotbom/ws-stomp",
       onConnect: () => {
-        console.log('Connected to WebSocket');
+        console.log("Connected to WebSocket");
         setConnected(true);
 
         if (memberId) {
-          client.current?.subscribe(`/sub/matching/status/${memberId}`, (message: IMessage) => {
-            const receivedMessage = JSON.parse(message.body);
-            console.log('Received message:', receivedMessage);
-            setSocketMessage(receivedMessage);
+          client.current?.subscribe(
+            `/sub/matching/status/${memberId}`,
+            (message: IMessage) => {
+              const receivedMessage = JSON.parse(message.body);
+              console.log("Received message:", receivedMessage);
+              setSocketMessage(receivedMessage);
 
-            if (receivedMessage.code === 'M02') {
-              setMatchLoading(false);
-              setShowConfirmation(true); // 매칭 확인 모달 열기
+              if (receivedMessage.code === "M02") {
+                setMatchLoading(false);
+                setShowConfirmation(true); // 매칭 확인 모달 열기
+              }
             }
-          });
+          );
         }
       },
       onStompError: (frame) => {
-        console.error('Broker reported error: ' + frame.headers['message']);
-        console.error('Additional details: ' + frame.body);
+        console.error("Broker reported error: " + frame.headers["message"]);
+        console.error("Additional details: " + frame.body);
       },
     });
 
@@ -54,31 +58,56 @@ const ReaderMypage: React.FC = () => {
 
   useEffect(() => {
     if (socketMessage) {
-      console.log('Socket message updated:', socketMessage);
+      console.log("Socket message updated:", socketMessage);
     }
   }, [socketMessage]);
 
   const handleRandomMatching = () => {
     if (connected && client.current) {
       const payload = {
-        keyword: 'G01',
-        roomStyle: 'CAM',
-        memberType: 'reader',
+        keyword: "G01",
+        roomStyle: "CAM",
+        memberType: "reader",
         memberId,
-        worry: 'Sample worry',
+        worry: "Sample worry",
       };
+
+      setPendingPayload(payload); // 페이로드를 상태로 저장
 
       setMatchLoading(true); // 매칭 요청 시 로딩 시작
 
       client.current.publish({
-        destination: '/pub/matching/start',
+        destination: "/pub/matching/start",
         body: JSON.stringify(payload),
       });
 
-      console.log('Random matching request sent:', payload);
+      console.log("Random matching request sent:", payload);
     } else {
-      console.error('STOMP client is not connected');
+      console.error("STOMP client is not connected");
     }
+  };
+
+  const handleCancelMatching = () => {
+    if (connected && client.current && pendingPayload) {
+      const cancelPayload = {
+        ...pendingPayload, // 기존 페이로드를 그대로 포함
+        cancelReason: "User canceled the matching process", // 취소 이유
+      };
+
+      client.current.publish({
+        destination: "/pub/matching/cancel",
+        body: JSON.stringify(cancelPayload),
+      });
+
+      console.log("Matching cancel request sent:", cancelPayload);
+    }
+
+    setMatchLoading(false);
+    setShowConfirmation(false);
+    setSocketMessage(null);
+    setConnected(false);
+    setPendingPayload(null); // 페이로드 상태 초기화
+    console.log("Matching cancelled");
   };
 
   const handleCloseConfirmation = () => {
@@ -87,7 +116,7 @@ const ReaderMypage: React.FC = () => {
 
   return (
     <div className="relative w-screen h-screen">
-      <LoadingModal isOpen={matchLoading} />
+      <LoadingModal isOpen={matchLoading} onCancel={handleCancelMatching} />
       <MatchingConfirmationModal
         isOpen={showConfirmation}
         matchData={socketMessage}
@@ -98,8 +127,8 @@ const ReaderMypage: React.FC = () => {
         className="absolute inset-0 z-0 opacity-80"
         style={{
           backgroundImage: `url(${ReaderBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       ></div>
       <div className="absolute inset-0 z-10 bg-black opacity-50"></div>
@@ -120,6 +149,15 @@ const ReaderMypage: React.FC = () => {
             wsize="w-48"
             fontsize="text-lg"
             onClick={handleRandomMatching}
+          />
+          <HoverButton
+            label="매칭 취소"
+            color="bg-gray-300"
+            hoverColor="bg-gray-500"
+            hsize="h-12"
+            wsize="w-48"
+            fontsize="text-lg"
+            onClick={handleCancelMatching}
           />
         </div>
       </div>

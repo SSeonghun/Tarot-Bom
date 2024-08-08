@@ -42,7 +42,7 @@ public class MatchingController {
             SocketResponse socketResponse = SocketResponse.of(SocketCode.MATCHING_ALREADY_PROCESSING);
             log.info("start 이미 매칭 중인 회원 : {}", dto.getMemberId());
             sendingOperation.convertAndSend(matchingStatusPath+dto.getMemberId(), socketResponse);
-            return;
+//            return;
         }
         // [1] 초기 매칭 대상자 찾기
         // 매칭 요청을 한 객체에 대해 dto를 생성
@@ -55,8 +55,6 @@ public class MatchingController {
                 .memberType(dto.getMemberType())
                 .worry(dto.getWorry())
                 .build();
-        // 이후 적절한 매칭 대기열에 현재 dto를 삽입
-        matchingService.offerToMatchingQueue(myDto);
         MatchingInfoDto candidateDto = matchingService.searchToMatching(myDto);
         if(candidateDto != null){ // 바로 찾을 수 있었다면 매칭 확인 매커니즘으로 넘어간다
             // 매칭 확인 요청을 보내는 메서드 호출
@@ -127,7 +125,7 @@ public class MatchingController {
 
     @MessageMapping("/cancel")
     public void cancelMatching(MatchingInfoDto dto) {
-        log.info("매칭을 취소함 : {}", dto.getMemberId());
+        log.info("cancel 매칭을 취소함 : {}", dto.getMemberId());
         matchingService.removeFromMatchingQueue(dto);
         matchingService.setMatchingStatusEnd(dto.getMemberId());
         SocketResponse socketResponse = SocketResponse.of(SocketCode.MATCHING_CANCELED, dto);
