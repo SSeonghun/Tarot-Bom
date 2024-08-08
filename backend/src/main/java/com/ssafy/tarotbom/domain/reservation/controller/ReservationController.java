@@ -1,4 +1,4 @@
-package com.ssafy.tarotbom.domain.reservation.comtroller;
+package com.ssafy.tarotbom.domain.reservation.controller;
 
 import com.ssafy.tarotbom.domain.reservation.dto.request.AddReservationsRequestDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResponseDto;
@@ -38,13 +38,13 @@ public class ReservationController {
     }
 
     /**
-     * memberId로 검색하니까 리더 시커 구분 없이 예약 내역 조회
-     * 리더가 리더예약도 하고 시커 예약도 하면?
+     * 예약 조회 메서드
+     * 현재 유저의 토큰에 기록된 시커/리더 여부에 따라 다른 결과를 전송
      * @param request
      * @return
      */
     @GetMapping("/find")
-    public ResponseEntity<ResultResponse> getReservationsByReader(HttpServletRequest request) {
+    public ResponseEntity<ResultResponse> getReservations(HttpServletRequest request) {
         // todo : 예약정보 송출할 때 단순 ID만 송출하지 말고, 여러 정보 담아서 보내기
         List<ReadReservationResponseDto> reservations = reservationService.readReservation(request);
         log.info("size : {}", reservations.size());

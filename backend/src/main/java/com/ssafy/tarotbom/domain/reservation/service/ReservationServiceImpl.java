@@ -7,6 +7,7 @@ import com.ssafy.tarotbom.domain.reservation.dto.request.AddReservationsRequestD
 import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResponseDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
+import com.ssafy.tarotbom.domain.reservation.repository.ReservationQueryRepository;
 import com.ssafy.tarotbom.domain.reservation.repository.ReservationRepository;
 import com.ssafy.tarotbom.domain.room.dto.request.RoomOpenRequestDto;
 import com.ssafy.tarotbom.domain.room.dto.response.RoomOpenResponseDto;
@@ -36,11 +37,10 @@ public class ReservationServiceImpl implements ReservationService{
 
     private final ReservationRepository reservationRepository;
     private final RoomService roomService;
-    private final CodeDetailRepository codeDetailRepository;
     private final MemberRepository memberRepository;
-    private final RoomRepository roomRepository;
     private final CookieUtil cookieUtil;
     private final ReaderRepository readerRepository;
+    private final ReservationQueryRepository reservationQueryRepository;
 
     /**
      * 예약 추가
@@ -101,31 +101,26 @@ public class ReservationServiceImpl implements ReservationService{
      */
     @Override
     public List<ReadReservationResponseDto> readReservation(HttpServletRequest request) {
-
         long memberId = cookieUtil.getUserId(request);
         String memberType = cookieUtil.getMemberType(request);
-
         log.info("memberId : {}", memberId);
-        List<Reservation> reservations = null;
-        if(memberType.equals("M02")) {
-            reservations = reservationRepository.findAllByReaderId(memberId);
-        } else if (memberType.equals("M01")) {
-            reservations = reservationRepository.findAllBySeekerId(memberId);
-        }
+        List<Reservation> reservations = reservationQueryRepository.findFilter(memberType, memberId);
 
-        log.info("reservations_reader : {}", reservations.size());
+        log.info("reservations size : {}", reservations.size());
 
         List<ReadReservationResponseDto> respondList = new ArrayList<>();
         for(Reservation reservation : reservations) {
-            // 이미 상담이 끝난 예약은 송출하지 않는다
-            if(reservation.getStatusCode().equals("R04")) {
-                continue;
-            }
             respondList.add(
                     ReadReservationResponseDto.builder()
                             .reservationId(reservation.getReservationId())
                             .seekerId(reservation.getSeekerId())
+                            .seekerName(reservation.getSeeker().getNickname())
+                            .seekerProfileUrl(reservation.getSeeker().getProfileUrl())
                             .readerId(reservation.getReaderId())
+                            .readerName(reservation.getReader().getNickname())
+                            .readerProfileUrl(reservation.getReader().getProfileUrl())
+                            .status(reservation.getStatusCode())
+                            .keyword(reservation.getKeywordCode())
                             .startTime(reservation.getStartTime())
                             .build()
             );
