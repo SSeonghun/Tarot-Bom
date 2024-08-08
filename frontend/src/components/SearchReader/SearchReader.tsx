@@ -96,7 +96,7 @@ const SerchReader: React.FC = () => {
                   review={0} // 리뷰 데이터가 없으면 기본값 0
                   category={['Category1']} // 카테고리 예시
                   // TODO : 이미지처리
-                  imgUrl="https://via.placeholder.com/150" // 더미 이미지 URL
+                  imgUrl={ reader.profileUrl } // 더미 이미지 URL
                   hsize="h-10"
                   wsize="w-40"
                   onClick={() => handleCardClick(reader.memberId)} // 클릭 핸들러 전달

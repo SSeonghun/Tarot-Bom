@@ -11,6 +11,7 @@ interface UserState {
         nickname: string | undefined;
         email: string | undefined;
         isReader: boolean | undefined;
+        profileImg : string | undefined;
       }
     | undefined; // 사용자 정보 (null일 수 있음)
   loginUser: () => void; // 로그인 함수
@@ -20,6 +21,7 @@ interface UserState {
     nickname: string | undefined;
     email: string | undefined;
     isReader: boolean | undefined;
+    profileImg : string | undefined;
   }) => void; // 사용자 정보 설정 함수
 }
 
