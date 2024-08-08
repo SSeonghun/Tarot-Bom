@@ -1,7 +1,6 @@
 package com.ssafy.tarotbom.domain.matching.controller;
 
 import com.ssafy.tarotbom.domain.matching.dto.MatchingInfoDto;
-import com.ssafy.tarotbom.domain.matching.dto.request.MatchingCancelRequestDto;
 import com.ssafy.tarotbom.domain.matching.dto.request.MatchingConfirmRequestDto;
 import com.ssafy.tarotbom.domain.matching.dto.request.MatchingStartRequestDto;
 import com.ssafy.tarotbom.domain.matching.dto.response.MatchingConfirmResponseDto;
@@ -127,11 +126,11 @@ public class MatchingController {
     }
 
     @MessageMapping("/cancel")
-    public void cancelMatching(MatchingCancelRequestDto dto) {
+    public void cancelMatching(MatchingInfoDto dto) {
         log.info("매칭을 취소함 : {}", dto.getMemberId());
-        matchingService.removeFromMatchingQueue(dto.getMemberDto());
+        matchingService.removeFromMatchingQueue(dto);
         matchingService.setMatchingStatusEnd(dto.getMemberId());
-        SocketResponse socketResponse = SocketResponse.of(SocketCode.MATCHING_CANCELED, dto.getMemberDto());
+        SocketResponse socketResponse = SocketResponse.of(SocketCode.MATCHING_CANCELED, dto);
         sendingOperation.convertAndSend(matchingStatusPath+dto.getMemberId(), socketResponse);
     }
 
