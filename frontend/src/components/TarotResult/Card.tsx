@@ -18,7 +18,7 @@ interface CardProps {
   wsize: string;
 }
 
-// TODO : 타로 결과 받아서 뿌려주기 + S3 이미지 데이터 가져오기
+// : 타로 결과 받아서 뿌려주기 + S3 이미지 데이터 가져오기
 
 const TarotResult: React.FC<CardProps> = ({
   name,

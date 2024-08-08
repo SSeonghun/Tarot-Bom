@@ -61,11 +61,56 @@ const result = async (
     });
     return response.data;
   } catch (error) {
-    console.error("결과 조회 실패", error);
+    console.error("결과 저장 실패", error);
     throw error;
   }
 };
-
+const result_get = async(
+  resultId: number,
+)=>{
+  try{
+    const response = await axios.get(`${API_URL}result/search/${resultId}`
+      ,
+      {
+        withCredentials: true, // 쿠키를 포함하도록 설정
+      }
+    )
+    // )console.log(resultId)
+    
+  //   const response={
+  //     readerId : 1,
+  //     seekerId : 2,
+  //     date : '2024.08.08',
+  //     keyword : 'String',
+  //     memo : 'String',
+  //     summary : 'String',
+  //     music : 'url',
+  //     roomId : 1,
+  //     cards : [
+  //        {
+  //           cardId: 1,
+  //           sequence: 1,
+  //           direction: '테스트',
+  //        }
+  //        ,
+  //              {
+  //           cardId: 2,
+  //           sequence: 2,
+  //           direction: 'String',
+  //        },
+  //        {
+  //     cardId: 3,
+  //     sequence: 3,
+  //     direction: 'String',
+  //  }
+  //     ]
+  //  }
+    return response;
+  }catch(error){
+    console.error("결과 조회 실패")
+    throw error;
+  }
+};
 const declaration = async (
   reporterId: number,
   reportedId: number,
@@ -84,7 +129,7 @@ const declaration = async (
       repotType,
     });
 
-    return response.data;
+    return response;
   } catch (error) {
     console.error("신고 실패", error);
     throw error;
@@ -152,4 +197,4 @@ const youtubeMusic = async (searchQuery: string) => {
   }
 };
 
-export { readerList, result, declaration, cardInfo, youtubeMusic, readerDetail };
+export { readerList, result, result_get, declaration, cardInfo, youtubeMusic, readerDetail };
