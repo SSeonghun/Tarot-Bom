@@ -34,7 +34,7 @@ const Title: React.FC<TarotResultProps> = ({ selectedCard }) => {
             />
             <h1 className="text-6xl font-bold text-white">타로 결과</h1>
           </div>
-          <hr className="w-full border-t-2 border-white mt-4" />
+          {/* <hr className="w-full border-t-2 border-white mt-4" /> */}
 
           {/* 결과 카드 */}
           <ResultCard selectedCard={selectedCard} />

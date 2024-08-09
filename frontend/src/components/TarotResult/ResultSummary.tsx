@@ -70,7 +70,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
               <img src={moneyImg} alt="moneyImg" className="w-8 h-8 mr-2" />
               AI {category} 요약
             </div>
-            <div className="mt-8 border border-white p-6 rounded-lg max-w-xl bg-black bg-opacity-60">
+            <div className="mt-8 border border-white p-6 rounded-lg max-w-xl bg-black bg-opacity-60 h-[600px] overflow-y-auto">
               <ReactMarkdown
                 className="text-white text-s"
                 remarkPlugins={[remarkBreaks, remarkGfm]}

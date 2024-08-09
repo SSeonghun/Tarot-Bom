@@ -21,6 +21,7 @@ import SeekerMypage from "./pages/UserProfile/SeekerMypage";
 import ReaderMypage from "./pages/UserProfile/ReaderMypage";
 import Booking from "./pages/Booking/Booking";
 import WebRTCpage from "./pages/WebRTC/WebRTCpage";
+import WebRTCTest from "./pages/WebRTC/WebRTCtest";
 
 const App: React.FC = () => {
   return (
@@ -49,6 +50,10 @@ const App: React.FC = () => {
           <Route path="/reader-mypage" element={<ReaderMypage />} />
           <Route path="/booking" element={<Booking />} />
           <Route path="/webrtc" element={<WebRTCpage />} />
+          <Route
+            path="/rtcTest"
+            element={<WebRTCTest token={""} name={""} type={""} />}
+          />
         </Routes>
       </div>
     </Router>
