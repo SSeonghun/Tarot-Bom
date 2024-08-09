@@ -2,6 +2,7 @@ package com.ssafy.tarotbom.domain.tarot.service;
 
 import com.ssafy.tarotbom.domain.tarot.dto.TarotResultCardDto;
 import com.ssafy.tarotbom.domain.tarot.dto.request.TarotResultSaveRequestDto;
+import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultCardResponseDto;
 import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
 import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultSaveResponseDto;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotCard;
@@ -104,7 +105,7 @@ public class TarotResultServiceImpl implements TarotResultService {
         if(tarotResult.getReaderId() != memberId && tarotResult.getSeekerId() != memberId){
             throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_YOUR_RESULT);
         }
-        List<TarotResultCardDto> cards = new ArrayList<>();
+        List<TarotResultCardResponseDto> cards = new ArrayList<>();
         // 우선 카드 리스트 정보부터 채운다
         for(TarotResultCard c : tarotResult.getCardList()){
             TarotCard oneCard = c.getCard();
@@ -116,14 +117,18 @@ public class TarotResultServiceImpl implements TarotResultService {
                 direction = "upright";
             }
             cards.add(
-                    TarotResultCardDto.builder()
-                            .cardId(oneCard.getCardId())
+                    TarotResultCardResponseDto.builder()
+                            .cardId(c.getCardId())
+                            .cardName(c.getCard().getCardName())
+                            .description(c.getCard().getDescription())
+                            .imageUrl(c.getCard().getImageUrl())
                             .sequence(c.getSequence())
                             .direction(direction)
                             .build()
             );
         }
         return TarotResultGetResponseDto.builder()
+                .resultId(tarotResult.getResultId())
                 .readerId(tarotResult.getReaderId())
                 .seekerId(tarotResult.getSeekerId())
                 .date(tarotResult.getDate())
@@ -156,17 +161,21 @@ public class TarotResultServiceImpl implements TarotResultService {
         return tarotResults.stream()
                 .map(result -> {
                     // 카드 리스트 정보 채우기
-                    List<TarotResultCardDto> cards = new ArrayList<>();
+                    List<TarotResultCardResponseDto> cards = new ArrayList<>();
                     for (TarotResultCard c : result.getCardList()) {
                         String direction = (c.getDirection() == TarotDirection.R) ? "reversed" : "upright";
-                        cards.add(TarotResultCardDto.builder()
-                                .cardId(c.getCard().getCardId())
+                        cards.add(TarotResultCardResponseDto.builder()
+                                .cardId(c.getCardId())
+                                .cardName(c.getCard().getCardName())
+                                .description(c.getCard().getDescription())
+                                .imageUrl(c.getCard().getImageUrl())
                                 .sequence(c.getSequence())
                                 .direction(direction)
                                 .build());
                     }
 
                     return TarotResultGetResponseDto.builder()
+                            .resultId(result.getResultId())
                             .readerId(result.getReaderId())
                             .seekerId(result.getSeekerId())
                             .date(result.getDate())
@@ -193,11 +202,14 @@ public class TarotResultServiceImpl implements TarotResultService {
         return tarotResults.stream()
                 .map(result -> {
                     // 카드 리스트 정보 채우기
-                    List<TarotResultCardDto> cards = new ArrayList<>();
+                    List<TarotResultCardResponseDto> cards = new ArrayList<>();
                     for (TarotResultCard c : result.getCardList()) {
                         String direction = (c.getDirection() == TarotDirection.R) ? "reversed" : "upright";
-                        cards.add(TarotResultCardDto.builder()
-                                .cardId(c.getCard().getCardId())
+                        cards.add(TarotResultCardResponseDto.builder()
+                                .cardId(c.getCardId())
+                                .cardName(c.getCard().getCardName())
+                                .description(c.getCard().getDescription())
+                                .imageUrl(c.getCard().getImageUrl())
                                 .sequence(c.getSequence())
                                 .direction(direction)
                                 .build());
@@ -224,17 +236,21 @@ public class TarotResultServiceImpl implements TarotResultService {
         return tarotResults.stream()
                 .map(result -> {
                     // 카드 리스트 정보 채우기
-                    List<TarotResultCardDto> cards = new ArrayList<>();
+                    List<TarotResultCardResponseDto> cards = new ArrayList<>();
                     for (TarotResultCard c : result.getCardList()) {
                         String direction = (c.getDirection() == TarotDirection.R) ? "reversed" : "upright";
-                        cards.add(TarotResultCardDto.builder()
-                                .cardId(c.getCard().getCardId())
+                        cards.add(TarotResultCardResponseDto.builder()
+                                .cardId(c.getCardId())
+                                .cardName(c.getCard().getCardName())
+                                .description(c.getCard().getDescription())
+                                .imageUrl(c.getCard().getImageUrl())
                                 .sequence(c.getSequence())
                                 .direction(direction)
                                 .build());
                     }
 
                     return TarotResultGetResponseDto.builder()
+                            .resultId(result.getResultId())
                             .readerId(result.getReaderId())
                             .seekerId(result.getSeekerId())
                             .date(result.getDate())
@@ -255,17 +271,21 @@ public class TarotResultServiceImpl implements TarotResultService {
         return tarotResults.stream()
                 .map(result -> {
                     // 카드 리스트 정보 채우기
-                    List<TarotResultCardDto> cards = new ArrayList<>();
+                    List<TarotResultCardResponseDto> cards = new ArrayList<>();
                     for (TarotResultCard c : result.getCardList()) {
                         String direction = (c.getDirection() == TarotDirection.R) ? "reversed" : "upright";
-                        cards.add(TarotResultCardDto.builder()
-                                .cardId(c.getCard().getCardId())
+                        cards.add(TarotResultCardResponseDto.builder()
+                                .cardId(c.getCardId())
+                                .cardName(c.getCard().getCardName())
+                                .description(c.getCard().getDescription())
+                                .imageUrl(c.getCard().getImageUrl())
                                 .sequence(c.getSequence())
                                 .direction(direction)
                                 .build());
                     }
 
                     return TarotResultGetResponseDto.builder()
+                            .resultId(result.getResultId())
                             .readerId(result.getReaderId())
                             .seekerId(result.getSeekerId())
                             .date(result.getDate())

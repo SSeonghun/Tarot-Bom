@@ -18,5 +18,5 @@ public class TarotResultGetResponseDto {
     private String memo;
     private String summary;
     private String music;
-    private List<TarotResultCardDto> cards;
+    private List<TarotResultCardResponseDto> cards;
 }
