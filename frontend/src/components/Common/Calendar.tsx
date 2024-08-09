@@ -84,7 +84,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
       const firstEvent = upcomingEvents[0];
       return firstEvent ? (
         <div>
-          <strong>{firstEvent.toLocaleDateString()}</strong>: 다가오는 일정
+          <strong>{firstEvent.toLocaleString()}</strong>
         </div>
       ) : (
         <div>일정이 없습니다.</div>
@@ -94,7 +94,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
       return upcomingEvents.length ? (
         upcomingEvents.map((event, index) => (
           <div key={index}>
-            <strong>{event.toLocaleDateString()}</strong>: 다가오는 일정
+            <strong>{event.toLocaleString()}</strong>
           </div>
         ))
       ) : (

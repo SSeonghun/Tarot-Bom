@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
   // 드롭다운 열기/닫기 함수
   const toggleDropdown = () => {
     setDropdownOpen(prev => !prev);
-    console.log(userInfo?.profileImg);
+    console.log(userInfo?.nickname);
   };
 
   // 클릭 시 드롭다운 닫기
@@ -54,7 +54,7 @@ const Navbar: React.FC = () => {
   // 내 정보 클릭 시 드롭다운 닫기
   const handleMyPageClick = () => {
     setDropdownOpen(false);
-    navigate('/seeker-mypage'); // 내 정보 페이지로 이동
+    // navigate('/seeker-mypage'); // 내 정보 페이지로 이동
   };
 
   return (
@@ -90,7 +90,8 @@ const Navbar: React.FC = () => {
                   <hr className='border-black'></hr>
                   <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                     <Link
-                      to="/seeker-mypage"
+                      to={`seeker-mypage?name=${encodeURIComponent(userInfo?.nickname || '')}&isReader=${userInfo?.isReader}`}
+                      // to="/seeker-mypage"
                       onClick={handleMyPageClick} // 클릭 시 드롭다운 닫기
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-400"
                     >
