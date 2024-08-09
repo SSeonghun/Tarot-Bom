@@ -8,24 +8,47 @@ import MusicPlayer from "../Common/MusicPlayerCopy";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
+import useStore from "../../stores/store";
 
 //const { cardInfo } = require("../../API/api");
+const { saveTarotResult } = require("../../API/api");
 
 const category = "금전운";
 
 interface CardData {
+  cardId: number;
   name: string;
   desc: string;
   imgUrl: string;
 }
 
+interface CardRequset {
+  cardId: number;
+  sequence: number;
+  direction: string;
+}
+
 interface ResultSummaryProps {
+  readerType: String;
   selectedCard: CardData[];
   worry: string;
   category: string;
 }
 
+interface SaveRequest {
+  readerId: number;
+  seekerId: number | undefined;
+  date: Date;
+  keyword: string;
+  memo: string;
+  summary: string;
+  music: string;
+  roomId: number;
+  cards: CardRequset[];
+}
+
 const ResultSummary: React.FC<ResultSummaryProps> = ({
+  readerType,
   selectedCard,
   worry,
   category,
@@ -33,10 +56,73 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
   const [summary, setSummary] = useState<string>("");
   //const [cards, setCards] = useState<CardData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [music, setMusic] = useState<string>("");
+  const [overall, setOverall] = useState<string>("");
+  const { userInfo } = useStore();
+
+  console.log("selected Cards : ", selectedCard);
 
   const handleSummaryGenerated = (generatedSummary: string) => {
     setSummary(generatedSummary);
+    const music = extractRecommendedMusic(generatedSummary);
+    console.log("music : ", music);
+    const overall = extractOverall(generatedSummary);
+    setMusic(music);
+    setOverall(overall);
     setLoading(false); // 요약 생성 후 로딩 상태를 false로 변경
+
+    console.log(category);
+
+    // 이 페이지는 시커만 온다 라고 가정하고 만들어야 겠음
+    // TODO: 리더아이디도 받아야 하는데 그러면 rtc 들어가기전에 리더 아이디도 props로 넘겨줘야 할듯
+    // TODO: 메모관련 props받아서 추가 => 프롬프팅 다시 해야할듯
+
+    console.log(readerType);
+    if (readerType === "AI") {
+      return;
+    }
+
+    const saveRequest: SaveRequest = {
+      readerId: 1, // 여기 바꿔줘야함
+      seekerId: userInfo?.memberId,
+      date: new Date(),
+      keyword: category,
+      memo: "this is memo",
+      summary: overall,
+      music: music,
+      roomId: 1,
+      cards: selectedCard.map((card, index) => ({
+        cardId: card.cardId,
+        sequence: index + 1,
+        direction: "U", // 방향을 수동으로 설정하거나 선택할 수 있도록 추가
+      })),
+    };
+
+    console.log(saveRequest);
+
+    saveTarotResult(saveRequest);
+  };
+
+  // 음악을 추출하는 함수
+  const extractRecommendedMusic = (response: string): string => {
+    const musicLine = response
+      .split("\n")
+      .find((line) => line.startsWith("Music"));
+    if (musicLine) {
+      return musicLine.replace("Music:", "").trim();
+    }
+    return "No recommended music found";
+  };
+
+  // 음악을 추출하는 함수
+  const extractOverall = (response: string): string => {
+    const overallLine = response
+      .split("\n")
+      .find((line) => line.startsWith("Overall"));
+    if (overallLine) {
+      return overallLine.replace("Overall:", "").trim();
+    }
+    return "No recommended music found";
   };
 
   return (
@@ -81,7 +167,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
             <p className="mt-5 text-lg font-bold text-white">
               타로 결과에 어울리는 음악을 들어보세요!
             </p>
-            <MusicPlayer />
+            <MusicPlayer title={music} />
           </div>
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
