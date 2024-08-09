@@ -16,9 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.transform.Result;
 import java.util.List;
 
 @Slf4j
@@ -174,8 +172,8 @@ public class MemberController {
     @GetMapping("/reader/detail/{readerId}")
     public ResponseEntity<?> readerDetail(@Valid @PathVariable long readerId) {
 //        log.info("readerId : {}", readerId);
-        ReaderDetatilResponseDto readerDetatilResponseDto = readerService.searchReaderDetail(readerId);
-        ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_READER_DETAIL, readerDetatilResponseDto);
+        ReaderDetailResponseDto readerDetailResponseDto = readerService.searchReaderDetail(readerId);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.SEARCH_READER_DETAIL, readerDetailResponseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
     /**

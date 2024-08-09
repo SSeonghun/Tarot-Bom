@@ -55,8 +55,8 @@ public class ShopServiceImpl implements ShopService {
                 .shopId(shop.getShopId())
                 .readerId(shop.getReaderId())
                 .shopName(shop.getShopName())
-                .shopAddress(shop.getAddress())
-                .shopPhone(shop.getPhone())
+                .address(shop.getAddress())
+                .phone(shop.getPhone())
                 .longitude(shop.getLongitude())
                 .latitude(shop.getLatitude())
                 .build();

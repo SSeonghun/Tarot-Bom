@@ -1,7 +1,7 @@
 package com.ssafy.tarotbom.domain.member.dto.response;
 
 import com.ssafy.tarotbom.domain.member.dto.ReaderAbstractReviewDto;
-import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
+import com.ssafy.tarotbom.domain.shop.dto.response.ShopReadResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReaderDetatilResponseDto {
+public class ReaderDetailResponseDto {
     private long memberId;
     private String name;
     private String keyword;
@@ -29,7 +29,7 @@ public class ReaderDetatilResponseDto {
     private int afterReader;
 
     private List<ReaderAbstractReviewDto> reviews;
-
     // todo: 추가로 오프라인 지도 데이터
+    private ShopReadResponseDto shopInfo;
 
 }
