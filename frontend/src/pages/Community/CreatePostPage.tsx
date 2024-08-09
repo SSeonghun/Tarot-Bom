@@ -4,7 +4,7 @@ import useUserStore from '../../stores/store';
 
 const boardWrite =  require('../../API/boardsApi');
 
-// TODO : axios
+//  : axios
 const CreatePostPage: React.FC = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');

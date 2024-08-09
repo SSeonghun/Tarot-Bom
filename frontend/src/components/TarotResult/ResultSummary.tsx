@@ -9,7 +9,7 @@ import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 
-const { cardInfo } = require("../../API/api");
+//const { cardInfo } = require("../../API/api");
 
 const category = "금전운";
 
@@ -31,7 +31,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
   category,
 }) => {
   const [summary, setSummary] = useState<string>("");
-  const [cards, setCards] = useState<CardData[]>([]);
+  //const [cards, setCards] = useState<CardData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const handleSummaryGenerated = (generatedSummary: string) => {

@@ -20,4 +20,5 @@ public class AddReservationsRequestDto {
     private String worry;
     private String keyword;
     private String roomStyle;
+    private String status;
 }

@@ -52,6 +52,8 @@ public class ReviewServiceImpl implements ReviewService {
                 .map(reviewReader -> ReviewReaderDto.builder()
                         .reviewReaderId(reviewReader.getReviewReaderId())
                         .seekerId(reviewReader.getSeekerId())
+                        .seekerName(reviewReader.getSeeker().getNickname())
+                        .seekerProfileUrl(reviewReader.getSeeker().getProfileUrl())
                         .readerId(reviewReader.getReaderId())
                         .resultId(reviewReader.getResultId())
                         .rating(reviewReader.getRating())

@@ -26,8 +26,7 @@ public class ReviewController {
      * @return
      */
     @GetMapping("/{readerId}")
-    public ResponseEntity<?> getReviewE(@Valid @PathVariable long readerId) {
-
+    public ResponseEntity<?> getReview(@Valid @PathVariable long readerId) {
         ReviewResponseDto reviewResponseDto = reviewService.getAllReviews(readerId);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.REVIEW_LOADED, reviewResponseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);

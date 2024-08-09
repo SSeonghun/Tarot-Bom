@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 public class ReviewReaderDto {
     private long reviewReaderId;
     private long seekerId;
+    private String seekerName;
+    private String seekerProfileUrl;
     private long readerId;
     private long resultId;
     private int rating;

@@ -2,11 +2,15 @@ package com.ssafy.tarotbom.domain.reservation.service;
 
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
+import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.domain.reservation.dto.request.AddReservationsRequestDto;
-import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResoneseDto;
+import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResponseDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
+import com.ssafy.tarotbom.domain.reservation.repository.ReservationQueryRepository;
 import com.ssafy.tarotbom.domain.reservation.repository.ReservationRepository;
+import com.ssafy.tarotbom.domain.room.dto.request.RoomOpenRequestDto;
+import com.ssafy.tarotbom.domain.room.dto.response.RoomOpenResponseDto;
 import com.ssafy.tarotbom.domain.room.entity.Room;
 import com.ssafy.tarotbom.domain.room.entity.RoomStyle;
 import com.ssafy.tarotbom.domain.room.repository.RoomRepository;
@@ -17,11 +21,13 @@ import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,10 +38,10 @@ public class ReservationServiceImpl implements ReservationService{
 
     private final ReservationRepository reservationRepository;
     private final RoomService roomService;
-    private final CodeDetailRepository codeDetailRepository;
     private final MemberRepository memberRepository;
-    private final RoomRepository roomRepository;
     private final CookieUtil cookieUtil;
+    private final ReaderRepository readerRepository;
+    private final ReservationQueryRepository reservationQueryRepository;
 
     /**
      * 예약 추가
@@ -43,112 +49,50 @@ public class ReservationServiceImpl implements ReservationService{
      * @return
      */
     @Override
-    public AddReservationsResoneseDto addReservation(AddReservationsRequestDto addReservationsRequestDto) {
-
-        // 예약 시 방생성
-
+    public AddReservationsResponseDto addReservation(AddReservationsRequestDto addReservationsRequestDto) {
+        String status = "R01";
+        if(addReservationsRequestDto.getStatus() != null) {
+            // 만일 입력으로 들어온 예약상태가 있다면 그 내용으로 갱신한다
+            status = addReservationsRequestDto.getStatus();
+        }
         long seekerId = addReservationsRequestDto.getSeekerId();
         long readerId = addReservationsRequestDto.getReaderId();
-        LocalDateTime startTime = addReservationsRequestDto.getStartTime();
-        int price = addReservationsRequestDto.getPrice();
-        String worry = addReservationsRequestDto.getWorry();
-        String keyword_code = addReservationsRequestDto.getKeyword();
-        String roomStyle = addReservationsRequestDto.getRoomStyle();
-
-        log.info("addReservation : {}, {}", seekerId, readerId);
-        log.info("keyword_code : {}" , keyword_code);
-
-        String keyword = null;
-
-        if (keyword_code.equals("G01")) { // 연애
-            keyword = "연애";
-        } else if (keyword_code.equals("G02")) { // 진로
-            keyword = "진로";
-        } else if (keyword_code.equals("G03")) { // 금전
-            keyword = "금전";
-        } else if (keyword_code.equals("G04")) { // 건강
-            keyword = "건강";
-        } else if (keyword_code.equals("G05")) { // 기타
-            keyword = "기타";
-        }
-
-        CodeDetail keywords = CodeDetail
-                .builder()
-                .codeDetailId(keyword_code)
-                .codeTypeId("10001")
-                .detailDesc(keyword)
-                .build();
-
-        log.info("{} : ", keywords.getCodeDetailId());
-
-        RoomStyle rooms = null;
-
-        if(roomStyle.equals("CAM")) {
-            rooms = RoomStyle.CAM;
-        } else if (roomStyle.equals("GFX")) {
-            rooms = RoomStyle.GFX;
-        }
-
-        Room room = Room
-                .builder()
-                .seekerId(seekerId)
-                .readerId(readerId)
-                .keyword(keywords)
-                .keywords(keyword_code)
-                .worry(worry)
-                .roomStyle(rooms)
-                .build();
-
-        roomRepository.save(room);
-
-        log.info("room : {}, {}", room.getRoomId(), room.getReaderId());
-
-        long roomId = room.getRoomId();
-
-        log.info("reservation : {}", seekerId);
-        log.info("reservation : {}", price);
-        log.info("reservation : {}", seekerId);
-        log.info("reservation : {}", seekerId);
-
-        // todo : db 설정후 변경
-        CodeDetail sts = CodeDetail
-                .builder()
-                .codeDetailId("R00")
-                .codeTypeId("2")
-                .detailDesc("예약")
-                .build();
-
-        sts = codeDetailRepository.save(sts);
-
-        Member seeker = memberRepository.findById(seekerId)
-                .orElseThrow(() -> new RuntimeException("Seeker not found"));
-
-//        CodeDetail status = codeDetailRepository.findById(statusCode).orElseThrow(() -> new RuntimeException("Status not found"));
-
-        log.info("sts : {}", sts.getCodeTypeId());
+        log.info("sts : {}", status);
         log.info("reader_id : {}", readerId);
-        log.info("seacker_id : {}", seekerId);
+        log.info("seeker_id : {}", seekerId);
 
+        // 입력받은 readerId, seekerId가 유효한지 검사
+        if(!readerRepository.existsByMemberId(readerId) || (seekerId != 0 && !memberRepository.existsByMemberId(seekerId))) {
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+        }
         Reservation reservation = Reservation
                 .builder()
-                .roomId(roomId)
-                .seeker(seeker)
                 .seekerId(seekerId)
                 .readerId(readerId)
-                .startTime(startTime)
-                .keyword(keywords)
-                .price(price)
-                .status(sts)
+                .startTime(addReservationsRequestDto.getStartTime())
+                .keywordCode(addReservationsRequestDto.getKeyword())
+                .price(addReservationsRequestDto.getPrice())
+                .statusCode(status)
                 .build();
 
-        reservationRepository.save(reservation);
-
-        AddReservationsResoneseDto addReservationsResoneseDto = AddReservationsResoneseDto
+        reservation = reservationRepository.save(reservation);
+        log.info("예약 생성 : {}", reservation.getReservationId());
+        // 예약을 등록한 후, 그에 맞게 room을 생성한다
+        RoomOpenRequestDto openRoomRequestDto = RoomOpenRequestDto.builder()
+                .roomType("reserve")
+                .readerId(readerId)
+                .seekerId(seekerId)
+                .keyword(addReservationsRequestDto.getKeyword())
+                .worry(addReservationsRequestDto.getWorry())
+                .roomStyle(addReservationsRequestDto.getRoomStyle())
+                .reservationId(reservation.getReservationId())
+                .build();
+        RoomOpenResponseDto roomOpenResponseDto = roomService.openRoom(openRoomRequestDto);
+        AddReservationsResponseDto addReservationsResponseDto = AddReservationsResponseDto
                 .builder()
-                .roomId(roomId)
+                .roomId(roomOpenResponseDto.getRoomId())
                 .build();
-
-        return addReservationsResoneseDto;
+        return addReservationsResponseDto;
     }
 
     /**
@@ -158,44 +102,38 @@ public class ReservationServiceImpl implements ReservationService{
      */
     @Override
     public List<ReadReservationResponseDto> readReservation(HttpServletRequest request) {
-
         long memberId = cookieUtil.getUserId(request);
         String memberType = cookieUtil.getMemberType(request);
-
         log.info("memberId : {}", memberId);
+        List<Reservation> reservations = reservationQueryRepository.findFilter(memberType, memberId);
 
-        List<Reservation> reservations = null;
+        log.info("reservations size : {}", reservations.size());
 
-        if(memberType.equals("M03")) {
-            reservations = reservationRepository.findAllByReaderId(memberId);
-        } else if (memberType.equals("M01")) {
-            reservations = reservationRepository.findAllBySeekerId(memberId);
+        List<ReadReservationResponseDto> respondList = new ArrayList<>();
+        for(Reservation reservation : reservations) {
+            respondList.add(
+                    ReadReservationResponseDto.builder()
+                            .reservationId(reservation.getReservationId())
+                            .seekerId(reservation.getSeekerId())
+                            .seekerName(reservation.getSeeker().getNickname())
+                            .seekerProfileUrl(reservation.getSeeker().getProfileUrl())
+                            .readerId(reservation.getReaderId())
+                            .readerName(reservation.getReader().getNickname())
+                            .readerProfileUrl(reservation.getReader().getProfileUrl())
+                            .status(reservation.getStatusCode())
+                            .keyword(reservation.getKeywordCode())
+                            .startTime(reservation.getStartTime())
+                            .build()
+            );
         }
-
-        log.info("reservations_reader : {}", reservations.size());
-        
-        // ReadReservationResponseDto로 변환
-        // 남은 예약 내역은 시간으로 판단
-        return reservations.stream()
-                .map(reservation -> ReadReservationResponseDto.builder()
-                        .reservationId(reservation.getReservationId())
-                        .seekerId(reservation.getSeekerId())
-                        .startTime(reservation.getStartTime())
-                        .build())
-                .collect(Collectors.toList());
+        return respondList;
     }
 
     @Override
-    public int deleteReservation(long reservationId) {
-
-        try {
-            reservationRepository.deleteById(reservationId);
-            return 1;
-        } catch (Exception e) {
-            throw new BusinessException(ErrorCode.COMMON_NOT_FOUND);
+    @Transactional
+    public void deleteReservation(long reservationId) {
+        if(reservationRepository.deleteAllByReservationId(reservationId) == 0){
+            throw new BusinessException(ErrorCode.RESERVATION_NOT_FOUND);
         }
-
     }
-
-
 }

@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.member.service;
 
+import com.ssafy.tarotbom.domain.member.dto.ReaderAbstractReviewDto;
 import com.ssafy.tarotbom.domain.member.dto.ReaderAnalyzeDto;
 import com.ssafy.tarotbom.domain.member.dto.SeekerAnalyzeDto;
 import com.ssafy.tarotbom.domain.member.dto.request.*;
@@ -7,7 +8,7 @@ import com.ssafy.tarotbom.domain.member.dto.response.*;
 import com.ssafy.tarotbom.domain.member.entity.FavoriteReader;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
-import com.ssafy.tarotbom.domain.member.jwt.JwtUtil;
+import com.ssafy.tarotbom.global.util.JwtUtil;
 import com.ssafy.tarotbom.domain.member.repository.FavoriteReaderRepository;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
@@ -17,10 +18,7 @@ import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
 import com.ssafy.tarotbom.domain.review.repository.ReviewReaderRepository;
 import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
 import com.ssafy.tarotbom.domain.tarot.service.TarotResultService;
-import com.ssafy.tarotbom.global.code.entity.CodeDetail;
-import com.ssafy.tarotbom.domain.member.email.EmailTool;
 import com.ssafy.tarotbom.global.code.entity.repository.CodeDetailRepository;
-import com.ssafy.tarotbom.global.config.RedisTool;
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
 import com.ssafy.tarotbom.global.util.CookieUtil;
@@ -51,7 +49,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -70,9 +67,9 @@ public class MemberServiceImpl implements MemberService {
     private final S3Service s3Service;
     private final SpringTemplateEngine springTemplateEngine;
 
-    private final RedisTool redisTool;
-    private final EmailTool emailTool;
     private final JavaMailSender emailSender;
+    private final MemberRedisService memberRedisService;
+    private final EmailService emailService;
     private final CookieUtil cookieUtil;
 
     private static final String AUTH_CODE_PREFIX = "AuthCode:";
@@ -179,7 +176,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void logout(HttpServletRequest request) {
         String email = cookieUtil.getMemberEmail(request);
-        redisTool.deleteValue(AUTH_CODE_PREFIX+email);
+        memberRedisService.deleteValue(AUTH_CODE_PREFIX+email);
     }
 
     /**
@@ -248,12 +245,6 @@ public class MemberServiceImpl implements MemberService {
 
         // 인증 코드 생성, 저장, 이메일 전송
         // todo: 인증번호 발송 예쁘게 꾸미면 좋음
-/*
-        String title = "유저 이메일 인증 번호";
-        String authCode = this.createCode();
-        String text = "타로봄에 오신 것을 환영합니다.\n\n"
-                + "      인증 번호는\n\n" +"         " + authCode + "\n\n         입니다.";
-*/
 
         String authNum = createCode();
         try {
@@ -272,15 +263,12 @@ public class MemberServiceImpl implements MemberService {
             throw new BusinessException(ErrorCode.EMAIL_SEND_FAIL);
         }
 
-
-
         // 이미 인증 번호를 보내 레디스 서버에 인증번호가 있음
-        String pinNum = redisTool.getValues(AUTH_CODE_PREFIX + toEmail);
+        String pinNum = memberRedisService.getValues(AUTH_CODE_PREFIX + toEmail);
         if(pinNum != null) {
             // 해당 레디스 키를 삭제하고 재발급
-            redisTool.deleteValue(AUTH_CODE_PREFIX + toEmail);
+            memberRedisService.deleteValue(AUTH_CODE_PREFIX + toEmail);
         }
-        redisTool.setValues(AUTH_CODE_PREFIX + toEmail , authNum, Duration.ofMillis(authCodeExpirationMillis));
     }
     /**
      * thymeleaf를 통한 html 적용
@@ -300,7 +288,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void verifyCode(String email, String authCode) {
         log.info("verify emails {}" , email);
-        String redisAuthCode = redisTool.getValues((AUTH_CODE_PREFIX + email));
+        String redisAuthCode = memberRedisService.getValues((AUTH_CODE_PREFIX + email));
         log.info("redis get pinNumber : {} ",redisAuthCode);
         if(Integer.parseInt(redisAuthCode) != Integer.parseInt(authCode)){
             throw new BusinessException(ErrorCode.MEMBER_INVALID_CODE);
@@ -440,7 +428,10 @@ public class MemberServiceImpl implements MemberService {
         long memberId = cookieUtil.getUserId(request);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)); // 적절한 예외 처리
-
+        // 만일 이미 리더 프로필이 있는 유저라면 exception을 발생시킨다
+        if(readerRepository.existsByMemberId(memberId)) {
+            throw new BusinessException(ErrorCode.MEMBER_ALREADY_READER);
+        }
         // 리더 객체 생성 후 저장
         Reader reader = Reader.builder()
                 .member(member)
@@ -692,18 +683,22 @@ public class MemberServiceImpl implements MemberService {
         // 예약 내역
         List<ReadReservationResponseDto> readReservationResponseDtos = reservationService.readReservation(request);
 
+        // 리뷰
         List<ReviewReader> reviewReaders = reviewReaderRepository.findByReader(Optional.of(reader));
-        List<ReviewReaderResponseDto> reviewList = reviewReaders.stream()
-                .map(review -> ReviewReaderResponseDto.builder()
-                        .reviewReaderId(String.valueOf(review.getReviewReaderId()))
-                        .seekerId(String.valueOf(review.getSeekerId()))
-                        .readerId(String.valueOf(review.getReaderId()))
-                        .rating(review.getRating())
-                        .content(review.getContent())
-                        .createTime(review.getCreateTime())
-                        .updateTime(review.getUpdateTime())
-                        .build())
-                .collect(Collectors.toList());
+        List<ReaderAbstractReviewDto> reviewList = new ArrayList<>();
+        for(ReviewReader reviewReader : reviewReaders) {
+           reviewList.add(
+                   ReaderAbstractReviewDto.builder()
+                           .reviewReaderId(reviewReader.getReviewReaderId())
+                           .seekerId(reviewReader.getSeekerId())
+                           .seekerName(reviewReader.getSeeker().getNickname())
+                           .seekerProfileUrl(reviewReader.getSeeker().getProfileUrl())
+                           .readerId(reviewReader.getReaderId())
+                           .rating(reviewReader.getRating())
+                           .content(reviewReader.getContent())
+                           .build()
+           );
+        }
 
         ReaderMypageResponseDto readerMypageResponseDto = ReaderMypageResponseDto
                 .builder()
@@ -716,7 +711,6 @@ public class MemberServiceImpl implements MemberService {
                 .name(reader.getNickname())
                 .reviewReaderResponseDtos(reviewList)
                 .build();
-
 
         return readerMypageResponseDto;
     }

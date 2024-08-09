@@ -1,8 +1,7 @@
-package com.ssafy.tarotbom.domain.member.email;
+package com.ssafy.tarotbom.domain.member.service;
 
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -14,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
-public class EmailTool {
+public class EmailService {
     private final JavaMailSender emailSender;
 
 

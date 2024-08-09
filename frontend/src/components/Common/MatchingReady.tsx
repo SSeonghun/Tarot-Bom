@@ -1,6 +1,6 @@
 // src/components/Common/MatchingConfirmationModal.tsx
 
-import React from 'react';
+import React from "react";
 
 interface MatchingConfirmationModalProps {
   isOpen: boolean;
@@ -20,8 +20,12 @@ const MatchingConfirmationModal: React.FC<MatchingConfirmationModalProps> = ({
       <div className="bg-white p-4 rounded-lg shadow-lg">
         <h2 className="text-xl font-bold mb-4">매칭 완료!</h2>
         <p>매칭된 정보:</p>
-        <pre>{JSON.stringify(matchData, null, 2)}</pre> {/* 매칭된 정보를 적절히 포맷하여 표시 */}
-        <button onClick={onClose} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg">
+        <pre>{JSON.stringify(matchData, null, 2)}</pre>{" "}
+        {/* 매칭된 정보를 적절히 포맷하여 표시 */}
+        <button
+          onClick={onClose}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
+        >
           확인
         </button>
       </div>
