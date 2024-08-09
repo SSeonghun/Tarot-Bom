@@ -63,7 +63,13 @@ public enum ResultCode {
     // Comment
     COMMENT_CREATE_OK(HttpStatus.CREATED, "C001", "댓글 작성 성공" ),
     COMMENT_UPDATE_OK(HttpStatus.OK, "C002", "댓글 수정 성공"),
-    COMMENT_DELETE_OK(HttpStatus.OK, "C003", "댓글 삭제 성공")
+    COMMENT_DELETE_OK(HttpStatus.OK, "C003", "댓글 삭제 성공"),
+
+    // shop
+    SHOP_ADDED(HttpStatus.CREATED, "H001", "타로점을 등록했습니다."),
+    SHOP_GET_OK(HttpStatus.OK, "H002", "타로점 정보를 불러왔습니다."),
+    SHOP_UPDATED(HttpStatus.OK, "H003", "타로점 정보를 수정했습니다."),
+    SHOP_DELETED(HttpStatus.OK, "H004", "타로점을 삭제했습니다."),
     ;
 
     // ==== 응답 코드 정의 종료 ====

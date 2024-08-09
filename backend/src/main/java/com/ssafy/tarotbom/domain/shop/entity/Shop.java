@@ -20,9 +20,8 @@ public class Shop {
     private long shopId;
 
     /* @ManyToOne으로 연결 : 등록자 리더 ID */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reader_id", columnDefinition = "int unsigned")
+    @JoinColumn(name = "reader_id", columnDefinition = "int unsigned", insertable = false, updatable = false)
     private Member reader;
 
     @NotNull
@@ -43,6 +42,10 @@ public class Shop {
     @NotNull
     @Column(name = "latitude", columnDefinition = "decimal(10, 8)")
     private double latitude;
+
+    @NotNull
+    @Column(name = "reader_id", columnDefinition = "int unsigned")
+    private long readerId;
 
     @Column(name = "create_time", columnDefinition = "timestamp")
     private LocalDateTime createTime;

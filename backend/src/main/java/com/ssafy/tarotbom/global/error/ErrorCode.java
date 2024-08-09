@@ -53,6 +53,11 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "C001", "해당하는 댓글을 찾을 수 없습니다."),
     COMMENT_NOT_YOUR_COMMENT(HttpStatus.FORBIDDEN, "C002", "댓글을 수정할 권한이 없습니다."),
 
+    // Shop
+    SHOP_ALREADY_EXISTS(HttpStatus.CONFLICT, "H001", "이미 등록된 가게가 있습니다."),
+    SHOP_NOT_YOUR_SHOP(HttpStatus.FORBIDDEN, "H002", "가게 정보에 관여할 권한이 없습니다."),
+    SHOP_NOT_FOUND(HttpStatus.NOT_FOUND, "H003", "존재하지 않는 가게입니다."),
+
     // Dto
     DTO_NOT_NULL(HttpStatus.BAD_REQUEST, "D001", "값이 Null일 수 없습니다."),
     DTO_NOT_VALID(HttpStatus.BAD_REQUEST, "D002", "유효하지 않은 값입니다.")
