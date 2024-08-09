@@ -9,8 +9,8 @@ public class ShopReadResponseDto {
     private long shopId;
     private long readerId;
     private String shopName;
-    private String shopAddress;
-    private String shopPhone;
+    private String address;
+    private String phone;
     private double longitude;
     private double latitude;
 }

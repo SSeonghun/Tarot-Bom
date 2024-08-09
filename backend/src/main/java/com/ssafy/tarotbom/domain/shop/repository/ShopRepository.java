@@ -8,4 +8,5 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     boolean existsByReaderId(Long readerId);
     public Shop findByShopId(Long shopId);
     public void deleteByShopId(Long shopId);
+    public Shop findByReaderId(Long readerId);
 }
