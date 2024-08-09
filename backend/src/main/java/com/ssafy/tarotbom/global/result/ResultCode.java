@@ -71,6 +71,11 @@ public enum ResultCode {
     DECLARATION_UPDATE_OK(HttpStatus.OK, "D003", "신고 수정 성공"),
     DECLARATION_DELETE_OK(HttpStatus.OK, "D004", "신고 삭제 성공"),
 
+    // shop
+    SHOP_ADDED(HttpStatus.CREATED, "H001", "타로점을 등록했습니다."),
+    SHOP_GET_OK(HttpStatus.OK, "H002", "타로점 정보를 불러왔습니다."),
+    SHOP_UPDATED(HttpStatus.OK, "H003", "타로점 정보를 수정했습니다."),
+    SHOP_DELETED(HttpStatus.OK, "H004", "타로점을 삭제했습니다.")
     ;
 
     // ==== 응답 코드 정의 종료 ====

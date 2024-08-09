@@ -1,21 +1,22 @@
 import axios from "axios";
 import { error } from "console";
+import { rest } from "lodash";
 
 // const API_URL = "https://i11c208.p.ssafy.io/tarotbom/boards/";
-const API_URL = 'http://localhost/tarotbom/boards';
+const API_URL = 'http://localhost/tarotbom/boards/';
 
 const boardWrite = async (
   memberId: number,
   title: string,
   content: string,
-  boardType: string
+  category: string
 ) => {
   try {
     const response = await axios.post(`${API_URL}write`, {
       memberId,
       title,
       content,
-      boardType,
+      category,
     });
     return response.data;
   } catch (error) {
@@ -24,11 +25,10 @@ const boardWrite = async (
   }
 };
 
-const boardList = async (boardType: string, title: string) => {
+const boardList = async () => {
   try {
-    const response = await axios.post(`${API_URL}list`, {
-      boardType,
-      title,
+    const response = await axios.get(`${API_URL}list`, {
+      withCredentials: true
     });
     return response.data;
   } catch (error) {
@@ -37,9 +37,11 @@ const boardList = async (boardType: string, title: string) => {
   }
 };
 
-const boardDetail = async (boardId: number) => {
+const boardDetail = async (boardId: string) => {
   try {
-    const response = await axios.get(`${API_URL}${boardId}`);
+    const response = await axios.get(`${API_URL}${boardId}`, {
+      withCredentials: true
+    });
     return response.data;
   } catch (error) {
     console.error("상세 글 조회 실패 ", error);
@@ -76,4 +78,20 @@ const boardDelete = async (boardId: number) => {
   }
 };
 
-export { boardWrite, boardList, boardDetail, boardPatch, boardDelete };
+const writeComment = async (boardId: number, memberId: number, content: string) => {
+  try {
+    const response = await axios.post(`${API_URL}${boardId}/comment`,{
+      boardId,
+      memberId,
+      content
+    })
+    // console.log(response.data);
+    
+    return response.data
+  } catch (error) {
+    console.error("댓글 등록 실패", error);
+    throw error
+  }
+}
+
+export { boardWrite, boardList, boardDetail, boardPatch, boardDelete, writeComment};

@@ -13,5 +13,4 @@ public interface ReaderRepository extends JpaRepository<Reader, Long> {
 
     @Query("SELECT r FROM Reader r JOIN FETCH r.member m JOIN FETCH r.keyword k JOIN FETCH r.grade g")
     List<Reader> findAllWithMemberKeywordAndGrade();
-
 }

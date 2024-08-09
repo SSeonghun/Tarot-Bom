@@ -1,42 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useUserStore from '../../stores/store';
+import axios from 'axios'; // axios import 추가
 
-const boardWrite =  require('../../API/boardsApi');
 
-//  : axios
+
+const { boardWrite } = require('../../API/boardsApi'); // API 호출을 위한 import 추가
+
 const CreatePostPage: React.FC = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [author, setAuthor] = useState('Anonymous'); // 기본값으로 "Anonymous" 설정
-  const [date, setDate] = useState('');
   const [category, setCategory] = useState('');
   const navigate = useNavigate();
   const store = useUserStore();
 
-  // 로그인 여부를 확인하는 함수 (예시, 실제로는 API 호출 등을 통해 확인)
-  useEffect(() => {
-    const isLoggedIn = store.isLoggedIn; // 이 값은 실제 로그인 상태에 따라 설정되어야 합니다.
-    const loggedInUser = store.userInfo; // 이 값은 실제 로그인된 사용자에 의해 설정되어야 합니다.
-    console.log(store.isLoggedIn)
-    if (isLoggedIn) {
-      // setAuthor(loggedInUser);
-    } else {
-      setAuthor('Anonymous');
-    }
-
-    // 현재 날짜로 초기화
-    const today = new Date().toISOString().split('T')[0];
-    setDate(today);
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 여기서 API 호출을 통해 새 게시글을 서버에 저장할 수 있습니다.
-    console.log({ title, content, author, date, category });
 
-    // 게시글 저장 후 목록 페이지로 리디렉션
-    navigate('/community');
+    try {
+      // API 호출을 통해 새 게시글을 서버에 저장
+      const response = await boardWrite(
+        store.userInfo?.memberId,
+        title,
+        content,
+        category,
+      );
+
+      // console.log('게시글 저장 성공:', response.data);
+      // 게시글 저장 후 목록 페이지로 리디렉션
+      navigate('/community');
+    } catch (error) {
+      console.error('게시글 저장 실패:', error);
+      // 오류 처리 (예: 사용자에게 알림)
+    }
   };
 
   const handleGoBack = () => {
@@ -87,39 +83,19 @@ const CreatePostPage: React.FC = () => {
             <label htmlFor="category" className="block text-sm font-medium text-gray-700">
               Category
             </label>
-            <input
+            <select
               id="category"
-              type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="author" className="block text-sm font-medium text-gray-700">
-              Author
-            </label>
-            <input
-              id="author"
-              type="text"
-              value={author}
-              readOnly
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100"
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700">
-              Date
-            </label>
-            <input
-              id="date"
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-              required
-            />
+            >
+              {/* <option value="">Select a category</option> */}
+              {/* <option value="B01">공지사항</option> */}
+              <option value="B02">카드</option>
+              <option value="B03">리딩경험담</option>
+              <option value="B04">기타</option>
+            </select>
           </div>
           <button
             type="submit"

@@ -1,113 +1,113 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { log } from 'console';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import useUserStore from '../../stores/store';
 
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  author: string;
-  date: string;
-  category: string;
-}
 
-interface Comment {
-  id: number;
-  postId: number;
-  author: string;
-  content: string;
-  date: string;
-}
-
-const PostDetailPage: React.FC = () => {
+const PostDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [post, setPost] = useState<Post | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [post, setPost] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState('');
-  const [author, setAuthor] = useState('Anonymous'); // 기본값으로 "Anonymous" 설정
+  const navigate = useNavigate();
+  const store = useUserStore();
+
+  const { boardDetail, writeComment } = require("../../API/boardsApi")
 
   useEffect(() => {
-    // 게시글 데이터와 댓글 데이터를 가져오는 API 호출을 여기에 작성합니다.
-    const fetchedPost: Post = {
-      id: parseInt(id ?? '0'),
-      title: 'Sample Post',
-      content: 'This is a sample post.',
-      author: 'Alice',
-      date: '2023-01-01',
-      category: 'Technology',
+    const fetchPost = async () => {
+      // API 호출 부분은 비워둡니다.
+      
+      const response = await boardDetail(id);
+      // console.log(response.data);
+      setPost(response.data)
+      setLoading(false)
+      return response.data
+
     };
 
-    const fetchedComments: Comment[] = [
-      { id: 1, postId: parseInt(id ?? '0'), author: 'Bob', content: 'Great post!', date: '2023-01-02' },
-      { id: 2, postId: parseInt(id ?? '0'), author: 'Charlie', content: 'Thanks for sharing!', date: '2023-01-03' },
-    ];
-
-    setPost(fetchedPost);
-    setComments(fetchedComments);
+    fetchPost();
   }, [id]);
 
-  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNewComment(e.target.value);
+  const handleGoBack = () => {
+    navigate(-1);
   };
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
+  const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 댓글 데이터를 서버에 저장하는 로직을 여기에 작성합니다.
-    const newCommentData: Comment = {
-      id: comments.length + 1,
-      postId: parseInt(id ?? '0'),
-      author,
-      content: newComment,
-      date: new Date().toISOString().split('T')[0],
-    };
-    setComments([...comments, newCommentData]);
-    setNewComment('');
+    if (!newComment) return;
+    const response = await writeComment(id, store.userInfo?.memberId, newComment);
+    // console.log(response);
+    setNewComment(''); // 댓글 입력 필드 초기화
+    const response1 = await boardDetail(id);
+    // console.log(response1.data);
+    setPost(response1.data)
+    setLoading(false)
+    // 댓글 추가 후 게시글을 다시 불러오기 로직 필요
+
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!post) {
+    return <div>게시글을 찾을 수 없습니다.</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-4xl mx-auto p-4 bg-white rounded-lg shadow-md">
-        {post && (
-          <>
-            <h1 className="text-2xl font-bold mb-4">{post.title}</h1>
-            <p className="text-gray-600 mb-4">By {post.author} on {post.date}</p>
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">Content</h2>
-              <p>{post.content}</p>
-            </div>
-          </>
-        )}
+    <div className="min-h-screen bg-gray-900 p-8">
+      <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-16">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold">{post.title}</h1>
+          <button
+            onClick={handleGoBack}
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
+          >
+            Back
+          </button>
+        </div>
+        <div className="mt-4">
+          <p className="text-sm text-gray-600">작성자: {post.writer}</p>
+          <p className="text-sm text-gray-600">작성일: {new Date(post.createTime).toLocaleString()}</p>
+        </div>
+        <div className="mt-4">
+          <h2 className="text-lg font-semibold">내용</h2>
+          <p className="mt-2 text-gray-800">{post.content}</p>
+        </div>
 
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Comments</h2>
-          <div className="space-y-4">
-            {comments.map(comment => (
-              <div key={comment.id} className="p-4 bg-gray-50 rounded-md shadow-sm">
-                <p className="text-gray-800 font-semibold">{comment.author} <span className="text-gray-500">on {comment.date}</span></p>
-                <p className="mt-2">{comment.content}</p>
+        <div className="mt-8">
+          <h2 className="text-lg font-semibold">댓글</h2>
+          <div className="mt-4">
+            {post.commentList.map((comment: any) => (
+              <div key={comment.commentId} className="mb-4 p-4 bg-gray-100 rounded-md shadow-sm">
+                <p className="font-semibold">{comment.writerName}</p>
+                <p className="text-sm text-gray-600">{new Date(comment.createTime).toLocaleString()}</p>
+                <p className="mt-2 text-gray-800">{comment.content}</p>
               </div>
             ))}
           </div>
-        </div>
 
-        <form onSubmit={handleCommentSubmit} className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">Add a Comment</h2>
-          <textarea
-            value={newComment}
-            onChange={handleCommentChange}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-            rows={4}
-            required
-          />
-          <button
-            type="submit"
-            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Post Comment
-          </button>
-        </form>
+          <form onSubmit={handleCommentSubmit} className="mt-4">
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md"
+              rows={3}
+              placeholder="댓글을 작성하세요..."
+              required
+            />
+            <button
+              type="submit"
+              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              댓글 달기
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
 };
 
-export default PostDetailPage;
+export default PostDetail;
