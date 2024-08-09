@@ -3,9 +3,10 @@ import Categoryitem from './Categoryitem';
 
 interface CategoryProps {
   items: { name: string }[];
+  onSelect:(label:{name:string})=>void;
 }
 
-const Category: React.FC<CategoryProps> = ({ items }) => {
+const Category: React.FC<CategoryProps> = ({ items, onSelect }) => {
   return (
     <nav className="rounded-md w-44 h-fit flex flex-col justify-between">
       <div className="h-fit">
@@ -18,7 +19,11 @@ const Category: React.FC<CategoryProps> = ({ items }) => {
         <div className="pl-10">
           <ul className="space-y-8 pt-10">
             {items.map((item, index) => (
-              <Categoryitem key={index} name={item.name} />
+              <Categoryitem 
+              key={index} 
+              name={item.name} 
+              onClick={()=>onSelect(item)}
+              />
             ))}
           </ul>
         </div>
