@@ -75,6 +75,14 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
       .sort((a, b) => a.getDate() - b.getDate());
   };
 
+  // 현재 날짜와 예약 시간 비교
+const isWithin30Minutes = (eventDate: Date) => {
+  const now = new Date();
+  const endOfDay = new Date(eventDate);
+  endOfDay.setHours(23, 59, 59, 999); // 해당 날짜의 끝 시간
+  const thirtyMinutesBefore = new Date(eventDate.getTime() - 30 * 60000);
+  return now <= endOfDay && now >= thirtyMinutesBefore;
+};
   // 달력과 다가오는 일정이 표시될 레이아웃에 따라 처리
   const renderUpcomingEvents = () => {
     const upcomingEvents = getUpcomingEvents();
@@ -84,7 +92,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
       const firstEvent = upcomingEvents[0];
       return firstEvent ? (
         <div>
-          <strong>{firstEvent.toLocaleString()}</strong>
+          <strong>{firstEvent.toLocaleString()}</strong>: 다가오는 일정
         </div>
       ) : (
         <div>일정이 없습니다.</div>
@@ -94,7 +102,16 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
       return upcomingEvents.length ? (
         upcomingEvents.map((event, index) => (
           <div key={index}>
-            <strong>{event.toLocaleString()}</strong>
+            <strong>{event.toLocaleString()}</strong>: 다가오는 일정
+            {/* 날짜 시간의 30분 전이 되면 예약 webrtc 입장버튼 추가 */}
+            {isWithin30Minutes(event)&& (
+            <button
+              className="ml-4 px-4 py-2 bg-blue-500 text-white rounded"
+              onClick={() => alert(`예약 방에 입장합니다`)}
+            >
+            입장
+            </button>
+          )}
           </div>
         ))
       ) : (

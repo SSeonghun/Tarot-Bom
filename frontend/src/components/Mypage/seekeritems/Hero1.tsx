@@ -86,6 +86,7 @@ const Hero1: React.FC<Hero1Props> = ({
     Categories.G05,
   ];
 
+
   return (
     <div>
       <div className="grid grid-cols-12 gap-4">
