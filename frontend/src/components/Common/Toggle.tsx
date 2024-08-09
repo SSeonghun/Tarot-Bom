@@ -1,6 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Hero1: React.FC = () => {
+  const [isReaderProfile, setIsReaderProfile] = useState(false);
+  const navigate = useNavigate();
+
+  const handleToggleChange = () => {
+    setIsReaderProfile(!isReaderProfile);
+    if (!isReaderProfile) {
+      navigate('/reader-mypage'); // 리더 페이지로 이동
+    } else {
+      navigate('/seeker-mypage'); // 시커 페이지로 이동
+    }
+  };
+
   return (
     <div>
       <input
@@ -8,6 +21,8 @@ const Hero1: React.FC = () => {
         type="checkbox"
         role="switch"
         id="flexSwitchCheckDefault"
+        checked={isReaderProfile}
+        onChange={handleToggleChange}
       />
       <label
         className="inline-block pl-[0.15rem] hover:cursor-pointer"

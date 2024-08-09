@@ -7,22 +7,85 @@ import TarotCard from '../../../assets/tarot_images - 복사본/c01.jpg';
 import LikeCard from '../../Cards/LikeCard';
 import HoverButton from '../../Common/HoverButton';
 
-// TODO : props로 받아서 뿌려주기
-const Hero1: React.FC = () => {
-  // 하이라이트할 날짜 배열을 지정합니다.
-  // 정렬된게 들어와야 함
-  // 넘길때 예약정보를 같이 넘겨야할듯
-  const highlightDates = [
-    new Date(2024, 6, 31), // 2024년 7월 15일
-    new Date(2024, 7, 20), // 2024년 7월 20일
-    new Date(2024, 7, 25), // 2024년 7월 25일
+// 예약 리스트 항목 타입 정의
+interface Reservation {
+  startTime: string; // 시작 시간의 타입 정의 (예: ISO 8601 형식)
+}
+
+// 카테고리 타입 정의
+type Categories = {
+  [key: string]: number; // 카테고리 키와 값의 타입 정의
+};
+
+// 찜 리스트 항목 타입 정의
+interface FavoriteReader {
+  id: number; // 예시로 ID 속성 추가
+  name: string; // 리더의 이름
+}
+
+// Hero1 컴포넌트의 props 타입 정의
+interface Hero1Props {
+  reservationList: Reservation[];
+  totalConsulting: number;
+  Categories: Categories;
+  favoriteReaderList: FavoriteReader[];
+}
+
+// 카테고리를 매핑하는 객체
+const categoryMapping: { [key: string]: string } = {
+  G01: '연애운',
+  G02: '진로운',
+  G03: '금전운',
+  G04: '건강운',
+  G05: '기타운',
+};
+
+// 가장 높은 카테고리 값을 찾아주는 함수
+const getMaxCategory = (categories: Categories) => {
+  let maxKey: string | null = null;
+  let maxValue = -1;
+
+  for (const [key, value] of Object.entries(categories)) {
+    if (value > maxValue) {
+      maxValue = value;
+      maxKey = key;
+    }
+  }
+
+  return {
+    name: maxKey ? categoryMapping[maxKey] || '알 수 없음' : '알 수 없음',
+    value: maxValue,
+  };
+};
+
+// Hero1 컴포넌트
+const Hero1: React.FC<Hero1Props> = ({
+  reservationList,
+  totalConsulting,
+  Categories,
+  favoriteReaderList,
+}) => {
+  const highlightDates = reservationList.map(reservation => new Date(reservation.startTime));
+
+  // favoriteReaderList를 기반으로 likeCards 생성
+  const likeCards = favoriteReaderList.map(reader => (
+    <LikeCard
+    key={reader.id} 
+    
+    />
+  ));
+
+  // 카테고리 최대값 찾기
+  const maxCategory = getMaxCategory(Categories);
+  const labels = Object.values(categoryMapping);
+  const data = [
+    Categories.G01,
+    Categories.G02,
+    Categories.G03,
+    Categories.G04,
+    Categories.G05,
   ];
-  const likeCards = Array(6).fill(<LikeCard />);
 
-  const labels = ['연애운', '금전운', '취업운', '가족운', '직장운'];
-  const data = [300, 200, 100, 50, 30];
-
-  // const count = useCountUp({ start: 0, end: 30, duration: 1500 });
   return (
     <div>
       <div className="grid grid-cols-12 gap-4">
@@ -43,10 +106,10 @@ const Hero1: React.FC = () => {
                 className="object-cover w-full h-full rounded-lg"
               />
               <div className="absolute top-4 left-4">
-                <h1 className="text-black text-[70px] mx-10 my-5 font-bold">30%</h1>
+                <h1 className="text-black text-[70px] mx-10 my-5 font-bold">{Math.round((maxCategory.value / totalConsulting) * 100)}%</h1>
                 <div className="ms-12">
-                  <p className="text-black">최근 30개의 타로 결과를 종합해 봤을때</p>
-                  <p className="text-black text-[30px] font-bold">"금전운"</p>
+                  <p className="text-black">최근 {totalConsulting}개의 타로 결과를 종합해 봤을때</p>
+                  <p className="text-black text-[30px] font-bold">"{maxCategory.name}"</p>
                   <p className="text-black">카테고리가 제일 많았습니다.</p>
                 </div>
               </div>
@@ -64,8 +127,7 @@ const Hero1: React.FC = () => {
             <div className="col-span-8">
               <h1 className="text-black text-[30px] text-center font-bold">오늘의 타로점</h1>
               <p className="text-black text-[20px] text-start ms-4 mt-4">
-                희망과 치유의 날 입니다. 새로운 기회가 생기고, 긍정적인 에너지가 넘치는 하루가 될 것
-                입니다.
+                희망과 치유의 날 입니다. 새로운 기회가 생기고, 긍정적인 에너지가 넘치는 하루가 될 것입니다.
               </p>
             </div>
           </div>
@@ -80,22 +142,14 @@ const Hero1: React.FC = () => {
                   hsize="h-8"
                   wsize="w-24"
                   fontsize="text-sm"
-                ></HoverButton>
+                />
               </div>
             </div>
             <div className="grid grid-cols-12 p-2">
-              {likeCards.slice(0, 3).map((card, index) => (
-                <div key={index} className="col-span-4">
-                  {card}
-                </div>
-              ))}
+              {likeCards.slice(0, 3)}
             </div>
             <div className="grid grid-cols-12 p-2">
-              {likeCards.slice(3, 6).map((card, index) => (
-                <div key={index} className="col-span-4">
-                  {card}
-                </div>
-              ))}
+              {likeCards.slice(3, 6)}
             </div>
           </div>
         </div>
