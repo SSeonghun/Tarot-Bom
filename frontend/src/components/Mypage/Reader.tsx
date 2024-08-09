@@ -9,7 +9,13 @@ import ReaderItem from "./Readeritems/ReaderItem";
 import ReaderBg from "../../assets/img/readermypage.png";
 import Profile from "../../assets/img/profile2.png";
 
+
+
+
+
+const { readerMypage } = require("../../API/userApi")
 // 인터페이스
+
 interface MatchData {
   data: {
     memberDto: {
@@ -41,6 +47,8 @@ interface ResponseData {
 }
 
 const ReaderMypage: React.FC = () => {
+  const store = useStore();
+  const [data, setData] = useState<any>("")
   const [connected, setConnected] = useState<boolean>(false);
   const [matchLoading, setMatchLoading] = useState<boolean>(false); // 로딩 상태
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false); // 매칭 확인 모달 상태
@@ -56,6 +64,23 @@ const ReaderMypage: React.FC = () => {
   const navigate = useNavigate(); // useNavigate 훅을 사용합니다.
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await readerMypage();
+        setData(response.data)
+        return response.data
+        
+      } catch (error) {
+        console.error(error)
+        throw error
+      }
+    }
+    fetchData();
+    
+    
+    
+     
+    
     client.current = new Client({
       brokerURL: "ws://localhost/tarotbom/ws-stomp",
       onConnect: () => {
@@ -231,10 +256,10 @@ const ReaderMypage: React.FC = () => {
       <div className="absolute inset-0 z-10 bg-black opacity-50"></div>
       <div className="relative flex flex-col justify-center items-center h-full z-20">
         <div className="bg-black bg-opacity-50 p-2 absolute top-[50px] rounded-full backdrop-filter backdrop-blur-sm">
-          <img src={Profile} alt="Profile" className="w-32 h-32 rounded-full" />
+          <img src={store.userInfo?.profileImg} alt="Profile" className="w-32 h-32 rounded-full" />
         </div>
         <div className="flex flex-col justify-center absolute top-[180px] items-center">
-          <h1 className="text-white text-[40px] font-bold mt-5">김싸피</h1>
+          <h1 className="text-white text-[40px] font-bold mt-5">{data.name}</h1>
           <h3 className="text-white">TAROT READER</h3>
         </div>
         <div className="flex flex-wrap gap-4 absolute top-[350px]">
@@ -310,7 +335,7 @@ const ReaderMypage: React.FC = () => {
 
       <div className="relative h-fit bg-black z-30 mt-[150px]">
         <div className="h-fit bg-white mx-[100px] relative flex flex-col -top-[450px] rounded-xl bg-opacity-55">
-          <ReaderItem />
+          <ReaderItem data={data}/>
         </div>
       </div>
     </div>

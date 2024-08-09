@@ -6,17 +6,24 @@ import Reservation from "./Reservation";
 import Review from "./Review";
 import Summary from "./Summary";
 import Toggle from "../../Common/Toggle";
-
 import Profile from "../../../assets/img/profile2.png";
 import Seed from "../../../assets/img/seed.png";
+import useStore from "../../../stores/store";
 
-const ReaderItem: React.FC = () => {
+
+interface ReaderItemProps {
+  data: any
+}
+
+
+const ReaderItem: React.FC<ReaderItemProps> = ({data}) => {
+  const store = useStore();
   const [activeComponent, setActiveComponent] = useState<string>("Summary");
 
   const renderComponent = () => {
     switch (activeComponent) {
       case "Summary":
-        return <Summary />;
+        return <Summary mainData={data}/>;
       case "Income":
         return <Income />;
       case "Review":
@@ -26,7 +33,7 @@ const ReaderItem: React.FC = () => {
       case "Consulting":
         return <Consulting />;
       default:
-        return <Summary />;
+        return <Summary mainData={data}/>;
     }
   };
 
@@ -42,13 +49,13 @@ const ReaderItem: React.FC = () => {
           <div className="col-span-2 flex flex-col justify-around items-center">
             <div>
               <div className="flex flex-row">
-                <img src={Profile} alt="리더 프로필 이미지" />
+                <img src={store.userInfo?.profileImg} alt="리더 프로필 이미지" />
                 <img src={Seed} alt="리더 등급" className="object-contain" />
               </div>
               <div className="flex flex-col justify-center items-center">
-                <h1 className="text-[30px] text-black font-bold">김싸피</h1>
+                <h1 className="text-[30px] text-black font-bold">{store.userInfo?.nickname}</h1>
                 <p className="text-[15px] text-black font-bold">
-                  kimssafy@email.com
+                  {store.userInfo?.email}
                 </p>
               </div>
             </div>

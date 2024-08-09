@@ -21,7 +21,18 @@ ChartJS.register(
   Legend
 );
 
-const Summary: React.FC = () => {
+interface props {
+  mainData: any
+}
+
+
+const Summary: React.FC<props> = ({mainData}) => {
+
+
+function extractValues(obj: { [key: number]: number }): number[] {
+  return Object.keys(obj).map(key => obj[Number(key)]);
+}
+
   const data = {
     labels: [
       "1월",
@@ -39,8 +50,8 @@ const Summary: React.FC = () => {
     ],
     datasets: [
       {
-        label: "2023년 상담 수",
-        data: [12, 19, 3, 5, 2, 3, 9, 7, 14, 10, 6, 8],
+        label: "2024년 상담 수",
+        data: extractValues(mainData ? mainData.monthlyanalyze.categories : ''),
         backgroundColor: "rgba(75, 192, 192, 0.6)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
@@ -48,8 +59,33 @@ const Summary: React.FC = () => {
     ],
   };
 
-  const labels = ["연애운", "금전운", "취업운", "가족운", "직장운"];
-  const pie_data = [300, 200, 100, 50, 30];
+
+
+  // Categories 객체의 타입 정의
+  type CategoriesType = { [key: string]: number };
+
+  // Categories 객체 선언
+  const Categories: CategoriesType = mainData ? mainData.categoryanalyze.categories : '';
+
+  // 객체를 배열로 변환하고, 값을 기준으로 내림차순 정렬
+  const sortedArray: [string, number][] = Object.entries(Categories).sort((a, b) => b[1] - a[1]);
+  const valuesArray: number[] = sortedArray.map(item => item[1]);
+  const keysArray: string[] = sortedArray.map(item => item[0]);
+
+  const mapping: { [key: string]: string } = {
+    G01: '연애운',
+    G02: '진로운',
+    G03: '금전운',
+    G04: '건강운',
+    G05: '기타운'
+};
+const mappedArray: string[] = keysArray.map(key => mapping[key]);
+const labels = mappedArray
+  // console.log(extractNumbers(mainData ? mainData.categoryanalyze.categories : ''));
+
+  
+  
+  const pie_data = valuesArray;
 
   const highlightDates = [
     new Date(2024, 6, 31), // 2024년 7월 15일
@@ -64,7 +100,7 @@ const Summary: React.FC = () => {
         position: "top" as const,
       },
       title: {
-        text: "2023년 상담 통계",
+        text: "2024년 상담 통계",
       },
     },
   };
@@ -74,7 +110,7 @@ const Summary: React.FC = () => {
       <div className="col-span-7">
         <div>
           <h1 className="text-[40px] font-bold text-black">요약</h1>
-          <h2 className="text-[25px] font-bold text-black">2023년 상담</h2>
+          <h2 className="text-[25px] font-bold text-black">2024년 상담</h2>
         </div>
         <div className="mt-10 w-[400px] h-[200px] ms-auto me-auto">
           <Bar data={data} options={options} />
