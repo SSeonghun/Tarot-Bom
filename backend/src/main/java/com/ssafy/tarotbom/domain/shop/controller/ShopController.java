@@ -3,6 +3,7 @@ package com.ssafy.tarotbom.domain.shop.controller;
 import com.ssafy.tarotbom.domain.shop.dto.request.ShopAddRequestDto;
 import com.ssafy.tarotbom.domain.shop.dto.request.ShopUpdateRequestDto;
 import com.ssafy.tarotbom.domain.shop.dto.response.ShopReadResponseDto;
+import com.ssafy.tarotbom.domain.shop.dto.response.ShopUpdateRespondDto;
 import com.ssafy.tarotbom.domain.shop.service.ShopService;
 import com.ssafy.tarotbom.global.result.ResultCode;
 import com.ssafy.tarotbom.global.result.ResultResponse;
@@ -35,8 +36,8 @@ public class ShopController {
 
     @PatchMapping("/{shopId}")
     public ResponseEntity<ResultResponse> updateShop(@PathVariable Long shopId, @RequestBody ShopUpdateRequestDto shopUpdateRequestDto, HttpServletRequest request) {
-        shopService.updateShop(shopUpdateRequestDto, shopId, request);
-        ResultResponse resultResponse = ResultResponse.of(ResultCode.SHOP_UPDATED);
+        ShopUpdateRespondDto shopUpdateRespondDto = shopService.updateShop(shopUpdateRequestDto, shopId, request);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.SHOP_UPDATED, shopUpdateRespondDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
