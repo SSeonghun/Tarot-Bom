@@ -15,7 +15,8 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
   const [currentYear, setCurrentYear] = useState<number>(
     new Date().getFullYear()
   );
-
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedEvent, setSelectedEvent] = useState<Date | null>(null);
   // 날짜 계산 로직
   const getDaysInMonth = (month: number, year: number) => {
     return new Date(year, month + 1, 0).getDate();
@@ -74,7 +75,27 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
       )
       .sort((a, b) => a.getDate() - b.getDate());
   };
+  const handleOpenModal = (eventDate: Date) => {
+    setSelectedEvent(eventDate);
+    setIsModalOpen(true);
+  }
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedEvent(null);
+  };
 
+  const handleConfirmEntry = () => {
+    // if (selectedEvent) {
+    //   const matchingReservation = data.reservationList.find(reservation =>
+    //     new Date(reservation.startTime).toDateString() === selectedEvent.toDateString()
+    //   );
+    //   const roomEntryPath = `/rtcTest?token=${matchingReservation}&name=${data.name}&type=Cam`;
+    //   // URL을 사용하여 원하는 작업 수행 (예: 라우팅, API 호출 등)
+    //   console.log(roomEntryPath);
+    //   // 예를 들어, navigate(roomEntryPath) 등으로 이동할 수 있습니다.
+    // }
+    handleCloseModal();
+  };
   // 현재 날짜와 예약 시간 비교
 const isWithin30Minutes = (eventDate: Date) => {
   const now = new Date();
@@ -107,7 +128,7 @@ const isWithin30Minutes = (eventDate: Date) => {
             {isWithin30Minutes(event)&& (
             <button
               className="ml-4 px-4 py-2 bg-blue-500 text-white rounded"
-              onClick={() => alert(`예약 방에 입장합니다`)}
+              onClick={() => handleOpenModal(event)}
             >
             입장
             </button>
@@ -264,6 +285,27 @@ const isWithin30Minutes = (eventDate: Date) => {
             </div>
             <div className="my-2 mx-6 p-4 border border-gray-200">
               {renderUpcomingEvents()}
+            </div>
+          </div>
+        </div>
+      )}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded shadow-lg">
+            <p>예약 방에 입장하시겠습니까?</p>
+            <div className="mt-4 flex justify-end space-x-4">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={handleConfirmEntry}
+              >
+                입장
+              </button>
+              <button
+                className="bg-gray-300 text-black px-4 py-2 rounded"
+                onClick={handleCloseModal}
+              >
+                취소
+              </button>
             </div>
           </div>
         </div>
