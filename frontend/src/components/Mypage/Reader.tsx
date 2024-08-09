@@ -123,7 +123,7 @@ const ReaderMypage: React.FC = () => {
     // 방 입장 URL을 위한 데이터 준비
     const roomEntryPath = `/rtcTest?token=${encodeURIComponent(
       token
-    )}&name=${encodeURIComponent(memberName)}&type={CAM}`;
+    )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(selectedRoomStyle)}`;
 
     // 라우터를 통해 방으로 이동
     navigate(roomEntryPath);
@@ -259,14 +259,14 @@ const ReaderMypage: React.FC = () => {
                 {value === "G01"
                   ? "연애운"
                   : value === "G02"
-                  ? "직장운"
+                  ? "가족운"
                   : value === "G03"
                   ? "재물운"
                   : value === "G04"
                   ? "건강운"
                   : value === "G05"
                   ? "기타"
-                  : "가족운"}
+                  : "직장운"}
               </label>
             </div>
           ))}
