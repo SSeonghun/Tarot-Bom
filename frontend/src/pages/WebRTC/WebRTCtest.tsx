@@ -30,10 +30,10 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
     undefined
   );
   const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
-  const [participantName, setParticipantName] = useState(
-    "Participant" + Math.floor(Math.random() * 100)
+  const [participantName, setParticipantName] = useState<string | undefined>(
+    name
   );
-  const [roomName, setRoomName] = useState("Test Room");
+  const [roomName, setRoomName] = useState<string | undefined>(token);
 
   const APPLICATION_SERVER_URL =
     window.location.hostname === "localhost"
@@ -83,7 +83,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
     );
 
     try {
-      const token = await getToken(roomName, participantName);
+      const token = await getToken(roomName as string, participantName as string);
       await room.connect(LIVEKIT_URL, token);
       await room.localParticipant.enableCameraAndMicrophone();
       const videoTrack = room.localParticipant.videoTrackPublications
@@ -104,6 +104,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
   }
 
   async function getToken(roomName: string, participantName: string) {
+    console.log(roomName,participantName)
     const response = await fetch(APPLICATION_SERVER_URL + "token", {
       method: "POST",
       headers: {
@@ -123,6 +124,17 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
     const data = await response.json();
     return data.token;
   }
+  useEffect(() => {
+    // Get token and name from URL query parameters
+    const queryParams = new URLSearchParams(window.location.search);
+    const token = queryParams.get("token");
+    const name = queryParams.get("name");
+
+    if (token && name) {
+      setRoomName(token); // assuming token is used as room name
+      setParticipantName(name);
+    }
+  }, []);
 
   useEffect(() => {
     if (localTrack && localVideoRef.current) {
@@ -160,7 +172,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
   return (
     <div>
       {!room ? (
-        <div id="join">
+        <div id="join" className="mt-40">
           <div id="join-dialog">
             <h2>Join a Video Room</h2>
             <form
@@ -170,7 +182,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
               }}
             >
               <div>
-                <label htmlFor="participant-name">Participant</label>
+                {/* <label htmlFor="participant-name">Participant</label>
                 <input
                   id="participant-name"
                   className="form-control"
@@ -189,12 +201,12 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
                   value={roomName}
                   onChange={(e) => setRoomName(e.target.value)}
                   required
-                />
+                /> */}
               </div>
               <button
                 className="btn btn-lg btn-success"
                 type="submit"
-                disabled={!roomName || !participantName}
+                //disabled={!roomName || !participantName}
               >
                 Join!
               </button>
