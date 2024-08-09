@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PostList from '../../components/Community/PostList';
+import { boardList } from "../../API/boardsApi";
+
 
 interface Post {
-  id: number;
+  boardId: number;
   title: string;
   content: string;
-  author: string;
-  date: string;
-  category: string; // 추가된 필드
+  nickname: string;
+  createdTime: string;
+  category: string;
 }
 
 // TODO : axios!!!!!!!!! 데이터 뿌려주기
@@ -18,114 +20,49 @@ const PostListPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const postsPerPage = 9;
-  const navigate = useNavigate(); // useNavigate 훅 추가
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // 실제 데이터를 가져오는 API 호출을 할 수 있습니다.
-    // 예시로 하드코딩된 데이터를 사용합니다.
-    const fetchedPosts: Post[] = [
-      {
-        id: 1,
-        title: 'First Post',
-        content: 'This is the first post.',
-        author: 'Alice',
-        date: '2023-01-01',
-        category: 'Technology',
-      },
-      {
-        id: 2,
-        title: 'Second Post',
-        content: 'This is the second post.',
-        author: 'Bob',
-        date: '2023-01-02',
-        category: 'Health',
-      },
-      {
-        id: 3,
-        title: 'Third Post',
-        content: 'This is the third post.',
-        author: 'Charlie',
-        date: '2023-01-03',
-        category: 'Technology',
-      },
-      {
-        id: 4,
-        title: 'Fourth Post',
-        content: 'This is the fourth post.',
-        author: 'David',
-        date: '2023-01-04',
-        category: 'Lifestyle',
-      },
-      {
-        id: 5,
-        title: 'Fifth Post',
-        content: 'This is the fifth post.',
-        author: 'Eve',
-        date: '2023-01-05',
-        category: 'Health',
-      },
-      {
-        id: 6,
-        title: 'Sixth Post',
-        content: 'This is the sixth post.',
-        author: 'Frank',
-        date: '2023-01-06',
-        category: 'Lifestyle',
-      },
-      {
-        id: 7,
-        title: 'Seventh Post',
-        content: 'This is the seventh post.',
-        author: 'Grace',
-        date: '2023-01-07',
-        category: 'Technology',
-      },
-      {
-        id: 8,
-        title: 'Eighth Post',
-        content: 'This is the eighth post.',
-        author: 'Hank',
-        date: '2023-01-08',
-        category: 'Health',
-      },
-      {
-        id: 9,
-        title: 'Ninth Post',
-        content: 'This is the ninth post.',
-        author: 'Ivy',
-        date: '2023-01-09',
-        category: 'Lifestyle',
-      },
-      {
-        id: 10,
-        title: 'Tenth Post',
-        content: 'This is the tenth post.',
-        author: 'Jack',
-        date: '2023-01-10',
-        category: 'Technology',
-      },
-    ];
-    setPosts(fetchedPosts);
+    const fetchPosts = async () => {
+      try {
+        const response = await boardList(); // 수정된 boardList 호출
+        // 데이터가 배열인지 확인
+        if (Array.isArray(response.data)) {
+          setPosts(response.data);
+          // console.log(response.data);
+        } else {
+
+
+          console.error("API 응답이 배열이 아닙니다:", response.data);
+        }
+      } catch (error) {
+        console.error("게시글 목록 조회 실패", error);
+      }
+    };
+
+    fetchPosts();
   }, []);
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(e.target.value);
-    setCurrentPage(1); // 필터링 시 첫 페이지로 리셋
+    setCurrentPage(1);
   };
 
+  // posts가 배열인지 확인 후 filter
   const filteredPosts =
     selectedCategory === 'All' ? posts : posts.filter((post) => post.category === selectedCategory);
 
+  // filteredPosts가 배열일 경우에만 slice
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
-  const currentPosts = filteredPosts.slice(firstPostIndex, lastPostIndex);
+  const currentPosts = Array.isArray(filteredPosts) ? filteredPosts.slice(firstPostIndex, lastPostIndex) : [];
 
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const goToCreatePostPage = () => {
-    navigate('/create-post'); // CreatePostPage로 이동
+    navigate('/create-post');
   };
 
   return (
@@ -141,7 +78,6 @@ const PostListPage: React.FC = () => {
           </button>
         </div>
 
-        {/* 분류 선택 UI 추가 */}
         <div className="mb-4">
           <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
             Filter by Category
@@ -153,9 +89,10 @@ const PostListPage: React.FC = () => {
             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           >
             <option value="All">All</option>
-            <option value="Technology">Technology</option>
-            <option value="Health">Health</option>
-            <option value="Lifestyle">Lifestyle</option>
+            <option value="B01">공지사항</option>
+            <option value="B02">카드</option>
+            <option value="B03">리딩경험담</option>
+            <option value="B04">기타</option>
           </select>
         </div>
 
