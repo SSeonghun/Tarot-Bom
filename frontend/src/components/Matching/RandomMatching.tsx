@@ -43,6 +43,10 @@ interface ResponseData {
   message: string;
 }
 
+interface RoomToken {
+  token: string;
+}
+
 interface MatchingStartRequestDto {
   keyword: string;
   roomStyle: string;
@@ -94,6 +98,22 @@ const RandomMatching: React.FC = () => {
               setMatchLoading(false);
               setShowConfirmation(true);
             }
+
+            if (match.code === "M08") {
+              // match.data를 JSON 문자열로 직렬화
+              const jsonString = JSON.stringify(match.data);
+
+              // JSON 문자열을 객체로 역직렬화하여 token 값을 추출
+              const parsedData = JSON.parse(jsonString);
+              const token = parsedData.token;
+
+              // token 값을 사용
+              console.log("Token:", token);
+              enterRoom(token);
+
+              // token을 활용하여 필요한 로직 수행
+              // 예: API 호출, 검증 등
+            }
           }
         );
 
@@ -118,6 +138,20 @@ const RandomMatching: React.FC = () => {
       client.current?.deactivate();
     };
   }, [userInfo?.memberId, navigate]);
+
+  // 방 입장 메서드
+  const enterRoom = (token: string) => {
+    const memberName = userInfo?.nickname ?? "Unknown";
+    console.log(memberName, token);
+
+    // 방 입장 URL을 위한 데이터 준비
+    const roomEntryPath = `/rtcTest?token=${encodeURIComponent(
+      token
+    )}&name=${encodeURIComponent(memberName)}&type={CAM}`;
+
+    // 라우터를 통해 방으로 이동
+    navigate(roomEntryPath);
+  };
 
   const handleButtonClick = (label: string) => {
     if (label === "AI리더" || label === "리더매칭") {
