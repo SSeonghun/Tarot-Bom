@@ -4,6 +4,7 @@ import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.domain.shop.dto.request.ShopAddRequestDto;
 import com.ssafy.tarotbom.domain.shop.dto.request.ShopUpdateRequestDto;
 import com.ssafy.tarotbom.domain.shop.dto.response.ShopReadResponseDto;
+import com.ssafy.tarotbom.domain.shop.dto.response.ShopUpdateRespondDto;
 import com.ssafy.tarotbom.domain.shop.entity.Shop;
 import com.ssafy.tarotbom.domain.shop.repository.ShopRepository;
 import com.ssafy.tarotbom.global.error.BusinessException;
@@ -65,7 +66,7 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     @Transactional
-    public void updateShop(ShopUpdateRequestDto shopUpdateRequestDto, long shopId, HttpServletRequest request) {
+    public ShopUpdateRespondDto updateShop(ShopUpdateRequestDto shopUpdateRequestDto, long shopId, HttpServletRequest request) {
         // update하려는 shop이 해당 리더의 것인지 확인
         long readerId = cookieUtil.getUserId(request);
         Shop shop = shopRepository.findByShopId(shopId);
@@ -75,13 +76,21 @@ public class ShopServiceImpl implements ShopService {
         } else if(shop.getReaderId() != readerId) { // 본인 샵이 아니라면 수정 불가
             throw new BusinessException(ErrorCode.SHOP_NOT_YOUR_SHOP);
         }
-        shopRepository.save(shop.toBuilder()
+        Shop resultShop = shopRepository.save(shop.toBuilder()
                 .shopName(shopUpdateRequestDto.getShopName())
                 .address(shopUpdateRequestDto.getAddress())
                 .phone(shopUpdateRequestDto.getPhone())
                 .longitude(shopUpdateRequestDto.getLongitude())
                 .latitude(shopUpdateRequestDto.getLatitude())
                 .build());
+        return ShopUpdateRespondDto.builder()
+                .shopId(resultShop.getShopId())
+                .shopName(resultShop.getShopName())
+                .address(resultShop.getAddress())
+                .phone(resultShop.getPhone())
+                .longitude(resultShop.getLongitude())
+                .latitude(resultShop.getLatitude())
+                .build();
     }
 
     @Override
