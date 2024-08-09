@@ -1,4 +1,4 @@
-package com.ssafy.tarotbom.global.code.entity.repository;
+package com.ssafy.tarotbom.global.code.repository;
 
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
