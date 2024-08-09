@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-const MusicPlayer: React.FC = () => {
+interface Music {
+  title: string;
+}
+
+const MusicPlayer: React.FC<Music> = ({ title }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(30);
 
@@ -28,6 +32,7 @@ const MusicPlayer: React.FC = () => {
     return () => clearInterval(interval); // cleanup interval on component unmount
   }, [isPlaying]);
 
+  // TODO : 뮤직 플레이어 이름 까지는 가져옴
   return (
     <div className="rounded-lg drop-shadow p-4 dark:bg-black dark:shadow-white">
       <div className="flex items-center justify-center">
@@ -37,8 +42,7 @@ const MusicPlayer: React.FC = () => {
           alt="Album cover"
         />
         <div className="ml-4">
-          <p className="font-semibold text-md text-gray-600">I ain't worried</p>
-          <p className="font-semibold text-xs text-gray-600">One Republic</p>
+          <p className="font-semibold text-md text-gray-300">{title}</p>
         </div>
       </div>
       <div className="flex flex-col justify-center items-center my-4">

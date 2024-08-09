@@ -107,6 +107,8 @@ const RandomMatching: React.FC = () => {
               const parsedData = JSON.parse(jsonString);
               const token = parsedData.token;
 
+              // TODO: 여기서? 아님 리더 쪽에서? 리더 아이디 넘겨줘야 결과창에서 받아서 저장함
+
               // token 값을 사용
               console.log("Token:", token);
               enterRoom(token);
@@ -214,7 +216,7 @@ const RandomMatching: React.FC = () => {
 
       if (selectReader === "AI리더") {
         navigate(`/online/graphic`, {
-          state: payload,
+          state: { payload, readerType: "AI" },
         });
       } else if (selectReader === "리더매칭") {
         if (connected && client.current) {
