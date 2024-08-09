@@ -5,5 +5,6 @@ import com.ssafy.tarotbom.domain.report.dto.request.ReportUpdateReqDto;
 
 public interface ReportService {
     void createReport(ReportCreateReqDto reqDto);
-    void updateReport(ReportUpdateReqDto reqDto);
+    void updateReport(long reportId, ReportUpdateReqDto reqDto);
+    void deleteReport(long reportId);
 }

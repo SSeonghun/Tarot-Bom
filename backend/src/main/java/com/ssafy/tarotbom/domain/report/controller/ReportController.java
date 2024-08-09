@@ -24,13 +24,20 @@ public class ReportController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+
     @PutMapping("/declaration/{reportId}")
     public ResponseEntity<ResultResponse> updateReport(@PathVariable long reportId, @RequestBody ReportUpdateReqDto reqDto){
-        reportService.updateReport(reqDto);
+        reportService.updateReport(reportId, reqDto);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.DECLARATION_UPDATE_OK);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    @DeleteMapping("/declaration/{reportId}")
+    public ResponseEntity<ResultResponse> deleteReport(@PathVariable long reportId){
+        reportService.deleteReport(reportId);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.DECLARATION_DELETE_OK);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
 
 
 }
