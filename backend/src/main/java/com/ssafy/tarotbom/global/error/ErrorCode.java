@@ -60,7 +60,11 @@ public enum ErrorCode {
 
     // Dto
     DTO_NOT_NULL(HttpStatus.BAD_REQUEST, "D001", "값이 Null일 수 없습니다."),
-    DTO_NOT_VALID(HttpStatus.BAD_REQUEST, "D002", "유효하지 않은 값입니다.")
+    DTO_NOT_VALID(HttpStatus.BAD_REQUEST, "D002", "유효하지 않은 값입니다."),
+
+    // Email
+    EMAIL_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "E001", "이메일 전송에 실패했습니다.")
+
 
     ;
     // ==== 에러 코드 정의 종료 ====
