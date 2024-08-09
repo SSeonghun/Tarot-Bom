@@ -106,6 +106,7 @@ public class BoardServiceImpl implements BoardService{
                 .content(board.getContent())
                 .likelyCnt(board.getLikelyCnt())
                 .writer(board.getMember().getNickname())
+                .category(board.getCategory())
                 .createTime(board.getCreateTime())
                 .updateTime(board.getUpdateTime())
                 .commentList(commentList)
