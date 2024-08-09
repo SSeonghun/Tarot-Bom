@@ -123,18 +123,19 @@ public class ReaderServiceImpl implements ReaderService{
         }
         // shop 정보 찾기
         Shop shop = shopRepository.findByReaderId(readerId);
-        ShopReadResponseDto shopInfo =  ShopReadResponseDto.builder()
-                .shopId(shop.getShopId())
-                .readerId(shop.getReaderId())
-                .shopName(shop.getShopName())
-                .address(shop.getAddress())
-                .phone(shop.getPhone())
-                .longitude(shop.getLongitude())
-                .latitude(shop.getLatitude())
-                .build();
-        // todo: 상담횟수, 예약횟수, 리더가 된지 몇일? 비즈니스 로직 필요
-        //todo: 리뷰 리스트 생성에서 넣어주기
-        // 리뷰 리스트 생성
+        // shop 정보가 없는 경우는 null을 넣는다
+        ShopReadResponseDto shopInfo = null;
+        if(shop != null) {
+            shopInfo =  ShopReadResponseDto.builder()
+                    .shopId(shop.getShopId())
+                    .readerId(shop.getReaderId())
+                    .shopName(shop.getShopName())
+                    .address(shop.getAddress())
+                    .phone(shop.getPhone())
+                    .longitude(shop.getLongitude())
+                    .latitude(shop.getLatitude())
+                    .build();
+        }
         ReaderDetailResponseDto readerDetailResponseDto = ReaderDetailResponseDto
                 .builder()
                 .memberId(reader.getMemberId())
