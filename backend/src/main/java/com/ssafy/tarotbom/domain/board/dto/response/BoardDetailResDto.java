@@ -18,6 +18,7 @@ public class BoardDetailResDto {
     private String content;
     private long likelyCnt;
     private String writer;
+    private String category;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private List<BoardCommentDto> commentList;
