@@ -140,6 +140,7 @@ const RandomMatching: React.FC = () => {
   }, [userInfo?.memberId, navigate]);
 
   // 방 입장 메서드
+  //TODO : 경준형님 토큰: token, nickname : member, type: CAM인지 GFX인지 일단 하드코딩 주말 수정 예정
   const enterRoom = (token: string) => {
     const memberName = userInfo?.nickname ?? "Unknown";
     console.log(memberName, token);
