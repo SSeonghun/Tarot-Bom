@@ -16,7 +16,11 @@ const Category: React.FC = () => {
   return (
     <div className="mb-4">
       <h2 className="text-white text-lg mb-2">카테고리</h2>
-      <Select options={categoryOptions} selectedOption={selectedCategories} onSelect={handleSelect} />
+      <Select
+        options={categoryOptions}
+        selectedOption={selectedCategories}
+        onSelect={handleSelect}
+      />
     </div>
   );
 };

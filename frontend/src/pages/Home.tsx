@@ -11,7 +11,7 @@ const Home: React.FC = () => {
       <Hero1></Hero1>
       <Hero2></Hero2>
       <Hero3></Hero3>
-      <Hero4></Hero4>
+      {/* <Hero4></Hero4> */}
     </div>
   );
 };
