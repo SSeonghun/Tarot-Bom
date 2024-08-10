@@ -6,7 +6,11 @@ const ResizeComponent: React.FC<{
     isMinimized: boolean;
     onDoubleClick: () => void;
     children: React.ReactNode;
-}> = ({ videoId, isMaximized, isMinimized, onDoubleClick, children }) => {
+    onToggleMute: () => void;  // 음소거 버튼 이벤트 추가
+    onToggleVideo: () => void; // 화면 끄기 버튼 이벤트 추가
+    isMuted: boolean;          // 음소거 상태
+    isVideoOff: boolean;       // 화면 끄기 상태
+}> = ({ videoId, isMaximized, isMinimized, onDoubleClick, children, onToggleMute, onToggleVideo, isMuted, isVideoOff }) => {
     const [position, setPosition] = useState<{ x: number; y: number }>({ x: 100, y: 100 });
     const [dragging, setDragging] = useState<boolean>(false);
     const dragItem = useRef<HTMLDivElement | null>(null);
@@ -69,6 +73,21 @@ const ResizeComponent: React.FC<{
                 cursor: isMinimized ? 'move' : 'default',
             }}
         >
+            {/* 음소거 및 화면 끄기 버튼 */}
+            <div className="absolute top-0 right-0 p-2 z-50">
+            <button
+            onClick={onToggleMute}
+            className={`px-4 py-2 text-white rounded ${isMuted ? 'bg-red-600' : 'bg-blue-600'} hover:bg-blue-700`}
+            >
+            {isMuted ? 'Unmute' : 'Mute'}
+            </button>
+            <button
+            onClick={onToggleVideo}
+            className={`mt-2 px-4 py-2 text-white rounded ${isVideoOff ? 'bg-yellow-600' : 'bg-green-600'} hover:bg-green-700`}
+            >
+            {isVideoOff ? 'Turn On Video' : 'Turn Off Video'}
+            </button>
+        </div>
             {children}
         </div>
     );

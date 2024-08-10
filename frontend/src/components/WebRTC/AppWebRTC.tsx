@@ -60,6 +60,8 @@ function AppWebRTC() {
     const [isChatVisible, setIsChatVisible] = useState<boolean>(true);
     const [isCanvasVisible, setIsCanvasVisible] = useState<boolean>(false); // 캔버스 표시 상태 관리
 
+    const [isMuted, setIsMuted] = useState(false); // 음소거 상태 관리
+    const [isVideoOff, setIsVideoOff] = useState(false); // 비디오 끄기 상태 관리
     const canvasRef = useRef<DrawingCanvasHandle | null>(null);
 
     useEffect(() => {
@@ -169,7 +171,20 @@ function AppWebRTC() {
             console.error("Error setting up new audio track:", error);
         }
     };
+    useEffect(() => {
+        const fetchUserName = async () => {
+            // 예시로 사용자가 로그인된 이름을 가져오는 API 호출
+            // 실제로는 백엔드에서 사용자 정보를 가져오는 API를 호출해야 함
+            const userName = await getLoggedInUserName(); // 이 함수는 실제로 사용자 정보를 가져오는 함수로 대체해야 합니다.
+            setParticipantName(userName);
+        };
 
+        fetchUserName();
+    }, []);
+    // 더미 함수: 실제 사용자 정보를 가져오는 로직으로 대체하세요
+    const getLoggedInUserName = async () => {
+        return '홍길동'; // 예시: 로그인된 사용자 이름
+    };
     const handleVideoDoubleClick = (videoId: string) => {
         console.log(`Video double-clicked: ${videoId}`);
         if (maximizedVideo === videoId) {
@@ -299,6 +314,15 @@ function AppWebRTC() {
         console.log('Saving drawing...');
         canvasRef.current?.saveDrawing();
     }
+    // 다른 상태 및 로직들...
+
+    const handleToggleMute = () => {
+    setIsMuted(!isMuted);
+  };
+
+  const handleToggleVideo = () => {
+    setIsVideoOff(!isVideoOff);
+  };
     return (
         <>
             {!room ? (
@@ -318,25 +342,27 @@ function AppWebRTC() {
                         >
                             <div className="mb-4">
                                 <label htmlFor="participant-name" className="block mb-2 text-teal-600 font-bold text-lg">참가자</label>
-                                <input
+                                {/* <input
                                     id="participant-name"
                                     className="w-full p-2 mb-4 border border-teal-600 rounded focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600"
                                     type="text"
                                     value={participantName}
                                     onChange={(e) => setParticipantName(e.target.value)}
                                     required
-                                />
+                                    readOnly // 사용자가 직접 입력하지 못하게 하려면 readOnly 속성을 추가합니다.
+                                /> */}<p>{participantName}</p>
                             </div>
                             <div className="mb-4">
                                 <label htmlFor="room-name" className="block mb-2 text-teal-600 font-bold text-lg">상담실 번호</label>
-                                <input
+                                {/* <input
                                     id="room-name"
                                     className="w-full p-2 mb-4 border border-teal-600 rounded focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600"
                                     type="text"
                                     value={roomName}
                                     onChange={(e) => setRoomName(e.target.value)}
                                     required
-                                />
+                                /> */}
+                                <p>{roomName}</p>
                             </div>
                             <button
                                 className="bg-teal-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg transform transition-transform duration-200 hover:bg-teal-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-400"
@@ -348,8 +374,15 @@ function AppWebRTC() {
                         </form>
                     </div>
                 </div>
-            ) : (
+            ) : (<div>
+                <img
+                        className="absolute inset-0 w-full h-full object-cover opacity-40 z-0"
+                        src={MainBg}
+                        alt="Main Background"
+                    />
+            
                 <div className="flex flex-col justify-center items-center h-full relative" id="room">
+                    
                     {isCanvasVisible && (
                 <div className="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
                                         <DrawingCanvasComponent onUpdate={handleDrawingUpdate} ref={canvasRef} />
@@ -378,33 +411,47 @@ function AppWebRTC() {
                                         isMaximized={maximizedVideo === 'local'}
                                         isMinimized={maximizedVideo !== null && maximizedVideo !== 'local'}
                                         onDoubleClick={() => handleVideoDoubleClick('local')}
+                                        onToggleMute={handleToggleMute}
+                                        onToggleVideo={handleToggleVideo}
+                                        isMuted={isMuted}
+                                        isVideoOff={isVideoOff}
                                     >
+                                        {!isVideoOff && ( 
                                         <VideoComponent track={localVideoTrack} participantIdentity={participantName} local={true} />
+                                    )}
                                         </ResizeComponent>
                                         </div>
                                     )}
                                     {remoteTracks.map((remoteTrack,index) =>
                                         remoteTrack.trackPublication.kind === "video" ? (
                                             <div key={remoteTrack.trackPublication.trackSid} className="absolute" style={{ transform: `translate(${index * 150}px, ${index * 150}px)` }}> {/* 비디오 위치 조정 주석 추가 */}
+                                            
                                             <ResizeComponent
                                                     key={remoteTrack.trackPublication.trackSid}
                                                     videoId={remoteTrack.trackPublication.trackSid}
                                                     isMaximized={maximizedVideo === remoteTrack.trackPublication.trackSid}
                                                     isMinimized={maximizedVideo !== null && maximizedVideo !== remoteTrack.trackPublication.trackSid}
                                                     onDoubleClick={() => handleVideoDoubleClick(remoteTrack.trackPublication.trackSid)}
+                                                    onToggleMute={handleToggleMute}
+                                                    onToggleVideo={handleToggleVideo}
+                                                    isMuted={isMuted}
+                                                    isVideoOff={isVideoOff}
                                                 >
+                                            {!isVideoOff && (        
                                             <VideoComponent
                                                 key={remoteTrack.trackPublication.trackSid}
                                                 track={remoteTrack.trackPublication.videoTrack!}
                                                 participantIdentity={remoteTrack.participantIdentity}
-                                            />
+                                            />)}
                                             </ResizeComponent>
+
                                             </div>
                                         ) : (
+                                            !isMuted&& (
                                             <AudioComponent
                                                 key={remoteTrack.trackPublication.trackSid}
                                                 track={remoteTrack.trackPublication.audioTrack!}
-                                            />
+                                            />)
                                         )
                                     )}
                                     
@@ -448,7 +495,7 @@ function AppWebRTC() {
                         </button>
                     </div>
                 </div>
-            )}
+                </div> )}
         </>
     );
 }

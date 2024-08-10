@@ -80,23 +80,23 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ room, participantName, ha
     };
 
     return (
-        <div className="chat-container">
-            <div className="chat-log">
+        <div className="flex flex-col h-full">
+            <div className="flex-grow overflow-y-auto p-4 bg-gray-800 text-white rounded-t-lg">
                 {logs.map((log, index) => (
-                    <div key={index} className="chat-message">
-                        <strong>{log.userId}</strong> {log.message} <em>{log.timestamp}</em>
+                    <div key={index} className="mb-2">
+                        <strong>{log.userId}</strong> {log.message} <em className="text-xs text-gray-400">{log.timestamp}</em>
                     </div>
                 ))}
             </div>
-            <div className="chat-input">
+            <div className="flex items-center p-2 bg-gray-700 rounded-b-lg">
                 <input
                     type="text"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="메시지를 입력하세요"
-                    className="w-full p-2 border rounded"
+                    className="flex-grow p-2 border border-gray-600 rounded-lg bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <button onClick={handleSend} className="bg-blue-500 text-white p-2 rounded ml-2">
+                <button onClick={handleSend} className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none">
                     전송
                 </button>
             </div>
