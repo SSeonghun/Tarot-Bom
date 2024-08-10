@@ -12,7 +12,11 @@ const Select: React.FC<SelectProps> = ({ options, selectedOption, onSelect }) =>
       {options.map((option) => (
         <button
           key={option}
-          className={`rounded-full px-4 py-1 m-1 ${selectedOption.includes(option) ? 'bg-red-500 text-white' : 'bg-pink-400 text-white'}`}
+          className={`rounded-xl px-4 py-1 m-1 ${
+            selectedOption.includes(option)
+              ? 'bg-purple-300 text-gray-700 border-[1.5px] border-purple-300'
+              : 'border-[1.5px] border-purple-300 text-white'
+          }`}
           onClick={() => onSelect(option)}
         >
           {option}

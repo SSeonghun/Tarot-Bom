@@ -57,11 +57,12 @@
   transform: rotateY(180deg) translateX(100px); /* 카드가 뒤집혔을 때 회전 */
   width: 200px; /* 회전 시 카드 너비 증가 */
   height: 300px; /* 회전 시 카드 높이 증가 */
-  z-index: 0;
+  z-index: 99;
 }
 
 .card-remove {
   transform: translateX(1000px);
+  visibility: hidden;
 }
 
 /* 카드 위치를 지정하는 애니메이션 클래스 */

@@ -33,7 +33,11 @@ const Calendar: React.FC<CalendarProps> = ({ onDateSelect }) => {
   };
 
   const renderDays = () => {
-    const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+    const daysInMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+      0
+    ).getDate();
     const startDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
     const days = [];
 
@@ -46,14 +50,16 @@ const Calendar: React.FC<CalendarProps> = ({ onDateSelect }) => {
       const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
       const isSelected = selectedDate === i;
       const isPastDate = newDate < yesterday; // 어제 이전 날짜 확인
-      const dateStyle = isPastDate ? 'bg-gray-400 text-gray-700 cursor-not-allowed' : 'bg-purple-600 text-white cursor-pointer'; // 색상 및 커서 설정
+      const dateStyle = isPastDate
+        ? ' text-black font-bold cursor-not-allowed'
+        : ' text-white cursor-pointer'; // 색상 및 커서 설정
 
       days.push(
         <div
           key={i}
-          className={`p-2 rounded-lg ${isSelected ? 'bg-pink-500 text-white' : dateStyle}`}
+          className={`p-2 rounded-lg ${isSelected ? 'bg-purple-300 text-gray-700' : dateStyle}`}
           onClick={() => handleDateClick(i)}
-          style={{ opacity: isPastDate ? 0.5 : 1 }} // 연하게 표시
+          style={{ opacity: isPastDate ? 0.7 : 1 }} // 연하게 표시
         >
           {i}
         </div>
@@ -64,15 +70,23 @@ const Calendar: React.FC<CalendarProps> = ({ onDateSelect }) => {
   };
 
   return (
-    <div className="bg-purple-600 p-6 rounded-lg shadow-lg">
+    <div className="p-6 rounded-lg shadow-lg">
       <div className="flex justify-between items-center mb-4">
-        <button onClick={handlePrevMonth} className="text-white">◀</button>
-        <h2 className="text-white text-xl">{currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}</h2>
-        <button onClick={handleNextMonth} className="text-white">▶</button>
+        <button onClick={handlePrevMonth} className="text-white">
+          ◀
+        </button>
+        <h2 className="text-white text-xl">
+          {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
+        </h2>
+        <button onClick={handleNextMonth} className="text-white">
+          ▶
+        </button>
       </div>
       <div className="grid grid-cols-7 gap-2 text-white text-center">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-          <div key={day} className="font-bold">{day}</div>
+          <div key={day} className="font-bold">
+            {day}
+          </div>
         ))}
         {renderDays()}
       </div>

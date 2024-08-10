@@ -2,13 +2,14 @@ import React from 'react';
 import MainBg from '../../assets/mainBg.png';
 import HoverButton from '../Common/HoverButton';
 import PrivateLink from '../Common/PrivateLink';
+import CommonButton from '../Common/CommonButton';
 
 // Main Section 1
 const Hero1: React.FC = () => {
   return (
     <div className="relative w-screen min-h-screen bg-black">
       <img className="w-full h-screen object-cover opacity-90" src={MainBg} alt="Main Background" />
- 
+
       {/* Overlay */}
       <div
         className="absolute inset-0 flex flex-col items-end justify-center text-end text-white px-4"
@@ -24,7 +25,7 @@ const Hero1: React.FC = () => {
         </p>
         <div className="space-y-6 space-x-4">
           <PrivateLink to="/online">
-            <HoverButton
+            <CommonButton
               label="지금 만나보세요!"
               color="bg-gray-300"
               hoverColor="bg-gray-500"
