@@ -15,7 +15,8 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
   const [currentYear, setCurrentYear] = useState<number>(
     new Date().getFullYear()
   );
-
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedEvent, setSelectedEvent] = useState<Date | null>(null);
   // 날짜 계산 로직
   const getDaysInMonth = (month: number, year: number) => {
     return new Date(year, month + 1, 0).getDate();
@@ -74,7 +75,35 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
       )
       .sort((a, b) => a.getDate() - b.getDate());
   };
+  const handleOpenModal = (eventDate: Date) => {
+    setSelectedEvent(eventDate);
+    setIsModalOpen(true);
+  }
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedEvent(null);
+  };
 
+  const handleConfirmEntry = () => {
+    // if (selectedEvent) {
+    //   const matchingReservation = data.reservationList.find(reservation =>
+    //     new Date(reservation.startTime).toDateString() === selectedEvent.toDateString()
+    //   );
+    //   const roomEntryPath = `/rtcTest?token=${matchingReservation}&name=${data.name}&type=Cam`;
+    //   // URL을 사용하여 원하는 작업 수행 (예: 라우팅, API 호출 등)
+    //   console.log(roomEntryPath);
+    //   // 예를 들어, navigate(roomEntryPath) 등으로 이동할 수 있습니다.
+    // }
+    handleCloseModal();
+  };
+  // 현재 날짜와 예약 시간 비교
+const isWithin30Minutes = (eventDate: Date) => {
+  const now = new Date();
+  const endOfDay = new Date(eventDate);
+  endOfDay.setHours(23, 59, 59, 999); // 해당 날짜의 끝 시간
+  const thirtyMinutesBefore = new Date(eventDate.getTime() - 30 * 60000);
+  return now <= endOfDay && now >= thirtyMinutesBefore;
+};
   // 달력과 다가오는 일정이 표시될 레이아웃에 따라 처리
   const renderUpcomingEvents = () => {
     const upcomingEvents = getUpcomingEvents();
@@ -84,7 +113,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
       const firstEvent = upcomingEvents[0];
       return firstEvent ? (
         <div>
-          <strong>{firstEvent.toLocaleDateString()}</strong>: 다가오는 일정
+          <strong>{firstEvent.toLocaleString()}</strong>: 
         </div>
       ) : (
         <div>일정이 없습니다.</div>
@@ -94,7 +123,16 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
       return upcomingEvents.length ? (
         upcomingEvents.map((event, index) => (
           <div key={index}>
-            <strong>{event.toLocaleDateString()}</strong>: 다가오는 일정
+            <strong>{event.toLocaleString()}</strong>: 
+            {/* 날짜 시간의 30분 전이 되면 예약 webrtc 입장버튼 추가 */}
+            {isWithin30Minutes(event)&& (
+            <button
+              className="ml-4 px-4 py-2 bg-blue-500 text-white rounded"
+              onClick={() => handleOpenModal(event)}
+            >
+            입장
+            </button>
+          )}
           </div>
         ))
       ) : (
@@ -247,6 +285,27 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
             </div>
             <div className="my-2 mx-6 p-4 border border-gray-200">
               {renderUpcomingEvents()}
+            </div>
+          </div>
+        </div>
+      )}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded shadow-lg">
+            <p>예약 방에 입장하시겠습니까?</p>
+            <div className="mt-4 flex justify-end space-x-4">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={handleConfirmEntry}
+              >
+                입장
+              </button>
+              <button
+                className="bg-gray-300 text-black px-4 py-2 rounded"
+                onClick={handleCloseModal}
+              >
+                취소
+              </button>
             </div>
           </div>
         </div>

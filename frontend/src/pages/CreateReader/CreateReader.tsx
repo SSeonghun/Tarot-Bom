@@ -8,7 +8,7 @@ const CreateReader: React.FC = () => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [introduction, setIntroduction] = useState<string>("");
-  const interests = ["연애운", "금전운", "직장운", "취업운", "가족운", "기타"];
+  const interests = ["연애운", "금전운", "취업운", "가족운", "기타"];
   const interestscode = ["G01", "G02", "G03", "G04", "G05"];
 
   //TODO: 키워드가 안들어감

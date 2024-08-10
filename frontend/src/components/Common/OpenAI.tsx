@@ -48,13 +48,18 @@ const OpenAI: React.FC<OpenAIProps> = ({ cards, onSummaryGenerated }) => {
       const askTarotReading = async () => {
         const initialMessage = {
           role: "system",
-          content:
-            "You are a tarot reader. You are given three or more cards and you have to give them individual and overall interpretations.",
+          content: `You are a tarot reader and a Korean music recommender. Given three or more tarot cards, provide the following:
+          1. **Card Name**: <Card Name>
+             - **Detail**: <Card Detail>
+             - **Interpretation**: <Your Interpretation>
+          Overall: <Your Overall Interpretation of all cards>
+          Music: <Please provide only the song title and artist name>
+             `,
         };
 
         const cardMessages = cards.map((card) => ({
           role: "user",
-          content: `카드 이름: ${card.name}, 카드상세: ${card.desc}`,
+          content: `Card Name: ${card.name}, Card Detail: ${card.desc}`,
         }));
 
         const messages = [initialMessage, ...cardMessages];

@@ -1,23 +1,21 @@
 package com.ssafy.tarotbom.domain.member.service;
 
 import com.ssafy.tarotbom.domain.member.dto.ReaderAbstractReviewDto;
-import com.ssafy.tarotbom.domain.member.dto.request.UpdateReaderRequestDto;
-import com.ssafy.tarotbom.domain.member.dto.response.ReaderDetatilResponseDto;
+import com.ssafy.tarotbom.domain.member.dto.response.ReaderDetailResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.ReaderListResponseDto;
-import com.ssafy.tarotbom.domain.member.dto.response.ReviewReaderResponseDto;
 import com.ssafy.tarotbom.domain.member.dto.response.TopReaderResponseDto;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderQueryRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
-import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
 import com.ssafy.tarotbom.domain.reservation.repository.ReservationRepository;
 import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
 import com.ssafy.tarotbom.domain.review.repository.ReviewReaderRepository;
-import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
+import com.ssafy.tarotbom.domain.shop.dto.response.ShopReadResponseDto;
+import com.ssafy.tarotbom.domain.shop.entity.Shop;
+import com.ssafy.tarotbom.domain.shop.repository.ShopRepository;
 import com.ssafy.tarotbom.domain.tarot.repository.TarotResultRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,6 +38,7 @@ public class ReaderServiceImpl implements ReaderService{
     private final ReservationRepository reservationRepository;
     private final TarotResultRepository tarotResultRepository;
     private final ReaderQueryRepository readerQueryRepository;
+    private final ShopRepository shopRepository;
 
     /**
      * 리더 리스트 전체 반환
@@ -83,7 +82,7 @@ public class ReaderServiceImpl implements ReaderService{
      * @return
      */
     @Override
-    public ReaderDetatilResponseDto searchReaderDetail(long readerId) {
+    public ReaderDetailResponseDto searchReaderDetail(long readerId) {
         Reader reader = readerRepository.findByMemberId(readerId);
         Member memberReader = memberRepository.getReferenceById(readerId);
         // Optional : null 값 반환을 막기 위한 클래스
@@ -122,27 +121,22 @@ public class ReaderServiceImpl implements ReaderService{
                             .build()
             );
         }
-
-//        List<ReviewReaderResponseDto> reviewList = reviewReaders.stream()
-//                .map(review -> ReviewReaderResponseDto.builder()
-//                        .reviewReaderId(String.valueOf(review.getReviewReaderId()))
-//                        .seekerId(String.valueOf(review.getSeekerId()))
-//                        .readerId(String.valueOf(review.getReaderId()))
-//                        .rating(review.getRating())
-//                        .content(review.getContent())
-//                        .createTime(review.getCreateTime())
-//                        .updateTime(review.getUpdateTime())
-//                        .build())
-//                .collect(Collectors.toList());
-
-        // todo: 상담횟수, 예약횟수, 리더가 된지 몇일? 비즈니스 로직 필요
-
-//        log.info("{}", reader.getGrade().getCodeTypeId());
-//        log.info("{}", reader.getGrade().getCodeDetailId());
-        
-        //todo: 리뷰 리스트 생성에서 넣어주기
-        // 리뷰 리스트 생성
-        ReaderDetatilResponseDto readerDetatilResponseDto = ReaderDetatilResponseDto
+        // shop 정보 찾기
+        Shop shop = shopRepository.findByReaderId(readerId);
+        // shop 정보가 없는 경우는 null을 넣는다
+        ShopReadResponseDto shopInfo = null;
+        if(shop != null) {
+            shopInfo =  ShopReadResponseDto.builder()
+                    .shopId(shop.getShopId())
+                    .readerId(shop.getReaderId())
+                    .shopName(shop.getShopName())
+                    .address(shop.getAddress())
+                    .phone(shop.getPhone())
+                    .longitude(shop.getLongitude())
+                    .latitude(shop.getLatitude())
+                    .build();
+        }
+        ReaderDetailResponseDto readerDetailResponseDto = ReaderDetailResponseDto
                 .builder()
                 .memberId(reader.getMemberId())
                 .name(member.getNickname())
@@ -156,9 +150,10 @@ public class ReaderServiceImpl implements ReaderService{
                 .allConsultings(allConsulting)
                 .allReservations(allReservations)
                 .afterReader(afterReader)
+                .shopInfo(shopInfo)
                 .build();
 
-        return readerDetatilResponseDto;
+        return readerDetailResponseDto;
     }
 
     @Override

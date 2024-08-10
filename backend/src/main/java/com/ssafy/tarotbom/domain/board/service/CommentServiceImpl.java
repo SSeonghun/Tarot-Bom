@@ -38,7 +38,7 @@ public class CommentServiceImpl implements CommentService{
         // 댓글 생성하기
         Comment comment = Comment.builder()
                 .boardId(reqDto.getBoardId())
-                .writer(member)
+                .writerId(member.getMemberId())
                 .content(reqDto.getContent())
                 .build();
 

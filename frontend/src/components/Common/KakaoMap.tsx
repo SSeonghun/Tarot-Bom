@@ -12,6 +12,7 @@ const KakaoMap: React.FC<KakaoMapProps> = (props) => {
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KakaoMap_api}`; // 발급받은 API 키
     script.async = true;
     document.head.appendChild(script);
+    
 
     // 스크립트 로드가 완료되면 지도 객체를 생성합니다.
     script.onload = () => {
@@ -23,6 +24,9 @@ const KakaoMap: React.FC<KakaoMapProps> = (props) => {
           level: 3, // 확대 레벨
         };
         new kakao.maps.Map(container, options); // 지도 객체 생성
+      }
+      else {
+        console.error('Kakao Maps API가 로드되지 않았습니다.');
       }
     };
 

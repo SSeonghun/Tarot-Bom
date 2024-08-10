@@ -106,6 +106,38 @@ const cardInfo = async (cardId: number) => {
   }
 };
 
+interface CardRequset {
+  cardId: number;
+  sequence: number;
+  direction: string;
+}
+
+interface saveTarotRequest {
+  readerId: number;
+  seekerId: number;
+  date: Date;
+  keyword: string;
+  memo: string;
+  summary: string;
+  music: string;
+  roomId: number;
+  cards: CardRequset[];
+}
+
+const saveTarotResult = async (requestDto: saveTarotRequest) => {
+  console.log(requestDto);
+  try {
+    const response = await axios.post(`${API_URL}result/save`, requestDto, {
+      withCredentials: true,
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log("결과 등록 실패", error);
+    throw error;
+  }
+};
+
 const readerJoin = async (keyword: string, intro: string) => {
   try {
     const response = await axios.post(
@@ -185,4 +217,5 @@ export {
   youtubeMusic,
   readerDetail,
   readerTop,
+  saveTarotResult,
 };

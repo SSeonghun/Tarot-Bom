@@ -7,12 +7,14 @@ import { useLocation } from "react-router-dom";
 const { cardInfo } = require("../../API/api");
 
 interface TarotResultState {
+  reader: string;
   selectedCard: number[];
   worry: string;
   category: string;
 }
 
 interface CardData {
+  cardId: number;
   name: string;
   desc: string;
   imgUrl: string;
@@ -23,6 +25,11 @@ const TarotResult: React.FC = () => {
   const state = location.state as TarotResultState;
   const [cards, setCards] = useState<CardData[]>([]);
 
+  console.log(state.reader);
+  console.log(state.category);
+  console.log(state.selectedCard);
+  console.log(state.worry);
+
   useEffect(() => {
     const loadCardData = async () => {
       try {
@@ -31,6 +38,7 @@ const TarotResult: React.FC = () => {
         for (const cardId of state.selectedCard) {
           const response = await cardInfo(cardId + 1); // Assuming cardId needs an increment
           cardDetails.push({
+            cardId: cardId + 1,
             imgUrl: response.data.imageUrl,
             name: response.data.cardName,
             desc: response.data.description,
@@ -59,6 +67,7 @@ const TarotResult: React.FC = () => {
       <Title selectedCard={cards} />
       {/* 결과 요약 */}
       <ResultSummary
+        readerType={state.reader}
         selectedCard={cards}
         worry={state.worry}
         category={state.category}

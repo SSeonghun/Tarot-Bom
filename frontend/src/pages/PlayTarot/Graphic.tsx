@@ -8,8 +8,14 @@ import '../../assets/css/FlipCard2.css';
 import Sample from '../../assets/sample.png';
 
 interface MatchingState {
-  selectReader: string | null;
-  selectedLabel: string | null;
+  readerType: string | null;
+  payload: Payload;
+}
+
+interface Payload {
+  keyword: string;
+  memeberId: number;
+  roomStyle: string;
   worry: string;
 }
 
@@ -23,6 +29,8 @@ const getRandomCard = (excludeCards: number[]): number => {
   const randomIndex = Math.floor(Math.random() * availableCards.length);
   return availableCards[randomIndex];
 };
+
+// TODO: 메모장 추가 및 props
 
 const Graphic: React.FC = () => {
   const location = useLocation();
@@ -51,6 +59,8 @@ const Graphic: React.FC = () => {
 
   useEffect(() => {
     const state = location.state as MatchingState;
+    console.log(state);
+    console.log(state);
     if (!state) {
       navigate('/'); // 상태가 없을 경우 리디렉션
     } else {
@@ -138,11 +148,13 @@ const Graphic: React.FC = () => {
 
   const submitClick = () => {
     // `selectedCard`, `worry`, `category`를 TarotResult로 전달
+    const state = location.state as MatchingState;
     navigate('/tarot-result', {
       state: {
+        reader: state.readerType,
         selectedCard: selectedCard,
-        worry: matchingState.worry, // worry 전달
-        category: matchingState.selectedLabel || '기본 카테고리', // category 전달, 기본값 설정
+        worry: state.payload.worry, // worry 전달
+        category: state.payload.keyword || '기본 카테고리', // category 전달, 기본값 설정
       },
     });
   };

@@ -43,6 +43,10 @@ interface ResponseData {
   message: string;
 }
 
+interface RoomToken {
+  token: string;
+}
+
 interface MatchingStartRequestDto {
   keyword: string;
   roomStyle: string;
@@ -94,6 +98,24 @@ const RandomMatching: React.FC = () => {
               setMatchLoading(false);
               setShowConfirmation(true);
             }
+
+            if (match.code === "M08") {
+              // match.data를 JSON 문자열로 직렬화
+              const jsonString = JSON.stringify(match.data);
+
+              // JSON 문자열을 객체로 역직렬화하여 token 값을 추출
+              const parsedData = JSON.parse(jsonString);
+              const token = parsedData.token;
+
+              // TODO: 여기서? 아님 리더 쪽에서? 리더 아이디 넘겨줘야 결과창에서 받아서 저장함
+
+              // token 값을 사용
+              console.log("Token:", token);
+              enterRoom(token);
+
+              // token을 활용하여 필요한 로직 수행
+              // 예: API 호출, 검증 등
+            }
           }
         );
 
@@ -118,6 +140,21 @@ const RandomMatching: React.FC = () => {
       client.current?.deactivate();
     };
   }, [userInfo?.memberId, navigate]);
+
+  // 방 입장 메서드
+  //TODO : 경준형님 토큰: token, nickname : member, type: CAM인지 GFX인지 일단 하드코딩 주말 수정 예정
+  const enterRoom = (token: string) => {
+    const memberName = userInfo?.nickname ?? "Unknown";
+    console.log(memberName, token);
+
+    // 방 입장 URL을 위한 데이터 준비
+    const roomEntryPath = `/rtcTest?token=${encodeURIComponent(
+      token
+    )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(roomStyle)}`;
+
+    // 라우터를 통해 방으로 이동
+    navigate(roomEntryPath);
+  };
 
   const handleButtonClick = (label: string) => {
     if (label === "AI리더" || label === "리더매칭") {
@@ -179,7 +216,7 @@ const RandomMatching: React.FC = () => {
 
       if (selectReader === "AI리더") {
         navigate(`/online/graphic`, {
-          state: payload,
+          state: { payload, readerType: "AI" },
         });
       } else if (selectReader === "리더매칭") {
         if (connected && client.current) {

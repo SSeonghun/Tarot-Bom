@@ -9,14 +9,13 @@ import { useNavigate } from 'react-router-dom';
 const { readerList } = require('../../API/api');
 
 const Labels = [
-  { name: '연애운' },
-  { name: '직장운' },
-  { name: '재물운' },
-  { name: '건강운' },
-  { name: '가족운' },
-  { name: '기타' },
+  { name:'전체', keyword:""},
+  { name: '연애운',keyword: "G01" },
+  { name: '재물운',keyword: "G02" },
+  { name: '건강운',keyword: "G03" },
+  { name: '가족운',keyword: "G04" },
+  { name: '기타',keyword: "G05" },
 ];
-
 const SerchReader: React.FC = () => {
   const navigate = useNavigate();
 
@@ -24,13 +23,18 @@ const SerchReader: React.FC = () => {
   const [readers, setReaders] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  // 검색
+  const [filteredReaders, setFilteredReaders] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedKeyword, setSelectedKeyword] = useState<string | null>(null);
   // API 호출
   useEffect(() => {
     const loadReaders = async () => {
       try {
         const response = await readerList(); // API 함수 호출
+        console.log(response.data)
         setReaders(response.data); // API 호출 후 데이터를 상태에 설정
+        setFilteredReaders(response.data); // 초기 상태는 모든 리더가 필터링된 상태
       } catch (error) {
         setError('리더 목록을 가져오는 데 문제가 발생했습니다.');
       } finally {
@@ -46,6 +50,28 @@ const SerchReader: React.FC = () => {
     navigate(`/reader-profile?id=${readerId}`);
   };
 
+  const handleSearch = () => {
+    let filtered = readers;
+    console.log(selectedKeyword)
+    if (searchTerm) {
+      filtered = filtered.filter(reader =>
+        reader.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    if (selectedKeyword) {
+      
+      filtered = filtered.filter(reader =>
+        reader.keyword && reader.keyword.includes(selectedKeyword) // category가 존재하는지 확인
+      );
+    }
+    setFilteredReaders(filtered);
+  };
+  // 카테고리 선택 핸들러
+  const handleCategorySelect = (label: { name: string }) => {
+    const keyword = Labels.find(l=>l.name===label.name)?.keyword||null;
+    setSelectedKeyword(keyword); // 선택된 카테고리 이름 설정
+    handleSearch(); // 카테고리 선택 후 검색 수행
+  };
   return (
     <div className="container p-4 mx-auto relative min-h-[700px]">
       {/* 배경 이미지 */}
@@ -56,17 +82,24 @@ const SerchReader: React.FC = () => {
       />
 
       {/* 제목과 수평선 */}
-      <div className="flex justify-between items-end">
+      <div className="flex justify-between items-end mt-10">
         <h1 className="text-6xl font-bold text-white mb-10 mt-5">리더 검색</h1>
         <div className="mb-5">
-          <form action="" className="flex flex-row">
+          <form onSubmit={(e)=>{
+            e.preventDefault();
+            handleSearch();
+          }} className="flex flex-row items-center">
             <input
               type="text"
               placeholder="리더를 검색해보세요"
-              className="p-2 rounded me-3 w-60"
+              className="p-2 rounded me-3 flex-grow-3"
+              value={searchTerm}
+              onChange={(e)=>setSearchTerm(e.target.value)}
             />
             <div className="w-28">
-              <LinkButton to="#" text="검색"></LinkButton>
+              <button  type="submit" className="w-full py-3 font-semibold text-white rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 focus:outline-none">
+                검색  
+              </button>
             </div>
           </form>
         </div>
@@ -77,7 +110,9 @@ const SerchReader: React.FC = () => {
       <div className="grid grid-cols-12 gap-4 mt-10">
         {/* 첫 번째 열 (2/12) */}
         <div className="col-span-2 text-white p-4 z-10">
-          <Category items={Labels} />
+          <Category items={Labels} 
+           onSelect={handleCategorySelect}
+          />
         </div>
 
         {/* 두 번째 열 (10/12) */}
@@ -88,7 +123,7 @@ const SerchReader: React.FC = () => {
             ) : error ? (
               <p>{error}</p>
             ) : (
-              readers.map((reader) => (
+              filteredReaders.map((reader) => (
                 <ReaderCard
                   key={reader.memberId}
                   name={reader.name}
