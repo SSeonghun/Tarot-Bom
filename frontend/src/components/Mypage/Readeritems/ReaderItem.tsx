@@ -27,7 +27,7 @@ const ReaderItem: React.FC<ReaderItemProps> = ({data}) => {
       case "Income":
         return <Income />;
       case "Review":
-        return <Review />;
+        return <Review mainData={data}/>;
       case "Reservation":
         return <Reservation />;
       case "Consulting":

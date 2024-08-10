@@ -48,6 +48,7 @@ interface ResponseData {
 
 const ReaderMypage: React.FC = () => {
   const store = useStore();
+  const [loading, setLoading] = useState<boolean>(true); // 로딩 상태 추가
   const [data, setData] = useState<any>("")
   const [connected, setConnected] = useState<boolean>(false);
   const [matchLoading, setMatchLoading] = useState<boolean>(false); // 로딩 상태
@@ -67,12 +68,14 @@ const ReaderMypage: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await readerMypage();
-        setData(response.data)
+        await setData(response.data)
         return response.data
         
       } catch (error) {
         console.error(error)
         throw error
+      } finally {
+        setLoading(false);
       }
     }
     fetchData();

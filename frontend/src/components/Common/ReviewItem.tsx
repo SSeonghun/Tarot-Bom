@@ -2,17 +2,15 @@ import React from "react";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
 interface ReviewItemProps {
-  date: string;
-  title: string;
-  content: string;
-  rating: number;
-  backgroundColor: string;
-  textColor: string;
+  name: string; // 리뷰 작성자 추가
+  content: string; // 리뷰 내용
+  rating: number; // 평점
+  backgroundColor: string; // 배경색
+  textColor: string; // 텍스트 색상
 }
 
 const ReviewItem: React.FC<ReviewItemProps> = ({
-  date,
-  title,
+  name,
   content,
   rating,
   backgroundColor,
@@ -20,13 +18,10 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
 }) => {
   return (
     <div
-      className={`w-[550px] h-[150px] p-4 ${backgroundColor} ${textColor} mb-4 rounded-lg`}
+      className={`w-[550px] h-[120px] p-4 ${backgroundColor} ${textColor} mb-4 rounded-lg shadow-md transition-transform transform hover:scale-105`}
     >
       <div className="flex flex-col h-full">
-        <div className="flex justify-between items-start">
-          <h1 className="text-[30px] font-bold">{title}</h1>
-          <p className="text-sm mt-1">{date}</p>
-        </div>
+        <h2 className="text-lg font-semibold">{name}</h2>
         <p className="mt-2">{content}</p>
         <div className="mt-auto flex items-center">
           {/* 별점을 아이콘으로 표시 */}
@@ -37,6 +32,9 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
               <FaRegStar key={index} className="text-yellow-500" />
             )
           )}
+          <div className="mx-2">
+            {rating}
+          </div>
         </div>
       </div>
     </div>

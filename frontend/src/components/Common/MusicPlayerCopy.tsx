@@ -7,12 +7,14 @@ interface Music {
 const MusicPlayer: React.FC<Music> = ({ title }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(30);
-
+  console.log(title);
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
   };
 
   useEffect(() => {
+
+    
     let interval: NodeJS.Timeout | undefined;
 
     if (isPlaying) {

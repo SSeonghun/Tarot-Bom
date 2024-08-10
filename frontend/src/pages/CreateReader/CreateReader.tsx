@@ -36,10 +36,17 @@ const CreateReader: React.FC = () => {
   };
 
   const handlePrevious = () => {
-    if (step > 1) {
-      setStep(step - 1);
+    try {
+      if (step === 1) {
+        navigate(-1);
+      } else if (step > 1) {
+        setStep(step - 1);
+      }
+    } catch (error) {
+      console.error("Navigation Error:", error);
     }
   };
+  
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests((prev) =>
@@ -94,7 +101,6 @@ const CreateReader: React.FC = () => {
               <button
                 onClick={handlePrevious}
                 className="bg-gray-500 text-white px-4 py-2 rounded shadow-lg hover:bg-gray-600 transition-colors duration-300"
-                disabled={step === 1}
               >
                 이전
               </button>
