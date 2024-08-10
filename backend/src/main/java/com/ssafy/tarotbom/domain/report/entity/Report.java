@@ -6,6 +6,7 @@ import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@DynamicInsert
 @Builder(toBuilder = true)
 public class Report {
     @Id
@@ -59,9 +61,8 @@ public class Report {
     @Column(name = "reported_id", columnDefinition = "int unsigned")
     private long reportedId;
 
-    @NotNull
     @Column(name = "room_id", columnDefinition = "int unsigned")
-    private long roomId;
+    private Long roomId;
 
     @NotNull
     @Column(name = "report_type", columnDefinition = "char(3)")

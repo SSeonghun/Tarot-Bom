@@ -67,8 +67,8 @@ public enum ErrorCode {
     EMAIL_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "E001", "이메일 전송에 실패했습니다."),
 
     // Report
-    REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "R001", "신고내역을 찾을 수 없습니다."),
-
+    REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "P001", "신고내역을 찾을 수 없습니다."),
+    REPORT_REPORTER_ERROR(HttpStatus.BAD_REQUEST, "P002", "신고자나 신고대상자의 정보가 잘못되었습니다."),
     ;
     // ==== 에러 코드 정의 종료 ====
 

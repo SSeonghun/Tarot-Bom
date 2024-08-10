@@ -6,7 +6,5 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ReportUpdateReqDto {
-    private long memberId;
     private String status;
-
 }
