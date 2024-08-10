@@ -28,7 +28,8 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
 }) => {
 
   const navigate = useNavigate();
-
+  console.log(music);
+  
   // 슬라이드 설정
   const settings = {
     dots: true, // 슬라이드 하단의 점 표시
@@ -91,7 +92,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
       </div>
       {/* TODO : YOUTUBE API 안됨 */}
       <div className="mt-4">
-        <MusicPlayer title="" />
+        <MusicPlayer title={music} />
       </div>
     </div>
   );
