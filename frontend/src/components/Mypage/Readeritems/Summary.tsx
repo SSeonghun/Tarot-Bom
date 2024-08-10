@@ -86,6 +86,15 @@ const labels = mappedArray
   
   
   const pie_data = valuesArray;
+  const total: number = pie_data.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  function calculatePercentage(value: number, total: number): number {
+    if (total === 0) {
+        return 0; // 총합이 0일 경우 0% 반환
+    }
+    return Math.round((value / total) * 100);
+}
+  console.log(total);
+  
 
   const highlightDates = [
     new Date(2024, 6, 31), // 2024년 7월 15일
@@ -131,7 +140,7 @@ const labels = mappedArray
             <div className="flex flex-col justify-between mb-10">
               <div>
                 <h1 className="text-[50px] text-black font-bold">
-                  {pie_data[0]}%
+                  {calculatePercentage(pie_data[0], total)}%
                 </h1>
                 <h3 className="text-end text-[25px] text-black font-bold">
                   {labels[0]}
@@ -139,16 +148,16 @@ const labels = mappedArray
               </div>
               <div className="text-end">
                 <h1 className="text-[20px] text-black font-bold">
-                  {pie_data[1]}% {labels[1]}{" "}
+                  {calculatePercentage(pie_data[1], total)}% {labels[1]}{" "}
                 </h1>
                 <h1 className="text-[20px] text-black font-bold">
-                  {pie_data[2]}% {labels[2]}{" "}
+                  {calculatePercentage(pie_data[2], total)}% {labels[2]}{" "}
                 </h1>
                 <h1 className="text-[20px] text-black font-bold">
-                  {pie_data[3]}% {labels[3]}{" "}
+                  {calculatePercentage(pie_data[3], total)}% {labels[3]}{" "}
                 </h1>
                 <h1 className="text-[20px] text-black font-bold">
-                  {pie_data[4]}% {labels[4]}{" "}
+                  {calculatePercentage(pie_data[4], total)}% {labels[4]}{" "}
                 </h1>
               </div>
             </div>
