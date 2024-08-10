@@ -44,18 +44,18 @@ const CreatePostPage: React.FC = () => {
     <div className="min-h-screen bg-gray-900 p-8">
       <div className="max-w-4xl mx-auto p-4 bg-white rounded-lg shadow-md mt-16">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Create New Post</h1>
+          <h1 className="text-2xl font-bold">새 글 쓰기</h1>
           <button
             onClick={handleGoBack}
-            className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 mt-3"
           >
-            Back
+            뒤로
           </button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-              Title
+              제목
             </label>
             <input
               id="title"
@@ -68,7 +68,7 @@ const CreatePostPage: React.FC = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="content" className="block text-sm font-medium text-gray-700">
-              Content
+              내용
             </label>
             <textarea
               id="content"
@@ -81,7 +81,7 @@ const CreatePostPage: React.FC = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-              Category
+              카테고리
             </label>
             <select
               id="category"
@@ -101,7 +101,7 @@ const CreatePostPage: React.FC = () => {
             type="submit"
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-            Save Post
+            글 쓰기
           </button>
         </form>
       </div>
