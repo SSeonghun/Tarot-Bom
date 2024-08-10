@@ -8,7 +8,11 @@ import ChatAndControls from './Controller/ChatAndControls';
 import MainBg from '../../assets/mainBg.png';
 import DrawingCanvasComponent, { DrawingCanvasHandle } from './Tools/DrawingCanvasComponent';
 import ResizeComponent from './Controller/ResizeComponent';
-
+import LeaveOfIcon  from '../../assets/방떠나기.png';
+import SaveDrawOfIcon from '../../assets/그림 공유.png'
+import ClearOfIcon from '../../assets/지우기.png'
+import CloseDrowIcon from '../../assets/캔버스 끄기.png'
+import OpenDrowIcon from '../../assets/캔버스 켜기.png'
 type TrackInfo = {
     trackPublication: RemoteTrackPublication;
     participantIdentity: string;
@@ -342,26 +346,26 @@ function AppWebRTC() {
                         >
                             <div className="mb-4">
                                 <label htmlFor="participant-name" className="block mb-2 text-teal-600 font-bold text-lg">참가자</label>
-                                {/* <input
+                                <input
                                     id="participant-name"
                                     className="w-full p-2 mb-4 border border-teal-600 rounded focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600"
                                     type="text"
                                     value={participantName}
                                     onChange={(e) => setParticipantName(e.target.value)}
                                     required
-                                    readOnly // 사용자가 직접 입력하지 못하게 하려면 readOnly 속성을 추가합니다.
-                                /> */}<p>{participantName}</p>
+                                     // 사용자가 직접 입력하지 못하게 하려면 readOnly 속성을 추가합니다.
+                                /><p>{participantName}</p>
                             </div>
                             <div className="mb-4">
                                 <label htmlFor="room-name" className="block mb-2 text-teal-600 font-bold text-lg">상담실 번호</label>
-                                {/* <input
+                                <input
                                     id="room-name"
                                     className="w-full p-2 mb-4 border border-teal-600 rounded focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600"
                                     type="text"
                                     value={roomName}
                                     onChange={(e) => setRoomName(e.target.value)}
                                     required
-                                /> */}
+                                />
                                 <p>{roomName}</p>
                             </div>
                             <button
@@ -384,10 +388,10 @@ function AppWebRTC() {
                 <div className="flex flex-col justify-center items-center h-full relative" id="room">
                     
                     {isCanvasVisible && (
-                <div className="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50 overflow-visible">
                                         <DrawingCanvasComponent onUpdate={handleDrawingUpdate} ref={canvasRef} />
                                     </div> )}
-                    <div className="flex flex-col h-full w-full relative">
+                    <div className="flex flex-col h-full w-full relative overflow-visible">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 p-4">
                             {cards.map(card => (
                                 <TaroSelect
@@ -401,9 +405,9 @@ function AppWebRTC() {
                                 />
                             ))}
                         </div>
-                        <div className='flex flex-grow h-full'>
+                        <div className='flex flex-grow h-full overflow-visible'>
                             <div className="flex-1 relative">
-                                <div id="layout-container" className="absolute inset-0 w-full h-full flex items-center justify-center">
+                                <div id="layout-container" className="absolute inset-0 w-full h-full flex flex-col items-center justify-between">
                                     {localVideoTrack && (
                                         <div className="absolute">
                                         <ResizeComponent
@@ -422,9 +426,10 @@ function AppWebRTC() {
                                         </ResizeComponent>
                                         </div>
                                     )}
-                                    {remoteTracks.map((remoteTrack,index) =>
+                                    <div className="flex-grow flex items-center justify-center mb-4">
+                                        {remoteTracks.map((remoteTrack,index) =>
                                         remoteTrack.trackPublication.kind === "video" ? (
-                                            <div key={remoteTrack.trackPublication.trackSid} className="absolute" style={{ transform: `translate(${index * 150}px, ${index * 150}px)` }}> {/* 비디오 위치 조정 주석 추가 */}
+                                            <div key={remoteTrack.trackPublication.trackSid} className="absolute" > {/* 비디오 위치 조정 주석 추가 */}
                                             
                                             <ResizeComponent
                                                     key={remoteTrack.trackPublication.trackSid}
@@ -454,10 +459,12 @@ function AppWebRTC() {
                                             />)
                                         )
                                     )}
+                                    </div>
+                                    
                                     
                                 </div>
                             </div>
-                            <div className="w-1/3">
+                            <div >
                             {isChatVisible && (
                             <ChatAndControls
                                 roomId={roomName} // 또는 적절한 roomId 값
@@ -471,28 +478,38 @@ function AppWebRTC() {
                         </div>
                     </div>
                     <div className="relative w-full max-w-4xl px-5 mb-5 z-50">
+                    <div className="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-lg p-4 shadow-md flex space-x-4 z-50">
+        
                         <button
-                            className="absolute top-0 right-0 mt-4 mr-4 font-bold text-white bg-red-500 border border-red-500 rounded hover:bg-red-600 px-4 py-2"
-                            onClick={leaveRoom}>
-                            나가기
+                            className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
+                            onClick={clearCanvas}
+                        >
+                            <img src={ClearOfIcon} alt="" className="w-8 h-8" />
                         </button>
                         <button
-                            className="absolute top-0 right-0 mt-4 mr-16 font-bold text-white bg-blue-500 border border-blue-500 rounded hover:bg-blue-600 px-4 py-2"
-                            onClick={clearCanvas}>
-                            캔버스 지우기
+                            className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
+                            onClick={saveDrawing}
+                        >
+                            <img src={SaveDrawOfIcon} alt="" className="w-8 h-8" />
                         </button>
-                        <button
-                            className="absolute top-0 right-0 mt-4 mr-28 font-bold text-white bg-green-500 border border-green-500 rounded hover:bg-green-600 px-4 py-2"
-                            onClick={saveDrawing}>
-                            그림 저장
-                        </button>
-                        {/* 토글 버튼 */}
+                        
                         <button 
-                            className="fixed bottom-4 right-4 bg-blue-500 text-white px-4 py-2 rounded" 
+                            className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
                             onClick={() => setIsCanvasVisible(!isCanvasVisible)}
                         >
-                            {isCanvasVisible ? 'Hide Canvas' : 'Show Canvas'}
+                            {isCanvasVisible ? 
+                            <img src={CloseDrowIcon } alt="" /> :
+                            <img src={OpenDrowIcon} alt="" />
+                            }
                         </button>
+                        <button
+                            className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
+                            onClick={leaveRoom}
+                        >
+                            <img src={LeaveOfIcon} alt="" className="w-8 h-8" />
+                        </button>{/* 토글 버튼 */}
+                    </div>
+                        
                     </div>
                 </div>
                 </div> )}

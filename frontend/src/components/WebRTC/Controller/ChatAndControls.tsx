@@ -3,6 +3,10 @@ import ControlsPanel from "./ControlsPanel";
 import ChatComponent from "../Tools/ChatComponent";
 import { Room } from "livekit-client";
 import axios from "axios";
+import reportIcon from '../../../assets/신고.png'
+import OnIcon from '../../../assets/토글 ON.png'
+import OffIcon from '../../../assets/토글 OFF.png'
+const { chatReport } = require("../../../API/api")
 interface ChatAndControlsProps {
     roomId: string;
     participantName: string; // 추가: participantName을 받습니다
@@ -26,6 +30,14 @@ const ChatAndControls: React.FC<ChatAndControlsProps> = ({
 
     const [reportUserId, setReportUserId] = useState<string>(''); // 유저 ID 상태
     const [reportReason, setReportReason] = useState<string>(''); // 신고 사유 상태
+    const [isChatVisible, setIsChatVisible] = useState<boolean>(true);
+    
+
+    const toggleChatVisibility = () => {
+        setIsChatVisible(prevState => !prevState);
+    };
+    
+    
     const toggleReport = () => {
         setReportVisible(!isReportVisible);
     };
@@ -70,12 +82,8 @@ const ChatAndControls: React.FC<ChatAndControlsProps> = ({
         e.preventDefault();
         try {
             // 백엔드로 POST 요청 보내기
-            const response = await axios.post('/api/report', {
-                userId: reportUserId,
-                reason: reportReason,
-                roomId: roomId, // 추가: roomId도 함께 전송
-            });
-            console.log('신고 제출 성공:', response.data);
+            const response = await chatReport(reportUserId, reportReason, roomId);
+            console.log('신고 제출 성공:', response);
             
             // 초기화
             setReportUserId('');
@@ -87,16 +95,17 @@ const ChatAndControls: React.FC<ChatAndControlsProps> = ({
         }
     };
     return (
-        <div className="bg-gray-100 p-4 flex flex-col h-full">
+        <div className=" p-4 flex flex-col h-full min-w-[270px] max-w-[270px] min-h-[500px] max-h-[500px]">
             
-            <div className="relative flex-grow bg-blue-500 p-4" style={{ flex: '7 1 0' }}>
+            {/* <div className="relative flex-grow bg-blue-500 p-4" style={{ flex: '7 1 0' }}> */}
+            <div className="relative flex flex-grow">
                 {/* 신고 버튼 */}
-                <button
+                {isChatVisible && (<button
                     onClick={toggleReport}
-                    className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    className="absolute top-4 right-4  z-20 "
                 >
-                    신고
-                </button>
+                    <img src={reportIcon} alt=""style={{ width: '24px', height: '24px' }} />
+                </button>)}
                 
                 {/* 신고 인터페이스 */}
                 {isReportVisible && (
@@ -143,25 +152,36 @@ const ChatAndControls: React.FC<ChatAndControlsProps> = ({
                         </button>
                     </div>
                 )}
+            {/* </div> */}
             </div>
+            {/* {isChatVisible && ( */}
+            <div className={`flex flex-col items-end justify-center flex-grow transition-transform duration-1000 ease-in-out ${isChatVisible ? 'translate-x-0' : 'translate-x-[100vw]'}`}>
                 {/* 채팅창 */}
-            <div className="flex flex-col bg-gray-800 rounded-lg shadow-md p-4 mb-4 h-3/4">
+                {/* <div className="bg-gray-800 rounded-lg shadow-md p-4 w-full max-w-xs"> */}
             <ChatComponent 
                 roomId={roomId}
                 participantName={participantName}
                 room={room}
                 handleSendChatMessage={handleSendChatMessage} 
             />
-            </div>
+            {/* </div> */}
             {/* 화면 통제 */}
             {/* <div /> */}
-            <div className="bg-gray-300 flex-grow" style={{ flex: '1 1 0' }}>
+            {/* <div className="bg-gray-300 w-80 flex-shrink-0"> 
             <ControlsPanel
                 onCameraChange={onCameraChange}
                 onAudioChange={onAudioChange}
             />
+            </div> */}
             </div>
-            
+            {/* )} */}
+            {/* 토글 버튼 */}
+            <button 
+                onClick={toggleChatVisibility}
+                className="fixed right-0 top-1/2 bg-gray-200 border border-gray-300 rounded-full p-2 shadow-md hover:bg-gray-300 focus:outline-none transform -translate-y-1/2"
+            >
+                <img src={isChatVisible ? OffIcon : OnIcon} alt="Toggle Chat" className="w-8 h-8" />
+            </button>
         </div>
     );
 };

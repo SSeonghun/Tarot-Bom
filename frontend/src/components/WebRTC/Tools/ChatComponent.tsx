@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Room, RoomEvent } from 'livekit-client';
 import useChatStore from '../../../stores/ChatStore'; // Zustand 스토어 임포트
-
+import sendIcon from '../../../assets/전송.png'
 interface ChatComponentProps {
     roomId: string;
     room: Room | undefined; // WebRTC 방 객체
@@ -71,7 +71,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ room, participantName, ha
                 message: message,
                 timestamp: new Date().toISOString(),
             });
-            await sendLogsToBackend();
+            //await sendLogsToBackend();
             setMessage(''); // 입력란 초기화
             //handleSendChatMessage(message); // 부모 컴포넌트에 메시지 전송 알림
         } catch (error) {
@@ -80,15 +80,15 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ room, participantName, ha
     };
 
     return (
-        <div className="flex flex-col h-full">
-            <div className="flex-grow overflow-y-auto p-4 bg-gray-800 text-white rounded-t-lg">
+        <div className="flex flex-col h-full min-w-[270px] max-w-[270px] min-h-[500px] max-h-[500px] border rounded-lg shadow-md overflow-hidden bg-gray-800">
+            <div className="flex-grow overflow-auto p-4 text-white custom-scrollbar">
                 {logs.map((log, index) => (
                     <div key={index} className="mb-2">
                         <strong>{log.userId}</strong> {log.message} <em className="text-xs text-gray-400">{log.timestamp}</em>
                     </div>
                 ))}
             </div>
-            <div className="flex items-center p-2 bg-gray-700 rounded-b-lg">
+            <div className="flex items-center p-2 bg-gray-700">
                 <input
                     type="text"
                     value={message}
@@ -97,7 +97,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ room, participantName, ha
                     className="flex-grow p-2 border border-gray-600 rounded-lg bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <button onClick={handleSend} className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none">
-                    전송
+                    <img src={sendIcon} alt="" />
                 </button>
             </div>
         </div>
