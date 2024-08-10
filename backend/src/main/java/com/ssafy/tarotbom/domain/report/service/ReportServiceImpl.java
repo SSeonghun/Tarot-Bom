@@ -1,7 +1,6 @@
 package com.ssafy.tarotbom.domain.report.service;
 
 
-import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.report.dto.request.ReportCreateReqDto;
 import com.ssafy.tarotbom.domain.report.dto.request.ReportUpdateReqDto;

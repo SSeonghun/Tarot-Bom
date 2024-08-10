@@ -29,7 +29,6 @@ public class ReaderDetailResponseDto {
     private int afterReader;
 
     private List<ReaderAbstractReviewDto> reviews;
-    // todo: 추가로 오프라인 지도 데이터
     private ShopReadResponseDto shopInfo;
 
 }

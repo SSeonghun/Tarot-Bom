@@ -8,6 +8,9 @@ import com.ssafy.tarotbom.domain.member.dto.response.*;
 import com.ssafy.tarotbom.domain.member.entity.FavoriteReader;
 import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.domain.member.entity.Reader;
+import com.ssafy.tarotbom.domain.shop.dto.response.ShopReadResponseDto;
+import com.ssafy.tarotbom.domain.shop.entity.Shop;
+import com.ssafy.tarotbom.domain.shop.repository.ShopRepository;
 import com.ssafy.tarotbom.global.util.JwtUtil;
 import com.ssafy.tarotbom.domain.member.repository.FavoriteReaderRepository;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
@@ -62,13 +65,13 @@ public class MemberServiceImpl implements MemberService {
     private final ReservationService reservationService;
     private final TarotResultService tarotResultService;
     private final ReviewReaderRepository reviewReaderRepository;
+    private final ShopRepository shopRepository;
     private final S3Service s3Service;
     private final SpringTemplateEngine springTemplateEngine;
 
     private final MemberRedisService redisService;
     private final JavaMailSender emailSender;
     private final MemberRedisService memberRedisService;
-    private final EmailService emailService;
     private final CookieUtil cookieUtil;
 
     private static final String AUTH_CODE_PREFIX = "AuthCode:";
@@ -698,6 +701,21 @@ public class MemberServiceImpl implements MemberService {
                            .build()
            );
         }
+        // shop 정보 찾기
+        Shop shop = shopRepository.findByReaderId(memberId);
+        // shop 정보가 없는 경우는 null을 넣는다
+        ShopReadResponseDto shopInfo = null;
+        if(shop != null) {
+            shopInfo = ShopReadResponseDto.builder()
+                    .shopId(shop.getShopId())
+                    .readerId(shop.getReaderId())
+                    .shopName(shop.getShopName())
+                    .address(shop.getAddress())
+                    .phone(shop.getPhone())
+                    .longitude(shop.getLongitude())
+                    .latitude(shop.getLatitude())
+                    .build();
+        }
 
         ReaderMypageResponseDto readerMypageResponseDto = ReaderMypageResponseDto
                 .builder()
@@ -709,6 +727,7 @@ public class MemberServiceImpl implements MemberService {
                 .monthlyanalyze(monthlyDto)
                 .name(reader.getNickname())
                 .reviewReaderResponseDtos(reviewList)
+                .shopInfo(shopInfo)
                 .build();
 
         return readerMypageResponseDto;
