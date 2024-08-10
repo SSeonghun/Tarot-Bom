@@ -1,0 +1,537 @@
+.relative-container {
+  position: relative;
+  width: 100%; /* 필요한 경우 컨테이너 너비 조정 */
+}
+
+.background {
+  transform: perspective(150px) rotateX(7deg);
+}
+
+/* Shuffle.css */
+.tarot {
+  transition: all 1s;
+  perspective: 1500px;
+  transform-style: preserve-3d;
+  width: 100px; /* 초기 크기 */
+  height: 150px; /* 초기 크기 */
+  position: absolute;
+  left: 1000px;
+  top: 100px;
+}
+
+.card-selected {
+  position: absolute; /* 부모 컨테이너를 기준으로 위치 설정 */
+  top: 150px; /* 부모 컨테이너의 상단에서 50px 아래로 이동 */
+  left: 300px; /* 부모 컨테이너의 왼쪽에서 50px 오른쪽으로 이동 */
+  transition: all 0.5s ease-in-out; /* 부드러운 애니메이션 효과 */
+}
+
+.z-index {
+  z-index: 999;
+}
+
+.tarotcard {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d; /* 3D 변환을 위한 스타일 설정 */
+  transition: transform 1s; /* 뒤집기 애니메이션 설정 */
+}
+
+.tarot-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden; /* 뒷면이 가려지도록 설정 */
+}
+
+.tarot-front {
+  z-index: 9; /* 앞면이 뒷면 위에 있도록 설정 */
+}
+
+.tarot-back {
+  transform: rotateY(180deg); /* 뒷면이 뒤로 가도록 회전 */
+}
+
+.tarot.is-flipped .tarotcard {
+  transform: rotateY(180deg) translateX(100px); /* 카드가 뒤집혔을 때 회전 */
+  width: 200px; /* 회전 시 카드 너비 증가 */
+  height: 300px; /* 회전 시 카드 높이 증가 */
+  z-index: 0;
+}
+
+.card-remove {
+  transform: translateX(1000px);
+}
+
+/* 카드 위치를 지정하는 애니메이션 클래스 */
+.ani0 {
+  left: 0px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani1 {
+  left: 25px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani2 {
+  left: 50px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani3 {
+  left: 75px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani4 {
+  left: 100px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani5 {
+  left: 125px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani6 {
+  left: 150px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani7 {
+  left: 175px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani8 {
+  left: 200px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani9 {
+  left: 225px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani10 {
+  left: 250px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani11 {
+  left: 275px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani12 {
+  left: 300px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani13 {
+  left: 325px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani14 {
+  left: 350px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani15 {
+  left: 375px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani16 {
+  left: 400px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani17 {
+  left: 425px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani18 {
+  left: 450px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani19 {
+  left: 475px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani20 {
+  left: 500px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani21 {
+  left: 525px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani22 {
+  left: 550px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani23 {
+  left: 575px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani24 {
+  left: 600px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+.ani25 {
+  left: 625px;
+  top: 0px;
+  width: 100px;
+  height: 150px;
+}
+
+.ani26 {
+  left: 0px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani27 {
+  left: 25px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani28 {
+  left: 50px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani29 {
+  left: 75px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani30 {
+  left: 100px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani31 {
+  left: 125px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani32 {
+  left: 150px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani33 {
+  left: 175px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani34 {
+  left: 200px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani35 {
+  left: 225px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani36 {
+  left: 250px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani37 {
+  left: 275px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani38 {
+  left: 300px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani39 {
+  left: 325px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani40 {
+  left: 350px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani41 {
+  left: 375px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani42 {
+  left: 400px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani43 {
+  left: 425px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani44 {
+  left: 450px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani45 {
+  left: 475px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani46 {
+  left: 500px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani47 {
+  left: 525px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani48 {
+  left: 550px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani49 {
+  left: 575px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani50 {
+  left: 600px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+.ani51 {
+  left: 625px;
+  top: 175px;
+  width: 100px;
+  height: 150px;
+}
+
+.ani52 {
+  left: 0px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani53 {
+  left: 25px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani54 {
+  left: 50px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani55 {
+  left: 75px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani56 {
+  left: 100px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani57 {
+  left: 125px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani58 {
+  left: 150px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani59 {
+  left: 175px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani60 {
+  left: 200px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani61 {
+  left: 225px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani62 {
+  left: 250px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani63 {
+  left: 275px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani64 {
+  left: 300px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani65 {
+  left: 325px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani66 {
+  left: 350px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani67 {
+  left: 375px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani68 {
+  left: 400px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani69 {
+  left: 425px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani70 {
+  left: 450px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani71 {
+  left: 475px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani72 {
+  left: 500px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani73 {
+  left: 525px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani74 {
+  left: 550px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani75 {
+  left: 575px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani76 {
+  left: 600px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}
+.ani77 {
+  left: 625px;
+  top: 350px;
+  width: 100px;
+  height: 150px;
+}

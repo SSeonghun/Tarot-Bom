@@ -11,6 +11,7 @@ interface TimeWithDate {
   date: Date | null;
 }
 
+// TODO : 예약 추가만 하는 부분
 const Booking: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTimes, setSelectedTimes] = useState<TimeWithDate[]>([]); // 선택된 시간을 객체 배열로 관리
