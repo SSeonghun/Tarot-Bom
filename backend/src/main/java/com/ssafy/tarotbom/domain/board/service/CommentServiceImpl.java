@@ -85,21 +85,22 @@ public class CommentServiceImpl implements CommentService{
                 () -> new BusinessException(ErrorCode.BOARD_EMPTY)
         );
 
-        // 댓글 수정 권한이 없는 경우 예외
-        if(board.getMemberId() != member.getMemberId()){
-            throw new BusinessException(ErrorCode.COMMENT_NOT_YOUR_COMMENT);
-        }
 
         // 수정을 요청한 댓글을 찾을 수 없는 경우 예외
         Comment comment = commentRepository.findById(reqDto.getCommentId()).orElseThrow(
                 () -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND)
         );
 
+        // 댓글 수정 권한이 없는 경우 예외
+        if(comment.getWriterId() != member.getMemberId()){
+            throw new BusinessException(ErrorCode.COMMENT_NOT_YOUR_COMMENT);
+        }
+
         // 댓글 수정하기
         Comment updateComment = Comment.builder()
                 .commentId(reqDto.getCommentId())
                 .boardId(reqDto.getBoardId())
-                .writer(member)
+                .writerId(reqDto.getMemberId())
                 .content(reqDto.getContent())
                 .createTime(comment.getCreateTime())
                 .build();

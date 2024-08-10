@@ -43,6 +43,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -64,6 +65,7 @@ public class MemberServiceImpl implements MemberService {
     private final S3Service s3Service;
     private final SpringTemplateEngine springTemplateEngine;
 
+    private final MemberRedisService redisService;
     private final JavaMailSender emailSender;
     private final MemberRedisService memberRedisService;
     private final EmailService emailService;
@@ -239,7 +241,6 @@ public class MemberServiceImpl implements MemberService {
             throw new BusinessException(ErrorCode.MEMBER_DUPLICATED);
         }
 
-
         // 인증 코드 생성, 저장, 이메일 전송
         // todo: 인증번호 발송 예쁘게 꾸미면 좋음
 
@@ -266,6 +267,7 @@ public class MemberServiceImpl implements MemberService {
             // 해당 레디스 키를 삭제하고 재발급
             memberRedisService.deleteValue(AUTH_CODE_PREFIX + toEmail);
         }
+        redisService.setValues(AUTH_CODE_PREFIX + toEmail , authNum, Duration.ofMillis(authCodeExpirationMillis));
     }
     /**
      * thymeleaf를 통한 html 적용
