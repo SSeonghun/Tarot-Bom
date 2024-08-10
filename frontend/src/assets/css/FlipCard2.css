@@ -12,7 +12,31 @@
   height: 150px; /* 기본 카드 높이 */
   position: relative;
   transform-style: preserve-3d; /* 3D 변환을 위해 필요 */
-  transition: transform 0.6s, width 0.6s, height 0.6s, margin-left 0.6s, transform 0.6s; /* 애니메이션 추가 */
+  transition: transform 0.6s, width 0.6s, height 0.6s, margin-left 0.6s,
+    transform 0.6s; /* 애니메이션 추가 */
+}
+
+.card-selected {
+  position: absolute; /* 부모 컨테이너를 기준으로 위치 설정 */
+  top: 150px; /* 부모 컨테이너의 상단에서 50px 아래로 이동 */
+  left: 300px; /* 부모 컨테이너의 왼쪽에서 50px 오른쪽으로 이동 */
+  transform: scale(2) perspective(0px) rotateX(0deg); /* 크기를 1.5배로 확대 */
+  z-index: 10; /* 다른 카드 위로 올라오도록 z-index 설정 */
+  transition: all 0.5s ease-in-out; /* 부드러운 애니메이션 효과 */
+}
+
+.card-selected::after {
+  position: fixed;
+  top: 150px;
+  right: 0px;
+  transform: scale(0.5);
+  transition: all 0.5s ease-in-out;
+}
+
+/* card-selected 클래스가 적용된 경우 hover 효과 제거 */
+.tarot.card-selected:hover {
+  transform: none; /* 기존 hover 효과를 없앰 */
+  filter: none; /* 기존 hover 효과를 없앰 */
 }
 
 /* 카드 앞면 및 뒷면 */

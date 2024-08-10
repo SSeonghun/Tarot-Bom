@@ -150,7 +150,9 @@ const RandomMatching: React.FC = () => {
     // 방 입장 URL을 위한 데이터 준비
     const roomEntryPath = `/rtcTest?token=${encodeURIComponent(
       token
-    )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(roomStyle)}`;
+    )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
+      roomStyle
+    )}`;
 
     // 라우터를 통해 방으로 이동
     navigate(roomEntryPath);

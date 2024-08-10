@@ -27,8 +27,9 @@ public class TarotResultController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public ResponseEntity<ResultResponse> saveTarotResult(@RequestBody TarotResultSaveRequestDto dto) {
+        log.info("{}", dto);
         TarotResultSaveResponseDto result = tarotResultService.saveTarotResult(dto);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.TAROT_CARD_RESULT_SAVED, result);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);

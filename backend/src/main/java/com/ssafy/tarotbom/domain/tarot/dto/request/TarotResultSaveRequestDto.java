@@ -18,4 +18,18 @@ public class TarotResultSaveRequestDto {
     private long roomId;
     private List<TarotResultCardDto> cards;
 
+    @Override
+    public String toString() {
+        return "TarotResultSaveRequestDto{" +
+                "readerId=" + readerId +
+                ", seekerId=" + seekerId +
+                ", date=" + date +
+                ", keyword='" + keyword + '\'' +
+                ", memo='" + memo + '\'' +
+                ", summary='" + summary + '\'' +
+                ", music='" + music + '\'' +
+                ", roomId=" + roomId +
+                ", cards=" + cards +
+                '}';
+    }
 }
