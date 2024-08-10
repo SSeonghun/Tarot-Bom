@@ -27,6 +27,7 @@ public enum ErrorCode {
     MEMBER_YOU_ARE_NOT_READER(HttpStatus.FORBIDDEN, "M008", "리더가 아닌 사용자입니다."),
     MEMBER_PROFILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M009", "프로필 이미지 업로드에 실패했습니다."),
     MEMBER_ALREADY_READER(HttpStatus.CONFLICT, "M010", "이미 리더 프로필이 있는 회원입니다."),
+    MEMBER_NOT_ADMIN(HttpStatus.FORBIDDEN, "M011", "관리자가 아닌 사용자 입니다."),
 
     // Favorite Reader
     FAVORITE_DUPLICATED(HttpStatus.CONFLICT, "F001", "이미 찜한 리더 입니다."),
@@ -63,8 +64,10 @@ public enum ErrorCode {
     DTO_NOT_VALID(HttpStatus.BAD_REQUEST, "D002", "유효하지 않은 값입니다."),
 
     // Email
-    EMAIL_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "E001", "이메일 전송에 실패했습니다.")
+    EMAIL_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "E001", "이메일 전송에 실패했습니다."),
 
+    // Report
+    REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "R001", "신고내역을 찾을 수 없습니다."),
 
     ;
     // ==== 에러 코드 정의 종료 ====
