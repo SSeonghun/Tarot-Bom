@@ -111,7 +111,7 @@ const Graphic: React.FC = () => {
     }));
 
     // 뽑힌 카드 저장
-    setSelectedCard((prevSelectedCard) => [...prevSelectedCard, randomCard]); // `selectedCard` 상태 업데이트
+    // setSelectedCard((prevSelectedCard) => [...prevSelectedCard, randomCard]); // `selectedCard` 상태 업데이트
 
     // 카드 뒤집기 상태 업데이트
     setFlippedCards((prev) => {
@@ -257,7 +257,7 @@ const Graphic: React.FC = () => {
               </button>
               <h2 className="text-black text-2xl mb-4">선택된 카드</h2>
               {/* 모달 내용 - 3열 레이아웃 */}
-              <div className="grid grid-cols-12 gap-2">
+              <div className="grid grid-cols-12 gap-4">
                 {selectedCard.map((cardIndex) => (
                   <div
                     key={cardIndex}
