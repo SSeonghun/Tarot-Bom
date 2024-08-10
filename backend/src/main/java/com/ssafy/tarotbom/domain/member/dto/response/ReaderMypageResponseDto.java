@@ -3,6 +3,7 @@ package com.ssafy.tarotbom.domain.member.dto.response;
 import com.ssafy.tarotbom.domain.member.dto.ReaderAbstractReviewDto;
 import com.ssafy.tarotbom.domain.member.dto.ReaderAnalyzeDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
+import com.ssafy.tarotbom.domain.shop.dto.response.ShopReadResponseDto;
 import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,4 +31,7 @@ public class ReaderMypageResponseDto {
     // 타로 내역
     private List<TarotResultGetResponseDto> tarotResultGetResponseDtos;
     private List<ReaderAbstractReviewDto> reviewReaderResponseDtos;
+
+    // 샵 정보
+    private ShopReadResponseDto shopInfo;
 }
