@@ -8,7 +8,7 @@ interface SelectProps {
 
 const Select: React.FC<SelectProps> = ({ options, selectedOption, onSelect }) => {
   return (
-    <div className="flex flex-wrap mb-4">
+    <div className="flex flex-wrap mb-4 ">
       {options.map((option) => (
         <button
           key={option}
