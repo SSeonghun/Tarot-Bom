@@ -52,10 +52,10 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
       <table className="min-w-full bg-white border border-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="py-2 px-4 border-b">Category</th> {/* 열 제목 변경 */}
-            <th className="py-2 px-4 border-b text-left">Title</th>
-            <th className="py-2 px-4 border-b">Author</th>
-            <th className="py-2 px-4 border-b">Date</th>
+            <th className="py-2 px-4 border-b">카테고리</th> {/* 열 제목 변경 */}
+            <th className="py-2 px-4 border-b text-left">제목</th>
+            <th className="py-2 px-4 border-b">글쓴이</th>
+            <th className="py-2 px-4 border-b">날짜</th>
           </tr>
         </thead>
         <tbody>
