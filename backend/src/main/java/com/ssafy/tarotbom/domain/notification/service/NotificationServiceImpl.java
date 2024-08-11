@@ -41,6 +41,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .content(newNotification.getContent())
                 .read(false)
                 .valid(true)
+                .createTime(newNotification.getCreateTime())
                 .build();
     }
 
