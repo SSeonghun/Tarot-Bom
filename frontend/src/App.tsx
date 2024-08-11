@@ -26,7 +26,7 @@ import WebRTCTest from "./pages/WebRTC/WebRTCtest";
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="App">
+      <div className="App overflow-x-hidden">
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
