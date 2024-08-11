@@ -24,14 +24,12 @@ public class Notification {
     private long noId;
 
     /* @ManyToOne으로 연결 : 알람받을 사용자 ID, 알람 유형 */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", columnDefinition = "int unsigned")
+    @JoinColumn(name = "member_id", columnDefinition = "int unsigned", updatable = false, insertable = false)
     private Member member;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "no_type", columnDefinition = "char(3)")
+    @JoinColumn(name = "no_type", columnDefinition = "char(3)" , updatable = false, insertable = false)
     private CodeDetail noType;
 
     @NotNull
@@ -45,6 +43,12 @@ public class Notification {
     @ColumnDefault("1")
     @Column(name = "is_valid", columnDefinition = "tinyint(1)")
     private boolean isValid;
+
+    @Column(name = "member_id", columnDefinition = "int unsigned")
+    private long memberId;
+
+    @Column(name = "no_type", columnDefinition = "char(3)")
+    private String noTypeCode;
 
     @Column(name = "create_time", columnDefinition = "timestamp")
     private LocalDateTime createTime;
