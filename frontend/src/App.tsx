@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/UserAuth/Login";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Offline from "./pages/OfflineTarot";
 import SerchReader from "./pages/SearchReader/SearchReader";
 import Community from "./pages/Community/PostListPage";
@@ -55,6 +56,7 @@ const App: React.FC = () => {
             element={<WebRTCTest token={""} name={""} type={""} />}
           />
         </Routes>
+        <Footer />
       </div>
     </Router>
   );
