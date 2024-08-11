@@ -71,7 +71,7 @@ const Hero3: React.FC = () => {
   };
 
   return (
-    <div className="relative w-screen max-h-max flex-col bg-gray-900 flex items-center overflow-x-auto">
+    <div className="relative w-screen max-h-max flex-col bg-black flex items-center overflow-x-auto">
       <img
         src={Rank}
         alt=""
@@ -82,7 +82,7 @@ const Hero3: React.FC = () => {
           isVisible ? "fade-in" : "fade-out"
         }`}
       >
-        금주의 Top 리더를 확인해 보세요!
+        Top 리더를 확인해 보세요!
       </h1>
       <div
         ref={sliderRef}

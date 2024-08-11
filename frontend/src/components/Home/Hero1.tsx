@@ -20,11 +20,11 @@ const Hero1: React.FC = () => {
       <img
         src={Witch}
         alt=""
-        className="absolute left-[200px] top-[200px] w-[500px]"
+        className="absolute left-[150px] top-[200px] w-[500px]"
       />
 
       {/* Overlay */}
-      <div className="absolute inset-0 flex flex-col right-[300px] items-end justify-center text-end text-white px-4">
+      <div className="absolute inset-0 flex flex-col right-[200px] items-end justify-center text-end text-white px-4">
         <p className="text-9xl mb-4 font-bold" style={{ color: "#EBCB8B" }}>
           타로 : 봄
         </p>
