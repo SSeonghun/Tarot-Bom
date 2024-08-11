@@ -112,7 +112,7 @@ public class CommentServiceImpl implements CommentService{
         return CommentUpdateResDto.builder()
                 .commentId(updateComment.getCommentId())
                 .boardId(updateComment.getBoardId())
-                .memberId(updateComment.getWriter().getMemberId())
+                .memberId(updateComment.getWriterId())
                 .content(updateComment.getContent())
                 .build();
     }
