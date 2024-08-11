@@ -154,7 +154,7 @@ const Hero1: React.FC<Hero1Props> = ({
             </div>
               <div className="grid grid-cols-12 gap-4 p-2">
                 {likeCards.slice(0, 6).map((card, index) => (
-                  <div className="col-span-4" key={index}>
+                  <div className="col-span-4" key={index} >
                     {card}
                   </div>
                 ))}

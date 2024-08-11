@@ -29,7 +29,9 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
 
   const navigate = useNavigate();
   console.log(resultId);
-  
+  const handleClick = (resultId: number) => {
+    navigate(resultId); // 주어진 경로로 이동
+  };
   // 슬라이드 설정
   const settings = {
     dots: true, // 슬라이드 하단의 점 표시

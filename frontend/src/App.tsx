@@ -41,7 +41,7 @@ const App: React.FC = () => {
           <Route path="/matching" element={<Matching />} />
           <Route path="/change-pwd" element={<ChangePwd />} />
           <Route path="/findpwd" element={<FindPwd />} />
-          <Route path="/reader-profile" element={<ReaderProfile />} />
+          <Route path="/reader-profile/:readerId" element={<ReaderProfile />} />
           <Route path="/posts/:id" element={<PostDetail />} />
           <Route path="/create-post" element={<CreatePostPage />} />
           <Route path="/tarot-result" element={<TarotResult />} />
