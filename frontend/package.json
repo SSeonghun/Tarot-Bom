@@ -18,6 +18,8 @@
     "@types/react-slick": "^0.23.13",
     "axios": "^1.7.2",
     "chart.js": "^4.4.3",
+    "fabric": "^6.1.0",
+    "html2canvas": "^1.4.1",
     "livekit-client": "^2.4.2",
     "lodash": "^4.17.21",
     "openai": "^4.0.0",

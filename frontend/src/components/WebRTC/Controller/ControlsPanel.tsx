@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-const ControlsPanel: React.FC = () => {
+interface ControlsPanelProps {
+    onCameraChange: (deviceId: string | null, stream: MediaStream | null) => void;
+    onAudioChange: (deviceId: string | null, stream: MediaStream | null) => void;
+}
+
+const ControlsPanel: React.FC<ControlsPanelProps> = ({ onCameraChange, onAudioChange }) => {
     const [selectedTab, setSelectedTab] = useState<'camera' | 'audio' | 'screen' | null>(null);
     const [cameraDevices, setCameraDevices] = useState<MediaDeviceInfo[]>([]);
     const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
@@ -20,39 +25,53 @@ const ControlsPanel: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        const switchCamera = async (deviceId: string) => {
+        const switchCamera = async (deviceId: string | null) => {
             if (videoStream) {
                 videoStream.getTracks().forEach(track => track.stop());
             }
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { deviceId: { exact: deviceId } }
-            });
-            setVideoStream(stream);
+            if (deviceId) {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { deviceId: { exact: deviceId } }
+                });
+                setVideoStream(stream);
+                onCameraChange(deviceId, stream);
+            } else {
+                setVideoStream(null);
+                onCameraChange(null, null);
+            }
         };
 
-        if (selectedCamera) {
+        if (selectedCamera !== null) {
             switchCamera(selectedCamera);
+            setSelectedTab(null); // 탭 닫기
         }
-    }, [selectedCamera]);
+    }, [selectedCamera, videoStream, onCameraChange]);
 
     useEffect(() => {
-        const switchAudio = async (deviceId: string) => {
+        const switchAudio = async (deviceId: string | null) => {
             if (audioStream) {
                 audioStream.getTracks().forEach(track => track.stop());
             }
-            const stream = await navigator.mediaDevices.getUserMedia({
-                audio: { deviceId: { exact: deviceId } }
-            });
-            setAudioStream(stream);
+            if (deviceId) {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: { deviceId: { exact: deviceId } }
+                });
+                setAudioStream(stream);
+                onAudioChange(deviceId, stream);
+            } else {
+                setAudioStream(null);
+                onAudioChange(null, null);
+            }
         };
 
-        if (selectedAudio) {
+        if (selectedAudio !== null) {
             switchAudio(selectedAudio);
+            setSelectedTab(null); // 탭 닫기
         }
-    }, [selectedAudio]);
+    }, [selectedAudio, audioStream, onAudioChange]);
 
     const handleTabClick = (tab: 'camera' | 'audio' | 'screen') => {
-        setSelectedTab(prevTab => prevTab === tab ? null : tab);
+        setSelectedTab(prevTab => (prevTab === tab ? null : tab));
     };
 
     return (
@@ -72,7 +91,7 @@ const ControlsPanel: React.FC = () => {
                         <ul>
                             <li>
                                 <button
-                                    onClick={() => setSelectedCamera('')}
+                                    onClick={() => setSelectedCamera(null)}
                                     className="block p-2 mb-2 bg-gray-200 hover:bg-gray-300 w-full text-left"
                                 >
                                     카메라 없음
@@ -98,7 +117,7 @@ const ControlsPanel: React.FC = () => {
                         <ul>
                             <li>
                                 <button
-                                    onClick={() => setSelectedAudio('')}
+                                    onClick={() => setSelectedAudio(null)}
                                     className="block p-2 mb-2 bg-gray-200 hover:bg-gray-300 w-full text-left"
                                 >
                                     마이크 없음
@@ -120,8 +139,9 @@ const ControlsPanel: React.FC = () => {
 
                 {selectedTab === 'screen' && (
                     <div>
-                        <h3 className="text-lg font-bold mb-2">화면 전환 기능 준비중</h3>
+                        <h3 className="text-lg font-bold mb-2">시커 프로필</h3>
                         {/* 화면 전환 기능은 나중에 구현 */}
+                        {/* <ResizeComponent/> */}
                     </div>
                 )}
             </div>
@@ -132,8 +152,7 @@ const ControlsPanel: React.FC = () => {
                     onClick={() => handleTabClick('camera')}
                     className={`flex-1 p-2 ${selectedTab === 'camera' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
                 >
-                    <img src="" alt="" />
-                    카메라 
+                    카메라
                 </button>
                 <button
                     onClick={() => handleTabClick('audio')}
@@ -145,7 +164,7 @@ const ControlsPanel: React.FC = () => {
                     onClick={() => handleTabClick('screen')}
                     className={`flex-1 p-2 ${selectedTab === 'screen' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
                 >
-                    화면 전환
+                    시커 프로필
                 </button>
             </div>
         </div>
