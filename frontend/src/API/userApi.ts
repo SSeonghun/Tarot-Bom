@@ -193,7 +193,7 @@ const seekerMypage = async (name: string, isReader: boolean) => {
     const response = await axios.get(`${API_URL}seeker/mypage?name=${encodeURIComponent(name)}&isReader=${isReader}`, {
       withCredentials: true,
     });
-    // console.log(response.data.data);
+    console.log(response.data.data);
     return response.data.data;
   } catch (error) {
     console.error('시커 마이페이지 조회 실패', error);
@@ -294,7 +294,24 @@ const readerMypage = async () => {
     return response.data
 
   } catch (error) {
-    
+    console.error('리더 마이페이지 조회 실패', error);
+    throw error;
+  }
+}
+
+
+const readerTop = async () => {
+  try {
+    const response = await axios.get(`${API_URL}reader/top`,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log(response.data.data);
+    return response.data.data
+  } catch (error) {
+    console.error('탑 리더 조회 실패', error);
+    throw error;
   }
 }
 
@@ -320,5 +337,6 @@ export {
   readerReview,
   readerConsult,
   readerSchedule,
-  readerMypage
+  readerMypage,
+  readerTop
 };

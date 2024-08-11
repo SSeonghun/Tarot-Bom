@@ -7,6 +7,9 @@ import TarotCard from '../../../assets/tarot_images - 복사본/c01.jpg';
 import LikeCard from '../../Cards/LikeCard';
 import HoverButton from '../../Common/HoverButton';
 
+
+const defaultProfileUrl = "https://cdn3d.iconscout.com/3d/premium/thumb/avatar-profile-7377413-5979215.png?f=webp"
+
 // 예약 리스트 항목 타입 정의
 interface Reservation {
   startTime: string; // 시작 시간의 타입 정의 (예: ISO 8601 형식)
@@ -19,7 +22,8 @@ type Categories = {
 
 // 찜 리스트 항목 타입 정의
 interface FavoriteReader {
-  id: number; // 예시로 ID 속성 추가
+  intro: string;
+  profileUrl: string | null; 
   name: string; // 리더의 이름
 }
 
@@ -70,8 +74,9 @@ const Hero1: React.FC<Hero1Props> = ({
   // favoriteReaderList를 기반으로 likeCards 생성
   const likeCards = favoriteReaderList.map(reader => (
     <LikeCard
-    key={reader.id} 
-    
+     intro={reader.intro}
+     name={reader.name}
+     profileUrl={reader.profileUrl? reader.profileUrl: defaultProfileUrl}
     />
   ));
 
@@ -86,7 +91,8 @@ const Hero1: React.FC<Hero1Props> = ({
     Categories.G05,
   ];
 
-
+  console.log(favoriteReaderList);
+  
   return (
     <div>
       <div className="grid grid-cols-12 gap-4">
@@ -116,7 +122,7 @@ const Hero1: React.FC<Hero1Props> = ({
               </div>
             </div>
           </div>
-          <div className="border mt-4 p-4 border-black rounded-lg h-fit">
+          <div className="border mt-4 p-4 border-black rounded-lg h-fit flex justify-center items-center">
             <PieChart labels={labels} data={data} />
           </div>
         </div>
@@ -146,12 +152,13 @@ const Hero1: React.FC<Hero1Props> = ({
                 />
               </div>
             </div>
-            <div className="grid grid-cols-12 p-2">
-              {likeCards.slice(0, 3)}
-            </div>
-            <div className="grid grid-cols-12 p-2">
-              {likeCards.slice(3, 6)}
-            </div>
+              <div className="grid grid-cols-12 gap-4 p-2">
+                {likeCards.slice(0, 6).map((card, index) => (
+                  <div className="col-span-4" key={index}>
+                    {card}
+                  </div>
+                ))}
+              </div>
           </div>
         </div>
       </div>

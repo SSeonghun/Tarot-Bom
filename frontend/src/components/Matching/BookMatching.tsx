@@ -8,6 +8,12 @@ import 'slick-carousel/slick/slick.css'; // 슬릭 슬라이더 기본 스타일
 import 'slick-carousel/slick/slick-theme.css'; // 슬릭 슬라이더 테마 스타일
 import '../../assets/css/FadeInOut.css'; // 사용자 정의 애니메이션 CSS 파일
 
+
+
+const { readerTop } = require("../../API/userApi")
+const defaultProfileUrl = "https://cdn3d.iconscout.com/3d/premium/thumb/avatar-profile-7377413-5979215.png?f=webp"
+
+
 // 슬라이더 설정
 const settings = {
   dots: true, // 슬라이더 하단의 점 표시
@@ -20,20 +26,32 @@ const settings = {
   arrows: true, // 좌우 화살표 표시
 };
 
+
+
 const BookMatching: React.FC = () => {
   // 10개의 카드 예시 데이터 생성
-  const likeReaders = Array.from({ length: 10 });
-
+  
+  
   // 상태 추가: 선택된 버튼의 레이블과 두 번째 입력 필드의 표시 여부를 제어
   const [showSecondInput, setShowSecondInput] = useState<boolean>(false);
   const [animationClass, setAnimationClass] = useState<string>('fade-out');
   const [onLoad, setOnLoad] = useState<boolean>(false); // 처음에 컴포넌트 띄울때 에니메이션
+  const [ readerList, setReaderList ] = useState<Array<any>>([])
 
   /*
    * 애니메이션 종료 후 상태 업데이트
    * 'showSecondInput'이 false일 때 'fade-out' 클래스를 설정하여 애니메이션 효과를 적용합니다.
    */
   useEffect(() => {
+    const fetchData = async () => {
+      const data = await readerTop();
+      setReaderList(data || [])
+    };
+    fetchData();
+    console.log(readerList);
+    
+  
+    setOnLoad(true);
     if (!showSecondInput) {
       setAnimationClass('fade-out');
     }
@@ -43,27 +61,32 @@ const BookMatching: React.FC = () => {
    * 컴포넌트가 마운트될 때 버튼에 애니메이션 적용
    * 컴포넌트가 처음 로드될 때 'buttonsLoaded'를 true로 설정합니다.
    */
-  useEffect(() => {
-    setOnLoad(true);
-  }, []);
+
 
   return (
     <div
       className={`bg-white w-[700px] h-[500px] -mt-20 relative flex-col items-center overflow-x-auto rounded-md button-fade-in`}
     >
       <h2 className="text-2xl font-bold mt-10 mb-4 text-center">TOP 리더</h2>
-
+    <div>
       <div className="w-full h-[250px]" style={{ overflow: 'hidden' }}>
         {/* 슬라이더 컴포넌트 */}
         <Slider {...settings}>
           {/* 10개의 LikeCard 컴포넌트를 슬라이드에 표시 */}
-          {likeReaders.map((_, index) => (
+          {readerList.map((reader, index) => (
             <div key={index} className="p-2">
-              <LikeCard />
+            <LikeCard
+            intro={reader.intro}
+            name={reader.nickname}
+            profileUrl={reader.profileUrl? reader.profileUrl: defaultProfileUrl}
+            />
             </div>
           ))}
         </Slider>
       </div>
+
+    </div>
+
 
       {/* TODO : 리더 검색이든, 찜리스트든 예약 페이지로 이동 */}
       <div className="flex flex-col items-center mt-5">

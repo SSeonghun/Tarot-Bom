@@ -4,6 +4,7 @@ import Profile from '../../assets/img/profile2.png';
 import SeekerItem from './seekeritems/SeekerItem';
 import useUserStore from '../../stores/store';
 import { seekerMypage } from '../../API/userApi';
+import useStore from '../../stores/store';
 
 // UserInfo 인터페이스 정의
 interface UserInfo {
@@ -22,6 +23,7 @@ const Seeker: React.FC = () => {
         const userInfo = store.userInfo as UserInfo; // userInfo를 UserInfo 타입으로 캐스팅
         const nickname = userInfo?.nickname;
         const isReader = userInfo?.isReader;
+      
         
         if (nickname) { // nickname이 존재할 때만 API 호출
           const fetchedData = await seekerMypage(nickname, isReader); // 데이터 가져오기
@@ -51,7 +53,7 @@ const Seeker: React.FC = () => {
       <div className="absolute inset-0 z-10 bg-black opacity-50"></div>
       <div className="relative flex flex-col justify-center items-center h-full z-20">
         <div className="bg-black bg-opacity-50 p-2 absolute top-[50px] rounded-full backdrop-filter backdrop-blur-sm">
-          <img src={data ? data.profile : ''} alt="Profile" className="w-32 h-32 rounded-full" />
+          <img src={store.userInfo?.profileImg} alt="Profile" className="w-32 h-32 rounded-full" />
         </div>
         <div className="flex flex-col justify-center absolute top-[180px] items-center">
           <h1 className="text-white text-[40px] font-bold mt-5">{data ? data.name : ''}</h1>

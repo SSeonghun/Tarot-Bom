@@ -31,8 +31,8 @@ const SeekerItem: React.FC<SeekerItemProps> = ({ data }) => {
       <div className="flex flex-row items-center justify-between">
         <h1 className="text-black font-bold text-[50px] m-4">{data.name}님 마이페이지</h1>
         <div className="m-4">
-           {/* data.reader가 true일 때 Toggle, false일 때 HoverButton을 렌더링 */}
-           {data.reader ? (
+          {/* data.reader가 true일 때 Toggle, false일 때 HoverButton을 렌더링 */}
+          {data.reader ? (
             <Toggle />
           ) : (
             <Link to="/create-reader">
@@ -63,21 +63,20 @@ const SeekerItem: React.FC<SeekerItemProps> = ({ data }) => {
       <hr className="border-black border-[2px]" />
       <div className="mt-3">
         <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-4 border border-gray-600 mt-4 rounded-lg">
-            {recentTarotResults.map((result, index) => (
-              <div key={index} className="col-span-4 border border-gray-600 mt-4 rounded-lg">
-                <ResultSummary
-                  date={new Date(result.date)} // 날짜
-                  cards={result.cards} // 카드 데이터
-                  keyword={result.keyword} // 키워드
-                  music={result.music} // 음악 제목
-                  readerId={result.readerId} // 리더 ID
-                  summary={result.summary} // 요약
-                  resultId={result.resultId}
-                /> {/* 결과의 구조에 맞게 수정 */}
-              </div>
-            ))}
-          </div>
+          {/* col-span-12에서 col-span-4로 변경하여 3개를 가로로 배치 */}
+          {recentTarotResults.map((result, index) => (
+            <div key={index} className="col-span-4 border border-gray-600 mt-4 rounded-lg">
+              <ResultSummary
+                date={new Date(result.date)} // 날짜
+                cards={result.cards} // 카드 데이터
+                keyword={result.keyword} // 키워드
+                music={result.music} // 음악 제목
+                readerId={result.readerId} // 리더 ID
+                summary={result.summary} // 요약
+                resultId={result.resultId}
+              /> {/* 결과의 구조에 맞게 수정 */}
+            </div>
+          ))}
         </div>
       </div>
     </div>

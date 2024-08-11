@@ -28,7 +28,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
 }) => {
 
   const navigate = useNavigate();
-  console.log(music);
+  console.log(resultId);
   
   // 슬라이드 설정
   const settings = {
@@ -61,25 +61,31 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
   });
 
   const handleCardClick = (resultId: number) => {
-    console.log(11)
     navigate(`/result/search/${resultId}`);
   };
-  console.log(resultId)
+
+
   return (
-    <div onClick={() => handleCardClick(resultId)}>
-      <div className="flex items-center space-x-4 mt-4" >
-        <img src={CalendarImo} alt="달력 이모티콘" className="ms-4" />
-        <div className="text-lg font-semibold">{formattedDate}</div>
+    <div className=''>
+      <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center space-x-4">
+          <img src={CalendarImo} alt="달력 이모티콘" className="ms-4" />
+          <div className="text-lg font-semibold">{formattedDate}</div>
+        </div>
+        <button onClick={() => handleCardClick(resultId)} className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-2 py-1 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out transform hover:scale-105 mx-5">
+          상세 보기
+        </button>
+
       </div>
       <div className="m-7">
         <Slider {...settings}>
           {cards.map((card, index) => (
             <div key={index} className="p-1">
               <ResultCard
-              imgNum={card.imgNum} 
-              title={card.name} 
-              img={card.imageUrl}
-               />
+                imgNum={card.imgNum}
+                title={card.name}
+                img={card.imageUrl}
+              />
             </div>
           ))}
         </Slider>
@@ -87,7 +93,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
       <div className="p-4">
         <h1 className="text-black text-[25px] font-bold">요약</h1>
         <p className="text-gray-800 text-[14px]">
-          {summary}  
+          {summary}
         </p>
       </div>
       {/* TODO : YOUTUBE API 안됨 */}
@@ -95,7 +101,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
         <MusicPlayer title={music} />
       </div>
     </div>
-  );
+  )
 };
 
 export default ResultSummary;

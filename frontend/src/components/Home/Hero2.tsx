@@ -46,7 +46,7 @@ const Hero2: React.FC = () => {
       </div>
       {isFlipped2 && (
         <div
-          className={`absolute left-[300px] top-[180px] w-[500px] duration-500 ${
+          className={`absolute left-[200px] top-[180px] w-[500px] text-end duration-500 ${
             isVisible ? "animate-slide-up" : ""
           }`} // 애니메이션 클래스 조건부 적용
           ref={textRef}
