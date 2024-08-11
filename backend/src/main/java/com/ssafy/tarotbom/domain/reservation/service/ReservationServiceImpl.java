@@ -3,9 +3,11 @@ package com.ssafy.tarotbom.domain.reservation.service;
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.domain.reservation.dto.request.AddReservationsRequestDto;
+import com.ssafy.tarotbom.domain.reservation.dto.request.UpdateReservationRequestDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResponseDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.FindReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
+import com.ssafy.tarotbom.domain.reservation.dto.response.UpdateReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
 import com.ssafy.tarotbom.domain.reservation.repository.ReservationQueryRepository;
 import com.ssafy.tarotbom.domain.reservation.repository.ReservationRepository;
@@ -122,7 +124,7 @@ public class ReservationServiceImpl implements ReservationService{
         return respondList;
     }
 
-    /** *
+    /**
      * 예약 가능한 시간 확인
      */
     @Override
@@ -130,6 +132,44 @@ public class ReservationServiceImpl implements ReservationService{
         return reservationQueryRepository.findPossibleReservation(readerId);
     }
 
+    /**
+     * 예약 수정
+     * */
+    @Override
+    @Transactional
+    public UpdateReservationResponseDto updateReservation(long reservationId, UpdateReservationRequestDto updateReservationRequestDto, HttpServletRequest request){
+        long memberId = cookieUtil.getUserId(request);
+        Reservation reservation = reservationRepository.findByReservationId(reservationId);
+        if(reservation == null) {
+            throw new BusinessException(ErrorCode.RESERVATION_NOT_FOUND);
+        }
+        if(reservation.getReaderId() != memberId && reservation.getSeekerId() != memberId) {
+            throw new BusinessException(ErrorCode.RESERVATION_NOT_YOUR_RESERVATION);
+        }
+        // 각종 검사가 끝났다면 update 실행
+        Reservation newReservation = reservation.toBuilder()
+                .seekerId(updateReservationRequestDto.getSeekerId())
+                .statusCode(updateReservationRequestDto.getStatus())
+                .keywordCode(updateReservationRequestDto.getKeyword())
+                .price(updateReservationRequestDto.getPrice())
+                .startTime(updateReservationRequestDto.getStartTime())
+                .build();
+        reservationRepository.save(newReservation); // 수정사항 반영
+        return UpdateReservationResponseDto.builder()
+                .reservationId(newReservation.getReservationId())
+                .roomId(newReservation.getRoomId())
+                .seekerId(newReservation.getSeekerId())
+                .readerId(newReservation.getReaderId())
+                .status(newReservation.getStatusCode())
+                .keyword(newReservation.getKeywordCode())
+                .price(newReservation.getPrice())
+                .startTime(newReservation.getStartTime())
+                .build();
+    }
+
+    /** 
+     * 예약 삭제
+     * */
     @Override
     @Transactional
     public void deleteReservation(long reservationId) {

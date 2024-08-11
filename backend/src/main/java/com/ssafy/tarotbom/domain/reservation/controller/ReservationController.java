@@ -1,9 +1,11 @@
 package com.ssafy.tarotbom.domain.reservation.controller;
 
 import com.ssafy.tarotbom.domain.reservation.dto.request.AddReservationsRequestDto;
+import com.ssafy.tarotbom.domain.reservation.dto.request.UpdateReservationRequestDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResponseDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.FindReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
+import com.ssafy.tarotbom.domain.reservation.dto.response.UpdateReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.service.ReservationService;
 import com.ssafy.tarotbom.global.result.ResultCode;
 import com.ssafy.tarotbom.global.result.ResultResponse;
@@ -49,6 +51,21 @@ public class ReservationController {
         List<ReadReservationResponseDto> reservations = reservationService.readReservation(request);
         log.info("size : {}", reservations.size());
         ResultResponse resultResponse = ResultResponse.of(ResultCode.RESERVATION_FOUND, reservations);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    /**
+     * 예약 수정 메서드
+     * @param updateReservationRequestDto
+     * @return UpdateReservationResponseDto
+     * */
+    @PutMapping("/{reservationId}")
+    public ResponseEntity<ResultResponse> updateReservation(@PathVariable("reservationId") long reservationId,
+                                                            @RequestBody UpdateReservationRequestDto updateReservationRequestDto,
+                                                            HttpServletRequest request){
+        UpdateReservationResponseDto updateReservationResponseDto = reservationService.updateReservation(reservationId, updateReservationRequestDto, request);
+        log.info("reservation updated");
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.RESERVATION_UPDATED, updateReservationResponseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
