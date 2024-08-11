@@ -44,6 +44,7 @@ public enum ResultCode {
     RESERVATION_ADDED(HttpStatus.CREATED, "S001", "예약을 등록했습니다."),
     RESERVATION_FOUND(HttpStatus.OK, "S002", "예약을 조회했습니다."),
     RESERVATION_DELETED(HttpStatus.OK, "S003", "예약을 삭제했습니다."),
+    RESERVATION_UPDATED(HttpStatus.OK, "S004", "예약 내용을 갱신했습니다."),
 
     // Review
     REVIEW_ADDED(HttpStatus.CREATED, "V001", "리뷰를 작성했습니다."),

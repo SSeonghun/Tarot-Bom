@@ -216,6 +216,7 @@ public class TarotResultServiceImpl implements TarotResultService {
                     }
 
                     return TarotResultGetResponseDto.builder()
+                            .resultId(result.getResultId())
                             .readerId(result.getReaderId())
                             .seekerId(result.getSeekerId())
                             .date(result.getDate())

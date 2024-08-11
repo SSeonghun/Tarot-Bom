@@ -35,6 +35,7 @@ public enum ErrorCode {
 
     // Reservation
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "S001", "예약을 찾을 수 없습니다."),
+    RESERVATION_NOT_YOUR_RESERVATION(HttpStatus.FORBIDDEN, "S002", "예약에 관여할 권한이 없습니다."),
 
     // Review
     REVIEW_ALREADY_EXISTS(HttpStatus.CONFLICT, "V001", "이미 작성된 리뷰가 있습니다."),

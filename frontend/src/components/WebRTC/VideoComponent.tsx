@@ -1,5 +1,4 @@
 import { LocalVideoTrack, RemoteVideoTrack } from "livekit-client";
-import "./VideoComponent.css";
 import { useEffect, useRef } from "react";
 
 interface VideoComponentProps {
@@ -23,11 +22,12 @@ function VideoComponent({ track, participantIdentity, local = false }: VideoComp
 
     return (
         
-        <div id={"camera-" + participantIdentity} className="video-container">
-        <div className="participant-data">
+        <div id={"camera-" + participantIdentity} className="relative w-full h-full bg-gray-800 rounded-lg overflow-hidden">
+        <video ref={videoElement} id={track.sid} className="w-full h-full object-fill" autoPlay playsInline></video>
+        <div className="absolute top-0 left-0 p-1 bg-gray-100 text-gray-600 font-bold rounded-br-lg">
             <p>{participantIdentity + (local ? " (You)" : "")}</p>
         </div>
-        <video ref={videoElement} id={track.sid}></video>
+        
     </div>
         
     );

@@ -3,7 +3,24 @@ import { log } from 'console';
 
 // const API_URL = "https://i11c208.p.ssafy.io/tarotbom/";
 const API_URL = 'http://localhost/tarotbom/';
-
+const chatReport = async(reportedId:number, content:string, roomId:String)=>{
+  const status='D00'
+  const reporType='S02'
+  try{
+    const response = await axios.post(`${API_URL}report`, {
+      reportedId,
+      content,
+      roomId, // 추가: roomId도 함께 전송
+      status,
+      reporType
+    });
+    return response.data
+  }catch(error){
+    console.error("온라인 채팅 신고 실패",error);
+    throw error;
+  }
+  
+}
 const readerList = async () => {
   try {
     const response = await axios.get(`${API_URL}user/reader/list`, {
@@ -208,8 +225,7 @@ const youtubeMusic = async (searchQuery: string) => {
   }
 };
 
-export {
-  readerJoin,
+export { chatReport, readerJoin,
   readerList,
   result,
   declaration,
@@ -217,5 +233,4 @@ export {
   youtubeMusic,
   readerDetail,
   readerTop,
-  saveTarotResult,
-};
+  saveTarotResult, };
