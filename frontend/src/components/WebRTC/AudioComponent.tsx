@@ -18,7 +18,7 @@ function AudioComponent({ track }: AudioComponentProps) {
         };
     }, [track]);
 
-    return <audio ref={audioElement} id={track.sid} />;
+    return <audio ref={audioElement} id={track.sid} autoPlay/>;
 }
 
 export default AudioComponent;
