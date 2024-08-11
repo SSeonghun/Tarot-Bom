@@ -1,0 +1,49 @@
+/* 흔들림 애니메이션 */
+@keyframes shake {
+  0% {
+    transform: rotate(-5deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* 위로 올라가는 애니메이션 */
+@keyframes slideUp2 {
+  from {
+    transform: translateY(0px) scale(1);
+  }
+  to {
+    transform: translateY(-270px) scale(0.4);
+  }
+}
+
+/* 애니메이션을 조합한 클래스 */
+.animate-shake-slide-up {
+  animation: shake 0.5s ease-in-out, slideUp2 0.5s ease-in-out 0.5s forwards;
+}
+
+/* 애니메이션 관련 CSS */
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out forwards;
+}
