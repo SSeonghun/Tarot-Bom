@@ -2,6 +2,7 @@ package com.ssafy.tarotbom.domain.reservation.controller;
 
 import com.ssafy.tarotbom.domain.reservation.dto.request.AddReservationsRequestDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResponseDto;
+import com.ssafy.tarotbom.domain.reservation.dto.response.FindReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.service.ReservationService;
 import com.ssafy.tarotbom.global.result.ResultCode;
@@ -47,6 +48,18 @@ public class ReservationController {
     public ResponseEntity<ResultResponse> getReservations(HttpServletRequest request) {
         List<ReadReservationResponseDto> reservations = reservationService.readReservation(request);
         log.info("size : {}", reservations.size());
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.RESERVATION_FOUND, reservations);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    /**
+     * 예약 가능한 타임 조회(memberId 기반)
+     * reservation Id, 시작 시간을 반환
+     * */
+    @GetMapping("/find/{readerId}")
+    public ResponseEntity<ResultResponse> findReservations(@PathVariable("readerId") long readerId) {
+        List<FindReservationResponseDto> reservations = reservationService.findReservation(readerId);
+        log.info("get possible reservation -> {}", reservations.size());
         ResultResponse resultResponse = ResultResponse.of(ResultCode.RESERVATION_FOUND, reservations);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
