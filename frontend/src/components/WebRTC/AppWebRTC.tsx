@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Room, RoomEvent, LocalVideoTrack, LocalAudioTrack,RemoteTrack, RemoteTrackPublication, RemoteParticipant } from 'livekit-client';
 import VideoComponent from './VideoComponent';
 import AudioComponent from './AudioComponent';
-import TaroSelect from './TaroSelect';
+
 import cardImg from '../../assets/tarot_images - 복사본/c01.jpg';
 import ChatAndControls from './Controller/ChatAndControls';
 import MainBg from '../../assets/mainBg.png';
@@ -13,6 +13,9 @@ import SaveDrawOfIcon from '../../assets/그림 공유.png'
 import ClearOfIcon from '../../assets/지우기.png'
 import CloseDrowIcon from '../../assets/캔버스 끄기.png'
 import OpenDrowIcon from '../../assets/캔버스 켜기.png'
+import SelectIcon from '../../assets/선택완료.png'
+import html2canvas from 'html2canvas';
+import CardModal from './Tools/CardModal';
 type TrackInfo = {
     trackPublication: RemoteTrackPublication;
     participantIdentity: string;
@@ -40,7 +43,7 @@ function configureUrls() {
     }
 }
 
-const cards = Array.from({ length: 3 }, (_, index) => ({
+const card = Array.from({ length: 3 }, (_, index) => ({
     id: index,
     name: `ACE & CUPS`,
     detail: `야호 야호 야호 야호 야호 야호 야호 야호 야호 야호 야호 `,
@@ -66,6 +69,11 @@ function AppWebRTC() {
 
     const [isMuted, setIsMuted] = useState(false); // 음소거 상태 관리
     const [isVideoOff, setIsVideoOff] = useState(false); // 비디오 끄기 상태 관리
+    
+    const [selectedCard, setSelectedCard] = useState<any>(null); // 선택된 카드 정보
+    const [cards, setCards] = useState([]); // 카드 상태 관리
+    const [previewCard, setPreviewCard] = useState<any>(null); // 선택된 카드 미리보기 상태
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(false); // 모달 표시 상태 관리
     const canvasRef = useRef<DrawingCanvasHandle | null>(null);
 
     useEffect(() => {
@@ -74,18 +82,23 @@ function AppWebRTC() {
             
             room.on(RoomEvent.DataReceived, async (data: Uint8Array) => {
                 console.log('Data received:', data);
-
+                //const { type, ...rest } = data;
                 const jsonString = new TextDecoder().decode(data);
+                
                 console.log('JSON string:', jsonString);
-
+                const jsonData = JSON.parse(jsonString);
+                const { type, ...rest } = jsonData;
+                //await canvasRef.current?.loadDrawing(jsonData);
                 try {
-                    const jsonData = JSON.parse(jsonString);
-                    if (jsonData.type === 'text') {
+                    
+                    
+                    if (type === 'text') {
                         // Handle chat message
                         console.log('Received chat message:', jsonData);
-                    } else if (jsonData.type === 'drawing') {
+                    } else if (type === 'drawing') {
                         // Handle drawing data
-                        await canvasRef.current?.loadDrawing(jsonData.content);
+                        console.log(rest)
+                        await canvasRef.current?.loadDrawing(rest.data);
                         console.log('Drawing loaded successfully to canvas.');
                     }    
                 } catch (error) {
@@ -291,13 +304,17 @@ function AppWebRTC() {
             console.error('Room or publishData function is undefined.');
         }
     }
-    async function handleDrawingUpdate(data: any) {
+    async function handleDrawingUpdate(message: any) {
         // Combine the last drawing data with the new update
         // const combinedData = { ...lastDrawingData, ...data };
+        //if(message.type!='drawing')
+           // return;
+        //const data=message.data
         if (room?.localParticipant.publishData) {
-            const dataToSend = JSON.stringify(data);
+//            const dataToSend = JSON.stringify(data);
+            const dataToSend = JSON.stringify(message);
             const uint8ArrayData = new TextEncoder().encode(dataToSend);
-            console.log('Sending drawing update:', data);
+            console.log('Sending drawing update:', message);
             try {
             await room.localParticipant.publishData(uint8ArrayData);
             console.log('Data successfully sent.');
@@ -326,6 +343,59 @@ function AppWebRTC() {
 
   const handleToggleVideo = () => {
     setIsVideoOff(!isVideoOff);
+  };
+  const contentRef = useRef(null);
+  async function handleScreenshot() {
+    console.log(contentRef.current)
+    
+    if (contentRef.current) {
+    try {
+         // 페이지의 스크롤을 내리며 캡처할 필요가 있을 수 있음
+         const body = document.body;
+         const html = document.documentElement;
+         const height = Math.max(
+            body.scrollHeight, body.offsetHeight,
+            html.clientHeight, html.scrollHeight, html.offsetHeight
+        );
+        window.scrollTo(0, 0);
+        const canvas = await html2canvas(contentRef.current, {
+            height: height,
+            useCORS: true, // CORS 설정 (필요시 추가)
+        });
+        const imageData = canvas.toDataURL('image/png');
+
+        // 서버로 전송
+        // const response = await fetch('/api/upload', {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //   },
+        //   body: JSON.stringify({ image: imageData }),
+        // });
+        
+        const link = document.createElement('a');
+            link.href = imageData;
+            link.download = 'screenshot.png';
+            link.click(); // 자동으로 다운로드를 시작합니다
+        if (imageData) {
+            console.log(imageData)
+          console.log('Screenshot uploaded successfully');
+        } else {
+          console.error('Failed to upload screenshot');
+        }
+      } catch (error) {
+        console.error('Error capturing screenshot:', error);
+      }
+    }
+  };
+
+const closeModal = () => {
+    setIsModalVisible(false);
+};
+const handlePreviewCard = (card: any) => {
+    setPreviewCard(card);
+    setSelectedCard(card);
+    setIsModalVisible(true);
   };
     return (
         <>
@@ -378,7 +448,7 @@ function AppWebRTC() {
                         </form>
                     </div>
                 </div>
-            ) : (<div>
+            ) : (<div ref={contentRef}>
                 <img
                         className="absolute inset-0 w-full h-full object-cover opacity-40 z-0"
                         src={MainBg}
@@ -393,17 +463,7 @@ function AppWebRTC() {
                                     </div> )}
                     <div className="flex flex-col h-full w-full relative overflow-visible">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 p-4">
-                            {cards.map(card => (
-                                <TaroSelect
-                                    key={card.id}
-                                    name={card.name}
-                                    detail={card.detail}
-                                    category={card.category}
-                                    imgUrl={card.imgUrl}
-                                    hsize={card.hsize}
-                                    wsize={card.wsize}
-                                />
-                            ))}
+                        {isModalVisible && <CardModal isVisible={isModalVisible} card={card[0]} onClose={closeModal} />}
                         </div>
                         <div className='flex flex-grow h-full overflow-visible'>
                             <div className="flex-1 relative">
@@ -508,6 +568,18 @@ function AppWebRTC() {
                         >
                             <img src={LeaveOfIcon} alt="" className="w-8 h-8" />
                         </button>{/* 토글 버튼 */}
+                        <button
+                            className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
+                            onClick={handleScreenshot}  // 여기서 handleScreenshot 핸들러 호출
+                        >
+                            <img src={SelectIcon} alt="" className="w-8 h-8" />
+                        </button>
+                        <button
+                            className="preview-button"
+                            onClick={() => handlePreviewCard(card[0])}
+                        >
+                            선택카드
+                        </button>
                     </div>
                         
                     </div>

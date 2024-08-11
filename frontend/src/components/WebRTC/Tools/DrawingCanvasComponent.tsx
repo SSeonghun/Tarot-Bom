@@ -2,7 +2,7 @@ import React, { useImperativeHandle, useRef, forwardRef, useEffect, ForwardedRef
 import * as fabric from 'fabric';
 
 interface DrawingCanvasProps {
-    onUpdate: (data: any) => void;
+    onUpdate: (message: any) => void;
 }
 
 export type DrawingCanvasHandle = {
@@ -28,8 +28,13 @@ const DrawingCanvasComponent = forwardRef<DrawingCanvasHandle, DrawingCanvasProp
             saveDrawing: async () => {
                 if (canvasRef.current) {
                     const jsonData = canvasRef.current.toJSON();
-                    console.log("Saving drawing with JSON:", jsonData);
-                    onUpdate(jsonData);
+                    const message = {
+                        type: 'drawing', // Set type to 'drawing'
+                        data: jsonData,
+                    };
+                    console.log("Saving drawing with JSON:", message);
+                    onUpdate(message);
+                    //onUpdate(jsonData)
                 }
             },
             loadDrawing: async (json: any) => {
@@ -135,7 +140,7 @@ const DrawingCanvasComponent = forwardRef<DrawingCanvasHandle, DrawingCanvasProp
                     className="fixed top-0 left-0 w-screen h-screen z-50 border-none"
                     style={{
                         opacity: loading ? 0 : 1,
-                        transition: 'opacity 0.5s',
+                        transition: 'opacity 0s',
                     }}
                 />
                 {loading && (
