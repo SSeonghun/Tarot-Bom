@@ -1,22 +1,37 @@
-// Navbar.tsx
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import Modal from "react-modal"; // 모달 라이브러리 임포트
 import { Link, useNavigate } from "react-router-dom";
-import PrivateLink from "./Common/PrivateLink"; // PrivateLink 가져오기
+import { Client, IMessage } from "@stomp/stompjs";
+import PrivateLink from "./Common/PrivateLink";
 import useStore from "../stores/store";
-import imgg from "../assets/Witch_On_Broom-removebg-preview.png";
-
-// TODO : 홈 바꾸기
 
 const { logout } = require("../API/userApi");
+
+interface Notification {
+  noId: number;
+  memberId: number;
+  noType: string;
+  content: string;
+  read: boolean;
+  valid: boolean;
+  createTime: string;
+}
+
+Modal.setAppElement("#root"); // 모달이 포커스를 잃지 않도록 설정
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const store = useStore();
   const [dropdownOpen, setDropdownOpen] = useState(false); // 드롭다운 상태
+  const [notificationList, setNotificationList] = useState<Notification[]>([]); // 알림 상태
+  const [connected, setConnected] = useState<boolean>(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
 
   const userInfo = store.userInfo;
+  const client = useRef<Client | null>(null);
 
   const handleLogout = async () => {
+    console.log("로그아웃 요청");
     try {
       const result = await logout();
       console.log("로그아웃 성공", result);
@@ -29,19 +44,34 @@ const Navbar: React.FC = () => {
 
   // 드롭다운 열기/닫기 함수
   const toggleDropdown = () => {
+    console.log("드롭다운 토글");
     setDropdownOpen((prev) => !prev);
-    console.log(userInfo?.nickname);
   };
 
-  // 클릭 시 드롭다운 닫기
-  const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as HTMLElement;
-    if (dropdownOpen && !target.closest(".dropdown")) {
-      setDropdownOpen(false);
+  // 알림 모달 열기
+  const openNotificationModal = async () => {
+    console.log("알림 모달 열기");
+    setModalIsOpen(true);
+
+    // 모달이 열릴 때 전체 알림 목록을 가져오는 요청
+    if (userInfo?.memberId && connected) {
+      console.log("전체 알림 목록 요청");
+      client.current?.publish({
+        destination: `/pub/notification/get/${userInfo.memberId}`,
+        body: JSON.stringify({}),
+      });
     }
   };
 
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (dropdownOpen && !target.closest(".dropdown")) {
+        console.log("드롭다운 닫기");
+        setDropdownOpen(false);
+      }
+    };
+
     // 문서에 클릭 이벤트 리스너 추가
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -50,10 +80,99 @@ const Navbar: React.FC = () => {
     };
   }, [dropdownOpen]);
 
-  // 내 정보 클릭 시 드롭다운 닫기
-  const handleMyPageClick = () => {
-    setDropdownOpen(false);
-    // navigate('/seeker-mypage'); // 내 정보 페이지로 이동
+  useEffect(() => {
+    client.current = new Client({
+      brokerURL: "ws://localhost/tarotbom/ws-stomp",
+      onConnect: () => {
+        console.log("WebSocket 연결됨");
+        setConnected(true);
+
+        if (userInfo?.memberId) {
+          console.log(`구독 시작: /sub/notification/${userInfo.memberId}`);
+          client.current?.subscribe(
+            `/sub/notification/${userInfo.memberId}`,
+            (message: IMessage) => {
+              const notification = JSON.parse(message.body);
+              console.log("알림", notification.data[0].content);
+
+              if (notification.code === "N03") {
+                const notification = JSON.parse(message.body);
+                console.log(
+                  "Received notification:",
+                  notification.data.content
+                );
+                setNotificationList((prevList) => {
+                  const newNotifications = notification.data as Notification[];
+
+                  // 기존 목록의 noId를 기준으로 중복 제거
+                  const existingNotificationIds = new Set(
+                    prevList.map((notif) => notif.noId)
+                  );
+                  const filteredNewNotifications = newNotifications.filter(
+                    (notif) => !existingNotificationIds.has(notif.noId)
+                  );
+
+                  return [...prevList, ...filteredNewNotifications];
+                });
+              }
+
+              console.log(notificationList.length);
+
+              if (notification.code === "N01") {
+                console.log("새 알림 도착");
+                setNotificationList((prevList) => [
+                  ...prevList,
+                  ...notification.data,
+                ]);
+                setModalIsOpen(true); // 알림 수신 시 모달 열기
+              }
+            }
+          );
+
+          // WebSocket 연결이 완료된 후 전체 알림 목록 요청
+          console.log("전체 알림 목록 요청");
+          client.current?.publish({
+            destination: `/pub/notification/get/${userInfo.memberId}`,
+            body: JSON.stringify({}),
+          });
+        }
+      },
+      onStompError: (frame) => {
+        console.error("STOMP 에러 발생: " + frame.headers["message"]);
+        console.error("추가 세부 사항: " + frame.body);
+      },
+    });
+
+    client.current.activate();
+
+    return () => {
+      client.current?.deactivate();
+    };
+  }, [userInfo?.memberId]);
+
+  // 알림 읽음 처리
+  const markAsRead = (noId: number) => {
+    console.log(`알림 읽음 처리: ${noId}`);
+    client.current?.publish({
+      destination: "/pub/notification/update",
+      body: JSON.stringify({
+        noId,
+        memberId: userInfo?.memberId,
+        read: true,
+        valid: true,
+      }),
+    });
+
+    setNotificationList((prevList) =>
+      prevList.map((notif) =>
+        notif.noId === noId ? { ...notif, read: true } : notif
+      )
+    );
+  };
+
+  // 모달 닫기
+  const closeModal = () => {
+    setModalIsOpen(false);
   };
 
   return (
@@ -66,7 +185,6 @@ const Navbar: React.FC = () => {
         </div>
         <div className="space-x-4 flex items-center">
           <PrivateLink to="/online">타로보기</PrivateLink>
-          {/* <PrivateLink to="/offline">오프라인 타로</PrivateLink> */}
           <PrivateLink to="/serch-reader">예약하기</PrivateLink>
           <PrivateLink to="/community">커뮤니티</PrivateLink>
 
@@ -111,8 +229,7 @@ const Navbar: React.FC = () => {
                       to={`seeker-mypage?name=${encodeURIComponent(
                         userInfo?.nickname || ""
                       )}&isReader=${userInfo?.isReader}`}
-                      // to="/seeker-mypage"
-                      onClick={handleMyPageClick} // 클릭 시 드롭다운 닫기
+                      onClick={() => setDropdownOpen(false)}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-400"
                     >
                       내 정보
@@ -129,6 +246,82 @@ const Navbar: React.FC = () => {
             </div>
           ) : (
             <Link to="/login">Login</Link>
+          )}
+
+          {/* 알림 모달 */}
+          {store.isLoggedIn && (
+            <div className="relative inline-block text-left">
+              <button
+                onClick={openNotificationModal}
+                className="relative focus:outline-none"
+              >
+                <span className="absolute -top-[5px] -right-[5px] -mt-1 -mr-1 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                  {notificationList.filter((notif) => !notif.read).length}
+                </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 text-white cursor-pointer"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 17h5l-1.405-1.405C17.79 14.79 17 13.42 17 12V8a5 5 0 00-4-4.9V3a1 1 0 10-2 0v.1A5 5 0 007 8v4c0 1.42-.79 2.79-2.595 3.595L3 17h5m7 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+              </button>
+
+              {/* 알림 목록을 표시하는 모달 */}
+              <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel="Notification Modal"
+                className="fixed inset-0 flex items-center justify-center z-50 "
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+              >
+                <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto w-[400px]">
+                  <h2 className="text-2xl font-semibold mb-4">알림 목록</h2>
+                  <div className="divide-y divide-gray-200 h-[300px] overflow-y-scroll">
+                    {notificationList.length === 0 ? (
+                      <p className="text-center text-gray-600">
+                        새로운 알림이 없습니다.
+                      </p>
+                    ) : (
+                      notificationList.map((notif) => (
+                        <div
+                          key={notif.noId}
+                          className={`py-2 ${
+                            notif.read ? "bg-gray-200" : "bg-white"
+                          }`}
+                        >
+                          <p>{notif.createTime}</p>
+                          <p className="text-sm">{notif.content}</p>
+                          {!notif.read && (
+                            <button
+                              onClick={() => markAsRead(notif.noId)}
+                              className="text-xs text-blue-500 hover:underline"
+                            >
+                              읽음으로 표시
+                            </button>
+                          )}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  <div className="flex justify-end mt-4">
+                    <button
+                      onClick={closeModal}
+                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      닫기
+                    </button>
+                  </div>
+                </div>
+              </Modal>
+            </div>
           )}
         </div>
       </div>

@@ -61,7 +61,7 @@ const Hero: React.FC = () => {
             <h1 className="font-bold text-white text-[55px]">
               다양한 사람들과
             </h1>
-            <h1 className="font-bold text-white text-[55px]">타로 매칭</h1>
+            <h1 className="font-bold text-white text-[55px]">타로 상담</h1>
             <p className="highlight text-gray-200 font-bold text-[20px] mt-3">
               랜덤 매칭 기능은 사용자가 다양한 타로 상담사와 예측 불가능하게
               연결되어, 각기 다른 통찰과 조언을 받을 수 있도록 합니다. 이를 통해

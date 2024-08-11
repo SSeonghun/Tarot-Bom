@@ -28,11 +28,16 @@ const Hero1: React.FC = () => {
         <p className="text-9xl mb-4 font-bold" style={{ color: "#EBCB8B" }}>
           타로 : 봄
         </p>
-        <p className="text-[20px] mb-8" style={{ color: "#EBCB8B" }}>
-          타로:봄은 실시간 타로 리딩 플랫폼으로, <br />
-          랜덤 매칭이나 AI 타로를 통해 즉시 답을 얻을 수 있습니다. <br />
-          예약 시스템을 통해 원하는 타로 리더와 심층 상담도 가능합니다. <br />
-          언제 어디서나 통찰을 받을 수 있습니다.
+        <p className="text-[18px] mb-8" style={{ color: "#EBCB8B" }}>
+          타로:봄은 실시간 타로 리딩 플랫폼으로,
+          <br />
+          랜덤 매칭이나 AI 타로를 통해 즉시 답을 얻을 수 있습니다.
+          <br />
+          또한, 예약 시스템을 통해 원하는 타로 리더와 심층 상담이 가능하며,
+          <br />
+          누구나 타로 리더가 되어 상담에 참여할 수 있습니다.
+          <br />
+          언제 어디서나 통찰을 받을 수 있는 타로:봄 으로 오세요!
         </p>
         <div className="space-y-6 space-x-4">
           <PrivateLink to="/online">
