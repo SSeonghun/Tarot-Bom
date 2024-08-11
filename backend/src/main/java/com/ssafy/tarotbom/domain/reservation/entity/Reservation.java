@@ -62,7 +62,7 @@ public class Reservation {
     private Long roomId;
 
     @Column(name = "seeker_id", columnDefinition = "int unsigned")
-    private long seekerId;
+    private Long seekerId;
 
     @NotNull
     @Column(name = "status", columnDefinition = "char(3)")
