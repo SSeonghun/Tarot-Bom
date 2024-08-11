@@ -28,7 +28,6 @@ public class MatchingController {
     private final MatchingService matchingService;
     private final SimpMessageSendingOperations sendingOperation;
     private final OpenviduService openviduService;
-    private final CookieUtil cookieUtil;
 
     @Value("${matching.status.path}")
     private String matchingStatusPath;

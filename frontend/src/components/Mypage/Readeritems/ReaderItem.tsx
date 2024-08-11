@@ -6,6 +6,7 @@ import Reservation from "./Reservation";
 import Review from "./Review";
 import Summary from "./Summary";
 import Toggle from "../../Common/Toggle";
+import Offline from "../Offline/Offline";
 import Profile from "../../../assets/img/profile2.png";
 import Seed from "../../../assets/img/seed.png";
 import useStore from "../../../stores/store";
@@ -19,6 +20,7 @@ interface ReaderItemProps {
 const ReaderItem: React.FC<ReaderItemProps> = ({data}) => {
   const store = useStore();
   const [activeComponent, setActiveComponent] = useState<string>("Summary");
+  console.log(data)
 
   const renderComponent = () => {
     switch (activeComponent) {
@@ -32,6 +34,8 @@ const ReaderItem: React.FC<ReaderItemProps> = ({data}) => {
         return <Reservation />;
       case "Consulting":
         return <Consulting />;
+      case "Offline":
+        return <Offline shopInfo={data.shopInfo}/>;
       default:
         return <Summary mainData={data}/>;
     }
@@ -60,7 +64,7 @@ const ReaderItem: React.FC<ReaderItemProps> = ({data}) => {
               </div>
             </div>
             <ol className="mb-[100px]">
-              {["Summary", "Income", "Review", "Consulting", "Reservation"].map(
+              {["Summary", "Income", "Review", "Consulting", "Reservation", "Offline"].map(
                 (item) => (
                   <li
                     key={item}
@@ -76,6 +80,7 @@ const ReaderItem: React.FC<ReaderItemProps> = ({data}) => {
                     {item === "Review" && "리뷰"}
                     {item === "Consulting" && "최근내역"}
                     {item === "Reservation" && "예약일정"}
+                    {item === "Offline" && "오프라인 타로점"}
                   </li>
                 )
               )}

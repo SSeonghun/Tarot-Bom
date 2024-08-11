@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Hero1: React.FC = () => {
-  const [isReaderProfile, setIsReaderProfile] = useState(false);
+  const [isReaderProfile, setIsReaderProfile] = useState(false); // 초기값을 false로 설정
   const navigate = useNavigate();
 
   const handleToggleChange = () => {
@@ -21,7 +21,7 @@ const Hero1: React.FC = () => {
         type="checkbox"
         role="switch"
         id="flexSwitchCheckDefault"
-        checked={isReaderProfile}
+        checked={isReaderProfile} // 리더 프로필일 때 체크 상태
         onChange={handleToggleChange}
       />
       <label
