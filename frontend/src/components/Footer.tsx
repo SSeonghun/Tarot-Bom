@@ -21,12 +21,6 @@ const Footer: React.FC = () => {
           </a>
           <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-400 sm:mb-0 gap-1">
             <li className="flex flex-col justify-center items-center">
-              <a href="https://github.com/Choi-H-Seok">
-                <img src={Github} alt="" className="w-[50px]" />
-                <p>최현석</p>
-              </a>
-            </li>
-            <li className="flex flex-col justify-center items-center">
               <a href="https://github.com/jaeeun-kwak">
                 <img src={Github} alt="" className="w-[50px]" />
                 <p>곽재은</p>
@@ -54,6 +48,12 @@ const Footer: React.FC = () => {
               <a href="https://github.com/JsooAh">
                 <img src={Github} alt="" className="w-[50px]" />
                 <p>주수아</p>
+              </a>
+            </li>
+            <li className="flex flex-col justify-center items-center">
+              <a href="https://github.com/Choi-H-Seok">
+                <img src={Github} alt="" className="w-[50px]" />
+                <p>최현석</p>
               </a>
             </li>
           </ul>
