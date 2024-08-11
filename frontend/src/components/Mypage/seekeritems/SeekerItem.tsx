@@ -5,6 +5,7 @@ import Hero2 from './Hero2';
 import ResultSummary from '../../Common/ResultSummary';
 import Toggle from '../../Common/Toggle';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // TODO : props 인터페이스 및 값 받기
 
@@ -24,7 +25,12 @@ interface SeekerItemProps {
 }
 
 const SeekerItem: React.FC<SeekerItemProps> = ({ data }) => {
-  const recentTarotResults = data.tarotResults.slice(0, 3);
+  const recentTarotResults = data.tarotResults.slice(0, 6);
+  const navigate = useNavigate();
+  const handleClick = (path: string) => {
+    navigate(path); // 주어진 경로로 이동
+  };
+
 
   return (
     <div className="container p-4 mx-auto">
