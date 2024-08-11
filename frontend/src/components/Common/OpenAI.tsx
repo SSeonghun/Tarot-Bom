@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from "react";
 
 interface OpenAIProps {
-  cards: { name: string; desc: string; imgUrl: string }[];
+  cards?: { name: string; desc: string; imgUrl: string }[];
   onSummaryGenerated: (summary: string) => void;
   worry: string;
   category: string;
+  cardImage?:string;
   // selectedCards: number[];
 }
 
@@ -12,8 +13,9 @@ const apiKey = process.env.REACT_APP_OPENAI_API_KEY as string;
 const apiEndpoint = "https://api.openai.com/v1/chat/completions";
 
 const fetchOpenAIResponse = async (
-  messages: { role: string; content: string }[]
+  messages: { role: string; content: any }[]
 ): Promise<string> => {
+  console.log('Fetching OpenAI response with messages:', messages); // 요청 메시지
   try {
     const response = await fetch(apiEndpoint, {
       method: "POST",
@@ -33,6 +35,7 @@ const fetchOpenAIResponse = async (
     });
 
     const data = await response.json();
+    console.log("Received OpenAI response:", data);  // 디버깅: API 응답 데이터
     return data.choices?.[0]?.message?.content || "No response";
   } catch (error) {
     console.error("Error fetching AI response:", error);
@@ -40,38 +43,57 @@ const fetchOpenAIResponse = async (
   }
 };
 
-const OpenAI: React.FC<OpenAIProps> = ({ cards, onSummaryGenerated }) => {
+const OpenAI: React.FC<OpenAIProps> = ({ cards, onSummaryGenerated, cardImage }) => {
   const hasFetchedRef = useRef(false);
 
   useEffect(() => {
-    if (cards.length > 0 && !hasFetchedRef.current) {
-      const askTarotReading = async () => {
-        const initialMessage = {
-          role: "system",
-          content: `You are a tarot reader and a Korean music recommender. Given three or more tarot cards, provide the following:
-          1. **Card Name**: <Card Name>
-             - **Detail**: <Card Detail>
-             - **Interpretation**: <Your Interpretation>
-          Overall: <Your Overall Interpretation of all cards>
-          Music: <Please provide only the song title and artist name>
-             `,
-        };
-
-        const cardMessages = cards.map((card) => ({
+    console.log('useEffect triggered'); // useEffect가 트리거되었는지 확인
+    console.log('cards:', cards);
+    console.log('cardImage:', cardImage);
+    const askTarotReading = async () => {
+      //console.log("useEffect triggered");  // 디버깅: useEffect가 트리거됨
+      if (hasFetchedRef.current) {
+        console.log("Request already sent, skipping...");  // 디버깅: 중복 호출 방지
+        return;
+      }
+      const initialMessage = {
+        role: "system",
+        content: `You are a tarot reader and a Korean music recommender. Given three or more tarot cards, provide the following:
+        1. **Card Name**: <Card Name>
+           - **Detail**: <Card Detail>
+           - **Interpretation**: <Your Interpretation>
+        Overall: <Your Overall Interpretation of all cards>
+        Music: <Please provide only the song title and artist name>
+           `,
+      };
+      let messages = [initialMessage];
+      if (cards && !hasFetchedRef.current){
+        if (cards.length > 0 && !hasFetchedRef.current) {
+            console.log("Cards provided:", cards);  // 디버깅: 카드가 제공됨
+            const cardMessages = cards.map((card) => ({
+              role: "user",
+              content: `Card Name: ${card.name}, Card Detail: ${card.desc}`,
+            }));
+            messages.push(...cardMessages)
+      }
+      else if(cardImage && !hasFetchedRef.current){
+        console.log("Card image provided:", cardImage);  // 디버깅: 이미지가 제공됨
+        messages.push({
           role: "user",
-          content: `Card Name: ${card.name}, Card Detail: ${card.desc}`,
-        }));
-
-        const messages = [initialMessage, ...cardMessages];
-
+          content: `Image URL: data:image/png;base64,${cardImage}`, // 문자열로 전달
+        });
+        console.log("Messages to send:", cardImage);
+      }
+      console.log("Messages to send:", messages);  // 디버깅: 전송할 메시지들
         hasFetchedRef.current = true;
         const aiResponse = await fetchOpenAIResponse(messages);
         onSummaryGenerated(aiResponse);
+        console.log("AI Response:", aiResponse);  // 디버깅: AI 응답 확인
       };
 
       askTarotReading();
     }
-  }, [cards, onSummaryGenerated]);
+  }, [cards, onSummaryGenerated, cardImage]);
 
   return null;
 };
