@@ -4,6 +4,7 @@ import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
 import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.domain.reservation.dto.request.AddReservationsRequestDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.AddReservationsResponseDto;
+import com.ssafy.tarotbom.domain.reservation.dto.response.FindReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.dto.response.ReadReservationResponseDto;
 import com.ssafy.tarotbom.domain.reservation.entity.Reservation;
 import com.ssafy.tarotbom.domain.reservation.repository.ReservationQueryRepository;
@@ -119,6 +120,14 @@ public class ReservationServiceImpl implements ReservationService{
             );
         }
         return respondList;
+    }
+
+    /** *
+     * 예약 가능한 시간 확인
+     */
+    @Override
+    public List<FindReservationResponseDto> findReservation(long readerId) {
+        return reservationQueryRepository.findPossibleReservation(readerId);
     }
 
     @Override
