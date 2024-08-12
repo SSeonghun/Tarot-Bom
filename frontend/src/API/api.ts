@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { log } from 'console';
 
+
 // const API_URL = "https://i11c208.p.ssafy.io/tarotbom/";
-const API_URL = 'http://localhost/tarotbom/';
+const API_URL = `${process.env.REACT_APP_URL}/tarotbom/`;
+
 const chatReport = async(reportedId:number, content:string, roomId:String)=>{
   const status='D00'
   const reporType='S02'
