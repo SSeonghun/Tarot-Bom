@@ -4,7 +4,7 @@ import { error } from "console";
 
 
 // const API_URL = "https://i11c208.p.ssafy.io/tarotbom/shop";
-const API_URL = "http://localhost/tarotbom/shop";
+const API_URL = `${process.env.REACT_APP_URL}/tarotbom/shop`;
 
 const writeTarotshop = async (
   shopName: string,

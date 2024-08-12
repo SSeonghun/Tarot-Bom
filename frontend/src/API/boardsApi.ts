@@ -3,7 +3,7 @@ import { error } from "console";
 import { rest } from "lodash";
 
 // const API_URL = "https://i11c208.p.ssafy.io/tarotbom/boards/";
-const API_URL = 'http://localhost/tarotbom/boards/';
+const API_URL = `${process.env.REACT_APP_URL}/tarotbom/boards/`;
 
 const boardWrite = async (
   memberId: number,
