@@ -73,6 +73,7 @@
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/html2canvas": "^1.0.0",
     "@types/lodash": "^4.17.7",
     "@types/react-modal": "^3.16.3",
     "@types/react-transition-group": "^4.4.10",
