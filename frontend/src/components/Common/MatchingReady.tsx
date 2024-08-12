@@ -1,6 +1,8 @@
 // src/components/Common/MatchingConfirmationModal.tsx
 
-import React from "react";
+import React from 'react';
+import LoadingSpinner from './LoadingSpinner';
+import Giphy from '../../assets/img/giphy.webp';
 
 interface MatchingConfirmationModalProps {
   isOpen: boolean;
@@ -17,17 +19,10 @@ const MatchingConfirmationModal: React.FC<MatchingConfirmationModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-4 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4">매칭 완료!</h2>
-        <p>매칭된 정보:</p>
-        <pre>{JSON.stringify(matchData, null, 2)}</pre>{" "}
-        {/* 매칭된 정보를 적절히 포맷하여 표시 */}
-        <button
-          onClick={onClose}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
-        >
-          확인
-        </button>
+      <div className="bg-white p-4 rounded-lg shadow-lg w-[400px] flex flex-col justify-center items-center">
+        <h2 className="text-[30px] font-bold mb-4 text-black">수락 완료!</h2>
+        <img src={Giphy} alt="" className="w-[170px]" />
+        <p className="mt-4">상대방의 확인을 기다리고 있습니다.</p>
       </div>
     </div>
   );
