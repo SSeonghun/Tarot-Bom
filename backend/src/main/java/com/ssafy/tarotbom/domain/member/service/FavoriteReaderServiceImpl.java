@@ -95,6 +95,7 @@ public class FavoriteReaderServiceImpl implements FavoriteReaderService{
                     .rating(reader.getRating())
                     .grade(reader.getGradeCode())
                     .price(reader.getPrice())
+                    .profileUrl(reader.getMember().getProfileUrl())
                     .build();
             favoriteReaderList.add(readerTemp);
         }
