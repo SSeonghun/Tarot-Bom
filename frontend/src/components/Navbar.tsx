@@ -211,9 +211,7 @@ const Navbar: React.FC = () => {
                     aria-labelledby="options-menu"
                   >
                     <Link
-                      to={`seeker-mypage?name=${encodeURIComponent(
-                        userInfo?.nickname || ""
-                      )}&isReader=${userInfo?.isReader}`}
+                      to="/seeker-mypage"
                       onClick={() => setDropdownOpen(false)}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-400"
                     >

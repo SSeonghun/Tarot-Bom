@@ -45,7 +45,9 @@ const ReaderItem: React.FC<ReaderItemProps> = ({data}) => {
     <div>
       <div className="flex flex-row justify-between items-center m-4">
         <h1 className="text-black text-[50px] font-bold">리더 대시 보드</h1>
-        <Toggle />
+        <Toggle 
+          initialProfile = {true}         
+        />
       </div>
       <hr className="m-4 border-black border-[2px]" />
       <div className="m-4 bg-gray-200 rounded-lg">

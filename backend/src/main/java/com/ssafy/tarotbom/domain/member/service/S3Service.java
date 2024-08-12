@@ -31,7 +31,7 @@ public class S3Service {
     public String upload(MultipartFile file, String dirName) throws IOException {
         File uploadFile = convert(file)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 변환 실패"));
-        log.info(bucket);
+//        log.info(bucket);
         return upload(uploadFile, dirName);
     }
 

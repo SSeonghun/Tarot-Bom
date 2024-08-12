@@ -27,12 +27,12 @@ public class TarotSummaryServiceImpl implements TarotSummaryService {
         log.info("renewing tarot summary...");
         long memberId = cookieUtil.getUserId(request);
         Member member = memberRepository.findMemberByMemberId(memberId).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
-        TarotSummary tarrotSummary = TarotSummary.builder()
+        TarotSummary tarotSummary = TarotSummary.builder()
                 .member(member)
                 .cardId(tarotSummaryRenewRequestDto.getCardId())
                 .content(tarotSummaryRenewRequestDto.getContent())
                 .build();
-        tarotSummaryRepository.save(tarrotSummary);
+        tarotSummaryRepository.save(tarotSummary);
     }
 
     @Override

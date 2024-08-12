@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import Hero1 from "../../components/ReaderProfile/Hero1";
 import Hero2 from "../../components/ReaderProfile/Hero2";
 import Hero3 from "../../components/ReaderProfile/Hero3";
 import Hero4 from "../../components/ReaderProfile/Hero4";
 import { useLocation } from "react-router-dom";
+import { log } from "@livekit/components-core";
 const { readerDetail } = require("../../API/api.ts");
 
 interface ShopInfo {
@@ -35,10 +37,7 @@ interface Data {
 const SeekerMypage: React.FC = () => {
   const [data, setData] = useState<Data | null>(null); // 초기값을 null로 설정하여 타입 일치
 
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const readerId = queryParams.get("id");
-
+  const { readerId } = useParams<{ readerId: string }>();
   useEffect(() => {
     const loadReaders = async () => {
       try {

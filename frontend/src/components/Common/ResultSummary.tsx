@@ -5,6 +5,7 @@ import ResultCard from './ResultCard';
 import MusicPlayer from './MusicPlayerCopy';
 import { useNavigate } from 'react-router-dom';
 
+
 interface ResultSummaryProps {
   date: Date;
   cards: { imgNum: number; name: string; imageUrl: string; resultId: number; }[]; // 카드 데이터 배열
@@ -29,7 +30,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
 
   const navigate = useNavigate();
   console.log(resultId);
-  
+
   // 슬라이드 설정
   const settings = {
     dots: true, // 슬라이드 하단의 점 표시

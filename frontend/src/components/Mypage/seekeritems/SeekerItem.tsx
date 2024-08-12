@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import HoverButton from '../../Common/HoverButton';
 import Hero1 from './Hero1';
 import Hero2 from './Hero2';
@@ -6,7 +6,8 @@ import ResultSummary from '../../Common/ResultSummary';
 import Toggle from '../../Common/Toggle';
 import { Link } from 'react-router-dom';
 
-// TODO : props 인터페이스 및 값 받기
+
+
 
 interface SeekerItemProps {
   data: {
@@ -24,7 +25,14 @@ interface SeekerItemProps {
 }
 
 const SeekerItem: React.FC<SeekerItemProps> = ({ data }) => {
-  const recentTarotResults = data.tarotResults.slice(0, 3);
+  const [visibleResults, setVisibleResults] = useState(6); // 초기 보이는 타로 결과 수
+  const recentTarotResults = data.tarotResults.slice(0, visibleResults);
+
+
+  // 더보기 버튼 클릭 시 호출되는 함수
+  const handleLoadMore = () => {
+    setVisibleResults(prev => prev + 3); // 3개씩 추가
+  };
 
   return (
     <div className="container p-4 mx-auto">
@@ -33,7 +41,7 @@ const SeekerItem: React.FC<SeekerItemProps> = ({ data }) => {
         <div className="m-4">
           {/* data.reader가 true일 때 Toggle, false일 때 HoverButton을 렌더링 */}
           {data.reader ? (
-            <Toggle />
+            <Toggle initialProfile={false} />
           ) : (
             <Link to="/create-reader">
               <HoverButton
@@ -50,7 +58,6 @@ const SeekerItem: React.FC<SeekerItemProps> = ({ data }) => {
       </div>
       <hr className="border-black border-[2px]" />
 
-      {/* // TODO : 각각 원하는 값 넘겨주기 Hero1 => 예약내역, 분석, 찜리스트  , Hero2 => 최근 타로내역 */}
       <div className="mt-3">
         <Hero1
           reservationList={data.reservationList}
@@ -59,11 +66,12 @@ const SeekerItem: React.FC<SeekerItemProps> = ({ data }) => {
           favoriteReaderList={data.favoriteReaderList}
         />
       </div>
+
       <h1 className="text-black font-bold text-[50px] mt-[100px] ms-4 me-4 mb-4">최근 타로 내역</h1>
       <hr className="border-black border-[2px]" />
+      
       <div className="mt-3">
         <div className="grid grid-cols-12 gap-4">
-          {/* col-span-12에서 col-span-4로 변경하여 3개를 가로로 배치 */}
           {recentTarotResults.map((result, index) => (
             <div key={index} className="col-span-4 border border-gray-600 mt-4 rounded-lg">
               <ResultSummary
@@ -78,6 +86,15 @@ const SeekerItem: React.FC<SeekerItemProps> = ({ data }) => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* 더보기 버튼 */}
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={handleLoadMore}
+          className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out transform hover:scale-105"        >
+          더보기
+        </button>
       </div>
     </div>
   );
