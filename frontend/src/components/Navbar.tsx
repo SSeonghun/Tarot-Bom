@@ -93,38 +93,23 @@ const Navbar: React.FC = () => {
             `/sub/notification/${userInfo.memberId}`,
             (message: IMessage) => {
               const notification = JSON.parse(message.body);
-              console.log("알림", notification.data[0].content);
+              // console.log("알림", notification.data[0].content);
 
-              if (notification.code === "N03") {
-                const notification = JSON.parse(message.body);
-                console.log(
-                  "Received notification:",
-                  notification.data.content
-                );
-                setNotificationList((prevList) => {
-                  const newNotifications = notification.data as Notification[];
-
-                  // 기존 목록의 noId를 기준으로 중복 제거
-                  const existingNotificationIds = new Set(
-                    prevList.map((notif) => notif.noId)
-                  );
-                  const filteredNewNotifications = newNotifications.filter(
-                    (notif) => !existingNotificationIds.has(notif.noId)
-                  );
-
-                  return [...prevList, ...filteredNewNotifications];
-                });
-              }
-
-              console.log(notificationList.length);
-
-              if (notification.code === "N01") {
+              if (notification.code === "N02") {
+                // N02 코드 수신 시 알림 추가 및 모달 열기
                 console.log("새 알림 도착");
+                const newNotification = notification.data as Notification; // 단일 알림 객체로 처리
+                console.log(newNotification);
                 setNotificationList((prevList) => [
+                  newNotification,
                   ...prevList,
-                  ...notification.data,
                 ]);
-                setModalIsOpen(true); // 알림 수신 시 모달 열기
+                // setModalIsOpen(true); // 알림 수신 시 모달 열기
+              } else if (notification.code === "N03") {
+                // N03 코드 수신 시 전체 알림 목록 요청
+                console.log("전체 알림 목록 다시 요청");
+                const allNotifications = notification.data as Notification[];
+                setNotificationList((prevList) => [...allNotifications]);
               }
             }
           );
@@ -159,7 +144,7 @@ const Navbar: React.FC = () => {
         noId,
         memberId: userInfo?.memberId,
         read: true,
-        valid: true,
+        valid: false,
       }),
     });
 

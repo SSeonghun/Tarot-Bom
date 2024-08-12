@@ -20,7 +20,7 @@ import Play from "./pages/PlayTarot/Play";
 import CreateReader from "./pages/CreateReader/CreateReader";
 import SeekerMypage from "./pages/UserProfile/SeekerMypage";
 import ReaderMypage from "./pages/UserProfile/ReaderMypage";
-import Booking from "./pages/Booking/Booking";
+import Booking from "./pages/Booking/BookingPage";
 import WebRTCpage from "./pages/WebRTC/WebRTCpage";
 import WebRTCTest from "./pages/WebRTC/WebRTCtest";
 
