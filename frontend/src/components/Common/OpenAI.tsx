@@ -9,9 +9,8 @@ interface OpenAIProps {
   // selectedCards: number[];
 }
 
-//const apiKey = process.env.REACT_APP_OPENAI_API_KEY as string;
+const apiKey = process.env.REACT_APP_OPENAI_API_KEY as string;
 const apiEndpoint = "https://api.openai.com/v1/chat/completions";
-const apiKey='sk-proj-L86ynTviqNXTZMVTJprRT3BlbkFJ91I6lV2Qcpxa5OHMhQ6i'
 const fetchOpenAIResponse = async (
   messages: { role: string; content: any }[]
 ): Promise<string> => {

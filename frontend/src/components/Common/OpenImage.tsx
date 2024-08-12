@@ -1,7 +1,4 @@
 
-// const apiKey='sk-proj-L86ynTviqNXTZMVTJprRT3BlbkFJ91I6lV2Qcpxa5OHMhQ6i'
-
-
 const apiKey = process.env.REACT_APP_OPENAI_API_KEY as string;
 
 const analyzeImageWithGPT4 = async (imageBase64: string): Promise<any> => {
