@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Hero1: React.FC = () => {
-  const [isReaderProfile, setIsReaderProfile] = useState(false); // 초기값을 false로 설정
+interface Hero1Props {
+  initialProfile: boolean; // props로 받을 초기값의 타입 정의
+}
+
+const Hero1: React.FC<Hero1Props> = ({ initialProfile }) => {
+  const [isReaderProfile, setIsReaderProfile] = useState(initialProfile); // props로 초기값 설정
   const navigate = useNavigate();
 
   const handleToggleChange = () => {
