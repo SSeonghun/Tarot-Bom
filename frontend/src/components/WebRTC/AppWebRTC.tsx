@@ -16,6 +16,7 @@ import OpenDrowIcon from '../../assets/캔버스 켜기.png'
 import SelectIcon from '../../assets/선택완료.png'
 import html2canvas from 'html2canvas';
 import CardModal from './Tools/CardModal';
+import ScreenShootImageUpload from './Tools/ScreenShootImageUpload';
 type TrackInfo = {
     trackPublication: RemoteTrackPublication;
     participantIdentity: string;
@@ -463,7 +464,9 @@ const handlePreviewCard = (card: any) => {
                                     </div> )}
                     <div className="flex flex-col h-full w-full relative overflow-visible">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 p-4">
-                        {isModalVisible && <CardModal isVisible={isModalVisible} card={card[0]} onClose={closeModal} />}
+                        {isModalVisible && <ScreenShootImageUpload isVisible={isModalVisible} card={card[0]} onClose={closeModal}/>
+                        //<CardModal isVisible={isModalVisible} card={card[0]} onClose={closeModal} />
+                        }
                         </div>
                         <div className='flex flex-grow h-full overflow-visible'>
                             <div className="flex-1 relative">

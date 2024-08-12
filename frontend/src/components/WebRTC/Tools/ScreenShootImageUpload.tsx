@@ -1,7 +1,8 @@
+import React from 'react'
 import React, { useState } from 'react'
 
-import OpenAI from '../../components/Common/OpenAI';
-const ImageUpload: React.FC = () => {
+import OpenAI from '../../../components/Common/OpenAI';
+const ScreenShootImageUpload: React.FC = () => {
     const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(null);
     const [result, setResult] = useState<string>('결과가 여기에 표시됩니다.');
     // 이미지 크기를 줄이는 함수
@@ -95,4 +96,5 @@ const ImageUpload: React.FC = () => {
     );
 
     }
-export default ImageUpload
+export default ScreenShootImageUpload
+

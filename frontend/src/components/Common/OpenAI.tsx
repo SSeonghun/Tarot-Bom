@@ -9,9 +9,9 @@ interface OpenAIProps {
   // selectedCards: number[];
 }
 
-const apiKey = process.env.REACT_APP_OPENAI_API_KEY as string;
+//const apiKey = process.env.REACT_APP_OPENAI_API_KEY as string;
 const apiEndpoint = "https://api.openai.com/v1/chat/completions";
-
+const apiKey='sk-proj-L86ynTviqNXTZMVTJprRT3BlbkFJ91I6lV2Qcpxa5OHMhQ6i'
 const fetchOpenAIResponse = async (
   messages: { role: string; content: any }[]
 ): Promise<string> => {
@@ -64,35 +64,39 @@ const OpenAI: React.FC<OpenAIProps> = ({ cards, onSummaryGenerated, cardImage })
            - **Interpretation**: <Your Interpretation>
         Overall: <Your Overall Interpretation of all cards>
         Music: <Please provide only the song title and artist name>
-           `,
+        Answer in Korean`,
       };
+      console.log(initialMessage)
       let messages = [initialMessage];
-      if (cards && !hasFetchedRef.current){
-        if (cards.length > 0 && !hasFetchedRef.current) {
+      console.log(messages)
+      //if (cards){
+      if (cards&&cards.length > 0) {
             console.log("Cards provided:", cards);  // 디버깅: 카드가 제공됨
             const cardMessages = cards.map((card) => ({
               role: "user",
               content: `Card Name: ${card.name}, Card Detail: ${card.desc}`,
-            }));
-            messages.push(...cardMessages)
+          }));
+          messages.push(...cardMessages)
       }
-      else if(cardImage && !hasFetchedRef.current){
+      console.log(messages)
+      if(cardImage){
         console.log("Card image provided:", cardImage);  // 디버깅: 이미지가 제공됨
         messages.push({
           role: "user",
-          content: `Image URL: data:image/png;base64,${cardImage}`, // 문자열로 전달
+          content: `Image URL: data:image/png;base64,${cardImage}`,
         });
         console.log("Messages to send:", cardImage);
-      }
+     // }
+      
       console.log("Messages to send:", messages);  // 디버깅: 전송할 메시지들
         hasFetchedRef.current = true;
         const aiResponse = await fetchOpenAIResponse(messages);
         onSummaryGenerated(aiResponse);
         console.log("AI Response:", aiResponse);  // 디버깅: AI 응답 확인
       };
-
-      askTarotReading();
-    }
+    };
+    askTarotReading();
+    console.log(1)
   }, [cards, onSummaryGenerated, cardImage]);
 
   return null;
