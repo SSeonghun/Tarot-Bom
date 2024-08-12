@@ -14,7 +14,7 @@ const LikeCard: React.FC<LikeCardProps> = ({ intro, name, profileUrl, readerId }
   
   const navigate = useNavigate();
   const handleCardClick = (resultId: string) => {
-    navigate(`/result/search/${resultId}`);
+    navigate(`/reader-profile/${resultId}`);
   };
 
 

@@ -73,8 +73,8 @@ const Hero1: React.FC<Hero1Props> = ({
 }) => {
   const navigate = useNavigate();
   const highlightDates = reservationList.map(reservation => new Date(reservation.startTime));
-  const handleClick = (readerId: string) => {
-    navigate(`/reader-profile/${readerId}`);
+  const handleClick = () => {
+    navigate(`/search-reader`);
   };
   // favoriteReaderList를 기반으로 likeCards 생성
   const likeCards = favoriteReaderList.map(reader => (
@@ -155,6 +155,7 @@ const Hero1: React.FC<Hero1Props> = ({
                   hsize="h-8"
                   wsize="w-24"
                   fontsize="text-sm"
+                  onClick={handleClick}
                 />
               </div>
             </div>
