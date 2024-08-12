@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // const API_URL = "https://i11c208.p.ssafy.io/tarotbom/user/emails/";
-const API_URL = "http://localhost/tarotbom/user/emails/";
+const API_URL = `${process.env.REACT_APP_URL}/tarotbom/user/emails/`;
 
 const emailVerificationApi = async (email: string) => {
   try {

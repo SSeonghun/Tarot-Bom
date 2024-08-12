@@ -77,7 +77,7 @@ const ResizeComponent: React.FC<{
                 width: resizeWidth,
                 height: resizeHeight,
                 backgroundColor: '#ccc',
-                zIndex: isMaximized ? 1000 : 1,
+                zIndex: isMaximized ? 40 : 1,
                 cursor: isMinimized ? 'move' : 'default',
                 overflow: 'hidden',  // 비디오 크기 조절 시 잘림 방지
             }}
@@ -89,7 +89,7 @@ const ResizeComponent: React.FC<{
             className={`px-4 py-2 rounded-full`}
             //  text-white rounded ${isMuted ? 'bg-red-600' : 'bg-blue-600'} hover:bg-blue-700`
             >
-            <img src={isMuted ? muteOnIcon : muteOffIcon} alt={isMuted ? 'Unmute' : 'Mute'} className="w-6 h-6"/>
+            <img src={isMuted ? muteOffIcon:  muteOnIcon} alt={isMuted ? 'Unmute' : 'Mute'} className="w-6 h-6"/>
             </button>
             <button
             onClick={onToggleVideo}

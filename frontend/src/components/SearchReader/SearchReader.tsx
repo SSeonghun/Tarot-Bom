@@ -68,10 +68,15 @@ const SerchReader: React.FC = () => {
   };
   // 카테고리 선택 핸들러
   const handleCategorySelect = (label: { name: string }) => {
-    const keyword = Labels.find(l=>l.name===label.name)?.keyword||null;
-    setSelectedKeyword(keyword); // 선택된 카테고리 이름 설정
-    handleSearch(); // 카테고리 선택 후 검색 수행
+    const keyword = Labels.find(l => l.name === label.name)?.keyword || null;
+    setSelectedKeyword(keyword);// 선택된 카테고리 이름 설정
   };
+  
+  useEffect(() => {
+    console.log(selectedKeyword)
+    handleSearch();// 카테고리 선택 후 검색 수행
+  }, [selectedKeyword]);
+  
   return (
     <div className="container p-4 mx-auto relative min-h-[700px]">
       {/* 배경 이미지 */}

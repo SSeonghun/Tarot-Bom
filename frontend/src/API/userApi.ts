@@ -3,7 +3,7 @@ import axios from 'axios';
 import { File } from 'openai/_shims';
 
 // const API_URL = "https://i11c208.p.ssafy.io/tarotbom/user/";
-const API_URL = 'http://localhost/tarotbom/user/';
+const API_URL = `${process.env.REACT_APP_URL}/tarotbom/user/`;
 
 const signup = async (nickname: string, email: string, password: string) => {
   console.log(nickname, email, password);
