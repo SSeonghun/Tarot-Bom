@@ -36,7 +36,7 @@ const App: React.FC = () => {
           <Route path="/offline" element={<Offline />} />
           <Route path="/online" element={<Matching />} />
           <Route path="/online/graphic" element={<Graphic />} />
-          <Route path="/serch-reader" element={<SerchReader />} />
+          <Route path="/search-reader" element={<SerchReader />} />
           <Route path="/community" element={<Community />} />
           <Route path="/matching" element={<Matching />} />
           <Route path="/change-pwd" element={<ChangePwd />} />

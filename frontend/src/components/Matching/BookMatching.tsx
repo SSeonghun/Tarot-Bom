@@ -7,7 +7,7 @@ import Slider from 'react-slick'; // 슬라이더 컴포넌트
 import 'slick-carousel/slick/slick.css'; // 슬릭 슬라이더 기본 스타일
 import 'slick-carousel/slick/slick-theme.css'; // 슬릭 슬라이더 테마 스타일
 import '../../assets/css/FadeInOut.css'; // 사용자 정의 애니메이션 CSS 파일
-
+import { useNavigate } from 'react-router-dom';
 
 
 const { readerTop } = require("../../API/userApi")
@@ -29,9 +29,10 @@ const settings = {
 
 
 const BookMatching: React.FC = () => {
-  // 10개의 카드 예시 데이터 생성
-  
-  
+  const navigate = useNavigate();
+  const handleClickSearch = () => {
+    navigate(`/search-reader`);
+  };
   // 상태 추가: 선택된 버튼의 레이블과 두 번째 입력 필드의 표시 여부를 제어
   const [showSecondInput, setShowSecondInput] = useState<boolean>(false);
   const [animationClass, setAnimationClass] = useState<string>('fade-out');
@@ -79,6 +80,7 @@ const BookMatching: React.FC = () => {
             intro={reader.intro}
             name={reader.nickname}
             profileUrl={reader.profileUrl? reader.profileUrl: defaultProfileUrl}
+            readerId={reader.readerId}
             />
             </div>
           ))}
@@ -100,6 +102,7 @@ const BookMatching: React.FC = () => {
             hsize="h-10"
             wsize="w-40"
             fontsize="text-base"
+            onClick={handleClickSearch}
           />
           {/* 찜리스트 버튼 */}
           <HoverButton

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class TarotSummaryGetResponseDto {
-    private long cardId;
+    private int cardId;
     private String cardName;
     private String description;
     private String imageUrl;

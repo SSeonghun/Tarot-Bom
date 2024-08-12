@@ -6,6 +6,7 @@ import { useCountUp } from '../../Common/useCountUI';
 import TarotCard from '../../../assets/tarot_images - 복사본/c01.jpg';
 import LikeCard from '../../Cards/LikeCard';
 import HoverButton from '../../Common/HoverButton';
+import { useNavigate } from 'react-router-dom';
 
 
 const defaultProfileUrl = "https://cdn3d.iconscout.com/3d/premium/thumb/avatar-profile-7377413-5979215.png?f=webp"
@@ -25,6 +26,7 @@ interface FavoriteReader {
   intro: string;
   profileUrl: string | null; 
   name: string; // 리더의 이름
+  memberId: string
 }
 
 // Hero1 컴포넌트의 props 타입 정의
@@ -69,14 +71,18 @@ const Hero1: React.FC<Hero1Props> = ({
   Categories,
   favoriteReaderList,
 }) => {
+  const navigate = useNavigate();
   const highlightDates = reservationList.map(reservation => new Date(reservation.startTime));
-
+  const handleClick = (readerId: string) => {
+    navigate(`/reader-profile/${readerId}`);
+  };
   // favoriteReaderList를 기반으로 likeCards 생성
   const likeCards = favoriteReaderList.map(reader => (
     <LikeCard
      intro={reader.intro}
      name={reader.name}
      profileUrl={reader.profileUrl? reader.profileUrl: defaultProfileUrl}
+     readerId={reader.memberId}
     />
   ));
 
@@ -154,7 +160,7 @@ const Hero1: React.FC<Hero1Props> = ({
             </div>
               <div className="grid grid-cols-12 gap-4 p-2">
                 {likeCards.slice(0, 6).map((card, index) => (
-                  <div className="col-span-4" key={index} >
+                  <div className="col-span-4" key={index}>
                     {card}
                   </div>
                 ))}

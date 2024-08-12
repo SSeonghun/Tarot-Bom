@@ -67,7 +67,7 @@ const Navbar: React.FC = () => {
         <div className="space-x-4 flex items-center">
           <PrivateLink to="/online">타로보기</PrivateLink>
           {/* <PrivateLink to="/offline">오프라인 타로</PrivateLink> */}
-          <PrivateLink to="/serch-reader">예약하기</PrivateLink>
+          <PrivateLink to="/search-reader">예약하기</PrivateLink>
           <PrivateLink to="/community">커뮤니티</PrivateLink>
 
           {store.isLoggedIn ? (
