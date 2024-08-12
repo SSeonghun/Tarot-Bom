@@ -7,7 +7,7 @@ import Toggle from '../../Common/Toggle';
 import { Link } from 'react-router-dom';
 
 
-// TODO : props 인터페이스 및 값 받기
+
 
 interface SeekerItemProps {
   data: {

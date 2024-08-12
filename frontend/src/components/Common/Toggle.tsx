@@ -25,8 +25,7 @@ const Hero1: React.FC<Hero1Props> = ({ initialProfile }) => {
         type="checkbox"
         role="switch"
         id="flexSwitchCheckDefault"
-        checked={isReaderProfile} // 리더 프로필일 때 체크 상태
-        onChange={handleToggleChange}
+        onClick={handleToggleChange}
       />
       <label
         className="inline-block pl-[0.15rem] hover:cursor-pointer"
