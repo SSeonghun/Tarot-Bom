@@ -236,18 +236,19 @@ const Navbar: React.FC = () => {
                   src={userInfo?.profileImg}
                   alt="마이페이지"
                   style={{ width: "40px", height: "40px" }}
-                  className="cursor-pointer"
+                  className="cursor-pointer rounded-full"
                 />
               </button>
               {dropdownOpen && (
                 <div className="absolute right-0 w-48 mt-2 bg-gray-300 rounded-md shadow-lg">
-                  <div className="flex items-center px-4 py-3">
-                    <div>
+                  <div className="flex items-center px-3 py-3">
+                    <div className="mr-2">
+                   
                       <img
                         src={userInfo?.profileImg}
                         alt="마이페이지"
-                        style={{ width: "40px", height: "40px" }}
-                        className="cursor-pointer"
+                        style={{ width: "40px", height: "30px" }}
+                        className="cursor-point rounded-full"
                       />
                     </div>
                     <div className="flex flex-col">
