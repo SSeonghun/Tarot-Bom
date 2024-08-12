@@ -89,7 +89,7 @@ public class MemberController {
     /**
      * 시커 회원정보 수정
      *  */
-    @PostMapping(value = "/update/seeker", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/update/seeker")
     public ResponseEntity<ResultResponse> updateMember(@ModelAttribute UpdateMemberRequestDto updateMemberRequestDto, HttpServletRequest request) {
         log.info("update member");
         log.info("dto : {}, {}", updateMemberRequestDto.getNickname(), updateMemberRequestDto.getPassword());

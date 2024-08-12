@@ -374,14 +374,14 @@ public class MemberServiceImpl implements MemberService {
             newPassword = bcrypasswordEncoder.encode(updateMemberRequestDto.getPassword());
         }
         // 사진이 업로드된 경우, 링크를 만들어 받는다
-        if(!profileImage.isEmpty()){
+        if(profileImage != null && !profileImage.isEmpty()){
             try {
                 newProfileUrl = s3Service.upload(profileImage, "profile");
             } catch (IOException e) {
                 throw new BusinessException(ErrorCode.MEMBER_PROFILE_UPLOAD_FAILED);
             }
         }
-        log.info("새 프로필 이미지 링크 : {}", newProfileUrl);
+        log.info("현재 프로필 이미지 링크 : {}", newProfileUrl);
         // 마지막으로 닉네임 등록
         if(updateMemberRequestDto.getNickname() != null){
             newNickname = updateMemberRequestDto.getNickname();
