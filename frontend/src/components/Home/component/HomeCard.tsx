@@ -58,7 +58,7 @@ const HomeCard: React.FC<HomeCard> = ({
         {/* <p className="text-xs mb-3 text-gray-400 mt-4">{`Review Count: ${review}`}</p> */}
         <p className="text-xs mb-3 text-gray-400 mt-4">{detail}</p>
         <div className="absolute bottom-[50px] left-[60px] ">
-          <PrivateLink to={`/reader-profile?id=${readerId}`}>
+          <PrivateLink to={`/reader-profile/${readerId}`}>
             <HoverButton
               label="detail"
               color="bg-violet-300"

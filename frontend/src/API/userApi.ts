@@ -1,5 +1,6 @@
 // userApi.ts
 import axios from 'axios';
+import { File } from 'openai/_shims';
 
 // const API_URL = "https://i11c208.p.ssafy.io/tarotbom/user/";
 const API_URL = 'http://localhost/tarotbom/user/';
@@ -44,25 +45,23 @@ const login = async (email: string, password: string) => {
 };
 
 const update = async (
-  nickname: string,
-  newPassword: string,
-  profileImage: any,
-  memberType: String
+  formData: FormData
 ) => {
   try {
-    const response = await axios.patch(API_URL + 'update', {
-      nickname,
-      newPassword,
-      profileImage,
-      memberType,
+    const response = await axios.post(API_URL + 'update/seeker', formData, {
+      withCredentials: true, // 쿠키를 포함하도록 설정
+      headers: {
+        'Content-Type': 'multipart/form-data', // Content-Type을 multipart/form-data로 설정
+      },
     });
-
+    console.log(response.data)
     return response.data;
   } catch (error) {
     console.error('회원 정보 수정 실패', error);
     throw error;
   }
 };
+
 
 const refresh = async (refreshToken: string) => {
   try {

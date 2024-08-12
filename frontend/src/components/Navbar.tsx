@@ -29,8 +29,8 @@ const Navbar: React.FC = () => {
 
   // 드롭다운 열기/닫기 함수
   const toggleDropdown = () => {
-    setDropdownOpen((prev) => !prev);
-    console.log(userInfo?.nickname);
+    setDropdownOpen(prev => !prev);
+    console.log(userInfo?.profileImg);
   };
 
   // 클릭 시 드롭다운 닫기
@@ -108,10 +108,7 @@ const Navbar: React.FC = () => {
                     aria-labelledby="options-menu"
                   >
                     <Link
-                      to={`seeker-mypage?name=${encodeURIComponent(
-                        userInfo?.nickname || ""
-                      )}&isReader=${userInfo?.isReader}`}
-                      // to="/seeker-mypage"
+                      to="/seeker-mypage"
                       onClick={handleMyPageClick} // 클릭 시 드롭다운 닫기
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-400"
                     >
