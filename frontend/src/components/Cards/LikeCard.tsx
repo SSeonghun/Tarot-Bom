@@ -13,8 +13,8 @@ interface LikeCardProps {
 const LikeCard: React.FC<LikeCardProps> = ({ intro, name, profileUrl, readerId }) => {
   
   const navigate = useNavigate();
-  const handleCardClick = (resultId: string) => {
-    navigate(`/reader-profile/${resultId}`);
+  const handleCardClick = (readerId: string) => {
+    navigate(`/reader-profile/${readerId}`);
   };
 
 

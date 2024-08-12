@@ -218,9 +218,8 @@ const youtubeMusic = async (searchQuery: string) => {
         maxResults: 1,
       },
     });
-    const videoId = response.data.items[0].id.videoId;
-    const videoData = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
-    return videoData;
+    
+    return response.data.items[0];
   } catch (error) {
     console.error('유튜브 뮤직 검색 실패', error);
     throw error;

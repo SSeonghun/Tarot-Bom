@@ -5,6 +5,7 @@ import CommonButton from "../Common/CommonButton";
 import Witch from "../../assets/img/witch.webp";
 import Meteo from "../Common/Meteo";
 import MainBack from "../../assets/img/MainBack.jpg";
+import MusicPlayer from '../Common/MusicPlayer';
 
 // Main Section 1
 const Hero1: React.FC = () => {
