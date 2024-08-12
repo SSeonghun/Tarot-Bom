@@ -7,9 +7,11 @@ import { useNavigate } from 'react-router-dom';
 
 // API 호출 함수 임포트
 const { readerList } = require('../../API/api');
+const { likeList } = require('../../API/userApi');
 
 const Labels = [
   { name:'전체', keyword:""},
+  { name:'찜한 리더', keyword:"like"},
   { name: '연애운',keyword: "G01" },
   { name: '재물운',keyword: "G02" },
   { name: '건강운',keyword: "G03" },
@@ -21,6 +23,7 @@ const SerchReader: React.FC = () => {
 
   // 리더 리스트 상태 정의
   const [readers, setReaders] = useState<any[]>([]);
+  const [readers1, setReaders1] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   // 검색
@@ -31,9 +34,11 @@ const SerchReader: React.FC = () => {
   useEffect(() => {
     const loadReaders = async () => {
       try {
-        const response = await readerList(); // API 함수 호출
-        console.log(response.data)
+        const [response, response1] = await Promise.all([readerList(), likeList()]) // API 함수 호출
+        console.log(response1.data)
+        // console.log(response1.data)
         setReaders(response.data); // API 호출 후 데이터를 상태에 설정
+        setReaders1(response1.data)
         setFilteredReaders(response.data); // 초기 상태는 모든 리더가 필터링된 상태
       } catch (error) {
         setError('리더 목록을 가져오는 데 문제가 발생했습니다.');
@@ -59,10 +64,13 @@ const SerchReader: React.FC = () => {
       );
     }
     if (selectedKeyword) {
-      
-      filtered = filtered.filter(reader =>
-        reader.keyword && reader.keyword.includes(selectedKeyword) // category가 존재하는지 확인
-      );
+      if (selectedKeyword === 'like') {
+        filtered = readers1
+      } else {
+        filtered = filtered.filter(reader =>
+          reader.keyword && reader.keyword.includes(selectedKeyword) // category가 존재하는지 확인
+        );
+      }
     }
     setFilteredReaders(filtered);
   };

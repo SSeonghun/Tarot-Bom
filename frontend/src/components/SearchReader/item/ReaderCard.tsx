@@ -33,9 +33,9 @@ const HomeCard: React.FC<HomeCardProps> = ({
           src={imgUrl}
           alt="popular reader"
         />
-        <h1 className="text-lg text-white">{name}</h1>
-        <h3 className="text-sm text-gray-400">{detail}</h3>
-        <p className="text-xs mb-3 text-gray-400 mt-4">{`Review Count: ${review}`}</p>
+        <h1 className="text-lg text-white ">{name}</h1>
+        <h3 className="text-sm text-gray-400 mb-5">{detail}</h3>
+        {/* <p className="text-xs mb-3 text-gray-400 mt-4">{`Review Count: ${review}`}</p> */}
         <HoverButton
           label="Detail"
           color="bg-red-500"

@@ -203,7 +203,11 @@ const seekerMypage = async (name: string, isReader: boolean) => {
 
 const likeList = async () => {
   try {
-    const response = await axios.get(`${API_URL}like/list`);
+    const response = await axios.get(`${API_URL}favorite/list`, {
+      withCredentials: true, // 쿠키를 포함하도록 설정
+    });
+    console.log(response.data);
+    
     return response.data;
   } catch (error) {
     console.error('찜한 목록 조회 실패', error);

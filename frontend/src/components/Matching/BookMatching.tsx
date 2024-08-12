@@ -96,7 +96,7 @@ const BookMatching: React.FC = () => {
         <div className="flex flex-row gap-4">
           {/* 검색하기 버튼 */}
           <HoverButton
-            label="검색하기"
+            label="검색 & 찜 보기"
             color="bg-red-500"
             hoverColor="bg-red-300"
             hsize="h-10"
@@ -105,14 +105,14 @@ const BookMatching: React.FC = () => {
             onClick={handleClickSearch}
           />
           {/* 찜리스트 버튼 */}
-          <HoverButton
+          {/* <HoverButton
             label="찜리스트"
             color="bg-red-500"
             hoverColor="bg-red-300"
             hsize="h-10"
             wsize="w-40"
             fontsize="text-base"
-          />
+          /> */}
         </div>
       </div>
     </div>
