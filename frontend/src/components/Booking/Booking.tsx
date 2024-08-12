@@ -238,7 +238,7 @@ const Booking: React.FC<BookingProps> = ({
       <div className="bg-gray-700 p-6 rounded-lg shadow-lg max-w-6xl w-full mx-4 z-10">
         <div className="flex flex-col items-center">
           <div className="flex items-center mb-6">
-            <img src={profileUrl} alt="Profile" className="rounded-full mr-2" />
+            <img src={profileUrl} alt="Profile" className="rounded-full mx-6 size-14 " />
             <div>
               <h1 className="text-white text-2xl">{name}</h1>
               <p className="text-gray-300">TAROT READER</p>

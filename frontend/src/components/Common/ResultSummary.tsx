@@ -73,9 +73,9 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
           <img src={CalendarImo} alt="달력 이모티콘" className="ms-4" />
           <div className="text-lg font-semibold">{formattedDate}</div>
         </div>
-        <button onClick={() => handleCardClick(resultId)} className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-2 py-1 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out transform hover:scale-105 mx-5">
+        {/* <button onClick={() => handleCardClick(resultId)} className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-2 py-1 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out transform hover:scale-105 mx-5">
           상세 보기
-        </button>
+        </button> */}
 
       </div>
       <div className="m-7">
