@@ -194,6 +194,13 @@ const Booking: React.FC<BookingProps> = ({
       const response = await reservation(reservationData);
       console.log(response);
 
+      // 전역 상태에 예약 정보를 저장
+      console.log("저장되는 리더 아이디 : ", id);
+      useStore.getState().setReservationInfo({
+        memberId: reservationData.readerId,
+        time: String(reservationData.startTime),
+      });
+
       // 예약 완료 메시지
       Swal.fire({
         position: "center",

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Client, IMessage } from "@stomp/stompjs";
 import PrivateLink from "./Common/PrivateLink";
 import useStore from "../stores/store";
+import { zIndex } from "html2canvas/dist/types/css/property-descriptors/z-index";
 
 const { logout } = require("../API/userApi");
 
@@ -29,6 +30,16 @@ const Navbar: React.FC = () => {
 
   const userInfo = store.userInfo;
   const client = useRef<Client | null>(null);
+
+  const reservationInfo = useStore((state) => state.reservationInfo); // reservationInfo 상태 가져오기
+
+  useEffect(() => {
+    // reservationInfo가 정의되고, memberId와 time이 유효한 경우에만 호출
+    if (reservationInfo && reservationInfo.memberId && reservationInfo.time) {
+      console.log("Reservation Info has changed:", reservationInfo);
+      handleSendNotification(reservationInfo.memberId, reservationInfo.time);
+    }
+  }, [reservationInfo]); // reservationInfo가 변경될 때마다 실행
 
   const handleLogout = async () => {
     console.log("로그아웃 요청");
@@ -95,6 +106,9 @@ const Navbar: React.FC = () => {
               const notification = JSON.parse(message.body);
               // console.log("알림", notification.data[0].content);
 
+              if (notification.code === "N01") {
+              }
+
               if (notification.code === "N02") {
                 // N02 코드 수신 시 알림 추가 및 모달 열기
                 console.log("새 알림 도착");
@@ -135,6 +149,48 @@ const Navbar: React.FC = () => {
     };
   }, [userInfo?.memberId]);
 
+  const handleSendNotification = (memberId: number, time: string) => {
+    console.log("예약 알림 전송");
+    if (client.current && connected) {
+      console.log("진짜전송? ", typeof memberId, time);
+      (client.current as Client).publish({
+        destination: "/pub/notification/notify",
+        body: JSON.stringify({
+          memberId: memberId,
+          noType: "N01",
+          content: formatDate(time),
+        }),
+      });
+    } else {
+      console.log("STOMP client is not connected");
+    }
+  };
+
+  const formatDate = (dateTimeString: string): string => {
+    const date = new Date(dateTimeString);
+
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false, // 24시간 형식
+      timeZone: "Asia/Seoul", // 서울 시간대 설정
+    };
+
+    const formatter = new Intl.DateTimeFormat("ko-KR", options);
+    const parts = formatter.formatToParts(date);
+
+    const year = parts.find((part) => part.type === "year")?.value ?? "";
+    const month = parts.find((part) => part.type === "month")?.value ?? "";
+    const day = parts.find((part) => part.type === "day")?.value ?? "";
+    const hour = parts.find((part) => part.type === "hour")?.value ?? "";
+    const minute = parts.find((part) => part.type === "minute")?.value ?? "";
+
+    return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분에 예약이 들어왔습니다!`;
+  };
+
   // 알림 읽음 처리
   const markAsRead = (noId: number) => {
     console.log(`알림 읽음 처리: ${noId}`);
@@ -170,7 +226,7 @@ const Navbar: React.FC = () => {
         </div>
         <div className="space-x-4 flex items-center">
           <PrivateLink to="/online">타로보기</PrivateLink>
-          <PrivateLink to="/serch-reader">예약하기</PrivateLink>
+          <PrivateLink to="/search-reader">예약하기</PrivateLink>
           <PrivateLink to="/community">커뮤니티</PrivateLink>
 
           {store.isLoggedIn ? (
@@ -262,10 +318,13 @@ const Navbar: React.FC = () => {
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 contentLabel="Notification Modal"
-                className="fixed inset-0 flex items-center justify-center z-50 "
-                overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+                className="fixed inset-0 flex items-center justify-center z-[9999]" // 모달의 z-index를 높게 설정
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-[9998]" // 오버레이의 z-index를 모달보다 낮게 설정
               >
-                <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto w-[400px]">
+                <div
+                  className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto w-[400px]"
+                  style={{ zIndex: 999, position: "relative" }}
+                >
                   <h2 className="text-2xl font-semibold mb-4">알림 목록</h2>
                   <div className="divide-y divide-gray-200 h-[300px] overflow-y-scroll">
                     {notificationList.length === 0 ? (
