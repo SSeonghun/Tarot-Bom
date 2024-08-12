@@ -47,7 +47,7 @@ const SerchReader: React.FC = () => {
 
   // 클릭 핸들러 함수 정의
   const handleCardClick = (readerId: number) => {
-    navigate(`/reader-profile?id=${readerId}`);
+    navigate(`/reader-profile/${readerId}`);
   };
 
   const handleSearch = () => {
