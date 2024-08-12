@@ -1,14 +1,23 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // useNavigate 훅을 임포트합니다.
 import HoverButton from "../Common/HoverButton";
 import ReaderProfile1 from "../../assets/img/ReaderProfile1.png";
 
 interface Hero1Props {
-  name: string; // String -> string으로 수정
+  id: string;
+  name: string;
   profileUrl: string;
   grade: string;
 }
 
-const Hero1: React.FC<Hero1Props> = ({ name, profileUrl, grade }) => {
+const Hero1: React.FC<Hero1Props> = ({ id, name, profileUrl, grade }) => {
+  const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수를 생성합니다.
+
+  const handleButtonClick = (id: string, name: string, profileUrl: string) => {
+    console.log(id, "예약하기");
+    navigate("/booking", { state: { id, name, profileUrl } });
+  };
+
   // grade를 매핑하는 객체
   const gradeMapping: { [key: string]: string } = {
     C01: "새싹",
@@ -51,6 +60,7 @@ const Hero1: React.FC<Hero1Props> = ({ name, profileUrl, grade }) => {
             hsize="h-12"
             wsize="w-48"
             fontsize="text-lg"
+            onClick={() => handleButtonClick(id, name, profileUrl)} // 수정된 함수 호출
           />
         </div>
       </div>

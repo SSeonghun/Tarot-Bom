@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface SelectProps {
   options: string[];
@@ -19,20 +19,21 @@ const Select: React.FC<SelectProps> = ({
     <div className="flex flex-wrap mb-4">
       {options.map((option) => {
         // 버튼 활성화 여부를 결정하는 함수
-        const canSelect = isButtonActive(option) || activeButtons.includes(option);
+        const canSelect =
+          isButtonActive(option) || activeButtons.includes(option);
 
         return (
           <button
             key={option}
             className={`rounded-full px-4 py-1 m-1 ${
               selectedOption.includes(option)
-                ? 'border-[1.5px] border-gray-400 text-black'
-                : 'bg-gray-400 text-black border-gray-400 border-[1.5px]'
+                ? "border-[1.5px] border-blue-500 text-blue-500" // 선택된 버튼 스타일
+                : "bg-gray-300 text-black border-gray-400 border-[1.5px]" // 비활성화된 버튼 스타일
             }`}
             onClick={() => canSelect && onSelect(option)}
             style={{
               opacity: canSelect ? 1 : 0.5,
-              cursor: canSelect ? 'pointer' : 'not-allowed',
+              cursor: canSelect ? "pointer" : "not-allowed",
             }}
             disabled={!canSelect}
           >
