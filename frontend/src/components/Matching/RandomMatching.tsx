@@ -155,7 +155,9 @@ const RandomMatching: React.FC = () => {
     )}`;
 
     // 라우터를 통해 방으로 이동
-    navigate(roomEntryPath);
+    navigate(roomEntryPath, {
+      state: { readerType: "AI" },
+    });
   };
 
   const handleButtonClick = (label: string) => {

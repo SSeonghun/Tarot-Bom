@@ -10,6 +10,7 @@ import {
 } from "livekit-client";
 import MainBg from '../../assets/mainBg.png'
 import Graphic from "../PlayTarot/Graphic";
+import html2canvas from 'html2canvas';
 // Define types
 type TrackInfo = {
   trackPublication: RemoteTrackPublication;
@@ -35,7 +36,8 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
     name
   );
   const [roomName, setRoomName] = useState<string | undefined>(token);
-
+  const [isHost, setIsHost] = useState<boolean>(false);
+  
   const APPLICATION_SERVER_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:6080/"
@@ -50,11 +52,16 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
   const remoteAudioRefs = useRef<{
     [trackSid: string]: HTMLAudioElement | null;
   }>({});
+  const graphicRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const isSeeker = participantName === '시커'; // Check if the participant is '시커'
 
   async function joinRoom() {
+    console.log("Joining room...");
     const room = new Room();
     setRoom(room);
-
+    let firstParticipantJoined = false;
     room.on(
       RoomEvent.TrackSubscribed,
       (
@@ -62,6 +69,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
         publication: RemoteTrackPublication,
         participant: RemoteParticipant
       ) => {
+        console.log("TrackSubscribed:", publication.trackSid, participant.identity);
         setRemoteTracks((prev) => [
           ...prev,
           {
@@ -72,9 +80,24 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
       }
     );
 
+    room.on(RoomEvent.ParticipantConnected, (participant: RemoteParticipant) => {
+      console.log("ParticipantConnected:", participant.identity);
+      if (!firstParticipantJoined) {
+        firstParticipantJoined = true;
+        setIsHost(false); // Since another participant has joined, current participant is not the host
+      }
+    });
+
+    room.on(RoomEvent.ParticipantDisconnected, (participant: RemoteParticipant) => {
+      console.log("ParticipantConnected:", participant.identity);
+      if (participant.identity === participantName) {
+        setIsHost(true); // If the current participant leaves and they were the first, they are the host
+      }
+    });
     room.on(
       RoomEvent.TrackUnsubscribed,
       (_track: RemoteTrack, publication: RemoteTrackPublication) => {
+        console.log("TrackUnsubscribed:", publication.trackSid);
         setRemoteTracks((prev) =>
           prev.filter(
             (track) => track.trackPublication.trackSid !== publication.trackSid
@@ -85,12 +108,39 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
 
     try {
       const token = await getToken(roomName as string, participantName as string);
+      console.log('Fetched token:', token);
+      console.log('Connecting to room with token:', token);
       await room.connect(LIVEKIT_URL, token);
       await room.localParticipant.setMicrophoneEnabled(true); // 마이크만 활성화
+      // Set local participant as host if no other participants are in the room
+      if (!firstParticipantJoined) {
+        console.log('Setting local participant as host');
+        setIsHost(true); // If this is the first participant, they are the host
+      }
+      if (!canvasRef.current) {
+        console.error("Canvas reference is not defined.");
+        return;
+      }
+      const stream = canvasRef.current?.captureStream(30); // 30fps로 canvas 캡처
+      if (!stream) {
+        console.error("Failed to capture stream from canvas.");
+        return;
+      }
+      console.log("Captured stream:", stream);
       const audioTrack = room.localParticipant.audioTrackPublications
       .values()
       .next().value?.audioTrack;
-    setLocalTrack(audioTrack);
+      if (stream) {
+        const [videoTrack] = stream.getVideoTracks();
+        const localVideoTrack = new LocalVideoTrack(videoTrack);
+        setLocalTrack(localVideoTrack);
+        await room.localParticipant.publishTrack(localVideoTrack);
+        console.log("Published local video track");
+      }
+      if (audioTrack) {
+        setLocalTrack(audioTrack);
+        console.log("Published local audio track");
+      }
     } catch (error) {
       console.log("Error connecting to the room:", (error as Error).message);
       await leaveRoom();
@@ -98,6 +148,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
   }
 
   async function leaveRoom() {
+    console.log('Leaving room...');
     await room?.disconnect();
     setRoom(undefined);
     setLocalTrack(undefined);
@@ -105,7 +156,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
   }
 
   async function getToken(roomName: string, participantName: string) {
-    console.log(roomName,participantName)
+    console.log("Fetching token for room:", roomName, "participant:", participantName);
     const response = await fetch(APPLICATION_SERVER_URL + "token", {
       method: "POST",
       headers: {
@@ -119,10 +170,12 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
 
     if (!response.ok) {
       const error = await response.json();
+      console.error(`Failed to get token: ${error.errorMessage}`);
       throw new Error(`Failed to get token: ${error.errorMessage}`);
     }
 
     const data = await response.json();
+    console.log("Received token:", data.token);
     return data.token;
   }
   useEffect(() => {
@@ -139,22 +192,42 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
 
   useEffect(() => {
     if (localTrack && localVideoRef.current) {
+      console.log('Attaching local track to video element');
       localTrack.attach(localVideoRef.current);
     }
 
     return () => {
       if (localTrack) {
+        console.log('Detaching local track from video element');
         localTrack.detach();
       }
     };
   }, [localTrack]);
+  useEffect(() => {
+    const updateCanvas = async () => {
+      if (canvasRef.current) {
+        console.log('Updating canvas...');
+        const context = canvasRef.current.getContext('2d');
+        if (context) {
+          console.log('Capturing graphic...');
+          const canvas = await html2canvas(graphicRef.current!);
+          context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+          context.drawImage(canvas, 0, 0, canvasRef.current.width, canvasRef.current.height);
+          console.log('Canvas updated');
+        }
+      }
+      requestAnimationFrame(updateCanvas);
+    };
 
+    updateCanvas();
+  }, []);
   useEffect(() => {
     remoteTracks.forEach((trackInfo) => {
       if (
         trackInfo.trackPublication.kind === "audio" &&
         remoteAudioRefs.current[trackInfo.trackPublication.trackSid]
       ) {
+        console.log('Attaching remote audio track:', trackInfo.trackPublication.trackSid);
         trackInfo.trackPublication.videoTrack?.attach(
           remoteAudioRefs.current[trackInfo.trackPublication.trackSid]!
         );
@@ -163,7 +236,8 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
 
     return () => {
       remoteTracks.forEach((trackInfo) => {
-        if (trackInfo.trackPublication.kind === "video") {
+        if (trackInfo.trackPublication.kind === "audio") {
+          console.log('Detaching remote audio track:', trackInfo.trackPublication.trackSid);
           trackInfo.trackPublication.videoTrack?.detach();
         }
       });
@@ -188,7 +262,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
               }}
             >
               <div>
-                {/* <label htmlFor="participant-name">Participant</label>
+                <label htmlFor="participant-name">Participant</label>
                 <input
                   id="participant-name"
                   className="form-control"
@@ -207,7 +281,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
                   value={roomName}
                   onChange={(e) => setRoomName(e.target.value)}
                   required
-                /> */}
+                />
               </div>
               <button
                 className="btn btn-lg btn-success"
@@ -221,7 +295,6 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
         </div>
       ) : (
         <div id="room">
-          <Graphic/>
           <div id="room-header">
             <h2 id="room-title">{roomName}</h2>
             <button
@@ -233,6 +306,17 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
             </button>
           </div>
           <div id="layout-container">
+          {isSeeker && (
+              <div ref={graphicRef} style={{ width: '640px', height: '480px' }}>
+                <p>1</p>
+                <Graphic />
+              </div>
+            )}{
+              !isSeeker&&( 
+                <canvas ref={canvasRef} style={{ display: 'none' }} width="640" height="480" />
+              )
+            }
+            
             {localTrack && (
               <audio ref={localVideoRef} autoPlay={true} />
               
