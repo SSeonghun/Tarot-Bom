@@ -8,7 +8,8 @@ import {
   Room,
   RoomEvent,
 } from "livekit-client";
-
+import MainBg from '../../assets/mainBg.png'
+import Graphic from "../PlayTarot/Graphic";
 // Define types
 type TrackInfo = {
   trackPublication: RemoteTrackPublication;
@@ -46,8 +47,8 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
       : "wss://" + window.location.hostname + ":7443/";
 
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
-  const remoteVideoRefs = useRef<{
-    [trackSid: string]: HTMLVideoElement | null;
+  const remoteAudioRefs = useRef<{
+    [trackSid: string]: HTMLAudioElement | null;
   }>({});
 
   async function joinRoom() {
@@ -85,11 +86,11 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
     try {
       const token = await getToken(roomName as string, participantName as string);
       await room.connect(LIVEKIT_URL, token);
-      await room.localParticipant.enableCameraAndMicrophone();
-      const videoTrack = room.localParticipant.videoTrackPublications
-        .values()
-        .next().value?.videoTrack;
-      setLocalTrack(videoTrack);
+      await room.localParticipant.setMicrophoneEnabled(true); // 마이크만 활성화
+      const audioTrack = room.localParticipant.audioTrackPublications
+      .values()
+      .next().value?.audioTrack;
+    setLocalTrack(audioTrack);
     } catch (error) {
       console.log("Error connecting to the room:", (error as Error).message);
       await leaveRoom();
@@ -151,11 +152,11 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
   useEffect(() => {
     remoteTracks.forEach((trackInfo) => {
       if (
-        trackInfo.trackPublication.kind === "video" &&
-        remoteVideoRefs.current[trackInfo.trackPublication.trackSid]
+        trackInfo.trackPublication.kind === "audio" &&
+        remoteAudioRefs.current[trackInfo.trackPublication.trackSid]
       ) {
         trackInfo.trackPublication.videoTrack?.attach(
-          remoteVideoRefs.current[trackInfo.trackPublication.trackSid]!
+          remoteAudioRefs.current[trackInfo.trackPublication.trackSid]!
         );
       }
     });
@@ -172,9 +173,14 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
   return (
     <div>
       {!room ? (
-        <div id="join" className="mt-40">
-          <div id="join-dialog">
-            <h2>Join a Video Room</h2>
+        <div id="join" className="relative h-screen overflow-hidden">
+          <img
+              className="absolute inset-0 w-full h-full object-cover opacity-40 z-0"
+              src={MainBg}
+              alt="Main Background"
+          />
+          <div id="join-dialog " className="absolute bottom-10 left-10 z-10">
+          <h2 className="text-white">Join an Audio Room</h2>
             <form
               onSubmit={(e) => {
                 joinRoom();
@@ -215,6 +221,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
         </div>
       ) : (
         <div id="room">
+          <Graphic/>
           <div id="room-header">
             <h2 id="room-title">{roomName}</h2>
             <button
@@ -227,20 +234,18 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
           </div>
           <div id="layout-container">
             {localTrack && (
-              <div className="video-container local">
-                <video ref={localVideoRef} autoPlay={true} muted />
-                <div className="participant-name">{participantName}</div>
-              </div>
+              <audio ref={localVideoRef} autoPlay={true} />
+              
             )}
             {remoteTracks.map((remoteTrack) =>
-              remoteTrack.trackPublication.kind === "video" ? (
+              remoteTrack.trackPublication.kind === "audio" ? (
                 <div
-                  className="video-container"
+                  className="audio-container"
                   key={remoteTrack.trackPublication.trackSid}
                 >
-                  <video
+                  <audio
                     ref={(el) =>
-                      (remoteVideoRefs.current[
+                      (remoteAudioRefs.current[
                         remoteTrack.trackPublication.trackSid
                       ] = el)
                     }
@@ -250,14 +255,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
                     {remoteTrack.participantIdentity}
                   </div>
                 </div>
-              ) : (
-                <div
-                  className="audio-container"
-                  key={remoteTrack.trackPublication.trackSid}
-                >
-                  <audio autoPlay={true} />
-                </div>
-              )
+              ) : null
             )}
           </div>
         </div>

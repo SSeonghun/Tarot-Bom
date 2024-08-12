@@ -78,21 +78,21 @@ const OpenAI: React.FC<OpenAIProps> = ({ cards, onSummaryGenerated, cardImage })
           messages.push(...cardMessages)
       }
       console.log(messages)
-      if(cardImage){
+      if (cardImage){
         console.log("Card image provided:", cardImage);  // 디버깅: 이미지가 제공됨
         messages.push({
           role: "user",
           content: `Image URL: data:image/png;base64,${cardImage}`,
         });
         console.log("Messages to send:", cardImage);
-     // }
+     }
       
       console.log("Messages to send:", messages);  // 디버깅: 전송할 메시지들
         hasFetchedRef.current = true;
         const aiResponse = await fetchOpenAIResponse(messages);
         onSummaryGenerated(aiResponse);
         console.log("AI Response:", aiResponse);  // 디버깅: AI 응답 확인
-      };
+      // };
     };
     askTarotReading();
     console.log(1)
