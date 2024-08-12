@@ -15,7 +15,9 @@ import CloseDrowIcon from '../../assets/캔버스 끄기.png'
 import OpenDrowIcon from '../../assets/캔버스 켜기.png'
 import SelectIcon from '../../assets/선택완료.png'
 import html2canvas from 'html2canvas';
-import CardModal from './Tools/CardModal';
+import ScreenShootImageUpload from './Tools/ScreenShootImageUpload';
+import ProfileModal from './Tools/ProfileModal';
+import ScenarioPanel from './Controller/ScenarioPanel';
 type TrackInfo = {
     trackPublication: RemoteTrackPublication;
     participantIdentity: string;
@@ -43,22 +45,12 @@ function configureUrls() {
     }
 }
 
-const card = Array.from({ length: 3 }, (_, index) => ({
-    id: index,
-    name: `ACE & CUPS`,
-    detail: `야호 야호 야호 야호 야호 야호 야호 야호 야호 야호 야호 `,
-    category: ['금전운'],
-    imgUrl: cardImg,
-    hsize: 'h-1',
-    wsize: 'w-40'
-}));
-
 function AppWebRTC() {
     const [room, setRoom] = useState<Room | undefined>(undefined);
     const [localVideoTrack, setLocalVideoTrack] = useState<LocalVideoTrack | undefined>(undefined);
     const [localAudioTrack, setLocalAudioTrack] = useState<LocalAudioTrack | undefined>(undefined);
     const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
-    // const [drawingData, setDrawingData] = useState<any>(null);
+
     const [participantName, setParticipantName] = useState("Participant" + Math.floor(Math.random() * 100));
     const [roomName, setRoomName] = useState("Test Room");
     const [cameraDeviceId, setCameraDeviceId] = useState<string | null>(null);
@@ -70,12 +62,14 @@ function AppWebRTC() {
     const [isMuted, setIsMuted] = useState(false); // 음소거 상태 관리
     const [isVideoOff, setIsVideoOff] = useState(false); // 비디오 끄기 상태 관리
     
-    const [selectedCard, setSelectedCard] = useState<any>(null); // 선택된 카드 정보
-    const [cards, setCards] = useState([]); // 카드 상태 관리
-    const [previewCard, setPreviewCard] = useState<any>(null); // 선택된 카드 미리보기 상태
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false); // 모달 표시 상태 관리
+    const [taroimageData, setTaroimageData]=useState<any>(null);
     const canvasRef = useRef<DrawingCanvasHandle | null>(null);
+    const [isProfileModalVisible, setIsProfileModalVisible] = useState<boolean>(false);
 
+    const [isCardSelectionOngoing, setIsCardSelectionOngoing] = useState(false);
+    const [currentScenario, setCurrentScenario] = useState<'입장 인사'|'카드 선택 시간' | '카드 선택 확인'|'결과 확인'|'마무리 인사'>('입장 인사');
+    
     useEffect(() => {
         if (room) {
             console.log('Room is set. Listening for data events...');
@@ -100,7 +94,11 @@ function AppWebRTC() {
                         console.log(rest)
                         await canvasRef.current?.loadDrawing(rest.data);
                         console.log('Drawing loaded successfully to canvas.');
-                    }    
+                    }  else if(type==='startCardSelection'){
+                        setIsCardSelectionOngoing(true);
+                    }else if(type==='requestScreenshot'){
+                        setIsCardSelectionOngoing(false);
+                    }
                 } catch (error) {
                     console.error('Error parsing JSON data:', error);
                 }
@@ -379,6 +377,8 @@ function AppWebRTC() {
             link.click(); // 자동으로 다운로드를 시작합니다
         if (imageData) {
             console.log(imageData)
+            setTaroimageData(imageData)
+            setIsModalVisible(true);
           console.log('Screenshot uploaded successfully');
         } else {
           console.error('Failed to upload screenshot');
@@ -392,11 +392,53 @@ function AppWebRTC() {
 const closeModal = () => {
     setIsModalVisible(false);
 };
-const handlePreviewCard = (card: any) => {
-    setPreviewCard(card);
-    setSelectedCard(card);
+const handlePreviewCard = () => {
     setIsModalVisible(true);
   };
+  const OpenProfile = () => {
+    setIsProfileModalVisible(true);
+};
+
+async function handleScenarioChange() {
+    try {
+        // 현재 시나리오를 가져오는 방법을 적절히 수정하세요.
+        // 여기서는 시나리오 상태가 '카드 선택 시간'인지 '카드 선택 확인'인지 확인하는 것으로 가정합니다.
+        //const currentScenario = scenarios[currentScenario]; // scenarios 배열에서 현재 시나리오 가져오기
+        console.log(currentScenario)
+        if (currentScenario ==='입장 인사'){setCurrentScenario('카드 선택 시간')}
+        else if (currentScenario === '카드 선택 시간') {
+            console.log('카드 선택 시간 설정');
+            handleVideoDoubleClick('local')// 더블클릭
+            setIsCanvasVisible(true); // 그림 그리기 기능 활성화
+
+            // 카드 선택 시작 메시지 전송
+            const startScenarioMessage = JSON.stringify({ type: 'startCardSelection' });
+            const uint8ArrayData = new TextEncoder().encode(startScenarioMessage);
+            await room?.localParticipant.publishData(uint8ArrayData);
+            setCurrentScenario('카드 선택 확인')
+        } else if (currentScenario === '카드 선택 확인') {
+            console.log('카드 선택 확인');
+            setIsCanvasVisible(false); // 그림 그리기 기능 비활성화
+
+            // 스크린샷 요청 메시지 전송
+            const endScenarioMessage = JSON.stringify({ type: 'requestScreenshot' });
+            const uint8ArrayEndData = new TextEncoder().encode(endScenarioMessage);
+            await room?.localParticipant.publishData(uint8ArrayEndData);
+
+            // 비디오 최대화 해제
+            setMaximizedVideo(null);
+            setCurrentScenario('결과 확인')
+        }else{
+            setCurrentScenario('마무리 인사')
+        }
+    } catch (error) {
+        console.error('시나리오 변경 중 오류 발생:', error);
+    }
+    // Implementation for scenario change
+    // 카드선택 시간이 되었을때 localVideoTrack을 최대화하고, 그림그리기 기능을 활성화 시킨다
+    // 카드 선택 확인이 끝나면 webrtc를 통해 다른 참가자가 스크린샷 기능을 사용하도록 유도하며, localVideoTrack을 최대화하고, 그림그리기 기능을 비활성화시키며 결과를 송출한다
+    // 이 과정이 webrtc를 통해 상대방 유저에게 동일하게 적용되어야 하며, localParticipant.publishData를 활용하여 webrtc로 통제를 전송하고, 모든 방 참가자를 통제해야한다
+};
     return (
         <>
             {!room ? (
@@ -463,7 +505,9 @@ const handlePreviewCard = (card: any) => {
                                     </div> )}
                     <div className="flex flex-col h-full w-full relative overflow-visible">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 p-4">
-                        {isModalVisible && <CardModal isVisible={isModalVisible} card={card[0]} onClose={closeModal} />}
+                        {isModalVisible && <ScreenShootImageUpload isVisible={isModalVisible} imageData={taroimageData} onClose={closeModal}/>
+                        //<CardModal isVisible={isModalVisible} card={card[0]} onClose={closeModal} />
+                        }
                         </div>
                         <div className='flex flex-grow h-full overflow-visible'>
                             <div className="flex-1 relative">
@@ -538,8 +582,43 @@ const handlePreviewCard = (card: any) => {
                         </div>
                     </div>
                     <div className="relative w-full max-w-4xl px-5 mb-5 z-50">
+                    <div>
+
+                    </div>
+                    
+                    <div className="fixed bottom-4 left-4 bg-white border border-gray-300 rounded-lg p-4 shadow-md flex space-x-4 z-50">
+                    {/* <p>진행 상황판</p>
+                    <button
+                            className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
+                            onClick={OpenProfile}  // 여기서 handleScreenshot 핸들러 호출
+                        ><p>시커 프로필</p>
+                           
+                        </button>
+                        <button
+                            className="flex items-center justify-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
+                            onClick={handleScenarioChange}
+                        >
+                            {scenarios[currentScenario]}
+                        </button> */}
+                        <ScenarioPanel onScenarioChange={handleScenarioChange} onOpenProfile={OpenProfile} />
+                        {/* 진행 상황을 알려주는 변화하는 버튼 */}
+                        {/* 누르면 그다음 시나리오로 넘어가는 시나리오 통제 */}
+                        {/* 필요 시니라오 : 입장인사 -> 카드 선택 시간 -> 결과 확인 */}
+                    </div>
+                    {isProfileModalVisible && (
+                        <ProfileModal
+                            isVisible={isProfileModalVisible}
+                            profileData={{
+                                name: participantName,
+                                email: 'example@example.com', // Replace with actual email or data
+                                //favoriteReaderList: card // Replace with actual data if needed
+                            }}
+                            onClose={() => setIsProfileModalVisible(false)}
+                        />
+                    )}
+
                     <div className="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-lg p-4 shadow-md flex space-x-4 z-50">
-        
+                        <p>선택 완료 : 시커</p>
                         <button
                             className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
                             onClick={clearCanvas}
@@ -576,9 +655,9 @@ const handlePreviewCard = (card: any) => {
                         </button>
                         <button
                             className="preview-button"
-                            onClick={() => handlePreviewCard(card[0])}
+                            onClick={() => handlePreviewCard()}
                         >
-                            선택카드
+                            선택결과
                         </button>
                     </div>
                         

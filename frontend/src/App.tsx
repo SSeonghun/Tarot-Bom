@@ -23,6 +23,7 @@ import ReaderMypage from "./pages/UserProfile/ReaderMypage";
 import Booking from "./pages/Booking/BookingPage";
 import WebRTCpage from "./pages/WebRTC/WebRTCpage";
 import WebRTCTest from "./pages/WebRTC/WebRTCtest";
+import ImageUpload from "./pages/Test/ImageUpload";
 
 const App: React.FC = () => {
   return (
@@ -55,6 +56,7 @@ const App: React.FC = () => {
             path="/rtcTest"
             element={<WebRTCTest token={""} name={""} type={""} />}
           />
+          <Route path="/test" element={<ImageUpload/>}/>
         </Routes>
         <Footer />
       </div>
