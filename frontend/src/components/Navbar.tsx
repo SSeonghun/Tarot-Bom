@@ -230,13 +230,13 @@ const Navbar: React.FC = () => {
           <PrivateLink to="/community">커뮤니티</PrivateLink>
 
           {store.isLoggedIn ? (
-            <div className="relative inline-block text-left dropdown">
-              <button onClick={toggleDropdown} className="focus:outline-none">
+            <div className="relative inline-block text-left dropdown ">
+              <button onClick={toggleDropdown} className="focus:outline-none ">
                 <img
                   src={userInfo?.profileImg}
                   alt="마이페이지"
                   style={{ width: "40px", height: "40px" }}
-                  className="cursor-pointer"
+                  className="cursor-pointer rounded-full"
                 />
               </button>
               {dropdownOpen && (
@@ -247,7 +247,7 @@ const Navbar: React.FC = () => {
                         src={userInfo?.profileImg}
                         alt="마이페이지"
                         style={{ width: "40px", height: "40px" }}
-                        className="cursor-pointer"
+                        className="cursor-pointer rounded-full mr-3"
                       />
                     </div>
                     <div className="flex flex-col">
