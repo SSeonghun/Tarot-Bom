@@ -4,7 +4,7 @@ import moneyImg from "../../assets/money.png";
 import HoverButton from "../../components/Common/HoverButton";
 import OpenAI from "../Common/OpenAI";
 import Loading from "../Common/Loading";
-import MusicPlayer from "../Common/MusicPlayerCopy";
+import MusicPlayer from "../Common/MusicPlayer";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
@@ -167,7 +167,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
             <p className="mt-5 text-lg font-bold text-white">
               타로 결과에 어울리는 음악을 들어보세요!
             </p>
-            <MusicPlayer title={music} />
+            <MusicPlayer width={40} height={40} searchQuery={music}/>
           </div>
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
