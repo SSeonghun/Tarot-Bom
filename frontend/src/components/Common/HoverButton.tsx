@@ -18,10 +18,12 @@ const CustomButton: React.FC<CustomButtonProps> = (props) => {
       className={`group relative ${hsize} ${wsize} overflow-hidden rounded-lg ${color} ${fontsize} shadow`}
       onClick={onClick}
     >
-      <div className={`absolute inset-0 w-3 ${hoverColor} transition-all duration-[250ms] ease-out group-hover:w-full`}></div>
+      <div
+        className={`absolute inset-0 w-3 ${hoverColor} transition-all duration-[250ms] ease-out group-hover:w-full`}
+      ></div>
       <span className="relative text-black group-hover:text-white">{label}</span>
     </button>
   );
-}
+};
 
 export default CustomButton;

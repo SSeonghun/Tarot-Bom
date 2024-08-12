@@ -1,10 +1,10 @@
-import React from "react";
-import HoverButton from "../Common/HoverButton";
-import PrivateLink from "../Common/PrivateLink";
-import CommonButton from "../Common/CommonButton";
-import Witch from "../../assets/img/witch.webp";
-import Meteo from "../Common/Meteo";
-import MainBack from "../../assets/img/MainBack.jpg";
+import React from 'react';
+import HoverButton from '../Common/HoverButton';
+import PrivateLink from '../Common/PrivateLink';
+import CommonButton from '../Common/CommonButton';
+import Witch from '../../assets/img/witch.webp';
+import Meteo from '../Common/Meteo';
+import MainBack from '../../assets/img/MainBack.jpg';
 import MusicPlayer from '../Common/MusicPlayer';
 
 // Main Section 1
@@ -16,20 +16,16 @@ const Hero1: React.FC = () => {
         className="w-full h-full object-cover opacity-50"
         src={MainBack}
         alt="Main Background"
-        style={{ objectPosition: "bottom" }}
+        style={{ objectPosition: 'bottom' }}
       />
-      <img
-        src={Witch}
-        alt=""
-        className="absolute left-[150px] top-[200px] w-[500px]"
-      />
+      <img src={Witch} alt="" className="absolute left-[150px] top-[200px] w-[500px]" />
 
       {/* Overlay */}
       <div className="absolute inset-0 flex flex-col right-[200px] items-end justify-center text-end text-white px-4">
-        <p className="text-9xl mb-4 font-bold" style={{ color: "#EBCB8B" }}>
+        <p className="text-9xl mb-4 font-bold" style={{ color: '#EBCB8B' }}>
           타로 : 봄
         </p>
-        <p className="text-[18px] mb-8" style={{ color: "#EBCB8B" }}>
+        <p className="text-[18px] mb-8" style={{ color: '#EBCB8B' }}>
           타로:봄은 실시간 타로 리딩 플랫폼으로,
           <br />
           랜덤 매칭이나 AI 타로를 통해 즉시 답을 얻을 수 있습니다.
@@ -44,11 +40,15 @@ const Hero1: React.FC = () => {
           <PrivateLink to="/online">
             <CommonButton
               label="지금 만나보세요!"
-              color="bg-gray-300"
-              hoverColor="bg-gray-500"
+              color="bg-gray-900"
+              hoverColor="hover:bg-gray-600"
               hsize="h-12"
               wsize="w-48"
+              textColor="text-gray-300"
+              hoverTextColor="hover:text-yellow-500"
+              rounded={true}
               fontsize="text-lg"
+              onClick={function (): void {}}
             />
           </PrivateLink>
         </div>
