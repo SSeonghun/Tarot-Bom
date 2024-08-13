@@ -92,10 +92,14 @@ const kakaoLogin = async (kakaoToken: string) => {
 const like = async (readerId: number, seekerId: number) => {
   try {
     // POST 요청 처리
-    const postResponse = await axios.post(API_URL + 'like', {
+    const postResponse = await axios.post(API_URL + 'favorite/reader', {
       readerId,
       seekerId,
+    },
+    {
+      withCredentials: true, // 쿠키를 포함하도록 설정
     });
+    console.log('찜 하기 성공')
     return postResponse.data;
   } catch (postError) {
     console.error('찜 하기 실패', postError);
@@ -103,15 +107,14 @@ const like = async (readerId: number, seekerId: number) => {
   }
 };
 
-const unlike = async (readerId: number, seekerId: number) => {
+const unlike = async (readerId: number) => {
   try {
     // DELETE 요청 처리
-    const deleteResponse = await axios.delete(API_URL + 'like', {
-      data: {
-        readerId,
-        seekerId,
-      },
-    });
+    const deleteResponse = await axios.delete(API_URL + `favorite/${readerId}`, {
+      withCredentials: true, // 쿠키를 포함하도록 설정
+    },
+  );
+    console.log('찜 취소 성공')
     return deleteResponse.data;
   } catch (deleteError) {
     console.error('찜 취소 실패', deleteError);
