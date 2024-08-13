@@ -10,7 +10,7 @@ import {
 } from "livekit-client";
 import MainBg from '../../assets/mainBg.png'
 import Graphic from "../PlayTarot/Graphic";
-import html2canvas from 'html2canvas';
+// import html2canvas from 'html2canvas';
 // Define types
 type TrackInfo = {
   trackPublication: RemoteTrackPublication;
@@ -49,11 +49,12 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
       : "wss://" + window.location.hostname + ":7443/";
 
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement | null>(null)
   const remoteAudioRefs = useRef<{
     [trackSid: string]: HTMLAudioElement | null;
   }>({});
-  const graphicRef = useRef<HTMLDivElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  // const graphicRef = useRef<HTMLDivElement | null>(null);
+  // const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const isSeeker = participantName === '시커'; // Check if the participant is '시커'
 
@@ -117,16 +118,23 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
         console.log('Setting local participant as host');
         setIsHost(true); // If this is the first participant, they are the host
       }
-      if (!canvasRef.current) {
-        console.error("Canvas reference is not defined.");
-        return;
-      }
-      const stream = canvasRef.current?.captureStream(30); // 30fps로 canvas 캡처
-      if (!stream) {
-        console.error("Failed to capture stream from canvas.");
-        return;
-      }
-      console.log("Captured stream:", stream);
+      // if (!canvasRef.current) {
+      //   console.error("Canvas reference is not defined.");
+      //   return;
+      // }
+      // const stream = canvasRef.current?.captureStream(30); // 30fps로 canvas 캡처
+      // if (!stream) {
+      //   console.error("Failed to capture stream from canvas.");
+      //   return;
+      // }
+      // console.log("Captured stream:", stream);
+      // 화면 공유 시작
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: true, // 오디오를 공유할 경우 추가
+      });
+
+      
       const audioTrack = room.localParticipant.audioTrackPublications
       .values()
       .next().value?.audioTrack;
@@ -203,24 +211,24 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
       }
     };
   }, [localTrack]);
-  useEffect(() => {
-    const updateCanvas = async () => {
-      if (canvasRef.current) {
-        console.log('Updating canvas...');
-        const context = canvasRef.current.getContext('2d');
-        if (context) {
-          console.log('Capturing graphic...');
-          const canvas = await html2canvas(graphicRef.current!);
-          context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-          context.drawImage(canvas, 0, 0, canvasRef.current.width, canvasRef.current.height);
-          console.log('Canvas updated');
-        }
-      }
-      requestAnimationFrame(updateCanvas);
-    };
+  // useEffect(() => {
+  //   const updateCanvas = async () => {
+  //     if (canvasRef.current) {
+  //       console.log('Updating canvas...');
+  //       const context = canvasRef.current.getContext('2d');
+  //       if (context) {
+  //         console.log('Capturing graphic...');
+  //         const canvas = await html2canvas(graphicRef.current!);
+  //         context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+  //         context.drawImage(canvas, 0, 0, canvasRef.current.width, canvasRef.current.height);
+  //         console.log('Canvas updated');
+  //       }
+  //     }
+  //     requestAnimationFrame(updateCanvas);
+  //   };
 
-    updateCanvas();
-  }, []);
+  //   updateCanvas();
+  // }, []);
   useEffect(() => {
     remoteTracks.forEach((trackInfo) => {
       if (
@@ -306,17 +314,14 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
             </button>
           </div>
           <div id="layout-container">
-          {isSeeker && (
-              <div ref={graphicRef} style={{ width: '640px', height: '480px' }}>
-                <p>1</p>
+          {isSeeker ? (
+              // <video ref={localVideoRef} style={{ width: '640px', height: '480px' }}>
+              //   <p>Seeker's Screen Sharing</p>
                 <Graphic />
-              </div>
-            )}{
-              !isSeeker&&( 
-                <canvas ref={canvasRef} style={{ display: 'none' }} width="640" height="480" />
-              )
-            }
-            
+              // </video>
+            ) : (
+              <video ref={remoteVideoRef} autoPlay={true} />
+            )}
             {localTrack && (
               <audio ref={localVideoRef} autoPlay={true} />
               

@@ -113,6 +113,7 @@ const isWithin30Minutes = (eventDate: Date) => {
       const firstEvent = upcomingEvents[0];
       return firstEvent ? (
         <div>
+          <strong>{firstEvent.toLocaleString()}</strong>: 
           <strong>{firstEvent.toLocaleDateString()}</strong>: 다가오는 일정
         </div>
       ) : (
@@ -123,10 +124,21 @@ const isWithin30Minutes = (eventDate: Date) => {
       return upcomingEvents.length ? (
         upcomingEvents.map((event, index) => (
           <div key={index}>
+            <strong>{event.toLocaleString()}</strong>: 
+            {/* 날짜 시간의 30분 전이 되면 예약 webrtc 입장버튼 추가 */}
+            {isWithin30Minutes(event)&& (
+            <button
+              className="ml-4 px-4 py-2 bg-blue-500 text-white rounded"
+              onClick={() => handleOpenModal(event)}
+            >
+            입장
+            </button>
+          )}
             <strong>{event.toLocaleDateString()}</strong>: 다가오는 일정
           </div>
         ))
       ) : (
+
         <div>일정이 없습니다.</div>
       );
     }
