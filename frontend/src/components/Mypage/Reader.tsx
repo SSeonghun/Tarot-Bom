@@ -9,6 +9,10 @@ import ReaderItem from "./Readeritems/ReaderItem";
 import ReaderBg from "../../assets/img/readermypage.png";
 import Profile from "../../assets/img/profile2.png";
 import MatchingReady from "../Common/MatchingReady";
+import Create from "../../assets/img/create.webp";
+import Change from "../../assets/img/change.webp";
+import Modify from "../../assets/img/modify.webp";
+import Toggle from "../Common/Toggle";
 
 const { readerMypage } = require("../../API/userApi");
 // 인터페이스
@@ -46,7 +50,6 @@ interface ResponseData {
 const ReaderMypage: React.FC = () => {
   const store = useStore();
   const [loading, setLoading] = useState<boolean>(true); // 로딩 상태 추가
-  const [data, setData] = useState<any>("");
   const [data, setData] = useState<any>("");
   const [connected, setConnected] = useState<boolean>(false);
   const [matchLoading, setMatchLoading] = useState<boolean>(false); // 로딩 상태
@@ -154,24 +157,32 @@ const ReaderMypage: React.FC = () => {
     )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
       selectedRoomStyle
     )}`;
-    const roomEntryPath = `/rtcTest?token=${encodeURIComponent(
-      token
-    )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
-      selectedRoomStyle
-    )}`;
 
     // 라우터를 통해 방으로 이동
     navigate(roomEntryPath);
   };
 
-  const handleRandomMatching = () => {
+  const handleMatchingSelection = (
+    selectedCategory: string | null,
+    selectedMethod: string | null
+  ) => {
+    console.log("Parent - 선택된 카테고리:", selectedCategory);
+    console.log("Parent - 선택된 리딩 방법:", selectedMethod);
+    // 이 데이터를 이용해 추가 작업을 수행할 수 있습니다.
+    handleRandomMatching(selectedCategory, selectedMethod);
+  };
+
+  const handleRandomMatching = (
+    keyword: string | null,
+    roomStyle: string | null
+  ) => {
     if (connected && client.current) {
       const payload = {
-        keyword: selectedKeyword,
-        roomStyle: selectedRoomStyle,
+        keyword: keyword,
+        roomStyle: roomStyle,
         memberType: "reader",
         memberId,
-        worry: "Sample worry",
+        worry: "I am reader",
       };
 
       setPendingPayload(payload); // 페이로드 상태 저장
@@ -280,82 +291,19 @@ const ReaderMypage: React.FC = () => {
         </div>
         <div className="flex flex-col justify-center absolute top-[180px] items-center">
           <h1 className="text-white text-[40px] font-bold mt-5">{data.name}</h1>
-          <h3 className="text-white">TAROT READER</h3>
-        </div>
-        <div className="flex flex-wrap gap-4 absolute top-[350px]">
-          {["G01", "G02", "G03", "G04", "G05", "G06"].map((value, index) => (
-            <div
-              key={index}
-              className="flex items-center border border-gray-200 rounded dark:border-gray-700"
-            >
-              <input
-                id={`keyword-radio-${value}`}
-                type="radio"
-                value={value}
-                name="keyword-radio"
-                checked={selectedKeyword === value}
-                onChange={handleKeywordChange}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
-              <label
-                htmlFor={`keyword-radio-${value}`}
-                className="py-4 ms-2 text-sm font-medium text-white dark:text-gray-300"
-              >
-                {value === "G01"
-                  ? "연애운"
-                  : value === "G02"
-                  ? "가족운"
-                  : value === "G03"
-                  ? "재물운"
-                  : value === "G04"
-                  ? "건강운"
-                  : value === "G05"
-                  ? "기타"
-                  : "직장운"}
-              </label>
-            </div>
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-4 absolute top-[410px]">
-          {["CAM", "GFX"].map((value, index) => (
-            <div
-              key={index}
-              className="flex items-center border border-gray-200 rounded dark:border-gray-700"
-            >
-              <input
-                id={`room-style-radio-${value}`}
-                type="radio"
-                value={value}
-                name="room-style-radio"
-                checked={selectedRoomStyle === value}
-                onChange={handleRoomStyleChange}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
-              <label
-                htmlFor={`room-style-radio-${value}`}
-                className="py-4 ms-2 text-sm font-medium text-white dark:text-gray-300"
-              >
-                {value}
-              </label>
-            </div>
-          ))}
-        </div>
-        <div className="mt-[200px]">
-          <HoverButton
-            label="랜덤 매칭 시작"
-            color="bg-gray-300"
-            hoverColor="bg-gray-500"
-            hsize="h-12"
-            wsize="w-48"
-            fontsize="text-lg"
-            onClick={handleRandomMatching}
-          />
+          <div className="flex flex-row justify-center items-center">
+            <Toggle initialProfile={true} />
+            <h3 className="text-white">TAROT READER</h3>
+          </div>
         </div>
       </div>
 
-      <div className="relative h-fit bg-black z-30 mt-[150px]">
+      <div className="relative h-fit bg-black z-30 ">
         <div className="h-fit bg-white mx-[100px] relative flex flex-col -top-[450px] rounded-xl bg-opacity-55">
-          <ReaderItem data={data} />
+          <ReaderItem
+            data={data}
+            onMatchingSelection={handleMatchingSelection}
+          />
         </div>
       </div>
     </div>
