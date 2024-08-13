@@ -1,4 +1,6 @@
-import React from "react";
+import React from 'react';
+import Comfirm from '../../assets/img/confirm.webp';
+import CommonButton from './CommonButton';
 
 // MatchData 정의
 interface MatchData {
@@ -48,7 +50,7 @@ const MatchingConfirmationModal: React.FC<MatchingConfirmationModalProps> = ({
         ...matchData,
         data: {
           ...matchData.data,
-          status: "accepted",
+          status: 'accepted',
         },
       };
 
@@ -59,16 +61,24 @@ const MatchingConfirmationModal: React.FC<MatchingConfirmationModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-4 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4">매칭 완료!</h2>
-        <p>매칭된 정보:</p>
-        <pre>{JSON.stringify(matchData, null, 2)}</pre>
-        <button
-          onClick={handleConfirm}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
-        >
-          확인
-        </button>
+      <div className="bg-white p-4 rounded-lg shadow-lg w-[400px] flex flex-col justify-center items-center">
+        <h2 className="text-[30px] font-bold mb-4">매칭 완료!</h2>
+        <img src={Comfirm} alt="" className="w-[170px] m-4" />
+        <h1 className="text-[20px] font-bold"> 수락 버튼을 눌러주세요!</h1>
+        <div className="mt-4">
+          <CommonButton
+            label="수락"
+            color="bg-green-500"
+            hoverColor="hover:bg-green-700"
+            hsize="h-12"
+            wsize="w-36"
+            textColor="text-white"
+            hoverTextColor="hover:text-white"
+            rounded={true}
+            fontsize="text-lg"
+            onClick={handleConfirm}
+          />
+        </div>
       </div>
     </div>
   );

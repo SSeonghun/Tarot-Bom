@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import './Graphic.css';
-import cardBackImage from '../../assets/card-back.png';
-import { useLocation, useNavigate } from 'react-router-dom';
-import './Shuffle.css';
-import dask from '../../assets/img/wooden-natural-floor-decoration-concept.jpg';
+import React, { useEffect, useState } from "react";
+import "./Graphic.css";
+import cardBackImage from "../../assets/card-back.png";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./Shuffle.css";
+import dask from "../../assets/img/wooden-natural-floor-decoration-concept.jpg";
 
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
 
@@ -39,38 +39,41 @@ const Graphic: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [matchingState, setMatchingState] = useState<MatchingState | null>(null);
+  const [matchingState, setMatchingState] = useState<MatchingState | null>(
+    null
+  );
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [cardImages, setCardImages] = useState<Record<number, number>>({});
   const [removingCards, setRemovingCards] = useState<number[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedCard, setSelectedCard] = useState<number[]>([]); // `selectedCard`를 상태로 관리
-  const [animationClass, setAnimationClass] = useState<string[]>(Array(78).fill('card'));
+  const [animationClass, setAnimationClass] = useState<string[]>(
+    Array(78).fill("card")
+  );
   const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set()); // 뒤집힌 카드 상태
 
   useEffect(() => {
-    console.log('타로 페이지');
+    console.log("타로 페이지");
     Swal.fire({
-      position: 'center',
-      icon: 'info',
-      title: '3장의 카드를 뽑아주세요',
+      position: "center",
+      icon: "info",
+      title: "3장의 카드를 뽑아주세요",
       showConfirmButton: false,
       timer: 1500,
     });
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     setTimeout(shuffle2, 100); // 렌더링이 끝난 후 shuffle2를 호출
 
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = "auto";
     };
   }, []); // 빈 배열을 의존성으로 하여 컴포넌트가 처음 렌더링될 때만 실행
 
   useEffect(() => {
     const state = location.state as MatchingState;
     console.log(state);
-    console.log(state);
     if (!state) {
-      navigate('/'); // 상태가 없을 경우 리디렉션
+      navigate("/"); // 상태가 없을 경우 리디렉션
     } else {
       setMatchingState(state);
     }
@@ -83,7 +86,7 @@ const Graphic: React.FC = () => {
     console.log(index);
     if (selectedCard.length >= 3 || selectedCard.includes(randomCard)) return; // 최대 3개까지만 선택 가능, 이미 선택된 카드 클릭 방지
 
-    console.log('Random Card:', randomCard);
+    console.log("Random Card:", randomCard);
 
     // 여기에 카드 뒤집기
     // 카드 뒤집기 및 이동 애니메이션을 위해 클래스 추가
@@ -93,9 +96,9 @@ const Graphic: React.FC = () => {
 
       setTimeout(() => {
         cardElement.classList.remove(`ani${index}`);
-        cardElement.classList.add('card-remove');
+        cardElement.classList.add("card-remove");
       }, 1000); // 1초 후에 클래스 제거 (애니메이션 시간과 맞추기)
-      cardElement.classList.add('card-selected');
+      cardElement.classList.add("card-selected");
     }
 
     // 상태 업데이트 삭제를 위한
@@ -106,7 +109,7 @@ const Graphic: React.FC = () => {
       ...prevCardImages,
       [index]: randomCard,
     }));
-    console.log('cardImages : ', cardImages);
+    console.log("cardImages : ", cardImages);
 
     // 뽑힌 카드 저장
     setSelectedCards((prevSelectedCards) => [...prevSelectedCards, index]);
@@ -131,12 +134,14 @@ const Graphic: React.FC = () => {
   const closeModal = () => setIsModalOpen(false);
 
   const shuffle2 = () => {
-    const tarotCards = document.querySelectorAll('.tarot');
+    const tarotCards = document.querySelectorAll(".tarot");
     const selectedCardSet = new Set(selectedCards); // 이미 뽑힌 카드를 Set으로 관리
 
     // 모든 카드에서 ani 클래스를 제거합니다.
     tarotCards.forEach((card) => {
-      card.classList.remove(...Array.from(card.classList).filter((cls) => cls.startsWith('ani')));
+      card.classList.remove(
+        ...Array.from(card.classList).filter((cls) => cls.startsWith("ani"))
+      );
     });
 
     // 딜레이 후 애니메이션 클래스를 추가합니다.
@@ -158,12 +163,12 @@ const Graphic: React.FC = () => {
   const submitClick = () => {
     // `selectedCard`, `worry`, `category`를 TarotResult로 전달
     const state = location.state as MatchingState;
-    navigate('/tarot-result', {
+    navigate("/tarot-result", {
       state: {
         reader: state.readerType,
         selectedCard: selectedCard,
         worry: state.payload.worry, // worry 전달
-        category: state.payload.keyword || '기본 카테고리', // category 전달, 기본값 설정
+        category: state.payload.keyword || "기본 카테고리", // category 전달, 기본값 설정
       },
     });
   };
@@ -183,7 +188,11 @@ const Graphic: React.FC = () => {
   return (
     <div className="flex items-center relative justify-center min-h-screen p-4 page">
       <div className="">
-        <img src={dask} alt="" className="absolute -bottom-[120px] dask rounded-lg h-[900px]" />
+        <img
+          src={dask}
+          alt=""
+          className="absolute -bottom-[120px] dask rounded-lg h-[900px]"
+        />
         <div className="absolute inset-0 bg-black opacity-40"></div>
       </div>
       <div className="relative w-full max-w-4xl p-4 mb-auto mt-16 mr-auto ml-36">
@@ -199,13 +208,23 @@ const Graphic: React.FC = () => {
         <div className="relative-container w-screen h-screen -bottom-[120px] background">
           {Array.from({ length: 78 }, (_, index) => (
             <div key={index} className="tarot-container hover:brightness-200">
-              <div className={`tarot rounded-lg ${flippedCards.has(index) ? 'is-flipped' : ''}`}>
-                <div onClick={() => handleCardClick(index)} className="tarotcard">
+              <div
+                className={`tarot rounded-lg ${
+                  flippedCards.has(index) ? "is-flipped" : ""
+                }`}
+              >
+                <div
+                  onClick={() => handleCardClick(index)}
+                  className="tarotcard"
+                >
                   <div className={`tarot-face tarot-front`}>
                     <img src={cardBackImage} alt="Card Front" />
                   </div>
                   <div className="tarot-face tarot-back">
-                    <img src={getCardImage(selectedCard)} alt={`Card Back ${index}`} />
+                    <img
+                      src={getCardImage(selectedCard)}
+                      alt={`Card Back ${index}`}
+                    />
                   </div>
                 </div>
               </div>
@@ -231,7 +250,10 @@ const Graphic: React.FC = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-8 w-[1000px] h-11/12 relative overflow-auto">
               <div className="absolute top-4 right-4">
-                <button onClick={submitClick} className=" bg-blue-500 text-white px-2 py-1 rounded">
+                <button
+                  onClick={submitClick}
+                  className=" bg-blue-500 text-white px-2 py-1 rounded"
+                >
                   결과보기
                 </button>
                 <button
@@ -241,7 +263,9 @@ const Graphic: React.FC = () => {
                   닫기
                 </button>
               </div>
-              <h2 className="text-black text-2xl mb-4 font-bold">선택된 카드</h2>
+              <h2 className="text-black text-2xl mb-4 font-bold">
+                선택된 카드
+              </h2>
               {/* 모달 내용 - 3열 레이아웃 */}
               <div className="grid grid-cols-12 gap-4">
                 {selectedCard.map((cardIndex) => (
@@ -253,7 +277,10 @@ const Graphic: React.FC = () => {
                       }
                     }
                   >
-                    <img src={getCardImage2(selectedCard, cardIndex)} alt={`Card Back `} />
+                    <img
+                      src={getCardImage2(selectedCard, cardIndex)}
+                      alt={`Card Back `}
+                    />
                   </div>
                 ))}
               </div>

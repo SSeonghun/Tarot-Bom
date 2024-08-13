@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/UserAuth/Login";
 import Navbar from "./components/Navbar";
@@ -28,7 +33,7 @@ import ImageUpload from "./pages/Test/ImageUpload";
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="App overflow-x-hidden">
+      <div className="flex flex-col min-h-screen">
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -62,6 +67,16 @@ const App: React.FC = () => {
       </div>
     </Router>
   );
+};
+
+// Footer 조건부 렌더링을 위한 컴포넌트
+const FooterWrapper: React.FC = () => {
+  const location = useLocation();
+  const shouldHideFooter =
+    location.pathname.includes("seeker-mypage") ||
+    location.pathname.includes("reader-mypage");
+
+  return <>{!shouldHideFooter && <Footer />}</>;
 };
 
 export default App;

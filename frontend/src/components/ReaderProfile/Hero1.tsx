@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // useNavigate 훅을 임포트합니다.
 import HoverButton from "../Common/HoverButton";
 import ReaderProfile1 from "../../assets/img/ReaderProfile1.png";
+import useStore from '../../stores/store';
 
 interface Hero1Props {
   id: string;
@@ -10,12 +11,47 @@ interface Hero1Props {
   grade: string;
 }
 
+const { like, unlike, likeList } = require('../../API/userApi');
+
 const Hero1: React.FC<Hero1Props> = ({ id, name, profileUrl, grade }) => {
   const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수를 생성합니다.
+  const store = useStore();
+  const userId = store.userInfo?.memberId;
+  const [favoriteList, setFavoriteList] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const fetchData = await likeList();
+        setFavoriteList(fetchData.data);
+      } catch (error) {
+        console.error("Failed to fetch favorite list", error);
+      }
+    };
+    fetchData();
+  }, [userId]);
 
   const handleButtonClick = (id: string, name: string, profileUrl: string) => {
     console.log(id, "예약하기");
     navigate("/booking", { state: { id, name, profileUrl } });
+  };
+
+  const handleLikeClick = async () => {
+    try {
+      const isLiked = favoriteList.some(fav => fav.memberId === Number(id));
+      if (isLiked) {
+        // 이미 좋아요를 누른 상태이면 좋아요 해제
+        await unlike(id);
+        setFavoriteList(favoriteList.filter(fav => fav.memberId !== Number(id)));
+      } else {
+        // 좋아요를 누르지 않은 상태이면 좋아요 설정
+        await like(id, userId);
+        const newFavorite = { memberId: Number(id), name, profileUrl, grade }; // 필요한 정보만 임시로 추가
+        setFavoriteList([...favoriteList, newFavorite]);
+      }
+    } catch (error) {
+      console.error("Failed to toggle like status", error);
+    }
   };
 
   // grade를 매핑하는 객체
@@ -27,6 +63,12 @@ const Hero1: React.FC<Hero1Props> = ({ id, name, profileUrl, grade }) => {
 
   // grade에 따라 표시할 텍스트를 결정
   const gradeText = gradeMapping[grade] || grade; // 매핑된 값이 없으면 원래 값 사용
+
+  // 아이콘 URL 설정
+  const likedIcon = "https://cdn3d.iconscout.com/3d/premium/thumb/like-11733116-9571546.png?f=webp";
+  const notLikedIcon = "https://cdn3d.iconscout.com/3d/premium/thumb/like-3d-icon-download-in-png-blend-fbx-gltf-file-formats--finger-heart-love-followers-pack-network-communication-icons-10051556.png?f=webp";
+
+  const isLiked = favoriteList.some(fav => fav.memberId === Number(id));
 
   return (
     <div className="relative bg-black bg-opacity-70">
@@ -49,9 +91,22 @@ const Hero1: React.FC<Hero1Props> = ({ id, name, profileUrl, grade }) => {
           {/* 매핑된 텍스트 사용 */}
           <h1 className="text-5xl text-white mt-5 font-bold">{name}</h1>
         </div>
-        <p className="text-[15px] mt-3 text-white font-semibold">
-          TAROT READER
-        </p>
+        <div className="flex">
+          <p className="text-[15px] mt-3 text-white font-semibold mr-1">
+            TAROT READER
+          </p>
+
+          {/* 조건부 렌더링으로 좋아요 아이콘 표시 */}
+          {userId !== Number(id) && (
+          <img
+            src={isLiked ? likedIcon : notLikedIcon}
+            alt={isLiked ? "좋아요" : "좋아요 눌러줘"}
+            width={40}
+            className="mt-1 cursor-pointer"
+            onClick={handleLikeClick} // 아이콘 클릭 시 like/unlike 동작 처리
+          />
+        )}
+        </div>
         <div className="mt-5">
           <HoverButton
             label="예약하기"

@@ -8,12 +8,13 @@ import useStore from "../../stores/store";
 import ReaderItem from "./Readeritems/ReaderItem";
 import ReaderBg from "../../assets/img/readermypage.png";
 import Profile from "../../assets/img/profile2.png";
+import MatchingReady from "../Common/MatchingReady";
+import Create from "../../assets/img/create.webp";
+import Change from "../../assets/img/change.webp";
+import Modify from "../../assets/img/modify.webp";
+import Toggle from "../Common/Toggle";
 
-
-
-
-
-const { readerMypage } = require("../../API/userApi")
+const { readerMypage } = require("../../API/userApi");
 // 인터페이스
 
 interface MatchData {
@@ -49,12 +50,13 @@ interface ResponseData {
 const ReaderMypage: React.FC = () => {
   const store = useStore();
   const [loading, setLoading] = useState<boolean>(true); // 로딩 상태 추가
-  const [data, setData] = useState<any>("")
+  const [data, setData] = useState<any>("");
   const [connected, setConnected] = useState<boolean>(false);
   const [matchLoading, setMatchLoading] = useState<boolean>(false); // 로딩 상태
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false); // 매칭 확인 모달 상태
   const [pendingPayload, setPendingPayload] = useState<any>(null); // 매칭 요청 페이로드
   const [matchData, setMatchData] = useState<MatchData | null>(null);
+  const [confirm, setConfirm] = useState<boolean>(false);
 
   const [selectedKeyword, setSelectedKeyword] = useState<string>(""); // 선택된 키워드
   const [selectedRoomStyle, setSelectedRoomStyle] = useState<string>("CAM"); // 선택된 방 스타일 (기본값은 CAM)
@@ -68,22 +70,17 @@ const ReaderMypage: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await readerMypage();
-        await setData(response.data)
-        return response.data
-        
+        await setData(response.data);
+        return response.data;
       } catch (error) {
-        console.error(error)
-        throw error
+        console.error(error);
+        throw error;
       } finally {
         setLoading(false);
       }
-    }
+    };
     fetchData();
-    
-    
-    
-     
-    
+
     client.current = new Client({
       brokerURL: "ws://localhost/tarotbom/ws-stomp",
       onConnect: () => {
@@ -102,6 +99,12 @@ const ReaderMypage: React.FC = () => {
                 setMatchLoading(false);
                 setShowConfirmation(true); // 매칭 확인 모달 열기
               }
+
+              if (receivedMessage.code === "M05") {
+                setShowConfirmation(false);
+                setConfirm(true);
+              }
+
               if (receivedMessage.code === "M08") {
                 // match.data를 JSON 문자열로 직렬화
                 const jsonString = JSON.stringify(receivedMessage.data);
@@ -161,7 +164,9 @@ const ReaderMypage: React.FC = () => {
       // 방 입장 URL을 위한 데이터 준비
     const roomEntryPath = `/webrtc?token=${encodeURIComponent(
       token
-    )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(selectedRoomStyle)}`;
+    )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
+      selectedRoomStyle
+    )}`;
 
     // 라우터를 통해 방으로 이동
     navigate(roomEntryPath, {
@@ -172,14 +177,27 @@ const ReaderMypage: React.FC = () => {
     
   };
 
-  const handleRandomMatching = () => {
+  const handleMatchingSelection = (
+    selectedCategory: string | null,
+    selectedMethod: string | null
+  ) => {
+    console.log("Parent - 선택된 카테고리:", selectedCategory);
+    console.log("Parent - 선택된 리딩 방법:", selectedMethod);
+    // 이 데이터를 이용해 추가 작업을 수행할 수 있습니다.
+    handleRandomMatching(selectedCategory, selectedMethod);
+  };
+
+  const handleRandomMatching = (
+    keyword: string | null,
+    roomStyle: string | null
+  ) => {
     if (connected && client.current) {
       const payload = {
-        keyword: selectedKeyword,
-        roomStyle: selectedRoomStyle,
+        keyword: keyword,
+        roomStyle: roomStyle,
         memberType: "reader",
         memberId,
-        worry: "Sample worry",
+        worry: "I am reader",
       };
 
       setPendingPayload(payload); // 페이로드 상태 저장
@@ -254,7 +272,7 @@ const ReaderMypage: React.FC = () => {
   };
 
   return (
-    <div className="relative w-screen h-screen">
+    <div className="relative w-screen h-screen bg-black">
       <LoadingModal isOpen={matchLoading} onCancel={handleCancelMatching} />
       <MatchingConfirmationModal
         isOpen={showConfirmation}
@@ -262,6 +280,12 @@ const ReaderMypage: React.FC = () => {
         onClose={handleCloseConfirmation}
         onMatchConfirmed={handleMatchConfirmed}
       />
+
+      <MatchingReady
+        isOpen={confirm}
+        matchData={matchData}
+        onClose={handleCloseConfirmation}
+      ></MatchingReady>
 
       <div
         className="absolute inset-0 z-0 opacity-80"
@@ -274,86 +298,27 @@ const ReaderMypage: React.FC = () => {
       <div className="absolute inset-0 z-10 bg-black opacity-50"></div>
       <div className="relative flex flex-col justify-center items-center h-full z-20">
         <div className="bg-black bg-opacity-50 p-2 absolute top-[50px] rounded-full backdrop-filter backdrop-blur-sm">
-          <img src={store.userInfo?.profileImg} alt="Profile" className="w-32 h-32 rounded-full" />
+          <img
+            src={store.userInfo?.profileImg}
+            alt="Profile"
+            className="w-32 h-32 rounded-full"
+          />
         </div>
         <div className="flex flex-col justify-center absolute top-[180px] items-center">
           <h1 className="text-white text-[40px] font-bold mt-5">{data.name}</h1>
-          <h3 className="text-white">TAROT READER</h3>
-        </div>
-        <div className="flex flex-wrap gap-4 absolute top-[350px]">
-          {["G01", "G02", "G03", "G04", "G05", "G06"].map((value, index) => (
-            <div
-              key={index}
-              className="flex items-center border border-gray-200 rounded dark:border-gray-700"
-            >
-              <input
-                id={`keyword-radio-${value}`}
-                type="radio"
-                value={value}
-                name="keyword-radio"
-                checked={selectedKeyword === value}
-                onChange={handleKeywordChange}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
-              <label
-                htmlFor={`keyword-radio-${value}`}
-                className="py-4 ms-2 text-sm font-medium text-white dark:text-gray-300"
-              >
-                {value === "G01"
-                  ? "연애운"
-                  : value === "G02"
-                  ? "가족운"
-                  : value === "G03"
-                  ? "재물운"
-                  : value === "G04"
-                  ? "건강운"
-                  : value === "G05"
-                  ? "기타"
-                  : "직장운"}
-              </label>
-            </div>
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-4 absolute top-[410px]">
-          {["CAM", "GFX"].map((value, index) => (
-            <div
-              key={index}
-              className="flex items-center border border-gray-200 rounded dark:border-gray-700"
-            >
-              <input
-                id={`room-style-radio-${value}`}
-                type="radio"
-                value={value}
-                name="room-style-radio"
-                checked={selectedRoomStyle === value}
-                onChange={handleRoomStyleChange}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
-              <label
-                htmlFor={`room-style-radio-${value}`}
-                className="py-4 ms-2 text-sm font-medium text-white dark:text-gray-300"
-              >
-                {value}
-              </label>
-            </div>
-          ))}
-        </div>
-        <div className="-mt-[200px]">
-          <HoverButton
-            label="랜덤 매칭 시작"
-            color="bg-gray-300"
-            hoverColor="bg-gray-500"
-            hsize="h-12"
-            wsize="w-48"
-            fontsize="text-lg"
-            onClick={handleRandomMatching}
-          />
+          <div className="flex flex-row justify-center items-center">
+            <Toggle initialProfile={true} />
+            <h3 className="text-white">TAROT READER</h3>
+          </div>
         </div>
       </div>
 
-      <div className="relative h-fit bg-black z-30 mt-[150px]">
+      <div className="relative h-fit bg-black z-30 ">
         <div className="h-fit bg-white mx-[100px] relative flex flex-col -top-[450px] rounded-xl bg-opacity-55">
-          <ReaderItem data={data}/>
+          <ReaderItem
+            data={data}
+            onMatchingSelection={handleMatchingSelection}
+          />
         </div>
       </div>
     </div>

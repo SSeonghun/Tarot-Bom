@@ -1,28 +1,30 @@
-import axios from 'axios';
-import { log } from 'console';
-
+import axios from "axios";
+import { log } from "console";
 
 // const API_URL = "https://i11c208.p.ssafy.io/tarotbom/";
 const API_URL = `${process.env.REACT_APP_URL}/tarotbom/`;
 
-const chatReport = async(reportedId:number, content:string, roomId:String)=>{
-  const status='D00'
-  const reporType='S02'
-  try{
+const chatReport = async (
+  reportedId: number,
+  content: string,
+  roomId: String
+) => {
+  const status = "D00";
+  const reporType = "S02";
+  try {
     const response = await axios.post(`${API_URL}report`, {
       reportedId,
       content,
       roomId, // 추가: roomId도 함께 전송
       status,
-      reporType
+      reporType,
     });
-    return response.data
-  }catch(error){
-    console.error("온라인 채팅 신고 실패",error);
+    return response.data;
+  } catch (error) {
+    console.error("온라인 채팅 신고 실패", error);
     throw error;
   }
-  
-}
+};
 const readerList = async () => {
   try {
     const response = await axios.get(`${API_URL}user/reader/list`, {
@@ -30,7 +32,7 @@ const readerList = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error('전체 리더 목록 조회 실패', error);
+    console.error("전체 리더 목록 조회 실패", error);
     throw error;
   }
 };
@@ -43,18 +45,20 @@ const readerTop = async () => {
     console.log(response);
     return response.data;
   } catch (error) {
-    console.log('탑 리더 조회 실패', error);
+    console.log("탑 리더 조회 실패", error);
     throw error;
   }
 };
 
 const readerDetail = async (readerId: number) => {
   try {
-    const response = await axios.get(`${API_URL}user/reader/detail/${readerId}`);
+    const response = await axios.get(
+      `${API_URL}user/reader/detail/${readerId}`
+    );
 
     return response.data.data;
   } catch (error) {
-    console.error('리더 상세 조회 실패');
+    console.error("리더 상세 조회 실패");
     throw error;
   }
 };
@@ -82,7 +86,7 @@ const result = async (
     });
     return response.data;
   } catch (error) {
-    console.error('결과 조회 실패', error);
+    console.error("결과 조회 실패", error);
     throw error;
   }
 };
@@ -107,20 +111,20 @@ const declaration = async (
 
     return response.data;
   } catch (error) {
-    console.error('신고 실패', error);
+    console.error("신고 실패", error);
     throw error;
   }
 };
 
 const cardInfo = async (cardId: number) => {
   try {
-    console.log('cardId : ', cardId);
+    console.log("cardId : ", cardId);
     const response = await axios.get(`${API_URL}card/info/${cardId}`, {
       withCredentials: true, // 쿠키를 포함하도록 설정
     });
     return response.data;
   } catch (error) {
-    console.error('카드 조회 실패');
+    console.error("카드 조회 실패");
     throw error;
   }
 };
@@ -173,7 +177,7 @@ const readerJoin = async (keyword: string, intro: string) => {
     return response;
   } catch (error) {
     console.log(keyword, intro);
-    console.log('리더 등록 실패', error);
+    console.log("리더 등록 실패", error);
     throw error;
   }
 };
@@ -208,25 +212,27 @@ const youtubeMusic = async (searchQuery: string) => {
     const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
 
     const response = await axios({
-      method: 'get',
-      url: 'https://www.googleapis.com/youtube/v3/search',
+      method: "get",
+      url: "https://www.googleapis.com/youtube/v3/search",
       params: {
         key: `${YOUTUBE_API_KEY}`,
-        part: 'snippet',
-        type: 'video',
+        part: "snippet",
+        type: "video",
         q: `노래 ${searchQuery}`, // searchQuery를 사용
         maxResults: 1,
       },
     });
-    
+
     return response.data.items[0];
   } catch (error) {
-    console.error('유튜브 뮤직 검색 실패', error);
+    console.error("유튜브 뮤직 검색 실패", error);
     throw error;
   }
 };
 
-export { chatReport, readerJoin,
+export {
+  chatReport,
+  readerJoin,
   readerList,
   result,
   declaration,
@@ -234,4 +240,5 @@ export { chatReport, readerJoin,
   youtubeMusic,
   readerDetail,
   readerTop,
-  saveTarotResult, };
+  saveTarotResult,
+};

@@ -1,14 +1,14 @@
-import React from "react";
-import HoverButton from "../../Common/HoverButton";
-import CardImg from "./CardImg.png";
-import PrivateLink from "../../Common/PrivateLink";
+import React from 'react';
+import HoverButton from '../../Common/HoverButton';
+import CardImg from './CardImg.png';
+import PrivateLink from '../../Common/PrivateLink';
 
 const categoryMap: { [key: string]: string } = {
-  G01: "연애",
-  G02: "진로",
-  G03: "금전",
-  G04: "건강",
-  G05: "기타",
+  G01: '연애',
+  G02: '진로',
+  G03: '금전',
+  G04: '건강',
+  G05: '기타',
 };
 
 interface HomeCard {
@@ -37,9 +37,7 @@ const HomeCard: React.FC<HomeCard> = ({
   readerId,
 }) => {
   const categoryArray = Array.isArray(category) ? category : [category];
-  const categoryNames = categoryArray
-    .map((cat) => categoryMap[cat] || cat)
-    .join(", ");
+  const categoryNames = categoryArray.map((cat) => categoryMap[cat] || cat).join(', ');
 
   return (
     <div className="flex items-center justify-center m-2 w- bg-gradient-to-br from-black rounded-3xl to-black ">
@@ -56,7 +54,7 @@ const HomeCard: React.FC<HomeCard> = ({
         <h3 className="text-sm text-gray-400">{categoryNames}</h3>
         <h3 className="text-sm text-gray-400">{rating}</h3>
         {/* <p className="text-xs mb-3 text-gray-400 mt-4">{`Review Count: ${review}`}</p> */}
-        <p className="text-xs mb-3 text-gray-400 mt-4">{detail}</p>
+        <p className="text-xs mb-3 text-gray-400 mt-4 line-clamp-2">{detail}</p>
         <div className="absolute bottom-[50px] left-[60px] ">
           <PrivateLink to={`/reader-profile/${readerId}`}>
             <HoverButton

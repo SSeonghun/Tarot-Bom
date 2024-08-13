@@ -117,7 +117,7 @@ public class MemberServiceImpl implements MemberService {
         CustomUserInfoDto info = CustomUserInfoDto.builder()
                 .memberId(member.getMemberId())
                 .email(member.getEmail())
-                .memberTypeId(member.getMemberTypeId())
+                .memberTypeId("M01")
                 .password(member.getPassword())
                 .nickname(member.getNickname())
                 .build();
@@ -462,7 +462,7 @@ public class MemberServiceImpl implements MemberService {
         String type = cookieUtil.getMemberType(request);
         String email = cookieUtil.getMemberEmail(request);
 
-        log.info("{}, {}, {}", memberId, type, email);
+        log.info("MemberService memberId {}, type {}, email {}", memberId, type, email);
 
         String changedType = null;
         if(type.equals("M01")) {
@@ -476,7 +476,7 @@ public class MemberServiceImpl implements MemberService {
             // 리더였던 경우 : 시커 프로필은 무조건 있으므로 바로 바꿔준다
             changedType = "M01";
         }
-        log.info("권한 변경 : {} -> {}", type, changedType);
+        log.info("권한 변경 change : {} -> {}", type, changedType);
         CustomUserInfoDto member = CustomUserInfoDto
                 .builder()
                 .memberId(memberId)
