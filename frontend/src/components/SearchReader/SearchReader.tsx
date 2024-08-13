@@ -58,11 +58,6 @@ const SerchReader: React.FC = () => {
   const handleSearch = () => {
     let filtered = readers;
     console.log(selectedKeyword)
-    if (searchTerm) {
-      filtered = filtered.filter(reader =>
-        reader.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
     if (selectedKeyword) {
       if (selectedKeyword === 'like') {
         filtered = readers1
@@ -71,6 +66,12 @@ const SerchReader: React.FC = () => {
           reader.keyword && reader.keyword.includes(selectedKeyword) // category가 존재하는지 확인
         );
       }
+    }
+    
+    if (searchTerm) {
+      filtered = filtered.filter(reader =>
+        reader.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
     setFilteredReaders(filtered);
   };

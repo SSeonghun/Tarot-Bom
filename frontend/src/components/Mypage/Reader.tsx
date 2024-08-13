@@ -8,6 +8,7 @@ import useStore from "../../stores/store";
 import ReaderItem from "./Readeritems/ReaderItem";
 import ReaderBg from "../../assets/img/readermypage.png";
 import Profile from "../../assets/img/profile2.png";
+import MatchingReady from "../Common/MatchingReady";
 
 const { readerMypage } = require("../../API/userApi");
 // 인터페이스
@@ -46,11 +47,13 @@ const ReaderMypage: React.FC = () => {
   const store = useStore();
   const [loading, setLoading] = useState<boolean>(true); // 로딩 상태 추가
   const [data, setData] = useState<any>("");
+  const [data, setData] = useState<any>("");
   const [connected, setConnected] = useState<boolean>(false);
   const [matchLoading, setMatchLoading] = useState<boolean>(false); // 로딩 상태
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false); // 매칭 확인 모달 상태
   const [pendingPayload, setPendingPayload] = useState<any>(null); // 매칭 요청 페이로드
   const [matchData, setMatchData] = useState<MatchData | null>(null);
+  const [confirm, setConfirm] = useState<boolean>(false);
 
   const [selectedKeyword, setSelectedKeyword] = useState<string>(""); // 선택된 키워드
   const [selectedRoomStyle, setSelectedRoomStyle] = useState<string>("CAM"); // 선택된 방 스타일 (기본값은 CAM)
@@ -93,6 +96,12 @@ const ReaderMypage: React.FC = () => {
                 setMatchLoading(false);
                 setShowConfirmation(true); // 매칭 확인 모달 열기
               }
+
+              if (receivedMessage.code === "M05") {
+                setShowConfirmation(false);
+                setConfirm(true);
+              }
+
               if (receivedMessage.code === "M08") {
                 // match.data를 JSON 문자열로 직렬화
                 const jsonString = JSON.stringify(receivedMessage.data);
@@ -140,6 +149,11 @@ const ReaderMypage: React.FC = () => {
     console.log(memberName, token);
 
     // 방 입장 URL을 위한 데이터 준비
+    const roomEntryPath = `/rtcTest?token=${encodeURIComponent(
+      token
+    )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
+      selectedRoomStyle
+    )}`;
     const roomEntryPath = `/rtcTest?token=${encodeURIComponent(
       token
     )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
@@ -241,6 +255,12 @@ const ReaderMypage: React.FC = () => {
         onMatchConfirmed={handleMatchConfirmed}
       />
 
+      <MatchingReady
+        isOpen={confirm}
+        matchData={matchData}
+        onClose={handleCloseConfirmation}
+      ></MatchingReady>
+
       <div
         className="absolute inset-0 z-0 opacity-80"
         style={{
@@ -333,8 +353,8 @@ const ReaderMypage: React.FC = () => {
         </div>
       </div>
 
-      <div className="relative h-fit bg-black z-30">
-        <div className="h-fit bg-white mx-[100px] relative flex flex-col  rounded-xl bg-opacity-55">
+      <div className="relative h-fit bg-black z-30 mt-[150px]">
+        <div className="h-fit bg-white mx-[100px] relative flex flex-col -top-[450px] rounded-xl bg-opacity-55">
           <ReaderItem data={data} />
         </div>
       </div>
