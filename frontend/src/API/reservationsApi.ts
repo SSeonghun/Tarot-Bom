@@ -36,7 +36,9 @@ const reservation = async (reservationData: ReservationAxios) => {
 
 const reader = async () => {
   try {
-    const response = await axios.get(`${API_URL}/reader`);
+    const response = await axios.get(`${API_URL}/find`, {
+      withCredentials: true, // 쿠키를 포함하도록 설정
+    });
     return response.data;
   } catch (error) {
     console.error("리더기준 예약 내역 조회 실패", error);
@@ -46,7 +48,9 @@ const reader = async () => {
 
 const seeker = async () => {
   try {
-    const response = await axios.get(`${API_URL}/seeker`);
+    const response = await axios.get(`${API_URL}/find`, {
+      withCredentials: true, // 쿠키를 포함하도록 설정
+    });
     return response.data;
   } catch (error) {
     console.error("시커기준 예약 내역 조회 실패", error);

@@ -99,7 +99,7 @@ public class ReservationServiceImpl implements ReservationService{
     public List<ReadReservationResponseDto> readReservation(HttpServletRequest request) {
         long memberId = cookieUtil.getUserId(request);
         String memberType = cookieUtil.getMemberType(request);
-        log.info("memberId : {}", memberId);
+        log.info("memberId : {}, memberType : {} ", memberId, memberType);
         List<Reservation> reservations = reservationQueryRepository.findFilter(memberType, memberId);
 
         log.info("reservations size : {}", reservations.size());

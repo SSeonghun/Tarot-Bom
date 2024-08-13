@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Consulting from "./Consulting";
 import Matching from "./Matching";
@@ -8,6 +8,7 @@ import Summary from "./Summary";
 import Toggle from "../../Common/Toggle";
 import Offline from "../Offline/Offline";
 import useStore from "../../../stores/store";
+import { reader } from "../../../API/reservationsApi";
 
 interface ReaderItemProps {
   data: any;
@@ -23,24 +24,42 @@ const ReaderItem: React.FC<ReaderItemProps> = ({
 }) => {
   const store = useStore();
   const [activeComponent, setActiveComponent] = useState<string>("Summary");
+  const [reservationData, setReservationData] = useState<any>(null); // 예약 데이터 상태
   console.log(data);
+
+  // axios로 예약 내역 가져와서 예약일정이랑 요약에 뿌려주기
+  useEffect(() => {
+    // 데이터 요청 예시
+    const fetchData = async () => {
+      try {
+        const response = await reader();
+        console.log("response : ", response);
+        setReservationData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []); // 컴포넌트 마운트 시에만 데이터 요청
+
+  console.log("reservation Datas ", reservationData);
 
   const renderComponent = () => {
     switch (activeComponent) {
       case "Summary":
-        return <Summary mainData={data} />;
+        return <Summary mainData={data} reservationData={reservationData} />;
       case "Matching":
         return <Matching onSelection={handleMatchingSelection} />;
       case "Review":
         return <Review mainData={data} />;
       case "Reservation":
-        return <Reservation />;
+        return <Reservation reservationData={reservationData} />;
       case "Consulting":
         return <Consulting />;
       case "Offline":
         return <Offline shopInfo={data.shopInfo} />;
       default:
-        return <Summary mainData={data} />;
+        return <Summary mainData={data} reservationData={reservationData} />;
     }
   };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -21,11 +21,29 @@ ChartJS.register(
   Legend
 );
 
-interface props {
+interface Props {
+  reservationData: any;
   mainData: any;
 }
 
-const Summary: React.FC<props> = ({ mainData }) => {
+const Summary: React.FC<Props> = ({ reservationData, mainData }) => {
+  const [highlightDates, setHighlightDates] = useState<Date[]>([]);
+
+  // 날짜와 시간을 포맷팅하는 함수
+  const formatDateTime = (dateTimeString: string) => {
+    const date = new Date(dateTimeString);
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  };
+
+  useEffect(() => {
+    if (reservationData) {
+      const dates = reservationData.map((reservation: any) =>
+        formatDateTime(reservation.startTime)
+      );
+      setHighlightDates(dates);
+    }
+  }, [reservationData]);
+
   function extractValues(obj: { [key: number]: number }): number[] {
     return Object.keys(obj).map((key) => obj[Number(key)]);
   }
@@ -48,7 +66,7 @@ const Summary: React.FC<props> = ({ mainData }) => {
     datasets: [
       {
         label: "2024년 상담 수",
-        data: extractValues(mainData ? mainData.monthlyanalyze.categories : ""),
+        data: extractValues(mainData ? mainData.monthlyanalyze.categories : {}),
         backgroundColor: "rgba(75, 192, 192, 0.6)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
@@ -62,7 +80,7 @@ const Summary: React.FC<props> = ({ mainData }) => {
   // Categories 객체 선언
   const Categories: CategoriesType = mainData
     ? mainData.categoryanalyze.categories
-    : "";
+    : {};
 
   // 객체를 배열로 변환하고, 값을 기준으로 내림차순 정렬
   const sortedArray: [string, number][] = Object.entries(Categories).sort(
@@ -80,26 +98,18 @@ const Summary: React.FC<props> = ({ mainData }) => {
   };
   const mappedArray: string[] = keysArray.map((key) => mapping[key]);
   const labels = mappedArray;
-  // console.log(extractNumbers(mainData ? mainData.categoryanalyze.categories : ''));
-
   const pie_data = valuesArray;
   const total: number = pie_data.reduce(
     (accumulator, currentValue) => accumulator + currentValue,
     0
   );
+
   function calculatePercentage(value: number, total: number): number {
     if (total === 0) {
       return 0; // 총합이 0일 경우 0% 반환
     }
     return Math.round((value / total) * 100);
   }
-  console.log(total);
-
-  const highlightDates = [
-    new Date(2024, 6, 31), // 2024년 7월 15일
-    new Date(2024, 7, 20), // 2024년 7월 20일
-    new Date(2024, 7, 25), // 2024년 7월 25일
-  ];
 
   const options = {
     responsive: true,

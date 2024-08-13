@@ -78,7 +78,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
   const handleOpenModal = (eventDate: Date) => {
     setSelectedEvent(eventDate);
     setIsModalOpen(true);
-  }
+  };
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedEvent(null);
@@ -97,13 +97,13 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
     handleCloseModal();
   };
   // 현재 날짜와 예약 시간 비교
-const isWithin30Minutes = (eventDate: Date) => {
-  const now = new Date();
-  const endOfDay = new Date(eventDate);
-  endOfDay.setHours(23, 59, 59, 999); // 해당 날짜의 끝 시간
-  const thirtyMinutesBefore = new Date(eventDate.getTime() - 30 * 60000);
-  return now <= endOfDay && now >= thirtyMinutesBefore;
-};
+  const isWithin30Minutes = (eventDate: Date) => {
+    const now = new Date();
+    const endOfDay = new Date(eventDate);
+    endOfDay.setHours(23, 59, 59, 999); // 해당 날짜의 끝 시간
+    const thirtyMinutesBefore = new Date(eventDate.getTime() - 30 * 60000);
+    return now <= endOfDay && now >= thirtyMinutesBefore;
+  };
   // 달력과 다가오는 일정이 표시될 레이아웃에 따라 처리
   const renderUpcomingEvents = () => {
     const upcomingEvents = getUpcomingEvents();
