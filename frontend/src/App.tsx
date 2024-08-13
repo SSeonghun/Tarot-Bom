@@ -31,11 +31,6 @@ import WebRTCTest from "./pages/WebRTC/WebRTCtest";
 import ImageUpload from "./pages/Test/ImageUpload";
 
 const App: React.FC = () => {
-  const location = useLocation();
-  const shouldHideFooter =
-    location.pathname.includes("seeker-mypage") ||
-    location.pathname.includes("reader-mypage");
-
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
@@ -71,11 +66,20 @@ const App: React.FC = () => {
           />
           <Route path="/test" element={<ImageUpload />} />
         </Routes>
-        {/* 조건부 렌더링을 통해 Footer를 표시합니다 */}
-        {!shouldHideFooter && <Footer />}
+        {/* <Footer /> */}
       </div>
     </Router>
   );
+};
+
+// Footer 조건부 렌더링을 위한 컴포넌트
+const FooterWrapper: React.FC = () => {
+  const location = useLocation();
+  const shouldHideFooter =
+    location.pathname.includes("seeker-mypage") ||
+    location.pathname.includes("reader-mypage");
+
+  return <>{!shouldHideFooter && <Footer />}</>;
 };
 
 export default App;
