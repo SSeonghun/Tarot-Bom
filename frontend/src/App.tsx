@@ -35,40 +35,35 @@ const App: React.FC = () => {
     <Router>
       <div className="flex flex-col min-h-screen">
         <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/offline" element={<Offline />} />
-            <Route path="/online" element={<Matching />} />
-            <Route path="/online/graphic" element={<Graphic />} />
-            <Route path="/search-reader" element={<SerchReader />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/matching" element={<Matching />} />
-            <Route path="/change-pwd" element={<ChangePwd />} />
-            <Route path="/findpwd" element={<FindPwd />} />
-            <Route
-              path="/reader-profile/:readerId"
-              element={<ReaderProfile />}
-            />
-            <Route path="/posts/:id" element={<PostDetail />} />
-            <Route path="/create-post" element={<CreatePostPage />} />
-            <Route path="/tarot-result" element={<TarotResult />} />
-            <Route path="/play" element={<Play />} />
-            <Route path="/create-reader" element={<CreateReader />} />
-            <Route path="/seeker-mypage" element={<SeekerMypage />} />
-            <Route path="/reader-mypage" element={<ReaderMypage />} />
-            <Route path="/booking" element={<Booking />} />
-            <Route path="/webrtc" element={<WebRTCpage />} />
-            <Route
-              path="/rtcTest"
-              element={<WebRTCTest token={""} name={""} type={""} />}
-            />
-            <Route path="/test" element={<ImageUpload />} />
-          </Routes>
-        </main>
-        <FooterWrapper />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/offline" element={<Offline />} />
+          <Route path="/online" element={<Matching />} />
+          <Route path="/online/graphic" element={<Graphic />} />
+          <Route path="/search-reader" element={<SerchReader />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/matching" element={<Matching />} />
+          <Route path="/change-pwd" element={<ChangePwd />} />
+          <Route path="/findpwd" element={<FindPwd />} />
+          <Route path="/reader-profile/:readerId" element={<ReaderProfile />} />
+          <Route path="/posts/:id" element={<PostDetail />} />
+          <Route path="/create-post" element={<CreatePostPage />} />
+          <Route path="/tarot-result" element={<TarotResult />} />
+          <Route path="/play" element={<Play />} />
+          <Route path="/create-reader" element={<CreateReader />} />
+          <Route path="/seeker-mypage" element={<SeekerMypage />} />
+          <Route path="/reader-mypage" element={<ReaderMypage />} />
+          <Route path="/booking" element={<Booking />} />
+          <Route path="/webrtc" element={<WebRTCpage token={""} name={""} type={""}/>} />
+          <Route
+            path="/rtcTest"
+            element={<WebRTCTest token={""} name={""} type={""} />}
+          />
+          <Route path="/test" element={<ImageUpload/>}/>
+        </Routes>
+        <Footer />
       </div>
     </Router>
   );
