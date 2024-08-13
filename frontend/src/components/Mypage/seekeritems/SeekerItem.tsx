@@ -41,7 +41,7 @@ const SeekerItem: React.FC<SeekerItemProps> = ({ data }) => {
         <div className="m-4">
           {/* data.reader가 true일 때 Toggle, false일 때 HoverButton을 렌더링 */}
           {data.reader ? (
-            <Toggle initialProfile={false} />
+            <></>
           ) : (
             <Link to="/create-reader">
               <HoverButton
