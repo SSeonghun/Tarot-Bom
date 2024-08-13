@@ -146,7 +146,8 @@ const RandomMatching: React.FC = () => {
   const enterRoom = (token: string) => {
     const memberName = userInfo?.nickname ?? "Unknown";
     console.log(memberName, token,roomStyle );
-    if(roomStyle==='GFX'){
+    if(roomStyle==="GFX"){
+      console.log(roomStyle)
       const roomEntryPath = `/rtcTest?token=${encodeURIComponent(
         token
       )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(roomStyle)}`;
