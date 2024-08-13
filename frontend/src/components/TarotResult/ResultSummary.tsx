@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from "react";
-import cardBg from "../../assets/img/card.png";
-import moneyImg from "../../assets/money.png";
-import HoverButton from "../../components/Common/HoverButton";
-import OpenAI from "../Common/OpenAI";
-import Loading from "../Common/Loading";
-import MusicPlayer from "../Common/MusicPlayer";
-import ReactMarkdown from "react-markdown";
-import remarkBreaks from "remark-breaks";
-import remarkGfm from "remark-gfm";
-import useStore from "../../stores/store";
+import React, { useState, useEffect } from 'react';
+import cardBg from '../../assets/img/card.png';
+import HoverButton from '../../components/Common/HoverButton';
+import OpenAI from '../Common/OpenAI';
+import Loading from '../Common/Loading';
+import MusicPlayer from '../Common/MusicPlayer';
+import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
+import remarkGfm from 'remark-gfm';
+import useStore from '../../stores/store';
 
-//const { cardInfo } = require("../../API/api");
-const { saveTarotResult } = require("../../API/api");
+import Heart from '../../assets/img/heart.webp';
+import Healthy from '../../assets/img/heathy.webp';
+import Course from '../../assets/img/course.webp';
+import Money from '../../assets/img/money.webp';
+import Etc from '../../assets/img/question.webp';
 
-const category = "금전운";
+const { saveTarotResult } = require('../../API/api');
 
 interface CardData {
   cardId: number;
@@ -22,14 +24,14 @@ interface CardData {
   imgUrl: string;
 }
 
-interface CardRequset {
+interface CardRequest {
   cardId: number;
   sequence: number;
   direction: string;
 }
 
 interface ResultSummaryProps {
-  readerType: String;
+  readerType: string;
   selectedCard: CardData[];
   worry: string;
   category: string;
@@ -44,8 +46,26 @@ interface SaveRequest {
   summary: string;
   music: string;
   roomId: number;
-  cards: CardRequset[];
+  cards: CardRequest[];
 }
+
+// 카테고리 변환 맵
+const categoryMap: { [key: string]: string } = {
+  G01: '연애운',
+  G02: '진로운',
+  G03: '금전운',
+  G04: '건강운',
+  G05: '기타',
+};
+
+// 카테고리별 이미지 맵
+const imageMap: { [key: string]: string } = {
+  연애운: Heart,
+  진로운: Course,
+  금전운: Money,
+  건강운: Healthy,
+  기타: Etc,
+};
 
 const ResultSummary: React.FC<ResultSummaryProps> = ({
   readerType,
@@ -53,32 +73,32 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
   worry,
   category,
 }) => {
-  const [summary, setSummary] = useState<string>("");
-  //const [cards, setCards] = useState<CardData[]>([]);
+  const [summary, setSummary] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
-  const [music, setMusic] = useState<string>("");
-  const [overall, setOverall] = useState<string>("");
+  const [music, setMusic] = useState<string>('');
+  const [overall, setOverall] = useState<string>('');
   const { userInfo } = useStore();
 
-  console.log("selected Cards : ", selectedCard);
+  // Category 변환
+  const translatedCategory = categoryMap[category] || category;
+
+  // 카테고리에 따른 이미지 선택
+  const selectedImage = imageMap[translatedCategory] || Etc;
+
+  console.log('selected Cards : ', selectedCard);
 
   const handleSummaryGenerated = (generatedSummary: string) => {
     setSummary(generatedSummary);
     const music = extractRecommendedMusic(generatedSummary);
-    console.log("music : ", music);
+    console.log('music : ', music);
     const overall = extractOverall(generatedSummary);
     setMusic(music);
     setOverall(overall);
     setLoading(false); // 요약 생성 후 로딩 상태를 false로 변경
 
-    console.log(category);
+    console.log(translatedCategory);
 
-    // 이 페이지는 시커만 온다 라고 가정하고 만들어야 겠음
-    // TODO: 리더아이디도 받아야 하는데 그러면 rtc 들어가기전에 리더 아이디도 props로 넘겨줘야 할듯
-    // TODO: 메모관련 props받아서 추가 => 프롬프팅 다시 해야할듯
-
-    console.log(readerType);
-    if (readerType === "AI") {
+    if (readerType === 'AI') {
       return;
     }
 
@@ -86,15 +106,15 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
       readerId: 1, // 여기 바꿔줘야함
       seekerId: userInfo?.memberId,
       date: new Date(),
-      keyword: category,
-      memo: "this is memo",
+      keyword: translatedCategory,
+      memo: 'this is memo',
       summary: overall,
       music: music,
       roomId: 1,
       cards: selectedCard.map((card, index) => ({
         cardId: card.cardId,
         sequence: index + 1,
-        direction: "U", // 방향을 수동으로 설정하거나 선택할 수 있도록 추가
+        direction: 'U', // 방향을 수동으로 설정하거나 선택할 수 있도록 추가
       })),
     };
 
@@ -105,24 +125,20 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
 
   // 음악을 추출하는 함수
   const extractRecommendedMusic = (response: string): string => {
-    const musicLine = response
-      .split("\n")
-      .find((line) => line.startsWith("Music"));
+    const musicLine = response.split('\n').find((line) => line.startsWith('Music'));
     if (musicLine) {
-      return musicLine.replace("Music:", "").trim();
+      return musicLine.replace('Music:', '').trim();
     }
-    return "No recommended music found";
+    return 'No recommended music found';
   };
 
-  // 음악을 추출하는 함수
+  // Overall을 추출하는 함수
   const extractOverall = (response: string): string => {
-    const overallLine = response
-      .split("\n")
-      .find((line) => line.startsWith("Overall"));
+    const overallLine = response.split('\n').find((line) => line.startsWith('Overall'));
     if (overallLine) {
-      return overallLine.replace("Overall:", "").trim();
+      return overallLine.replace('Overall:', '').trim();
     }
-    return "No recommended music found";
+    return 'No recommended overall found';
   };
 
   return (
@@ -131,16 +147,11 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
         cards={selectedCard}
         onSummaryGenerated={handleSummaryGenerated}
         worry={worry}
-        category={category}
-        // selectedCards={selectedCard}
+        category={translatedCategory}
       />
 
       <div className="relative w-full max-w-3xl">
-        <img
-          src={cardBg}
-          alt="Background"
-          className="w-full h-auto object-cover"
-        />
+        <img src={cardBg} alt="Background" className="w-full h-auto object-cover" />
         <div className="absolute inset-12 bg-white bg-opacity-20 border shadow-lg p-3 bg-cover"></div>
 
         {loading ? (
@@ -153,21 +164,21 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
         ) : summary ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
             <div className="text-4xl font-bold text-white p-4 rounded-lg flex flex-row">
-              <img src={moneyImg} alt="moneyImg" className="w-8 h-8 mr-2" />
-              AI {category} 요약
+              <img src={selectedImage} alt="Category Icon" className="w-8 h-8 mr-2" />
+              AI {translatedCategory} 요약
             </div>
             <div className="mt-8 border border-white p-6 rounded-lg max-w-xl bg-black bg-opacity-60 h-[600px] overflow-y-auto">
               <ReactMarkdown
                 className="text-white text-s"
                 remarkPlugins={[remarkBreaks, remarkGfm]}
               >
-                {summary.replace(/\n/g, "\n\n")}
+                {summary.replace(/\n/g, '\n\n')}
               </ReactMarkdown>
             </div>
             <p className="mt-5 text-lg font-bold text-white">
               타로 결과에 어울리는 음악을 들어보세요!
             </p>
-            <MusicPlayer width={40} height={40} searchQuery={music}/>
+            {/* <MusicPlayer width={40} height={40} searchQuery={music} /> */}
           </div>
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
@@ -177,14 +188,6 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
       </div>
 
       <div className="relative mt-8 flex items-center gap-10">
-        <HoverButton
-          label="공유하기"
-          color="bg-gray-500"
-          hoverColor="bg-gray-300"
-          hsize="h-12"
-          wsize="w-48"
-          fontsize="text-lg"
-        />
         <HoverButton
           label="이미지 저장"
           color="bg-gray-500"

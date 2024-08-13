@@ -24,6 +24,7 @@
     "date-fns": "^3.6.0",
     "fabric": "^6.1.0",
     "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "livekit-client": "^2.4.2",
     "lodash": "^4.17.21",
     "openai": "^4.0.0",

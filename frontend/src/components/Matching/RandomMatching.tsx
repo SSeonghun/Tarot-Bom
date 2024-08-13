@@ -252,8 +252,6 @@ const RandomMatching: React.FC = () => {
         keywords = 'G03';
       } else if (selectedLabel === '건강운') {
         keywords = 'G04';
-      } else if (selectedLabel === '가족운') {
-        keywords = 'G06';
       } else {
         keywords = 'G05';
       }
@@ -317,7 +315,7 @@ const RandomMatching: React.FC = () => {
     console.log('Matching cancelled');
   };
 
-  const buttonLabels: string[] = ['연애운', '직장운', '재물운', '건강운', '가족운', '기타'];
+  const buttonLabels: string[] = ['연애운', '진로운', '금전운', '건강운', '기타'];
 
   const handleCloseConfirmation = () => {
     setShowConfirmation(false);
