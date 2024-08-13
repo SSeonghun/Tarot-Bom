@@ -1,18 +1,19 @@
-import React from 'react';
-import Calendar from '../../Common/Calendar';
-import Money from '../../../assets/img/재물운.png';
-import Hite from '../../../assets/img/진로.png';
-import Health from '../../../assets/img/건강.png';
-import Love from '../../../assets/img/연애.png';
-import Guitar from '../../../assets/img/기타.png';
-import Nothing from '../../../assets/img/nothing.webp';
-import PieChart from '../../Common/PieChart';
-import TarotCard from '../../../assets/tarot_images - 복사본/c01.jpg';
-import LikeCard from '../../Cards/LikeCard';
-import HoverButton from '../../Common/HoverButton';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import Calendar from "../../Common/Calendar";
+import Money from "../../../assets/img/재물운.png";
+import Hite from "../../../assets/img/진로.png";
+import Health from "../../../assets/img/건강.png";
+import Love from "../../../assets/img/연애.png";
+import Guitar from "../../../assets/img/기타.png";
+import Nothing from "../../../assets/img/nothing.webp";
+import PieChart from "../../Common/PieChart";
+import TarotCard from "../../../assets/tarot_images - 복사본/c01.jpg";
+import LikeCard from "../../Cards/LikeCard";
+import HoverButton from "../../Common/HoverButton";
+import { useNavigate } from "react-router-dom";
 
-const defaultProfileUrl = "https://cdn3d.iconscout.com/3d/premium/thumb/avatar-profile-7377413-5979215.png?f=webp";
+const defaultProfileUrl =
+  "https://cdn3d.iconscout.com/3d/premium/thumb/avatar-profile-7377413-5979215.png?f=webp";
 
 // 예약 리스트 항목 타입 정의
 interface Reservation {
@@ -27,7 +28,7 @@ type Categories = {
 // 찜 리스트 항목 타입 정의
 interface FavoriteReader {
   intro: string;
-  profileUrl: string | null; 
+  profileUrl: string | null;
   name: string; // 리더의 이름
   memberId: string;
 }
@@ -42,20 +43,20 @@ interface Hero1Props {
 
 // 카테고리를 매핑하는 객체
 const categoryMapping: { [key: string]: string } = {
-  G01: '연애운',
-  G02: '진로운',
-  G03: '금전운',
-  G04: '건강운',
-  G05: '기타운',
+  G01: "연애운",
+  G02: "진로운",
+  G03: "금전운",
+  G04: "건강운",
+  G05: "기타운",
 };
 
 // 각 카테고리에 대한 이미지를 매핑하는 객체
 const categoryImages: { [key: string]: string } = {
-  '연애운': Love,
-  '진로운': Hite,
-  '금전운': Money,
-  '건강운': Health,
-  '기타운': Guitar,
+  연애운: Love,
+  진로운: Hite,
+  금전운: Money,
+  건강운: Health,
+  기타운: Guitar,
 };
 
 // 가장 높은 카테고리 값을 찾아주는 함수
@@ -71,7 +72,7 @@ const getMaxCategory = (categories: Categories) => {
   }
 
   return {
-    name: maxKey ? categoryMapping[maxKey] || '알 수 없음' : '알 수 없음',
+    name: maxKey ? categoryMapping[maxKey] || "알 수 없음" : "알 수 없음",
     value: maxValue,
   };
 };
@@ -84,13 +85,15 @@ const Hero1: React.FC<Hero1Props> = ({
   favoriteReaderList,
 }) => {
   const navigate = useNavigate();
-  const highlightDates = reservationList.map(reservation => new Date(reservation.startTime));
+  const highlightDates = reservationList.map(
+    (reservation) => new Date(reservation.startTime)
+  );
   const handleClick = () => {
     navigate(`/search-reader`);
   };
 
   // favoriteReaderList를 기반으로 likeCards 생성
-  const likeCards = favoriteReaderList.map(reader => (
+  const likeCards = favoriteReaderList.map((reader) => (
     <LikeCard
       intro={reader.intro}
       name={reader.name}
@@ -102,25 +105,31 @@ const Hero1: React.FC<Hero1Props> = ({
   // 카테고리 최대값 찾기
   const maxCategory = getMaxCategory(Categories);
   const labels = Object.values(categoryMapping);
-  const data = maxCategory.value === 0 
-    ? [] // Empty data for PieChart when maxCategory.value is 0
-    : [
-        Categories.G01,
-        Categories.G02,
-        Categories.G03,
-        Categories.G04,
-        Categories.G05,
-      ];
+  const data =
+    maxCategory.value === 0
+      ? [] // Empty data for PieChart when maxCategory.value is 0
+      : [
+          Categories.G01,
+          Categories.G02,
+          Categories.G03,
+          Categories.G04,
+          Categories.G05,
+        ];
 
   // 최대 카테고리에 해당하는 이미지 선택
-  const selectedCategoryImage = maxCategory.value === 0 ? Nothing : (categoryImages[maxCategory.name] || Money);
+  const selectedCategoryImage =
+    maxCategory.value === 0
+      ? Nothing
+      : categoryImages[maxCategory.name] || Money;
 
   return (
     <div>
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-4">
           <div className="border border-black rounded-lg">
-            <h1 className="text-black text-[40px] font-bold text-center mt-3">예약내역</h1>
+            <h1 className="text-black text-[40px] font-bold text-center mt-3">
+              예약내역
+            </h1>
             <div>
               <Calendar highlightDates={highlightDates} layout="col" />
             </div>
@@ -130,11 +139,11 @@ const Hero1: React.FC<Hero1Props> = ({
           <div>
             <div className="relative">
               <img
-                src={selectedCategoryImage} 
+                src={selectedCategoryImage}
                 alt="카테고리 이미지"
                 className="object-cover w-full h-full rounded-lg opacity-30"
               />
-            
+
               {maxCategory.value !== 0 ? (
                 <div className="absolute top-4 left-4">
                   <h1 className="text-black text-[70px] mx-10 my-5 font-bold">
@@ -147,7 +156,9 @@ const Hero1: React.FC<Hero1Props> = ({
                     <p className="text-black text-[30px] font-bold">
                       "{maxCategory.name}"
                     </p>
-                    <p className="text-gray-700 font-bold">카테고리가 제일 많았습니다.</p>
+                    <p className="text-gray-700 font-bold">
+                      카테고리가 제일 많았습니다.
+                    </p>
                   </div>
                 </div>
               ) : (
@@ -160,14 +171,11 @@ const Hero1: React.FC<Hero1Props> = ({
             </div>
           </div>
           <div className="border mt-4 p-4 border-black rounded-lg h-fit flex justify-center items-center">
-          {maxCategory.value !== 0 ? (
-                <PieChart labels={labels} data={data} />
-              ) : (
-                <div>
-                  
-                </div>
-              )}
-            
+            {maxCategory.value !== 0 ? (
+              <PieChart labels={labels} data={data} />
+            ) : (
+              <div></div>
+            )}
           </div>
         </div>
         <div className="col-span-4">
@@ -176,15 +184,20 @@ const Hero1: React.FC<Hero1Props> = ({
               <img src={TarotCard} alt="오늘의 타로점" />
             </div>
             <div className="col-span-8">
-              <h1 className="text-black text-[30px] text-center font-bold">오늘의 타로점</h1>
+              <h1 className="text-black text-[30px] text-center font-bold">
+                오늘의 타로점
+              </h1>
               <p className="text-black text-[20px] text-start ms-4 mt-4">
-                희망과 치유의 날 입니다. 새로운 기회가 생기고, 긍정적인 에너지가 넘치는 하루가 될 것입니다.
+                희망과 치유의 날 입니다. 새로운 기회가 생기고, 긍정적인 에너지가
+                넘치는 하루가 될 것입니다.
               </p>
             </div>
           </div>
           <div className="border border-black rounded-lg mt-2">
             <div className="flex flex-row items-center justify-between">
-              <h1 className="text-black font-bold m-2 text-[30px] text-center">리더 찜리스트</h1>
+              <h1 className="text-black font-bold m-2 text-[30px] text-center">
+                리더 찜리스트
+              </h1>
               <div className="me-3">
                 <HoverButton
                   label="모두 보기"
