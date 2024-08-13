@@ -128,8 +128,8 @@ const RandomMatching: React.FC = () => {
               // TODO: 여기서? 아님 리더 쪽에서? 리더 아이디 넘겨줘야 결과창에서 받아서 저장함
 
               // token 값을 사용
-              console.log('Token:', token, ' ,roomStryle : ', roomStyle);
-              enterRoom(token, roomStyle);
+              console.log('Token:', token);
+              enterRoom(token);
 
               // token을 활용하여 필요한 로직 수행
               // 예: API 호출, 검증 등
@@ -162,14 +162,14 @@ const RandomMatching: React.FC = () => {
   // 방 입장 메서드
   //TODO : 경준형님 토큰: token, nickname : member, type: CAM인지 GFX인지 일단 하드코딩 주말 수정 예정
   // TODO : 그래픽인지, 진짜 카드인지 분기해서 나눠줘야함 지금은 그냥 모두 하드하게 캠으로만 가는중
-  const enterRoom = (token: string, room: string) => {
+  const enterRoom = (token: string) => {
     const memberName = userInfo?.nickname ?? 'Unknown';
     console.log('roomstyle : ', roomStyle);
-    if (room === 'GFX') {
-      console.log(room);
+    if (roomStyle === 'GFX') {
+      console.log(roomStyle);
       const roomEntryPath = `/rtcTest?token=${encodeURIComponent(token)}&name=${encodeURIComponent(
         memberName
-      )}&type=${encodeURIComponent(room)}`;
+      )}&type=${encodeURIComponent(roomStyle)}`;
 
       // 라우터를 통해 방으로 이동
       navigate(roomEntryPath, {
@@ -179,7 +179,7 @@ const RandomMatching: React.FC = () => {
       // 방 입장 URL을 위한 데이터 준비
       const roomEntryPath = `/webrtc?token=${encodeURIComponent(token)}&name=${encodeURIComponent(
         memberName
-      )}&type=${encodeURIComponent(room)}`;
+      )}&type=${encodeURIComponent(roomStyle)}`;
 
       // 라우터를 통해 방으로 이동
       navigate(roomEntryPath, {

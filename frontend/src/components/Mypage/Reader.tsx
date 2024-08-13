@@ -263,7 +263,6 @@ const ReaderMypage: React.FC = () => {
   };
 
   const handleRoomStyleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
     setSelectedRoomStyle(event.target.value);
   };
 
