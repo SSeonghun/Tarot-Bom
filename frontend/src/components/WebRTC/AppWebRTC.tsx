@@ -26,7 +26,11 @@ type TrackInfo = {
 let APPLICATION_SERVER_URL = "";
 let LIVEKIT_URL = "";
 configureUrls();
-
+interface RTCTest {
+    token: string; // 토큰
+    name: string; // 닉네임
+    type: string; // 룸 타입
+  }
 function configureUrls() {
     if (!APPLICATION_SERVER_URL) {
         if (window.location.hostname === "localhost") {
@@ -45,7 +49,7 @@ function configureUrls() {
     }
 }
 
-function AppWebRTC() {
+const AppWebRTC:React.FC<RTCTest>= ({ token, name, type })=> {
     const [room, setRoom] = useState<Room | undefined>(undefined);
     const [localVideoTrack, setLocalVideoTrack] = useState<LocalVideoTrack | undefined>(undefined);
     const [localAudioTrack, setLocalAudioTrack] = useState<LocalAudioTrack | undefined>(undefined);

@@ -164,17 +164,32 @@ const RandomMatching: React.FC = () => {
   // TODO : 그래픽인지, 진짜 카드인지 분기해서 나눠줘야함 지금은 그냥 모두 하드하게 캠으로만 가는중
   const enterRoom = (token: string) => {
     const memberName = userInfo?.nickname ?? "Unknown";
-    console.log(memberName, token);
+    console.log("roomstyle : ", roomStyle);
+    if (roomStyle === "GFX") {
+      console.log(roomStyle);
+      const roomEntryPath = `/rtcTest?token=${encodeURIComponent(
+        token
+      )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
+        roomStyle
+      )}`;
 
-    // 방 입장 URL을 위한 데이터 준비
-    const roomEntryPath = `/rtcTest?token=${encodeURIComponent(
-      token
-    )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
-      roomStyle
-    )}`;
+      // 라우터를 통해 방으로 이동
+      navigate(roomEntryPath, {
+        state: { readerType: "AI" },
+      });
+    } else {
+      // 방 입장 URL을 위한 데이터 준비
+      const roomEntryPath = `/webrtc?token=${encodeURIComponent(
+        token
+      )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
+        roomStyle
+      )}`;
 
-    // 라우터를 통해 방으로 이동
-    navigate(roomEntryPath);
+      // 라우터를 통해 방으로 이동
+      navigate(roomEntryPath, {
+        state: { readerType: "AI" },
+      });
+    }
   };
 
   const handleButtonClick = (label: string) => {
@@ -193,11 +208,12 @@ const RandomMatching: React.FC = () => {
 
   // 캠 or 그래픽
   const tarotTypeButtonClicke = (label: string) => {
-    if (label === "캠으로 보기") {
+    if (label == "CAM") {
       setRoomStyle("CAM");
     } else {
       setRoomStyle("GFX");
     }
+    console.log("tarotTypeButtonClicke : ", roomStyle);
   };
 
   const submit = () => {
@@ -446,7 +462,7 @@ const RandomMatching: React.FC = () => {
                 hsize="h-12"
                 wsize="w-48"
                 fontsize="text-lg"
-                onClick={() => tarotTypeButtonClicke("캠으로 보기")}
+                onClick={() => tarotTypeButtonClicke("CAM")}
               />
               <CommonButton
                 label="그래픽으로 보기"
@@ -456,7 +472,7 @@ const RandomMatching: React.FC = () => {
                 hsize="h-12"
                 wsize="w-48"
                 fontsize="text-lg"
-                onClick={() => tarotTypeButtonClicke("그래픽으로 보기")}
+                onClick={() => tarotTypeButtonClicke("GFX")}
               />
             </div>
             <div className="flex flex-col items-center">

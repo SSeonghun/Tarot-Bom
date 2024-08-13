@@ -1,10 +1,16 @@
 import React from 'react'
 import AppWebRTC from '../../components/WebRTC/AppWebRTC'
-const WebRTCpage:React.FC = () => {
+
+interface RTCTest {
+  token: string; // 토큰
+  name: string; // 닉네임
+  type: string; // 룸 타입
+}
+const WebRTCpage:React.FC<RTCTest>= ({ token, name, type })=> {
   return (
     <div>
       <div >
-        <AppWebRTC/> 
+      <AppWebRTC token={token} name={name} type={type} />
       </div>
     </div>
   )
