@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import MypageBackground from "../../assets/img/mypageback.png";
-import SeekerItem from "./seekeritems/SeekerItem";
-import useUserStore from "../../stores/store";
-import useReservationStore from "../../stores/reservationStore"; // zustand 스토어 임포트
-import { seekerMypage } from "../../API/userApi";
-import Modal from "./seekeritems/Modal"; // 모달 컴포넌트 추가
-import Modify from "../../assets/img/modify.webp";
-import Toggle from "../Common/Toggle";
-import { seeker } from "../../API/reservationsApi";
+import React, { useEffect, useState } from 'react';
+import MypageBackground from '../../assets/img/mypageback.png';
+import SeekerItem from './seekeritems/SeekerItem';
+import useUserStore from '../../stores/store';
+import useReservationStore from '../../stores/reservationStore'; // zustand 스토어 임포트
+import { seekerMypage } from '../../API/userApi';
+import Modal from './seekeritems/Modal'; // 모달 컴포넌트 추가
+import Modify from '../../assets/img/modify.webp';
+import Toggle from '../Common/Toggle';
+import { seeker } from '../../API/reservationsApi';
 // UserInfo 인터페이스 정의
 interface UserInfo {
   nickname: string;
@@ -42,7 +42,7 @@ const Seeker: React.FC = () => {
           setData(fetchedData); // 가져온 데이터를 상태에 저장
         }
       } catch (error) {
-        console.error("데이터를 가져오는 중 오류가 발생했습니다", error);
+        console.error('데이터를 가져오는 중 오류가 발생했습니다', error);
       }
     };
 
@@ -55,7 +55,7 @@ const Seeker: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await seeker();
-        console.log("response Seeker: ", response);
+        console.log('response Seeker: ', response);
         await setReservationData(response.data);
         return response.data;
       } catch (error) {
@@ -68,6 +68,7 @@ const Seeker: React.FC = () => {
 
   // 모달 열기
   const openModal = () => {
+    console.log('수정모달열기');
     setIsModalOpen(true);
   };
 
@@ -79,7 +80,7 @@ const Seeker: React.FC = () => {
   // 모달 확인 버튼 클릭 시
   const handleConfirm = () => {
     // 확인 버튼 클릭 시 처리할 작업
-    console.log("확인 버튼 클릭");
+    console.log('확인 버튼 클릭');
     setIsModalOpen(false); // 모달 닫기
   };
 
@@ -89,8 +90,8 @@ const Seeker: React.FC = () => {
         className="absolute inset-0 z-0 opacity-80"
         style={{
           backgroundImage: `url(${MypageBackground})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       ></div>
       <div className="absolute inset-0 z-10 bg-black opacity-50"></div>
@@ -105,16 +106,14 @@ const Seeker: React.FC = () => {
             <img
               src={Modify}
               alt="Small Icon"
-              className="ml-3 w-8 h-8 cursor-pointer absolute top-0 right-0"
+              className="ml-3 w-8 h-8 cursor-pointer absolute top-0 right-0  z-99"
               onClick={openModal} // 버튼 클릭 시 모달 열기
             />
           </div>
         </div>
         <div className="flex flex-col justify-center absolute top-[180px] items-center">
           <div className="flex flex-row items-center">
-            <h1 className="text-white text-[40px] font-bold mt-5">
-              {data ? data.name : ""}
-            </h1>
+            <h1 className="text-white text-[40px] font-bold mt-5">{data ? data.name : ''}</h1>
           </div>
           <div className="flex flex-row justify-center items-center">
             {data && data.reader ? <Toggle initialProfile={false} /> : <></>}
@@ -131,11 +130,7 @@ const Seeker: React.FC = () => {
       </div>
 
       {/* 모달 컴포넌트 추가 */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onConfirm={handleConfirm}
-      />
+      <Modal isOpen={isModalOpen} onClose={closeModal} onConfirm={handleConfirm} />
     </div>
   );
 };

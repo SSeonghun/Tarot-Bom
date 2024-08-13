@@ -12,7 +12,9 @@ const { update } = require('../../../API/userApi');
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm }) => {
   const store = useUserStore();
   const [newProfileImg, setNewProfileImg] = useState<File | null>(null);
-  const [previewProfileImg, setPreviewProfileImg] = useState<string>(store.userInfo?.profileImg || '');
+  const [previewProfileImg, setPreviewProfileImg] = useState<string>(
+    store.userInfo?.profileImg || ''
+  );
   const [newName, setNewName] = useState<string>(store.userInfo?.nickname || '');
   const [newPassword, setNewPassword] = useState<string>(store.userInfo?.password || '');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -75,14 +77,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm }) => {
       formData.append('nickname', newName);
       formData.append('password', newPassword);
 
-      
-
       if (newProfileImg) {
         formData.append('profileImage', newProfileImg);
       }
-        formData.forEach((value, key) => {
+      formData.forEach((value, key) => {
         console.log(key, value);
-        });
+      });
       // 업데이트 API 호출
       const result = await update(formData);
 
@@ -110,10 +110,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm }) => {
       onClick={handleBackgroundClick} // 배경 클릭 시 모달 닫기
     >
       <div className="bg-white p-5 rounded-lg shadow-lg relative">
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-xl"
-        >
+        <button onClick={onClose} className="absolute top-2 right-2 text-xl">
           X
         </button>
         <h2 className="text-xl font-bold mb-4">프로필 수정</h2>
@@ -169,21 +166,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm }) => {
             onChange={(e) => handleConfirmPasswordChange(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm"
           />
-          {passwordError && (
-            <p className="text-red-500 text-sm mt-1">{passwordError}</p>
-          )}
+          {passwordError && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
         </div>
         <div className="flex justify-end space-x-4">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-300 text-black rounded-lg"
-          >
+          <button onClick={onClose} className="px-4 py-2 bg-gray-300 text-black rounded-lg">
             취소
           </button>
-          <button
-            onClick={handleConfirm}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-          >
+          <button onClick={handleConfirm} className="px-4 py-2 bg-blue-500 text-white rounded-lg">
             확인
           </button>
         </div>

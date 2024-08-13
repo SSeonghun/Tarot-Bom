@@ -123,6 +123,7 @@ const RandomMatching: React.FC = () => {
               // JSON 문자열을 객체로 역직렬화하여 token 값을 추출
               const parsedData = JSON.parse(jsonString);
               const token = parsedData.token;
+              console.log(jsonString);
 
               // TODO: 여기서? 아님 리더 쪽에서? 리더 아이디 넘겨줘야 결과창에서 받아서 저장함
 
@@ -200,15 +201,17 @@ const RandomMatching: React.FC = () => {
       setSelectedLabel(label);
     }
   };
+  useEffect(() => {
+    if (roomStyle) {
+      console.log('Room style updated to:', roomStyle);
+      setRoomStyle(roomStyle);
+    }
+  }, [roomStyle]);
 
   // 캠 or 그래픽
   const tarotTypeButtonClicke = (label: string) => {
-    if (label === 'CAM') {
-      setRoomStyle('CAM');
-    } else {
-      setRoomStyle('GFX');
-    }
-    console.log('tarotTypeButtonClicke : ', roomStyle);
+    setRoomStyle(label); // roomStyle 상태를 업데이트
+    console.log('tarotTypeButtonClicke : ', label); // 상태 대신 전달된 label 값을 바로 출력
   };
 
   const submit = () => {
@@ -249,8 +252,6 @@ const RandomMatching: React.FC = () => {
         keywords = 'G03';
       } else if (selectedLabel === '건강운') {
         keywords = 'G04';
-      } else if (selectedLabel === '가족운') {
-        keywords = 'G06';
       } else {
         keywords = 'G05';
       }
@@ -314,7 +315,7 @@ const RandomMatching: React.FC = () => {
     console.log('Matching cancelled');
   };
 
-  const buttonLabels: string[] = ['연애운', '직장운', '재물운', '건강운', '가족운', '기타'];
+  const buttonLabels: string[] = ['연애운', '진로운', '금전운', '건강운', '기타'];
 
   const handleCloseConfirmation = () => {
     setShowConfirmation(false);

@@ -59,7 +59,7 @@ const ReaderMypage: React.FC = () => {
   const [confirm, setConfirm] = useState<boolean>(false);
 
   const [selectedKeyword, setSelectedKeyword] = useState<string>(''); // 선택된 키워드
-  const [selectedRoomStyle, setSelectedRoomStyle] = useState<string>('CAM'); // 선택된 방 스타일 (기본값은 CAM)
+  const [selectedRoomStyle, setSelectedRoomStyle] = useState<string>(''); // 선택된 방 스타일 (기본값은 CAM)
 
   const client = useRef<Client | null>(null);
   const { userInfo } = useStore();
@@ -180,11 +180,10 @@ const ReaderMypage: React.FC = () => {
     if (selectedMethod != null) {
       setSelectedRoomStyle(selectedMethod);
     }
-
+    // null값 처리
     if (selectedCategory != null) {
       setSelectedKeyword(selectedCategory);
     }
-
     handleRandomMatching(selectedCategory, selectedMethod);
   };
 
