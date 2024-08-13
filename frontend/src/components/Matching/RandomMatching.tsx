@@ -248,7 +248,7 @@ const RandomMatching: React.FC = () => {
         keywords = 'G01';
       } else if (selectedLabel === '진로운') {
         keywords = 'G02';
-      } else if (selectedLabel === '재물운') {
+      } else if (selectedLabel === '금전운') {
         keywords = 'G03';
       } else if (selectedLabel === '건강운') {
         keywords = 'G04';
