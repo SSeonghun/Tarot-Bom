@@ -1,4 +1,3 @@
-// src/pages/WebRTC/WebRTCpage.tsx
 import React, { useState, useEffect, useRef } from "react";
 import {
   LocalVideoTrack,
@@ -8,9 +7,9 @@ import {
   Room,
   RoomEvent,
 } from "livekit-client";
-import MainBg from '../../assets/mainBg.png'
+import MainBg from '../../assets/mainBg.png';
 import Graphic from "../PlayTarot/Graphic";
-// import html2canvas from 'html2canvas';
+
 // Define types
 type TrackInfo = {
   trackPublication: RemoteTrackPublication;
@@ -25,36 +24,23 @@ interface RTCTest {
 
 // WebRTCpage component
 const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
-  console.log(token, name, type);
-
   const [room, setRoom] = useState<Room | undefined>(undefined);
-  const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(
-    undefined
-  );
+  const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(undefined);
   const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
-  const [participantName, setParticipantName] = useState<string | undefined>(
-    name
-  );
+  const [participantName, setParticipantName] = useState<string | undefined>(name);
   const [roomName, setRoomName] = useState<string | undefined>(token);
   const [isHost, setIsHost] = useState<boolean>(false);
-  
-  const APPLICATION_SERVER_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:6080/"
-      : "https://" + window.location.hostname + ":6443/";
 
-  const LIVEKIT_URL =
-    window.location.hostname === "localhost"
-      ? "ws://localhost:7880/"
-      : "wss://" + window.location.hostname + ":7443/";
+  const APPLICATION_SERVER_URL = window.location.hostname === "localhost"
+    ? "http://localhost:6080/"
+    : "https://" + window.location.hostname + ":6443/";
+
+  const LIVEKIT_URL = window.location.hostname === "localhost"
+    ? "ws://localhost:7880/"
+    : "wss://" + window.location.hostname + ":7443/";
 
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
-  const remoteVideoRef = useRef<HTMLVideoElement | null>(null)
-  const remoteAudioRefs = useRef<{
-    [trackSid: string]: HTMLAudioElement | null;
-  }>({});
-  // const graphicRef = useRef<HTMLDivElement | null>(null);
-  // const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
 
   const isSeeker = participantName === '시커'; // Check if the participant is '시커'
 
@@ -63,10 +49,11 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
     const room = new Room();
     setRoom(room);
     let firstParticipantJoined = false;
+
     room.on(
       RoomEvent.TrackSubscribed,
       (
-        _track: RemoteTrack,
+        track: RemoteTrack,
         publication: RemoteTrackPublication,
         participant: RemoteParticipant
       ) => {
@@ -85,16 +72,17 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
       console.log("ParticipantConnected:", participant.identity);
       if (!firstParticipantJoined) {
         firstParticipantJoined = true;
-        setIsHost(false); // Since another participant has joined, current participant is not the host
+        setIsHost(true); // Since another participant has joined, current participant is not the host
       }
     });
 
     room.on(RoomEvent.ParticipantDisconnected, (participant: RemoteParticipant) => {
-      console.log("ParticipantConnected:", participant.identity);
+      console.log("ParticipantDisconnected:", participant.identity);
       if (participant.identity === participantName) {
-        setIsHost(true); // If the current participant leaves and they were the first, they are the host
+        setIsHost(false); // If the current participant leaves and they were the first, they are the host
       }
     });
+
     room.on(
       RoomEvent.TrackUnsubscribed,
       (_track: RemoteTrack, publication: RemoteTrackPublication) => {
@@ -112,42 +100,57 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
       console.log('Fetched token:', token);
       console.log('Connecting to room with token:', token);
       await room.connect(LIVEKIT_URL, token);
-      await room.localParticipant.setMicrophoneEnabled(true); // 마이크만 활성화
-      // Set local participant as host if no other participants are in the room
+      //await room.localParticipant.setMicrophoneEnabled(true); // 마이크만 활성화
+      await room.localParticipant.enableCameraAndMicrophone();
       if (!firstParticipantJoined) {
         console.log('Setting local participant as host');
         setIsHost(true); // If this is the first participant, they are the host
       }
-      // if (!canvasRef.current) {
-      //   console.error("Canvas reference is not defined.");
-      //   return;
-      // }
-      // const stream = canvasRef.current?.captureStream(30); // 30fps로 canvas 캡처
-      // if (!stream) {
-      //   console.error("Failed to capture stream from canvas.");
-      //   return;
-      // }
-      // console.log("Captured stream:", stream);
-      // 화면 공유 시작
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-        audio: true, // 오디오를 공유할 경우 추가
-      });
 
-      
-      const audioTrack = room.localParticipant.audioTrackPublications
-      .values()
-      .next().value?.audioTrack;
-      if (stream) {
-        const [videoTrack] = stream.getVideoTracks();
-        const localVideoTrack = new LocalVideoTrack(videoTrack);
-        setLocalTrack(localVideoTrack);
-        await room.localParticipant.publishTrack(localVideoTrack);
-        console.log("Published local video track");
-      }
-      if (audioTrack) {
-        setLocalTrack(audioTrack);
-        console.log("Published local audio track");
+      // Handle screen sharing for '시커'
+      if (isSeeker) {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: true,
+        });
+
+        if (stream) {
+          console.log(stream);
+          const [videoTrack] = stream.getVideoTracks();
+          const localVideoTrack = new LocalVideoTrack(videoTrack);
+          setLocalTrack(localVideoTrack);
+    
+          try {
+            await room.localParticipant.publishTrack(localVideoTrack);
+            console.log("Published local screen share track");
+          } catch (error) {
+            console.error("Error publishing local screen share track:", (error as Error).message);
+          }
+        } else {
+          console.error('Failed to get display media stream');
+        }
+      } else {
+        // Non-seekers use camera
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+
+        if (stream) {
+          console.log(stream);
+          const [videoTrack] = stream.getVideoTracks();
+          const localVideoTrack = new LocalVideoTrack(videoTrack);
+          setLocalTrack(localVideoTrack);
+    
+          try {
+            await room.localParticipant.publishTrack(localVideoTrack);
+            console.log("Published local camera track");
+          } catch (error) {
+            console.error("Error publishing local camera track:", (error as Error).message);
+          }
+        } else {
+          console.error('Failed to get user media stream');
+        }
       }
     } catch (error) {
       console.log("Error connecting to the room:", (error as Error).message);
@@ -186,8 +189,8 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
     console.log("Received token:", data.token);
     return data.token;
   }
+
   useEffect(() => {
-    // Get token and name from URL query parameters
     const queryParams = new URLSearchParams(window.location.search);
     const token = queryParams.get("token");
     const name = queryParams.get("name");
@@ -211,46 +214,40 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
       }
     };
   }, [localTrack]);
-  // useEffect(() => {
-  //   const updateCanvas = async () => {
-  //     if (canvasRef.current) {
-  //       console.log('Updating canvas...');
-  //       const context = canvasRef.current.getContext('2d');
-  //       if (context) {
-  //         console.log('Capturing graphic...');
-  //         const canvas = await html2canvas(graphicRef.current!);
-  //         context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-  //         context.drawImage(canvas, 0, 0, canvasRef.current.width, canvasRef.current.height);
-  //         console.log('Canvas updated');
-  //       }
-  //     }
-  //     requestAnimationFrame(updateCanvas);
-  //   };
 
-  //   updateCanvas();
-  // }, []);
   useEffect(() => {
-    remoteTracks.forEach((trackInfo) => {
-      if (
-        trackInfo.trackPublication.kind === "audio" &&
-        remoteAudioRefs.current[trackInfo.trackPublication.trackSid]
-      ) {
-        console.log('Attaching remote audio track:', trackInfo.trackPublication.trackSid);
-        trackInfo.trackPublication.videoTrack?.attach(
-          remoteAudioRefs.current[trackInfo.trackPublication.trackSid]!
-        );
-      }
-    });
-
-    return () => {
-      remoteTracks.forEach((trackInfo) => {
-        if (trackInfo.trackPublication.kind === "audio") {
-          console.log('Detaching remote audio track:', trackInfo.trackPublication.trackSid);
-          trackInfo.trackPublication.videoTrack?.detach();
+    if (remoteVideoRef.current) {
+      console.log('Remote tracks:', remoteTracks);
+      if (!isSeeker) {
+        const seekerTrack = remoteTracks.find(track => track.participantIdentity === '시커');
+        if (seekerTrack) {
+          console.log('Attaching seeker video track:', seekerTrack.trackPublication.trackSid);
+          const remoteTrack = seekerTrack.trackPublication.track;
+          if (remoteTrack) {
+            remoteTrack.attach(remoteVideoRef.current);
+            console.log('Video track attached successfully');
+          } else {
+            console.log('No video track found for seeker');
+          }
+        } else {
+          console.log('Seeker track not found');
         }
-      });
-    };
-  }, [remoteTracks]);
+      }
+
+      return () => {
+        if (remoteVideoRef.current) {
+          console.log('Detaching seeker video track');
+          const seekerTrack = remoteTracks.find(track => track.participantIdentity === '시커');
+          if (seekerTrack) {
+            const remoteTrack = seekerTrack.trackPublication.track;
+            if (remoteTrack) {
+              remoteTrack.detach();
+            }
+          }
+        }
+      };
+    }
+  }, [remoteTracks, isSeeker]);
 
   return (
     <div>
@@ -261,8 +258,8 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
               src={MainBg}
               alt="Main Background"
           />
-          <div id="join-dialog " className="absolute bottom-10 left-10 z-10">
-          <h2 className="text-white">Join an Audio Room</h2>
+          <div id="join-dialog" className="absolute bottom-10 left-10 z-10">
+            <h2 className="text-white">Join an Audio Room</h2>
             <form
               onSubmit={(e) => {
                 joinRoom();
@@ -294,7 +291,6 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
               <button
                 className="btn btn-lg btn-success"
                 type="submit"
-                //disabled={!roomName || !participantName}
               >
                 Join!
               </button>
@@ -314,37 +310,16 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
             </button>
           </div>
           <div id="layout-container">
-          {isSeeker ? (
-              // <video ref={localVideoRef} style={{ width: '640px', height: '480px' }}>
-              //   <p>Seeker's Screen Sharing</p>
+            {isSeeker ? (
+              <div>
                 <Graphic />
-              // </video>
+                <video ref={localVideoRef} autoPlay style={{ width: '640px', height: '480px' }} />
+              </div>
             ) : (
-              <video ref={remoteVideoRef} autoPlay={true} />
-            )}
-            {localTrack && (
-              <audio ref={localVideoRef} autoPlay={true} />
-              
-            )}
-            {remoteTracks.map((remoteTrack) =>
-              remoteTrack.trackPublication.kind === "audio" ? (
-                <div
-                  className="audio-container"
-                  key={remoteTrack.trackPublication.trackSid}
-                >
-                  <audio
-                    ref={(el) =>
-                      (remoteAudioRefs.current[
-                        remoteTrack.trackPublication.trackSid
-                      ] = el)
-                    }
-                    autoPlay={true}
-                  />
-                  <div className="participant-name">
-                    {remoteTrack.participantIdentity}
-                  </div>
-                </div>
-              ) : null
+              <div>
+                <video ref={localVideoRef} autoPlay style={{ width: '640px', height: '480px' }} />
+                <video ref={remoteVideoRef} autoPlay style={{ width: '640px', height: '480px' }} />
+              </div>
             )}
           </div>
         </div>
