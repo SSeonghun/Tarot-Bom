@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Change from "../../assets/img/change.webp";
 
+const { getAccessToken } = require("../../API/userApi");
+
 interface Hero1Props {
   initialProfile: boolean; // props로 받을 초기값의 타입 정의
 }
@@ -11,12 +13,22 @@ const Hero1: React.FC<Hero1Props> = ({ initialProfile }) => {
   const navigate = useNavigate();
 
   const handleToggleChange = () => {
-    setIsReaderProfile(!isReaderProfile);
-    if (!isReaderProfile) {
-      navigate("/reader-mypage"); // 리더 페이지로 이동
-    } else {
-      navigate("/seeker-mypage"); // 시커 페이지로 이동
-    }
+    const fetchData = async () => {
+      try {
+        const response = await getAccessToken();
+        console.log("NewAccessToken : ", response);
+
+        setIsReaderProfile(!isReaderProfile);
+        if (!isReaderProfile) {
+          navigate("/reader-mypage"); // 리더 페이지로 이동
+        } else {
+          navigate("/seeker-mypage"); // 시커 페이지로 이동
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
   };
 
   return (

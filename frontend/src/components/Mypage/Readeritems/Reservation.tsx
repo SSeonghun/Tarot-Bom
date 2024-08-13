@@ -1,7 +1,11 @@
 import React from "react";
 import Calendar from "../../Common/Calendar";
 
-const Reservation: React.FC = () => {
+interface Props {
+  reservationData: any;
+}
+
+const Reservation: React.FC<Props> = ({ reservationData }) => {
   const highlightDates = [
     new Date(2024, 6, 31), // 2024년 7월 15일
     new Date(2024, 7, 20), // 2024년 7월 20일
