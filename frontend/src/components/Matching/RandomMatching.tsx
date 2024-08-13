@@ -71,7 +71,7 @@ const RandomMatching: React.FC = () => {
   const [roomStyle, setRoomStyle] = useState<string>("CAM");
   const [memberType, setMemberType] = useState<string>("seeker");
   const worryArea = useRef<HTMLTextAreaElement | null>(null);
-
+ // 선택된 방 스타일 (기본값은 CAM)
   // Zustand 스토어에서 필요한 값 가져오기
   const { userInfo } = useStore();
   const navigate = useNavigate();
@@ -145,19 +145,29 @@ const RandomMatching: React.FC = () => {
   //TODO : 경준형님 토큰: token, nickname : member, type: CAM인지 GFX인지 일단 하드코딩 주말 수정 예정
   const enterRoom = (token: string) => {
     const memberName = userInfo?.nickname ?? "Unknown";
-    console.log(memberName, token);
-
-    // 방 입장 URL을 위한 데이터 준비
-    const roomEntryPath = `/rtcTest?token=${encodeURIComponent(
+    console.log(memberName, token,roomStyle );
+    if(roomStyle==='GFX'){
+      const roomEntryPath = `/rtcTest?token=${encodeURIComponent(
+        token
+      )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(roomStyle)}`;
+  
+      // 라우터를 통해 방으로 이동
+      navigate(roomEntryPath, {
+        state: { readerType: "AI" },
+      });
+    }
+    else {
+      // 방 입장 URL을 위한 데이터 준비
+    const roomEntryPath = `/webrtc?token=${encodeURIComponent(
       token
-    )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
-      roomStyle
-    )}`;
+    )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(roomStyle)}`;
 
     // 라우터를 통해 방으로 이동
     navigate(roomEntryPath, {
       state: { readerType: "AI" },
     });
+      
+    }
   };
 
   const handleButtonClick = (label: string) => {
