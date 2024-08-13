@@ -1,11 +1,11 @@
-import React from 'react';
-import HoverButton from '../Common/HoverButton';
-import PrivateLink from '../Common/PrivateLink';
-import CommonButton from '../Common/CommonButton';
-import Witch from '../../assets/img/witch.webp';
-import Meteo from '../Common/Meteo';
-import MainBack from '../../assets/img/MainBack.jpg';
-import MusicPlayer from '../Common/MusicPlayer';
+import React from "react";
+import HoverButton from "../Common/HoverButton";
+import PrivateLink from "../Common/PrivateLink";
+import CommonButton from "../Common/CommonButton";
+import Witch from "../../assets/img/witch.webp";
+import Meteo from "../Common/Meteo";
+import MainBack from "../../assets/img/MainBack.jpg";
+import Galaxy from "../../assets/img/galaxy.png";
 
 // Main Section 1
 const Hero1: React.FC = () => {
@@ -16,16 +16,38 @@ const Hero1: React.FC = () => {
         className="w-full h-full object-cover opacity-50"
         src={MainBack}
         alt="Main Background"
-        style={{ objectPosition: 'bottom' }}
+        style={{ objectPosition: "bottom" }}
       />
-      <img src={Witch} alt="" className="absolute left-[150px] top-[200px] w-[500px]" />
+      <img
+        src={Witch}
+        alt=""
+        className="absolute left-[150px] top-[200px] w-[500px]"
+      />
 
       {/* Overlay */}
       <div className="absolute inset-0 flex flex-col right-[200px] items-end justify-center text-end text-white px-4">
-        <p className="text-9xl mb-4 font-bold" style={{ color: '#EBCB8B' }}>
-          타로 : 봄
-        </p>
-        <p className="text-[18px] mb-8" style={{ color: '#EBCB8B' }}>
+        <div className="relative">
+          {/* <img
+            src={Galaxy}
+            alt=""
+            className="absolute w-[100px] -left-[32px] -top-[42px]"
+          /> */}
+          {/* <p className="text-9xl mb-4 font-bold" style={{ color: "#EBCB8B" }}>
+            타로 : 봄
+          </p> */}
+
+          <h1
+            className="text-9xl font-bold"
+            style={{
+              background: "linear-gradient(to right, #7af0e5, #ce67f7)",
+              WebkitBackgroundClip: "text",
+              color: "transparent",
+            }}
+          >
+            타로 : 봄
+          </h1>
+        </div>
+        <p className="text-[18px] mb-8" style={{ color: "#FFFFFF " }}>
           타로:봄은 실시간 타로 리딩 플랫폼으로,
           <br />
           랜덤 매칭이나 AI 타로를 통해 즉시 답을 얻을 수 있습니다.
