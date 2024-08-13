@@ -208,7 +208,7 @@ const RandomMatching: React.FC = () => {
 
   // 캠 or 그래픽
   const tarotTypeButtonClicke = (label: string) => {
-    if (label == "CAM") {
+    if (label === "CAM") {
       setRoomStyle("CAM");
     } else {
       setRoomStyle("GFX");
