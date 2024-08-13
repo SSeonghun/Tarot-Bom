@@ -8,7 +8,7 @@ import {
   Room,
   RoomEvent,
 } from "livekit-client";
-import MainBg from '../../assets/mainBg.png'
+import MainBg from "../../assets/mainBg.png";
 import Graphic from "../PlayTarot/Graphic";
 // Define types
 type TrackInfo = {
@@ -84,13 +84,16 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
     );
 
     try {
-      const token = await getToken(roomName as string, participantName as string);
+      const token = await getToken(
+        roomName as string,
+        participantName as string
+      );
       await room.connect(LIVEKIT_URL, token);
       await room.localParticipant.setMicrophoneEnabled(true); // 마이크만 활성화
       const audioTrack = room.localParticipant.audioTrackPublications
-      .values()
-      .next().value?.audioTrack;
-    setLocalTrack(audioTrack);
+        .values()
+        .next().value?.audioTrack;
+      setLocalTrack(audioTrack);
     } catch (error) {
       console.log("Error connecting to the room:", (error as Error).message);
       await leaveRoom();
@@ -105,7 +108,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
   }
 
   async function getToken(roomName: string, participantName: string) {
-    console.log(roomName,participantName)
+    console.log(roomName, participantName);
     const response = await fetch(APPLICATION_SERVER_URL + "token", {
       method: "POST",
       headers: {
@@ -175,12 +178,12 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
       {!room ? (
         <div id="join" className="relative h-screen overflow-hidden">
           <img
-              className="absolute inset-0 w-full h-full object-cover opacity-40 z-0"
-              src={MainBg}
-              alt="Main Background"
+            className="absolute inset-0 w-full h-full object-cover opacity-40 z-0"
+            src={MainBg}
+            alt="Main Background"
           />
           <div id="join-dialog " className="absolute bottom-10 left-10 z-10">
-          <h2 className="text-white">Join an Audio Room</h2>
+            <h2 className="text-white">Join an Audio Room</h2>
             <form
               onSubmit={(e) => {
                 joinRoom();
@@ -221,7 +224,8 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
         </div>
       ) : (
         <div id="room">
-          <Graphic/>
+          {/* TODO : props 요소 넘겨줘야함 navigate */}
+          <Graphic />
           <div id="room-header">
             <h2 id="room-title">{roomName}</h2>
             <button
@@ -233,10 +237,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
             </button>
           </div>
           <div id="layout-container">
-            {localTrack && (
-              <audio ref={localVideoRef} autoPlay={true} />
-              
-            )}
+            {localTrack && <audio ref={localVideoRef} autoPlay={true} />}
             {remoteTracks.map((remoteTrack) =>
               remoteTrack.trackPublication.kind === "audio" ? (
                 <div

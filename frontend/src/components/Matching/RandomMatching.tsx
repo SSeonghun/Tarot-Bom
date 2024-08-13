@@ -160,6 +160,7 @@ const RandomMatching: React.FC = () => {
 
   // 방 입장 메서드
   //TODO : 경준형님 토큰: token, nickname : member, type: CAM인지 GFX인지 일단 하드코딩 주말 수정 예정
+  // TODO : 그래픽인지, 진짜 카드인지 분기해서 나눠줘야함 지금은 그냥 모두 하드하게 캠으로만 가는중
   const enterRoom = (token: string) => {
     const memberName = userInfo?.nickname ?? 'Unknown';
     console.log(memberName, token);

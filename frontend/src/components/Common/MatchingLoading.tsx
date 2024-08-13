@@ -1,11 +1,11 @@
 // src/components/Common/LoadingModal.tsx
 
-import React from 'react';
-import HoverButton from './HoverButton';
-import LoadingSpinner from './LoadingSpinner';
-import CommonButton from './CommonButton';
+import React from "react";
+import HoverButton from "./HoverButton";
+import LoadingSpinner from "./LoadingSpinner";
+import CommonButton from "./CommonButton";
 
-import LoadingImg from '../../assets/img/loading1.webp';
+import LoadingImg from "../../assets/img/loading1.webp";
 
 interface LoadingModalProps {
   isOpen: boolean;
@@ -19,7 +19,7 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen, onCancel }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-4 rounded-lg shadow-lg flex flex-col justify-center items-center">
-        <h2 className="text-[30px] text-black font-bold mb-4">매칭 중</h2>
+        <h2 className="text-[30px] text-black font-bold mb-4">매칭중</h2>
         {/* 여기에 로딩 애니메이션을 추가할 수 있습니다 */}
         <img src={LoadingImg} alt="" className="w-[130px] mt-4 rounded-lg" />
         <LoadingSpinner />

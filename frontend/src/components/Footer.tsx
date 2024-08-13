@@ -4,7 +4,7 @@ import Github from "../assets/img/github.png";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-800 shadow dark:bg-gray-900">
+    <footer className="bg-gray-800 shadow dark:bg-gray-900 z-50">
       <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
         <div className="sm:flex sm:items-center sm:justify-between">
           <a

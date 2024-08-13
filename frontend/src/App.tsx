@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/UserAuth/Login";
 import Navbar from "./components/Navbar";
@@ -28,40 +33,55 @@ import ImageUpload from "./pages/Test/ImageUpload";
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="App overflow-x-hidden">
+      <div className="flex flex-col min-h-screen">
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/offline" element={<Offline />} />
-          <Route path="/online" element={<Matching />} />
-          <Route path="/online/graphic" element={<Graphic />} />
-          <Route path="/search-reader" element={<SerchReader />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/matching" element={<Matching />} />
-          <Route path="/change-pwd" element={<ChangePwd />} />
-          <Route path="/findpwd" element={<FindPwd />} />
-          <Route path="/reader-profile/:readerId" element={<ReaderProfile />} />
-          <Route path="/posts/:id" element={<PostDetail />} />
-          <Route path="/create-post" element={<CreatePostPage />} />
-          <Route path="/tarot-result" element={<TarotResult />} />
-          <Route path="/play" element={<Play />} />
-          <Route path="/create-reader" element={<CreateReader />} />
-          <Route path="/seeker-mypage" element={<SeekerMypage />} />
-          <Route path="/reader-mypage" element={<ReaderMypage />} />
-          <Route path="/booking" element={<Booking />} />
-          <Route path="/webrtc" element={<WebRTCpage />} />
-          <Route
-            path="/rtcTest"
-            element={<WebRTCTest token={""} name={""} type={""} />}
-          />
-          <Route path="/test" element={<ImageUpload/>}/>
-        </Routes>
-        <Footer />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/offline" element={<Offline />} />
+            <Route path="/online" element={<Matching />} />
+            <Route path="/online/graphic" element={<Graphic />} />
+            <Route path="/search-reader" element={<SerchReader />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/matching" element={<Matching />} />
+            <Route path="/change-pwd" element={<ChangePwd />} />
+            <Route path="/findpwd" element={<FindPwd />} />
+            <Route
+              path="/reader-profile/:readerId"
+              element={<ReaderProfile />}
+            />
+            <Route path="/posts/:id" element={<PostDetail />} />
+            <Route path="/create-post" element={<CreatePostPage />} />
+            <Route path="/tarot-result" element={<TarotResult />} />
+            <Route path="/play" element={<Play />} />
+            <Route path="/create-reader" element={<CreateReader />} />
+            <Route path="/seeker-mypage" element={<SeekerMypage />} />
+            <Route path="/reader-mypage" element={<ReaderMypage />} />
+            <Route path="/booking" element={<Booking />} />
+            <Route path="/webrtc" element={<WebRTCpage />} />
+            <Route
+              path="/rtcTest"
+              element={<WebRTCTest token={""} name={""} type={""} />}
+            />
+            <Route path="/test" element={<ImageUpload />} />
+          </Routes>
+        </main>
+        <FooterWrapper />
       </div>
     </Router>
   );
+};
+
+// Footer 조건부 렌더링을 위한 컴포넌트
+const FooterWrapper: React.FC = () => {
+  const location = useLocation();
+  const shouldHideFooter =
+    location.pathname.includes("seeker-mypage") ||
+    location.pathname.includes("reader-mypage");
+
+  return <>{!shouldHideFooter && <Footer />}</>;
 };
 
 export default App;
