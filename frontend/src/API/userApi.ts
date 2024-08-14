@@ -9,7 +9,7 @@ const signup = async (nickname: string, email: string, password: string) => {
   console.log(nickname, email, password);
 
   try {
-    const response = await axios.post(API_URL + "signup", {
+    const response = await axios.post(API_URL + "signup/seeker", {
       nickname,
       email,
       password,
