@@ -16,7 +16,7 @@ public class ReportResponseDto {
     private String content;
     private LocalDateTime createTime;
     private String reportType;
-    private long readerId;
+    private long reportedId;
     private long reporterId;
     private String status;
 }

@@ -1,23 +1,22 @@
 // Login.tsx
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import './login.css';
-import InputField from '../../components/login_signup/InputField';
-import SubmitButton from '../../components/login_signup/SubmitButton';
-import useUserStore from '../../stores/store';
-import ProfileImg from '../../components/login_signup/ProfileImg';
-import { userInfo } from 'os';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "./login.css";
+import InputField from "../../components/login_signup/InputField";
+import SubmitButton from "../../components/login_signup/SubmitButton";
+import useUserStore from "../../stores/store";
+import ProfileImg from "../../components/login_signup/ProfileImg";
+import { userInfo } from "os";
 
-const { login } = require('../../API/userApi');
+const { login } = require("../../API/userApi");
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   const store = useUserStore();
   const navigate = useNavigate();
-
 
   const validateEmail = (email: string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -28,40 +27,41 @@ const Login: React.FC = () => {
     const { value } = e.target;
     setEmail(value);
     if (validateEmail(value)) {
-      setEmailError('');
+      setEmailError("");
     } else {
-      setEmailError('유효한 이메일 주소를 입력해주세요.');
+      setEmailError("유효한 이메일 주소를 입력해주세요.");
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateEmail(email)) {
-      setEmailError('유효한 이메일 주소를 입력해주세요.');
+      setEmailError("유효한 이메일 주소를 입력해주세요.");
       return;
     }
-    console.log('로그인 시도', { email, password });
+    console.log("로그인 시도", { email, password });
 
     try {
       const result = await login(email, password);
-      console.log('로그인 성공', result);
+      console.log("로그인 성공", result);
       store.loginUser();
-      
+
       store.userInfoSet({
         memberId: result.data.memberId,
         nickname: result.data.name,
         email: result.data.email,
         isReader: result.data.reader,
-        profileImg : result.data.profileUrl,
-        password : password,
+        isAdmin: result.data.admin,
+        profileImg: result.data.profileUrl,
+        password: password,
       });
 
       // window.location.href = "/";
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      alert('이메일과 비밀번호를 다시 확인하세요');
-      console.error('로그인 중 오류 발생', error);
-      setPassword('');
+      alert("이메일과 비밀번호를 다시 확인하세요");
+      console.error("로그인 중 오류 발생", error);
+      setPassword("");
     }
   };
 
@@ -89,15 +89,9 @@ const Login: React.FC = () => {
               />
               <SubmitButton text="로그인" />
 
-              <div className="flex justify-evenly mb-auto">
+              <div className="flex justify-end mb-auto">
                 <Link className="block text-blue-400 my-5" to="/signup">
                   회원가입
-                </Link>
-                <Link className="block text-blue-400 my-5" to="/change-pwd">
-                  비밀번호 변경
-                </Link>
-                <Link className="block text-blue-400 my-5" to="/findpwd">
-                  비밀번호 찾기
                 </Link>
               </div>
             </form>

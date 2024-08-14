@@ -219,7 +219,11 @@ public class MemberServiceImpl implements MemberService {
                 .email(email)
                 .password(password)
                 .memberTypeId("M01")
+                .profileUrl("https://d2ovihsqke74ur.cloudfront.net/profile/429f76b1-f8ea-44df-bf71-6de4e8471954_기본이미지.webp")
                 .build();
+
+        log.info(member.getProfileUrl());
+
         memberRepository.save(member);
 
     }

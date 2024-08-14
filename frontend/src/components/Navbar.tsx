@@ -34,6 +34,8 @@ const Navbar: React.FC = () => {
 
   const reservationInfo = useStore((state) => state.reservationInfo); // reservationInfo 상태 가져오기
 
+  console.log(userInfo);
+
   useEffect(() => {
     // reservationInfo가 정의되고, memberId와 time이 유효한 경우에만 호출
     if (reservationInfo && reservationInfo.memberId && reservationInfo.time) {
@@ -242,6 +244,13 @@ const Navbar: React.FC = () => {
           <PrivateLink to="/online">타로보기</PrivateLink>
           <PrivateLink to="/search-reader">예약하기</PrivateLink>
           <PrivateLink to="/community">커뮤니티</PrivateLink>
+          {userInfo?.isAdmin && (
+            <div>
+              <Link to="/admin">
+                <h1 className="text-white">관리자</h1>
+              </Link>
+            </div>
+          )}
 
           {store.isLoggedIn ? (
             <div className="relative inline-block text-left dropdown ">

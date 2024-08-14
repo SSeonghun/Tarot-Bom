@@ -116,7 +116,7 @@ const ReaderMypage: React.FC = () => {
 
                 // JSON 문자열을 객체로 역직렬화하여 token 값을 추출
                 const parsedData = JSON.parse(jsonString);
-                const token = parsedData.token;
+                const token = parsedData.roomId;
                 const roomStyle = parsedData.roomStyle;
 
                 // token 값을 사용
@@ -165,7 +165,7 @@ const ReaderMypage: React.FC = () => {
         token
       )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
         roomStyle
-      )}`;
+      )}&position=Reader`;
 
       // 라우터를 통해 방으로 이동
       navigate(roomEntryPath, {
@@ -177,7 +177,7 @@ const ReaderMypage: React.FC = () => {
         token
       )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
         roomStyle
-      )}`;
+      )}&position=Reader`;
 
       // 라우터를 통해 방으로 이동
       navigate(roomEntryPath, {
