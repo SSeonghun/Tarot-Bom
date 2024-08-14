@@ -2,6 +2,7 @@ package com.ssafy.tarotbom.domain.report.service;
 
 
 import com.ssafy.tarotbom.domain.member.repository.MemberRepository;
+import com.ssafy.tarotbom.domain.report.dto.ReportResponseDto;
 import com.ssafy.tarotbom.domain.report.dto.request.ReportCreateReqDto;
 import com.ssafy.tarotbom.domain.report.dto.request.ReportUpdateReqDto;
 import com.ssafy.tarotbom.domain.report.dto.response.ReportUpdateResponseDto;
@@ -15,6 +16,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -80,5 +84,28 @@ public class ReportServiceImpl implements ReportService{
         if(reportRepository.deleteByReportId(reportId) == 0) {
             throw new BusinessException(ErrorCode.REPORT_NOT_FOUND);
         }
+    }
+
+    @Override
+    public List<ReportResponseDto> getReport(HttpServletRequest request) {
+
+        List<Report> list = reportRepository.findAll();
+
+        // Report 리스트를 ReportResponseDto 리스트로 변환합니다.
+        List<ReportResponseDto> dtoList = list.stream()
+                .map(report -> ReportResponseDto.builder()
+                        .reportId(report.getReportId()) // Report 클래스의 getId() 메서드를 사용한다고 가정
+                        .content(report.getContent()) // Report 클래스의 getContent() 메서드를 사용한다고 가정
+                        .createTime(report.getCreateTime()) // Report 클래스의 getCreateTime() 메서드를 사용한다고 가정
+                        .reportType(report.getReportType().getCodeTypeId()) // Report 클래스의 getReportType() 메서드를 사용한다고 가정
+                        .readerId(report.getReportedId()) // Report 클래스의 getReaderId() 메서드를 사용한다고 가정
+                        .reporterId(report.getReporterId()) // Report 클래스의 getReporterId() 메서드를 사용한다고 가정
+                        .status(report.getStatus().getCodeTypeId()) // Report 클래스의 getStatus() 메서드를 사용한다고 가정
+                        .build()
+                )
+                .collect(Collectors.toList());
+
+        // 변환된 DTO 리스트를 반환합니다.
+        return dtoList;
     }
 }
