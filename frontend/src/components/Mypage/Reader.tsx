@@ -165,7 +165,7 @@ const ReaderMypage: React.FC = () => {
         token
       )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
         roomStyle
-      )}`;
+      )}&position=Reader`;
 
       // 라우터를 통해 방으로 이동
       navigate(roomEntryPath, {
@@ -177,7 +177,7 @@ const ReaderMypage: React.FC = () => {
         token
       )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
         roomStyle
-      )}`;
+      )}&position=Reader`;
 
       // 라우터를 통해 방으로 이동
       navigate(roomEntryPath, {
