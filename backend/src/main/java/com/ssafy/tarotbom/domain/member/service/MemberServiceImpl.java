@@ -149,13 +149,20 @@ public class MemberServiceImpl implements MemberService {
         tokenService.saveRefreshToken(String.valueOf(member.getMemberId()), refreshToken, 7, TimeUnit.DAYS);
 
         boolean isReader = false; // 리더 프로필이 있는지 없는지 확인하는 변수
-        try {
-            Long id = member.getMemberId();
-            Reader reader = readerRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-            isReader = true;
-        } catch (NumberFormatException | EntityNotFoundException e) {
-            isReader = false;
+        boolean isAdmin = false;
+        if(member.getMemberTypeId().equals("M00")) {
+            isAdmin = true;
         }
+        if(member.getMemberTypeId().equals("M02")) {
+            isReader = true;
+        }
+//        try {
+//            Long id = member.getMemberId();
+//            Reader reader = readerRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+//            isReader = true;
+//        } catch (NumberFormatException | EntityNotFoundException e) {
+//            isReader = false;
+//        }
 
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
@@ -167,6 +174,7 @@ public class MemberServiceImpl implements MemberService {
                 .name(name)
                 .isReader(isReader)
                 .profileUrl(member.getProfileUrl())
+                .isAdmin(isAdmin)
                 .build();
         return loginResponseDto;
     }
