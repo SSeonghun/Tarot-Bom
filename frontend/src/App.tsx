@@ -59,13 +59,14 @@ const App: React.FC = () => {
           <Route path="/play" element={<Play />} />
           <Route path="/create-reader" element={<CreateReader />} />
           <Route path="/seeker-mypage" element={<SeekerMypage />} />
-          <Route
+          {/* <Route
             path="/reader-mypage"
             element={<ReaderRoute element={<ReaderMypage />} />}
-          />
+          /> */}
+          <Route path="/reader-mypage" element={<ReaderMypage />} />
           <Route path="/booking" element={<Booking />} />
           <Route path="/webrtc" element={<WebRTCpage />} />
-          <Route path="/rtcTest" element={<WebRTCTest/>} />
+          <Route path="/rtcTest" element={<WebRTCTest />} />
           <Route path="/test" element={<ImageUpload />} />
           <Route path="/error" element={<Error />} />
 

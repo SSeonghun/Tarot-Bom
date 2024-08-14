@@ -1,15 +1,50 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Book from "../../assets/img/book.webp";
 import Tarot from "../../assets/img/tarot2.webp";
+import "../../assets/css/Reader.css";
 
-// Main Section 1
-const Hero1: React.FC = () => {
+const Hero5: React.FC = () => {
+  const textRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("slide-up");
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    if (textRef.current) {
+      observer.observe(textRef.current);
+    }
+    if (imageRef.current) {
+      observer.observe(imageRef.current);
+    }
+
+    return () => {
+      if (textRef.current) {
+        observer.unobserve(textRef.current);
+      }
+      if (imageRef.current) {
+        observer.unobserve(imageRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <div className="relative w-screen h-[700px] bg-black z-99">
+    <div className="relative w-screen h-[750px] bg-black z-99">
       <div className="h-full w-full flex flex-row justify-center items-center">
         <div className="grid grid-cols-12 gap-12">
           <div className="col-span-6">
-            <div className="w-[500px] h-[400px] text-end rounded-lg text-black animate-slide-up justify-center items-center">
+            <div
+              ref={textRef}
+              className="w-[500px] h-[400px] text-end rounded-lg text-black opacity-0"
+            >
               <h3 className="font-bold text-[25px] text-violet-600">접근성</h3>
               <h1 className="font-bold text-white text-[55px]">누구나</h1>
               <h1 className="font-bold text-white text-[55px]">타로 리더</h1>
@@ -23,7 +58,7 @@ const Hero1: React.FC = () => {
               </p>
             </div>
           </div>
-          <div className="relative grid col-span-6">
+          <div ref={imageRef} className="relative grid col-span-6 opacity-0">
             <img
               src={Book}
               alt=""
@@ -32,11 +67,11 @@ const Hero1: React.FC = () => {
             <img
               src={Tarot}
               alt=""
-              className="relative z-100 -top-[50px]  ms-auto me-auto right-[25px]"
+              className="relative z-100 -top-[50px] ms-auto me-auto right-[25px]"
               style={{
-                width: "70%", // 원하는 너비 비율로 조절
-                height: "auto", // 자동 높이 조절
-                objectFit: "contain", // 비율 유지하면서 잘림 방지
+                width: "70%",
+                height: "auto",
+                objectFit: "contain",
               }}
             />
           </div>
@@ -46,4 +81,4 @@ const Hero1: React.FC = () => {
   );
 };
 
-export default Hero1;
+export default Hero5;
