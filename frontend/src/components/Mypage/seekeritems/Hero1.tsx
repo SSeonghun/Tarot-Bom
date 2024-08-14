@@ -14,6 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import Loading from '../../../assets/img/loading1.webp';
 import quotes from '../../../assets/quotes/quotes.json'; // 경로를 맞게 수정하세요
 
+const tarotCardContext = (require as any).context('../../../assets/tarot_images - 복사본', false, /\.(jpg|jpeg|png)$/);
+const tarotCardImages = tarotCardContext.keys().map((key: string) => tarotCardContext(key));
 
 
 const defaultProfileUrl =
@@ -79,6 +81,11 @@ const getRandomQuote = () => {
   const randomIndex = Math.floor(Math.random() * quotes.length);
   return quotes[randomIndex];
 };
+// 랜덤 타로 카드 선택 함수
+const getRandomTarotCard = () => {
+  const randomIndex = Math.floor(Math.random() * tarotCardImages.length);
+  return tarotCardImages[randomIndex];
+};
 
 const Hero1: React.FC<Hero1Props> = ({
   reservationList,
@@ -115,9 +122,13 @@ const Hero1: React.FC<Hero1Props> = ({
 
   // 랜덤 명언 데이터
   const [quote, setQuote] = useState<{ text: string; author: string } | null>(null);
+  // 랜덤 타로 카드 데이터
+  const [tarotCard, setTarotCard] = useState<string | null>(null);
+
 
   useEffect(() => {
     setQuote(getRandomQuote());
+    setTarotCard(getRandomTarotCard());
   }, []);
 
   return (
@@ -173,13 +184,17 @@ const Hero1: React.FC<Hero1Props> = ({
         <div className="col-span-4">
           <div className="border border-black rounded-lg grid grid-cols-12 p-4">
             <div className="col-span-4">
-              <img src={TarotCard} alt="오늘의 타로점" />
+            <img src={tarotCard || Loading} alt="오늘의 타로점" />
             </div>
             <div className="col-span-8">
               <h1 className="text-black text-[30px] text-center font-bold">오늘의 명언</h1>
               <p className="text-black text-[20px] text-start ms-4 mt-4">
-                {quote ? `"${quote.text}" - ${quote.author}` : '로딩 중...'}
-              </p>
+                <span style={{ color: '#2f4f4f', fontWeight: 'bold' }}>
+                  {quote ? `"${quote.text}"` : '로딩 중...'}
+                </span></p>
+                <p className="text-black text-[20px] text-start ms-4 mt-4">
+                 - {quote?.author}
+                 </p>
             </div>
           </div>
           <div className="border border-black rounded-lg mt-2">
