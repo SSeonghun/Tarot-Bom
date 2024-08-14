@@ -11,6 +11,7 @@ interface UserState {
         nickname: string | undefined;
         email: string | undefined;
         isReader: boolean | undefined;
+        isAdmin: boolean | undefined;
         profileImg: string | undefined;
         password: string;
       }
@@ -26,6 +27,7 @@ interface UserState {
     nickname: string | undefined;
     email: string | undefined;
     isReader: boolean | undefined;
+    isAdmin: boolean | undefined;
     profileImg: string | undefined;
     password: string;
   }) => void; // 사용자 정보 설정 함수

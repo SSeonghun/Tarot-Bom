@@ -13,4 +13,16 @@ public class LoginResponseDto {
     private String profileUrl;
     private boolean isReader;
     private boolean isAdmin;
+
+    @Override
+    public String toString() {
+        return "LoginResponseDto{" +
+                "memberId=" + memberId +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", profileUrl='" + profileUrl + '\'' +
+                ", isReader=" + isReader +
+                ", isAdmin=" + isAdmin +
+                '}';
+    }
 }

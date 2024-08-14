@@ -98,7 +98,7 @@ public class ReportServiceImpl implements ReportService{
                         .content(report.getContent()) // Report 클래스의 getContent() 메서드를 사용한다고 가정
                         .createTime(report.getCreateTime()) // Report 클래스의 getCreateTime() 메서드를 사용한다고 가정
                         .reportType(report.getReportType().getCodeTypeId()) // Report 클래스의 getReportType() 메서드를 사용한다고 가정
-                        .readerId(report.getReportedId()) // Report 클래스의 getReaderId() 메서드를 사용한다고 가정
+                        .reportedId(report.getReportedId()) // Report 클래스의 getReaderId() 메서드를 사용한다고 가정
                         .reporterId(report.getReporterId()) // Report 클래스의 getReporterId() 메서드를 사용한다고 가정
                         .status(report.getStatus().getCodeTypeId()) // Report 클래스의 getStatus() 메서드를 사용한다고 가정
                         .build()

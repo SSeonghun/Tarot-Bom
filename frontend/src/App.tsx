@@ -30,6 +30,10 @@ import WebRTCpage from "./pages/WebRTC/WebRTCpage";
 import WebRTCTest from "./pages/WebRTC/WebRTCtest";
 import ImageUpload from "./pages/Test/ImageUpload";
 import Admin from "./pages/Admin/AdminPage";
+import AdminRoute from "./components/AdminRoute";
+import ReaderRoute from "./components/ReaderRouteProps";
+import Error from "./components/PermitionError";
+import NotFoundError from "./components/NotFoundError";
 
 const App: React.FC = () => {
   return (
@@ -38,7 +42,6 @@ const App: React.FC = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/admin" element={<Admin />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/offline" element={<Offline />} />
@@ -56,7 +59,10 @@ const App: React.FC = () => {
           <Route path="/play" element={<Play />} />
           <Route path="/create-reader" element={<CreateReader />} />
           <Route path="/seeker-mypage" element={<SeekerMypage />} />
-          <Route path="/reader-mypage" element={<ReaderMypage />} />
+          <Route
+            path="/reader-mypage"
+            element={<ReaderRoute element={<ReaderMypage />} />}
+          />
           <Route path="/booking" element={<Booking />} />
           <Route
             path="/webrtc"
@@ -67,6 +73,11 @@ const App: React.FC = () => {
             element={<WebRTCTest token={""} name={""} type={""} />}
           />
           <Route path="/test" element={<ImageUpload />} />
+          <Route path="/error" element={<Error />} />
+
+          {/* AdminRoute 사용 */}
+          <Route path="/admin" element={<AdminRoute element={<Admin />} />} />
+          <Route path="*" element={<NotFoundError />} />
         </Routes>
         <FooterWrapper /> {/* FooterWrapper 사용 */}
       </div>

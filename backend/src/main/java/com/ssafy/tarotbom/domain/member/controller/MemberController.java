@@ -43,6 +43,8 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
         LoginResponseDto loginResponseDto = memberService.login(loginReqDto, response);
+        log.info("isAdmin : {}", loginResponseDto.isAdmin());
+        log.info("loginResponseDto : {}", loginResponseDto);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.LOGIN_OK, loginResponseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
