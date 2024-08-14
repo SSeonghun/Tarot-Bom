@@ -103,6 +103,7 @@ public class MatchingController {
                 String candidateToken = openviduService.getToken(candidateDto.getMemberId(), roomId);
                 MatchingRoomEnterResponseDto candidateRoomEnterResponseDto = MatchingRoomEnterResponseDto.builder()
                         .token(candidateToken)
+                        .roomStyle(roomStyle)
                         .build();
                 socketResponse = SocketResponse.of(SocketCode.MATCHING_ENTER_ROOM, candidateRoomEnterResponseDto);
                 sendingOperation.convertAndSend(matchingStatusPath+candidateDto.getMemberId(), socketResponse);
