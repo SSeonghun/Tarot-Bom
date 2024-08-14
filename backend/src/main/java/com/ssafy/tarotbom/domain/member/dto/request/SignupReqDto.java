@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @NoArgsConstructor
@@ -21,5 +22,6 @@ public class SignupReqDto {
     @NotNull(message = "비밀번호는 필수 입력값입니다.")
     private String password;
 
+    private String profileUrl;
 
 }

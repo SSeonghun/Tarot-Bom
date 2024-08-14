@@ -203,6 +203,7 @@ public class MemberServiceImpl implements MemberService {
         String nickname = signupReqDto.getNickname();
         String email = signupReqDto.getEmail();
         String password = bcrypasswordEncoder.encode(signupReqDto.getPassword());
+        String imageUrl = signupReqDto.getProfileUrl();
 
         Optional<Member> findMemberByNickname = memberRepository.findMemberByNickname(nickname);
         if(findMemberByNickname.isPresent()){
@@ -219,6 +220,7 @@ public class MemberServiceImpl implements MemberService {
                 .email(email)
                 .password(password)
                 .memberTypeId("M01")
+                .profileUrl(imageUrl)
                 .build();
         memberRepository.save(member);
 
