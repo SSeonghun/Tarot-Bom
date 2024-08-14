@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MatchingRoomEnterResponseDto {
-    private String token;
+    //private String token;
     private String roomStyle;
+    private long roomId;
 }
