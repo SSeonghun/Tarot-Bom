@@ -22,13 +22,6 @@ const Signup: React.FC = () => {
   const [pinError, setPinError] = useState(""); // State to hold pin error
   const [verifyEmail, setVerifyEmail] = useState(false);
 
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
   const validateEmail = (email: string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return re.test(String(email).toLowerCase());
