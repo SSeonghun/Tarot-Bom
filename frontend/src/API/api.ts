@@ -258,6 +258,26 @@ const addReview = async (
   }
 };
 
+const seekerReview = async (
+  seekerId: number
+) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}review/seeker/${seekerId}`,
+
+      {
+        withCredentials: true, // 요청에 쿠키를 포함하도록 설정
+      }
+    );
+    console.log(response.data.data);
+    console.log('리뷰 조회')
+    return response.data.data;
+  } catch (error) {
+    console.log("리뷰 조회 실패", error);
+    throw error;
+  }
+};
+
 export {
   chatReport,
   readerJoin,
@@ -270,4 +290,5 @@ export {
   readerTop,
   saveTarotResult,
   addReview,
+  seekerReview,
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
 import CalendarImo from '../../assets/img/달력.png';
 import ResultCard from './ResultCard';
@@ -15,6 +15,7 @@ interface ResultSummaryProps {
   summary: string;
   resultId: number;
   seekerId: number;
+  reviewResultIds: number[]; // 수정된 부분: resultId 배열
 }
 
 const ResultSummary: React.FC<ResultSummaryProps> = ({
@@ -26,10 +27,11 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
   summary,
   resultId,
   seekerId,
+  reviewResultIds,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   // 슬라이드 설정
   const settings = {
     dots: true,
@@ -69,6 +71,8 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
     setIsModalOpen(false); // 모달 닫기
   };
 
+  const isReviewed = reviewResultIds.includes(resultId); // 현재 resultId가 리뷰 작성된 ID 목록에 있는지 확인
+
   return (
     <div className=''>
       <div className="flex items-center justify-between mt-4">
@@ -76,12 +80,16 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
           <img src={CalendarImo} alt="달력 이모티콘" className="ms-4" />
           <div className="text-lg font-semibold">{formattedDate}</div>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-2 py-1 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out transform hover:scale-105 mx-5"
-        >
-          리뷰 작성
-        </button>
+        {!isReviewed ? (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-2 py-1 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out transform hover:scale-105 mx-5"
+          >
+            리뷰 작성
+          </button>
+        ) : (
+          <div className="text-lg font-semibold mx-5">리뷰 작성 완료</div>
+        )}
       </div>
       <div className="m-7">
         <Slider {...settings}>
@@ -113,7 +121,6 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
         onSubmit={handleSubmit}
         readerId={readerId} // 추가된 부분
         resultId={resultId} // 추가된 부분
-        seekerId={seekerId} // 추가된 부분
       />
     </div>
   );

@@ -7,26 +7,48 @@ interface ModalProps {
   onSubmit: () => void;
   readerId: number; // 추가된 부분
   resultId: number; // 추가된 부분
-  seekerId: number; // 추가된 부분
 }
 
 const { addReview } = require('../../../API/api');
 
-const ReviewModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, readerId, resultId, seekerId }) => {
+const ReviewModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, readerId, resultId }) => {
   const [rating, setRating] = useState(0); // 별점 상태
   const [review, setReview] = useState(""); // 리뷰 내용 상태
+  const [error, setError] = useState(""); // 에러 메시지 상태
 
   if (!isOpen) return null;
 
-  const handleSubmit = () => {
-    // 제출 버튼 클릭 시 처리할 로직
-    console.log("리뷰 제출 완료");
-    console.log("Selected Rating:", rating);
-    console.log("Review Content:", review);
-    console.log("Reader ID:", readerId); // 추가된 부분
-    console.log("Result ID:", resultId); // 추가된 부분
-    addReview(resultId, readerId, rating, review) // 여기서 addReview()를 호출할 때 readerId와 resultId를 함께 전달해야 할 경우, 이 함수에 맞게 호출해야 합니다
-    onSubmit(); // 부모 컴포넌트의 onSubmit 호출
+  const handleSubmit = async () => {
+    // 별점과 리뷰 내용 필수 확인
+    if (rating <= 0 || review.trim() === "") {
+      setError("별점과 리뷰 내용을 모두 입력해 주세요.");
+      return;
+    }
+
+    setError(""); // 에러 초기화
+
+    try {
+      // 리뷰 제출 API 호출
+      await addReview(resultId, readerId, rating, review);
+
+      console.log("리뷰 제출 완료");
+      console.log("Selected Rating:", rating);
+      console.log("Review Content:", review);
+      console.log("Reader ID:", readerId);
+      console.log("Result ID:", resultId);
+
+      // 부모 컴포넌트의 onSubmit 호출
+      onSubmit();
+
+      // 모달 닫기
+      onClose();
+
+      // 페이지 새로고침
+      window.location.reload();
+    } catch (error) {
+      console.error("리뷰 제출 실패", error);
+      setError("리뷰 제출 중 오류가 발생했습니다. 다시 시도해 주세요.");
+    }
   };
 
   return (
@@ -50,6 +72,7 @@ const ReviewModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, readerId
           value={review}
           onChange={(e) => setReview(e.target.value)}
         />
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <div className="flex justify-between">
           <button
             onClick={onClose}
