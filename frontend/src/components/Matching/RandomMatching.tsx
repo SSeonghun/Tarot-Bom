@@ -175,7 +175,7 @@ const RandomMatching: React.FC = () => {
         token
       )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
         room
-      )}`;
+      )}&position=Seeker`;
 
       // 라우터를 통해 방으로 이동
       navigate(roomEntryPath, {
@@ -187,8 +187,8 @@ const RandomMatching: React.FC = () => {
         token
       )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
         room
-      )}`;
-
+      )}&position=Seeker`;
+      console.log(roomEntryPath)
       // 라우터를 통해 방으로 이동
       navigate(roomEntryPath, {
         state: { readerType: "AI" },
