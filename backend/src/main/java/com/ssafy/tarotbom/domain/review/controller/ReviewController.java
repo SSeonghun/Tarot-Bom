@@ -2,6 +2,7 @@ package com.ssafy.tarotbom.domain.review.controller;
 
 import com.ssafy.tarotbom.domain.review.dto.request.ReviewAddRequestDto;
 import com.ssafy.tarotbom.domain.review.dto.response.ReviewResponseDto;
+import com.ssafy.tarotbom.domain.review.dto.response.ReviewResponseSeekerDto;
 import com.ssafy.tarotbom.domain.review.service.ReviewService;
 import com.ssafy.tarotbom.global.result.ResultCode;
 import com.ssafy.tarotbom.global.result.ResultResponse;
@@ -28,6 +29,13 @@ public class ReviewController {
     @GetMapping("/{readerId}")
     public ResponseEntity<?> getReview(@Valid @PathVariable long readerId) {
         ReviewResponseDto reviewResponseDto = reviewService.getAllReviews(readerId);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.REVIEW_LOADED, reviewResponseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    @GetMapping("/seeker/{seekerId}")
+    public ResponseEntity<?> getReviewSeeker(@Valid @PathVariable long seekerId) {
+        ReviewResponseSeekerDto reviewResponseDto = reviewService.getAllReviewsSeeker(seekerId);
         ResultResponse resultResponse = ResultResponse.of(ResultCode.REVIEW_LOADED, reviewResponseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }

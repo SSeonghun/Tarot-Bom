@@ -84,7 +84,7 @@ const ReaderMypage: React.FC = () => {
     fetchData();
 
     client.current = new Client({
-      brokerURL: "ws://localhost/tarotbom/ws-stomp",
+      brokerURL: process.env.REACT_APP_WEB_STOMP,
       onConnect: () => {
         console.log("Connected to WebSocket");
         setConnected(true);

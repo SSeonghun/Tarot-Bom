@@ -12,4 +12,5 @@ public class LoginResponseDto {
     private String email;
     private String profileUrl;
     private boolean isReader;
+    private boolean isAdmin;
 }

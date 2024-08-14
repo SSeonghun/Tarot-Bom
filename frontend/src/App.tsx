@@ -1,29 +1,35 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/UserAuth/Login';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import Offline from './pages/OfflineTarot';
-import SerchReader from './pages/SearchReader/SearchReader';
-import Community from './pages/Community/PostListPage';
-import SignUp from './pages/UserAuth/Signup';
-import Matching from './pages/Matching/Matching';
-import Graphic from './pages/PlayTarot/Graphic';
-import ChangePwd from './pages/UserAuth/ChangePwd';
-import FindPwd from './pages/UserAuth/FindPwd';
-import ReaderProfile from './pages/UserProfile/ReaderProfle';
-import PostDetail from './components/Community/PostDetail';
-import CreatePostPage from './pages/Community/CreatePostPage';
-import TarotResult from './pages/TarotResult/TarotResult';
-import Play from './pages/PlayTarot/Play';
-import CreateReader from './pages/CreateReader/CreateReader';
-import SeekerMypage from './pages/UserProfile/SeekerMypage';
-import ReaderMypage from './pages/UserProfile/ReaderMypage';
-import Booking from './pages/Booking/BookingPage';
-import WebRTCpage from './pages/WebRTC/WebRTCpage';
-import WebRTCTest from './pages/WebRTC/WebRTCtest';
-import ImageUpload from './pages/Test/ImageUpload';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/UserAuth/Login";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Offline from "./pages/OfflineTarot";
+import SerchReader from "./pages/SearchReader/SearchReader";
+import Community from "./pages/Community/PostListPage";
+import SignUp from "./pages/UserAuth/Signup";
+import Matching from "./pages/Matching/Matching";
+import Graphic from "./pages/PlayTarot/Graphic";
+import ChangePwd from "./pages/UserAuth/ChangePwd";
+import FindPwd from "./pages/UserAuth/FindPwd";
+import ReaderProfile from "./pages/UserProfile/ReaderProfle";
+import PostDetail from "./components/Community/PostDetail";
+import CreatePostPage from "./pages/Community/CreatePostPage";
+import TarotResult from "./pages/TarotResult/TarotResult";
+import Play from "./pages/PlayTarot/Play";
+import CreateReader from "./pages/CreateReader/CreateReader";
+import SeekerMypage from "./pages/UserProfile/SeekerMypage";
+import ReaderMypage from "./pages/UserProfile/ReaderMypage";
+import Booking from "./pages/Booking/BookingPage";
+import WebRTCpage from "./pages/WebRTC/WebRTCpage";
+import WebRTCTest from "./pages/WebRTC/WebRTCtest";
+import ImageUpload from "./pages/Test/ImageUpload";
+import Admin from "./pages/Admin/AdminPage";
 
 const App: React.FC = () => {
   return (
@@ -32,6 +38,7 @@ const App: React.FC = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/offline" element={<Offline />} />
@@ -65,7 +72,10 @@ const App: React.FC = () => {
 const FooterWrapper: React.FC = () => {
   const location = useLocation();
   const shouldHideFooter =
-    location.pathname.includes('seeker-mypage') || location.pathname.includes('reader-mypage');
+    location.pathname.includes("seeker-mypage") ||
+    location.pathname.includes("reader-mypage") ||
+    location.pathname.includes("rtcTest") ||
+    location.pathname.includes("webrtc");
 
   return <>{!shouldHideFooter && <Footer />}</>;
 };

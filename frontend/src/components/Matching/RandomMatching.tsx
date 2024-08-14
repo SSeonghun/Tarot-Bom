@@ -93,7 +93,7 @@ const RandomMatching: React.FC = () => {
 
   useEffect(() => {
     client.current = new Client({
-      brokerURL: "ws://localhost/tarotbom/ws-stomp",
+      brokerURL: process.env.REACT_APP_WEB_STOMP,
       onConnect: () => {
         console.log("Connected to WebSocket");
         setConnected(true);

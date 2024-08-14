@@ -27,7 +27,7 @@ public class MatchingController {
 
     private final MatchingService matchingService;
     private final SimpMessageSendingOperations sendingOperation;
-    private final OpenviduService openviduService;
+//    private final OpenviduService openviduService;
 
     @Value("${matching.status.path}")
     private String matchingStatusPath;
@@ -91,18 +91,18 @@ public class MatchingController {
                 log.info("방을 생성합니다...");
                 long roomId = matchingService.openMatchingRoom(myDto, candidateDto);
                 // my 쪽 메시지 전송
-                String myToken = openviduService.getToken(myDto.getMemberId(), roomId);
+                // String myToken = openviduService.getToken(myDto.getMemberId(), roomId);
                 String roomStyle = myDto.getRoomStyle();
                 MatchingRoomEnterResponseDto myRoomEnterResponseDto = MatchingRoomEnterResponseDto.builder()
-                        .token(myToken)
+                        .roomId(roomId)
                         .roomStyle(roomStyle)
                         .build();
                 SocketResponse socketResponse = SocketResponse.of(SocketCode.MATCHING_ENTER_ROOM, myRoomEnterResponseDto);
                 sendingOperation.convertAndSend(matchingStatusPath+myDto.getMemberId(), socketResponse);
                 // candidate 쪽 메시지 전송
-                String candidateToken = openviduService.getToken(candidateDto.getMemberId(), roomId);
+                // String candidateToken = openviduService.getToken(candidateDto.getMemberId(), roomId);
                 MatchingRoomEnterResponseDto candidateRoomEnterResponseDto = MatchingRoomEnterResponseDto.builder()
-                        .token(candidateToken)
+                        .roomId(roomId)
                         .roomStyle(roomStyle)
                         .build();
                 socketResponse = SocketResponse.of(SocketCode.MATCHING_ENTER_ROOM, candidateRoomEnterResponseDto);
