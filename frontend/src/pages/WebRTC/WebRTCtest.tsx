@@ -407,20 +407,20 @@ function saveDrawing() {
                 e.preventDefault();
               }}
             >
-              <div className="mb-4">
+              {/* <div>
                 <label htmlFor="participant-name">참가자</label>
-                {/* <input
+                <input
                   id="participant-name"
                   className="form-control"
                   type="text"
                   value={participantName}
                   onChange={(e) => setParticipantName(e.target.value)}
                   required
-                /> */}
+                />
                 <p>{participantName}</p>
               </div>
-              <div className="mb-4">
-                                <label htmlFor="room-name" className="block mb-2 text-teal-600 font-bold text-lg">상담실 번호</label>
+              <div>
+                <label htmlFor="room-name">룸</label>
                 <input
                   id="room-name"
                   className="form-control"
@@ -429,14 +429,13 @@ function saveDrawing() {
                   onChange={(e) => setRoomName(e.target.value)}
                   required
                 />
-                <p>{roomName}</p>
-              </div>
+              </div> */}
               <button
-                className="btn btn-lg btn-success"
-                type="submit"
-                disabled={!roomName || !participantName}
+                  className="bg-teal-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg transform transition-transform duration-200 hover:bg-teal-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                  type="submit"
+                  disabled={!roomName || !participantName}
               >
-                참가하기!
+                  입장
               </button>
             </form>
           </div>

@@ -116,7 +116,7 @@ const ReaderMypage: React.FC = () => {
 
                 // JSON 문자열을 객체로 역직렬화하여 token 값을 추출
                 const parsedData = JSON.parse(jsonString);
-                const token = parsedData.token;
+                const token = parsedData.roomId;
                 const roomStyle = parsedData.roomStyle;
 
                 // token 값을 사용
