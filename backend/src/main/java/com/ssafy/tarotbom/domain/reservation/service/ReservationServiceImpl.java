@@ -118,6 +118,7 @@ public class ReservationServiceImpl implements ReservationService{
                             .status(reservation.getStatusCode())
                             .keyword(reservation.getKeywordCode())
                             .startTime(reservation.getStartTime())
+                            .roomStyle((reservation.getRoom().getRoomStyle()))
                             .build()
             );
         }
