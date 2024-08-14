@@ -36,7 +36,7 @@ const login = async (email: string, password: string) => {
         withCredentials: true, // 쿠키를 포함하도록 설정
       }
     );
-
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("로그인 실패", error);
