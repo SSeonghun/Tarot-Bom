@@ -80,6 +80,7 @@ const SeekerItem: React.FC<SeekerItemProps> = ({ data }) => {
                 keyword={result.keyword} // 키워드
                 music={result.music} // 음악 제목
                 readerId={result.readerId} // 리더 ID
+                seekerId={result.seekerId}
                 summary={result.summary} // 요약
                 resultId={result.resultId}
               /> {/* 결과의 구조에 맞게 수정 */}

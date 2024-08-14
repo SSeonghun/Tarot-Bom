@@ -1,10 +1,10 @@
 import React from 'react';
 import HoverButton from '../../Common/HoverButton';
 
-interface HomeCardProps {
+interface ReaderCardProps {
   name: string;
   detail: string;
-  review: number;
+  rating: number;
   category: string[];
   imgUrl: string;
   hsize: string;
@@ -12,16 +12,55 @@ interface HomeCardProps {
   onClick: () => void;
 }
 
-const HomeCard: React.FC<HomeCardProps> = ({
+const ReaderCard: React.FC<ReaderCardProps> = ({
   name,
   detail,
-  review,
+  rating,
   category,
   imgUrl,
   hsize,
   wsize,
   onClick,
 }) => {
+  // 별점 렌더링 함수
+  const renderStars = (rating: number) => {
+    const totalStars = 5;
+    const fullStars = Math.floor(rating); // 정수 부분
+    const fractionalStar = Math.round((rating - fullStars) * 10); // 소수점 첫째 자리
+    const stars = [];
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<span key={i} className="text-red-500">&#9733;</span>); // 채워진 별
+    }
+
+    if (fractionalStar > 0) {
+      stars.push(
+        <span key={fullStars} className="relative inline-block">
+          <span className="text-gray-300">&#9733;</span>
+          <span
+            className="absolute inset-0 text-red-500 overflow-hidden"
+            style={{
+              width: `${fractionalStar * 10}%`,
+              display: 'inline-block'
+            }}
+          >
+            &#9733;
+          </span>
+        </span>
+      );
+    }
+
+    for (let i = fullStars + (fractionalStar > 0 ? 1 : 0); i < totalStars; i++) {
+      stars.push(<span key={i + fullStars} className="text-gray-300">&#9733;</span>); // 빈 별
+    }
+
+    return (
+      <div className="flex items-center">
+        {stars}
+        <span className="text-gray-800 ml-2">{rating.toFixed(1)}</span>
+      </div>
+    );
+  };
 
   return (
     <div className="flex items-center justify-center">
@@ -34,10 +73,13 @@ const HomeCard: React.FC<HomeCardProps> = ({
           src={imgUrl}
           alt="popular reader"
         />
-        <h1 className="text-[20px] text-white">{name}</h1>
-        <h3 className="text-sm text-gray-300 mb-5 line-clamp-2">{detail}</h3>
-        {/* <p className="text-xs mb-3 text-gray-400 mt-4">{`Review Count: ${review}`}</p> */}
-        <div className="absolute bottom-3">
+        <h1 className="text-[20px] text-black">{name}</h1>
+        <h3 className="text-sm text-gray-600 line-clamp-2">{detail}</h3>
+        {/* 별점 표시 */}
+        <div className="flex flex-col items-center mb-3">
+          {renderStars(rating)}
+        </div>
+        <div className="absolute left-1/2 transform -translate-x-1/2">
           <HoverButton
             label="Detail"
             color="bg-red-500"
@@ -52,4 +94,4 @@ const HomeCard: React.FC<HomeCardProps> = ({
   );
 };
 
-export default HomeCard;
+export default ReaderCard;

@@ -1,22 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Slider from 'react-slick';
 import CalendarImo from '../../assets/img/달력.png';
 import ResultCard from './ResultCard';
 import MusicPlayer from './MusicPlayerCopy';
 import { useNavigate } from 'react-router-dom';
-
+import ReviewModal from '../Mypage/seekeritems/ReviewModal'; // 경로를 맞게 수정하세요
 
 interface ResultSummaryProps {
   date: Date;
-  cards: { imgNum: number; name: string; imageUrl: string; resultId: number; }[]; // 카드 데이터 배열
-  keyword: string; // 키워드
-  music: string; // 음악 제목
-  readerId: number; // 리더 ID
-  summary: string; // 요약
+  cards: { imgNum: number; name: string; imageUrl: string; resultId: number; }[];
+  keyword: string;
+  music: string;
+  readerId: number;
+  summary: string;
   resultId: number;
+  seekerId: number;
 }
-
-// TODO : 각각 원하는 결과 뿌려주기 props로 받아서
 
 const ResultSummary: React.FC<ResultSummaryProps> = ({
   date,
@@ -26,35 +25,34 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
   readerId,
   summary,
   resultId,
+  seekerId,
 }) => {
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  console.log(resultId);
 
   // 슬라이드 설정
   const settings = {
-    dots: true, // 슬라이드 하단의 점 표시
-    infinite: true, // 무한 반복
-    speed: 500, // 슬라이드 전환 속도
-    slidesToShow: 3, // 한 화면에 표시할 슬라이드 수
-    slidesToScroll: 1, // 슬라이드 전환 시 이동할 슬라이드 수
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
     responsive: [
       {
-        breakpoint: 1024, // 화면 너비가 1024px 이하일 때
+        breakpoint: 1024,
         settings: {
-          slidesToShow: 2, // 슬라이드 2개
+          slidesToShow: 2,
         },
       },
       {
-        breakpoint: 600, // 화면 너비가 600px 이하일 때
+        breakpoint: 600,
         settings: {
-          slidesToShow: 1, // 슬라이드 1개
+          slidesToShow: 1,
         },
       },
     ],
   };
 
-  // 날짜를 포맷팅
   const formattedDate = date.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -65,6 +63,11 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
     navigate(`/result/search/${resultId}`);
   };
 
+  const handleSubmit = () => {
+    // 완료 버튼 클릭 시 처리할 로직
+    console.log("리뷰 제출 완료");
+    setIsModalOpen(false); // 모달 닫기
+  };
 
   return (
     <div className=''>
@@ -73,10 +76,12 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
           <img src={CalendarImo} alt="달력 이모티콘" className="ms-4" />
           <div className="text-lg font-semibold">{formattedDate}</div>
         </div>
-        {/* <button onClick={() => handleCardClick(resultId)} className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-2 py-1 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out transform hover:scale-105 mx-5">
-          상세 보기
-        </button> */}
-
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-2 py-1 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out transform hover:scale-105 mx-5"
+        >
+          리뷰 작성
+        </button>
       </div>
       <div className="m-7">
         <Slider {...settings}>
@@ -97,12 +102,21 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
           {summary}
         </p>
       </div>
-      {/* TODO : YOUTUBE API 안됨 */}
       <div className="mt-4">
         <MusicPlayer title={music} />
       </div>
+
+      {/* 모달 컴포넌트 추가 */}
+      <ReviewModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleSubmit}
+        readerId={readerId} // 추가된 부분
+        resultId={resultId} // 추가된 부분
+        seekerId={seekerId} // 추가된 부분
+      />
     </div>
-  )
+  );
 };
 
 export default ResultSummary;
