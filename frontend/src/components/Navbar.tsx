@@ -218,9 +218,9 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="p-4 bg-transparent fixed top-0 left-0 w-full z-50">
-      <div className="container flex items-center justify-between mx-auto">
-        <div className="font-bold text-white ">
+    <nav className="p-4 bg-transparent fixed top-0 left-0 w-full z-40 pointer-events-none">
+      <div className="container flex items-center justify-between mx-auto ">
+        <div className="font-bold text-white pointer-events-auto">
           <Link
             to="/"
             className="text-white hover:text-gray-400 flex flex-row justify-center items-center"
@@ -238,7 +238,7 @@ const Navbar: React.FC = () => {
             </h1>
           </Link>
         </div>
-        <div className="space-x-4 flex items-center justify-center">
+        <div className="space-x-4 flex items-center justify-center pointer-events-auto">
           <PrivateLink to="/online">타로보기</PrivateLink>
           <PrivateLink to="/search-reader">예약하기</PrivateLink>
           <PrivateLink to="/community">커뮤니티</PrivateLink>

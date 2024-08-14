@@ -193,16 +193,11 @@ const logout = async () => {
 };
 
 //TODO : get방식 동적 할당
-const seekerMypage = async (name: string, isReader: boolean) => {
+const seekerMypage = async () => {
   try {
-    const response = await axios.get(
-      `${API_URL}seeker/mypage?name=${encodeURIComponent(
-        name
-      )}&isReader=${isReader}`,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axios.get(`${API_URL}seeker/mypage`, {
+      withCredentials: true,
+    });
     console.log(response.data.data);
     return response.data.data;
   } catch (error) {

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Hero1 from "../../components/ReaderProfile/Hero1";
 import Hero2 from "../../components/ReaderProfile/Hero2";
 import Hero3 from "../../components/ReaderProfile/Hero3";
 import Hero4 from "../../components/ReaderProfile/Hero4";
-import { useLocation } from "react-router-dom";
-import { log } from "@livekit/components-core";
+import CardBackground from '../../assets/img/card.png';
+import { divide } from "lodash";
+
 const { readerDetail } = require("../../API/api.ts");
 
 interface ShopInfo {
@@ -28,16 +29,16 @@ interface Data {
   price?: number;
   profileUrl?: string | null;
   reviews?: Array<any>;
-  shopInfo?: ShopInfo | null; // 여기서 shopInfo를 ShopInfo 타입으로 변경
+  shopInfo?: ShopInfo | null;
   allConsultings?: number;
   allReservations?: number;
   afterReader?: number;
 }
 
 const SeekerMypage: React.FC = () => {
-  const [data, setData] = useState<Data | null>(null); // 초기값을 null로 설정하여 타입 일치
-
+  const [data, setData] = useState<Data | null>(null);
   const { readerId } = useParams<{ readerId: string }>();
+
   useEffect(() => {
     const loadReaders = async () => {
       try {
@@ -49,27 +50,33 @@ const SeekerMypage: React.FC = () => {
       }
     };
     loadReaders();
-  }, [readerId]); // dependency array에 readerId 추가
+  }, [readerId]);
 
-  if (!data) return <div>Loading...</div>; // 데이터 로딩 중일 때 처리
+  if (!data) return <div>Loading...</div>;
 
   return (
-    <div style={{ backgroundColor: "#1A0E2D" }}>
-      <Hero1
-        id={readerId || ""}
-        name={data.name || ""}
-        profileUrl={data.profileUrl || ""}
-        grade={data.grade || ""}
-      />
-      <Hero2
-        name={data.name || ""}
-        reviews={data.reviews || []} // 기본값 제공
-        allConsultings={data.allConsultings || 0} // 기본값 제공
-        allReservations={data.allReservations || 0} // 기본값 제공
-        afterReader={data.afterReader || 0} // 기본값 제공
-      />
-      <Hero3 intro={data.intro || ""} reviews={data.reviews || []} />
-      <Hero4 shopInfo={data.shopInfo || null} /> {/* shopInfo를 배열로 변환 */}
+    <div>
+      <div style={{ backgroundColor: "#1A0E2D" }}>
+        <Hero1
+          id={readerId || ""}
+          name={data.name || ""}
+          profileUrl={data.profileUrl || ""}
+          grade={data.grade || ""}
+        />
+        <Hero2
+          name={data.name || ""}
+          reviews={data.reviews || []}
+          allConsultings={data.allConsultings || 0}
+          allReservations={data.allReservations || 0}
+          afterReader={data.afterReader || 0}
+        />
+
+      <div className="bg-black">
+        <Hero3 intro={data.intro || ""} reviews={data.reviews || []} />
+      
+      <Hero4 shopInfo={data.shopInfo || null} name={data.name || ""}/>
+      </div>
+    </div>
     </div>
   );
 };
