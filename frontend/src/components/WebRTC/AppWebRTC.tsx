@@ -57,7 +57,7 @@ const AppWebRTC:React.FC<RTCTest>= ({ token, name, type,position })=> {
     const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
 
     const [participantName, setParticipantName] = useState(position);//"Participant" + Math.floor(Math.random() * 100)
-    const [roomName, setRoomName] = useState("Test Room");
+    const [roomName, setRoomName] = useState(token);
     const [cameraDeviceId, setCameraDeviceId] = useState<string | null>(null);
     const [audioDeviceId, setAudioDeviceId] = useState<string | null>(null);
     const [maximizedVideo, setMaximizedVideo] = useState<string | null>(null);
@@ -463,7 +463,7 @@ async function handleScenarioChange() {
                                 e.preventDefault();
                             }}
                         >
-                            <div className="mb-4">
+                            {/* <div className="mb-4">
                                 <label htmlFor="participant-name" className="block mb-2 text-teal-600 font-bold text-lg">참가자</label>
                                 <input
                                     id="participant-name"
@@ -486,7 +486,7 @@ async function handleScenarioChange() {
                                     required
                                 />
                                 <p>{roomName}</p>
-                            </div>
+                            </div> */}
                             <button
                                 className="bg-teal-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg transform transition-transform duration-200 hover:bg-teal-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-400"
                                 type="submit"

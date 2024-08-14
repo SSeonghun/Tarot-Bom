@@ -58,7 +58,7 @@ const App: React.FC = () => {
           <Route path="/seeker-mypage" element={<SeekerMypage />} />
           <Route path="/reader-mypage" element={<ReaderMypage />} />
           <Route path="/booking" element={<Booking />} />
-          <Route path="/webrtc" element={<WebRTCpage token={''} name={''} type={''} position={''}/>} />
+          <Route path="/webrtc" element={<WebRTCpage />} />
           <Route path="/rtcTest" element={<WebRTCTest/>} />
           <Route path="/test" element={<ImageUpload />} />
         </Routes>
