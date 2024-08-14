@@ -92,8 +92,10 @@ public class MatchingController {
                 long roomId = matchingService.openMatchingRoom(myDto, candidateDto);
                 // my 쪽 메시지 전송
                 String myToken = openviduService.getToken(myDto.getMemberId(), roomId);
+                String roomStyle = myDto.getRoomStyle();
                 MatchingRoomEnterResponseDto myRoomEnterResponseDto = MatchingRoomEnterResponseDto.builder()
                         .token(myToken)
+                        .roomStyle(roomStyle)
                         .build();
                 SocketResponse socketResponse = SocketResponse.of(SocketCode.MATCHING_ENTER_ROOM, myRoomEnterResponseDto);
                 sendingOperation.convertAndSend(matchingStatusPath+myDto.getMemberId(), socketResponse);
