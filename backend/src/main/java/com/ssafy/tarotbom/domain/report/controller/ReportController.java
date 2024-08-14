@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.report.controller;
 
+import com.ssafy.tarotbom.domain.report.dto.ReportResponseDto;
 import com.ssafy.tarotbom.domain.report.dto.request.ReportCreateReqDto;
 import com.ssafy.tarotbom.domain.report.dto.request.ReportUpdateReqDto;
 import com.ssafy.tarotbom.domain.report.dto.response.ReportUpdateResponseDto;
@@ -12,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +22,13 @@ import org.springframework.web.bind.annotation.*;
 public class ReportController {
 
     private final ReportService reportService;
+
+    @GetMapping("/get")
+    public  ResponseEntity<?> getReport(HttpServletRequest request) {
+        List<ReportResponseDto> list = reportService.getReport(request);
+        ResultResponse resultResponse = ResultResponse.of(ResultCode.DECLARATION_UPDATE_OK, list);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
 
     @PostMapping
     public ResponseEntity<ResultResponse> createReport(@RequestBody ReportCreateReqDto reqDto, HttpServletRequest request){
