@@ -7,6 +7,7 @@ import com.ssafy.tarotbom.domain.member.repository.ReaderRepository;
 import com.ssafy.tarotbom.domain.review.dto.ReviewReaderDto;
 import com.ssafy.tarotbom.domain.review.dto.request.ReviewAddRequestDto;
 import com.ssafy.tarotbom.domain.review.dto.response.ReviewResponseDto;
+import com.ssafy.tarotbom.domain.review.dto.response.ReviewResponseSeekerDto;
 import com.ssafy.tarotbom.domain.review.entity.ReviewReader;
 import com.ssafy.tarotbom.domain.review.repository.ReviewReaderRepository;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
@@ -67,6 +68,41 @@ public class ReviewServiceImpl implements ReviewService {
                 .reviewReaders(reviewReaderDtos)
                 .build();
     }
+
+    /**
+     * 시커가 달았던 모든 리뷰를 조회합니다.
+     *
+     * @param seekerId 회원 ID
+     * @return 리뷰 응답 DTO
+     */
+    public ReviewResponseSeekerDto getAllReviewsSeeker(long seekerId) {
+
+
+        Optional<Member> seeker = memberRepository.findMemberByMemberId(seekerId);
+
+        List<ReviewReader> reviewReaders = reviewReaderRepository.findBySeeker(seeker);
+
+        // ReviewReader를 ReviewReaderDto로 변환
+        List<ReviewReaderDto> reviewReaderDtos = reviewReaders.stream()
+                .map(reviewReader -> ReviewReaderDto.builder()
+                        .reviewReaderId(reviewReader.getReviewReaderId())
+                        .seekerId(reviewReader.getSeekerId())
+                        .seekerName(reviewReader.getSeeker().getNickname())
+                        .seekerProfileUrl(reviewReader.getSeeker().getProfileUrl())
+                        .readerId(reviewReader.getReaderId())
+                        .resultId(reviewReader.getResultId())
+                        .rating(reviewReader.getRating())
+                        .content(reviewReader.getContent())
+                        .createTime(reviewReader.getCreateTime())
+                        .updateTime(reviewReader.getUpdateTime())
+                        .build())
+                .collect(Collectors.toList());
+
+        return ReviewResponseSeekerDto.builder()
+                .reviewSeekers(reviewReaderDtos)
+                .build();
+    }
+
 
     @Override
     @Transactional
