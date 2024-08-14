@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 
 interface OpenAIProps {
   cards?: { name: string; desc: string; imgUrl: string }[];
@@ -9,18 +9,20 @@ interface OpenAIProps {
 }
 
 const apiKey = process.env.REACT_APP_OPENAI_API_KEY as string;
-const apiEndpoint = 'https://api.openai.com/v1/chat/completions';
+const apiEndpoint = "https://api.openai.com/v1/chat/completions";
 
-const fetchOpenAIResponse = async (messages: { role: string; content: any }[]): Promise<string> => {
+const fetchOpenAIResponse = async (
+  messages: { role: string; content: any }[]
+): Promise<string> => {
   try {
     const response = await fetch(apiEndpoint, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: "gpt-4o-mini",
         messages: messages,
         max_tokens: 600,
         top_p: 1,
@@ -31,25 +33,30 @@ const fetchOpenAIResponse = async (messages: { role: string; content: any }[]): 
     });
 
     const data = await response.json();
-    return data.choices?.[0]?.message?.content || 'No response';
+    return data.choices?.[0]?.message?.content || "No response";
   } catch (error) {
-    console.error('Error fetching AI response:', error);
-    return 'Error fetching AI response';
+    console.error("Error fetching AI response:", error);
+    return "Error fetching AI response";
   }
 };
 
-const OpenAI: React.FC<OpenAIProps> = ({ cards, onSummaryGenerated, cardImage, category }) => {
-  const hasFetchedRef = useRef(false);
+const OpenAI: React.FC<OpenAIProps> = ({
+  cards,
+  onSummaryGenerated,
+  cardImage,
+  category,
+}) => {
+  const hasFetchedRef = useRef<boolean>(false);
 
   useEffect(() => {
     const askTarotReading = async () => {
       if (hasFetchedRef.current) {
-        console.log('Request already sent, skipping...');
+        console.log("Request already sent, skipping...");
         return;
       }
 
       const initialMessage = {
-        role: 'system',
+        role: "system",
         content: `You are a tarot reader and a Korean music recommender. Given three or more tarot cards and a category, provide the following:
         1. **카드이름**: <Card Name>
            - **카드요약**: <Card Detail>
@@ -63,22 +70,25 @@ const OpenAI: React.FC<OpenAIProps> = ({ cards, onSummaryGenerated, cardImage, c
 
       if (cards && cards.length > 0) {
         const cardMessages = cards.map((card) => ({
-          role: 'user',
+          role: "user",
           content: `Card Name: ${card.name}, Card Detail: ${card.desc}`,
         }));
         messages.push(...cardMessages);
-        hasFetchedRef.current = true; // cards가 있는 경우에만 중복 호출 방지
       }
 
       if (cardImage) {
         messages.push({
-          role: 'user',
+          role: "user",
           content: `Image URL: data:image/png;base64,${cardImage}`,
         });
       }
 
       const aiResponse = await fetchOpenAIResponse(messages);
-      onSummaryGenerated(aiResponse);
+
+      if (!hasFetchedRef.current) {
+        onSummaryGenerated(aiResponse);
+        hasFetchedRef.current = true;
+      }
     };
 
     askTarotReading();

@@ -476,7 +476,7 @@ public class MemberServiceImpl implements MemberService {
             // 리더였던 경우 : 시커 프로필은 무조건 있으므로 바로 바꿔준다
             changedType = "M01";
         }
-        log.info("권한 변경 change : {} -> {}", type, changedType);
+        log.info("권한 변경 changenpm : {} -> {}", type, changedType);
         CustomUserInfoDto member = CustomUserInfoDto
                 .builder()
                 .memberId(memberId)

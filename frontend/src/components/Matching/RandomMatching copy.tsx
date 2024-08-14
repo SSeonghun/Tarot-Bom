@@ -99,6 +99,12 @@ const RandomMatching: React.FC = () => {
               setShowConfirmation(true);
             }
 
+            if (match.code === "M05") {
+              console.log("상대방 매칭 확인 대기");
+              setShowConfirmation(false);
+              // setConfirm(true);
+            }
+
             if (match.code === "M08") {
               // match.data를 JSON 문자열로 직렬화
               const jsonString = JSON.stringify(match.data);
