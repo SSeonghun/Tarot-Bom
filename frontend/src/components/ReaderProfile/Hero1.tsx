@@ -87,7 +87,7 @@ const Hero1: React.FC<Hero1Props> = ({ id, name, profileUrl, grade }) => {
           />
         </div>
         <div className="flex flex-row items-end">
-          <div className="w-auto h-10">{gradeText}</div>{" "}
+          {/* <div className="w-auto h-10">{gradeText}</div>{" "} */}
           {/* 매핑된 텍스트 사용 */}
           <h1 className="text-5xl text-white mt-5 font-bold">{name}</h1>
         </div>

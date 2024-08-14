@@ -28,10 +28,9 @@ const Seeker: React.FC = () => {
         const userInfo = store.userInfo as UserInfo; // userInfo를 UserInfo 타입으로 캐스팅
         const nickname = userInfo?.nickname;
         const isReader = userInfo?.isReader;
-
-        if (nickname) {
-          // nickname이 존재할 때만 API 호출
-          const fetchedData = await seekerMypage(nickname, isReader); // 데이터 가져오기
+      
+        if (nickname) { // nickname이 존재할 때만 API 호출
+          const fetchedData = await seekerMypage(); // 데이터 가져오기
           console.log(fetchedData);
 
           // 예약 내역만 zustand 스토어에 저장
@@ -67,7 +66,7 @@ const Seeker: React.FC = () => {
   }, []); // 컴포넌트 마운트 시에만 데이터 요청
 
   // 모달 열기
-  const openModal = () => {
+  const openProfileModal = () => {
     console.log('수정모달열기');
     setIsModalOpen(true);
   };
@@ -106,8 +105,8 @@ const Seeker: React.FC = () => {
             <img
               src={Modify}
               alt="Small Icon"
-              className="ml-3 w-8 h-8 cursor-pointer absolute top-0 right-0  z-99"
-              onClick={openModal} // 버튼 클릭 시 모달 열기
+              className="ml-3 w-8 h-8 cursor-pointer absolute top-0 right-0 z-30"
+              onClick={openProfileModal} // 버튼 클릭 시 모달 열기
             />
           </div>
         </div>

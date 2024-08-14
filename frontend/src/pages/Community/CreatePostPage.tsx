@@ -90,7 +90,7 @@ const CreatePostPage: React.FC = () => {
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               required
             >
-              {/* <option value="">Select a category</option> */}
+              <option value="">카테고리를 선택하세요.</option>
               {/* <option value="B01">공지사항</option> */}
               <option value="B02">카드</option>
               <option value="B03">리딩경험담</option>

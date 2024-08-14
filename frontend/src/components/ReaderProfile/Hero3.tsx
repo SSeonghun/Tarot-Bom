@@ -32,7 +32,7 @@ const SeekerMypage: React.FC<Hero3Props> = ({
         <h1 className="text-white text-[50px] font-bold z-10">리더의 자기소개</h1>
       </div>
       <div className="absolute top-[450px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-10 bg-white bg-opacity-30 rounded-lg border border-white border-opacity-80">
-        <p className="text-white text-xl font-bold mx-28 my-10">{intro}</p>
+        <p className="text-white whitespace-pre-wrap  text-xl font-bold mx-28 my-10">{intro}</p>
       </div>
       <div className="absolute top-[700px]">
         <div className="container p-4 mx-auto">
