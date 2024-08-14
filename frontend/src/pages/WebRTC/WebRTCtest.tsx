@@ -18,6 +18,7 @@ import SelectIcon from '../../assets/선택완료.png'
 import DrawingCanvasComponent, { DrawingCanvasHandle } from "../../components/WebRTC/Tools/DrawingCanvasComponent";
 import ProfileModal from "../../components/WebRTC/Tools/ProfileModal";
 import ScenarioPanel from "../../components/WebRTC/Controller/ScenarioPanel";
+import { useLocation } from "react-router-dom";
 
 // 정의된 타입
 type TrackInfo = {
@@ -26,20 +27,28 @@ type TrackInfo = {
 };
 
 interface RTCTest {
-  token: string; // 토큰
-  name: string; // 닉네임
-  type: string; // 룸 타입
+  // token: string; // 토큰
+  // name: string; // 닉네임
+  // type: string; // 룸 타입
+  // position :string; token, name, type,position
 }
 
 // WebRTCpage 컴포넌트
-const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
-  console.log(token, name, type);
+const WebRTCpage: React.FC<RTCTest> = ({ }) => {
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+
+  const token = query.get('token') || '';
+  const name = query.get('name') || '';
+  const type = query.get('type') || '';
+  const position = query.get('position') || '';
+  console.log(token, name, type, position);
 
   const [room, setRoom] = useState<Room | undefined>(undefined);
   const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(undefined);
   const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
-  const [participantName, setParticipantName] = useState("Participant" + Math.floor(Math.random() * 100));
-  const [roomName, setRoomName] = useState("Test Room");
+  const [participantName, setParticipantName] = useState(position);
+  const [roomName, setRoomName] = useState(token);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [displayedVideoTrackSid, setDisplayedVideoTrackSid] = useState<string | null>(null);
   const [isCanvasVisible, setIsCanvasVisible] = useState<boolean>(false); // 캔버스 표시 상태 관리
@@ -213,7 +222,7 @@ const WebRTCpage: React.FC<RTCTest> = ({ token, name, type }) => {
   }
 
   async function getToken(roomName: string, participantName: string) {
-    const response = await fetch(APPLICATION_SERVER_URL + "token", {
+    const response = await fetch(APPLICATION_SERVER_URL + "tarotbom/openvidu/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -384,20 +393,21 @@ function saveDrawing() {
   return (
     <div>
       {!room ? (
-        <div id="join">
+        <div className="relative h-screen overflow-hidden" id="join">
           <img
             className="absolute inset-0 w-full h-full object-cover opacity-40 z-0"
             src={MainBg}
             alt="Main Background"
           />
-          <div id="join-dialog" className="absolute bottom-10 left-10 z-10">
+          <div id="join-dialog" className="relative flex flex-col justify-center items-center h-full z-10">
+          <h2 className="text-gray-600 text-5xl font-bold text-center">온라인 타로 상담실</h2>
             <form
               onSubmit={(e) => {
                 joinRoom();
                 e.preventDefault();
               }}
             >
-              <div>
+              {/* <div>
                 <label htmlFor="participant-name">참가자</label>
                 <input
                   id="participant-name"
@@ -407,6 +417,7 @@ function saveDrawing() {
                   onChange={(e) => setParticipantName(e.target.value)}
                   required
                 />
+                <p>{participantName}</p>
               </div>
               <div>
                 <label htmlFor="room-name">룸</label>
@@ -418,13 +429,13 @@ function saveDrawing() {
                   onChange={(e) => setRoomName(e.target.value)}
                   required
                 />
-              </div>
+              </div> */}
               <button
-                className="btn btn-lg btn-success"
-                type="submit"
-                disabled={!roomName || !participantName}
+                  className="bg-teal-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg transform transition-transform duration-200 hover:bg-teal-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                  type="submit"
+                  disabled={!roomName || !participantName}
               >
-                참가하기!
+                  입장
               </button>
             </form>
           </div>

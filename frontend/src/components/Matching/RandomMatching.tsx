@@ -125,7 +125,7 @@ const RandomMatching: React.FC = () => {
 
               // JSON 문자열을 객체로 역직렬화하여 token 값을 추출
               const parsedData = JSON.parse(jsonString);
-              const token = parsedData.token;
+              const token = parsedData.roomId;
               const roomStyle = parsedData.roomStyle;
               console.log(jsonString);
 
@@ -175,7 +175,7 @@ const RandomMatching: React.FC = () => {
         token
       )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
         room
-      )}`;
+      )}&position=Seeker`;
 
       // 라우터를 통해 방으로 이동
       navigate(roomEntryPath, {
@@ -187,8 +187,8 @@ const RandomMatching: React.FC = () => {
         token
       )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
         room
-      )}`;
-
+      )}&position=Seeker`;
+      console.log(roomEntryPath)
       // 라우터를 통해 방으로 이동
       navigate(roomEntryPath, {
         state: { readerType: "AI" },

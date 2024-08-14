@@ -30,6 +30,7 @@ interface RTCTest {
     token: string; // 토큰
     name: string; // 닉네임
     type: string; // 룸 타입
+    position: string;
   }
 function configureUrls() {
     if (!APPLICATION_SERVER_URL) {
@@ -49,14 +50,14 @@ function configureUrls() {
     }
 }
 
-const AppWebRTC:React.FC<RTCTest>= ({ token, name, type })=> {
+const AppWebRTC:React.FC<RTCTest>= ({ token, name, type,position })=> {
     const [room, setRoom] = useState<Room | undefined>(undefined);
     const [localVideoTrack, setLocalVideoTrack] = useState<LocalVideoTrack | undefined>(undefined);
     const [localAudioTrack, setLocalAudioTrack] = useState<LocalAudioTrack | undefined>(undefined);
     const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
 
-    const [participantName, setParticipantName] = useState("Participant" + Math.floor(Math.random() * 100));
-    const [roomName, setRoomName] = useState("Test Room");
+    const [participantName, setParticipantName] = useState(position);//"Participant" + Math.floor(Math.random() * 100)
+    const [roomName, setRoomName] = useState(token);
     const [cameraDeviceId, setCameraDeviceId] = useState<string | null>(null);
     const [audioDeviceId, setAudioDeviceId] = useState<string | null>(null);
     const [maximizedVideo, setMaximizedVideo] = useState<string | null>(null);
@@ -73,7 +74,7 @@ const AppWebRTC:React.FC<RTCTest>= ({ token, name, type })=> {
 
     const [isCardSelectionOngoing, setIsCardSelectionOngoing] = useState(false);
     const [currentScenario, setCurrentScenario] = useState<'입장 인사'|'카드 선택 시간' | '카드 선택 확인'|'결과 확인'|'마무리 인사'>('입장 인사');
-    
+    console.log(token, name, type,position)
     useEffect(() => {
         if (room) {
             console.log('Room is set. Listening for data events...');
@@ -195,11 +196,13 @@ const AppWebRTC:React.FC<RTCTest>= ({ token, name, type })=> {
             // 예시로 사용자가 로그인된 이름을 가져오는 API 호출
             // 실제로는 백엔드에서 사용자 정보를 가져오는 API를 호출해야 함
             const userName = await getLoggedInUserName(); // 이 함수는 실제로 사용자 정보를 가져오는 함수로 대체해야 합니다.
-            setParticipantName(userName);
+            console.log(position)
+            setParticipantName(position);
         };
 
         fetchUserName();
-    }, []);
+    }, [position]);
+    console.log(position)
     // 더미 함수: 실제 사용자 정보를 가져오는 로직으로 대체하세요
     const getLoggedInUserName = async () => {
         return '홍길동'; // 예시: 로그인된 사용자 이름
@@ -460,7 +463,7 @@ async function handleScenarioChange() {
                                 e.preventDefault();
                             }}
                         >
-                            <div className="mb-4">
+                            {/* <div className="mb-4">
                                 <label htmlFor="participant-name" className="block mb-2 text-teal-600 font-bold text-lg">참가자</label>
                                 <input
                                     id="participant-name"
@@ -483,7 +486,7 @@ async function handleScenarioChange() {
                                     required
                                 />
                                 <p>{roomName}</p>
-                            </div>
+                            </div> */}
                             <button
                                 className="bg-teal-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg transform transition-transform duration-200 hover:bg-teal-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-400"
                                 type="submit"

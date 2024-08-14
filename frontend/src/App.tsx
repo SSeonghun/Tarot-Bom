@@ -64,14 +64,8 @@ const App: React.FC = () => {
             element={<ReaderRoute element={<ReaderMypage />} />}
           />
           <Route path="/booking" element={<Booking />} />
-          <Route
-            path="/webrtc"
-            element={<WebRTCpage token={""} name={""} type={""} />}
-          />
-          <Route
-            path="/rtcTest"
-            element={<WebRTCTest token={""} name={""} type={""} />}
-          />
+          <Route path="/webrtc" element={<WebRTCpage />} />
+          <Route path="/rtcTest" element={<WebRTCTest/>} />
           <Route path="/test" element={<ImageUpload />} />
           <Route path="/error" element={<Error />} />
 
