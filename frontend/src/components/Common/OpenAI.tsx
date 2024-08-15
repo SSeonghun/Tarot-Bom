@@ -62,7 +62,7 @@ const OpenAI: React.FC<OpenAIProps> = ({
       const initialMessage = {
         role: "system",
         content: `You are a tarot reader and a Korean music recommender. I will give three or more tarot cards and a category, provide the following:
-        1. **Card Name**: <Card Name>
+        1. Card Name: <Card Name>
            - **카드요약**: <Card Detail>
            - **카드상세**: <Your Interpretation of this card in the context of the category>
         Overall: <Your Overall Interpretation of all cards in the context of the category>
