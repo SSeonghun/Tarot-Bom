@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
+  LocalAudioTrack,
   LocalVideoTrack,
   RemoteParticipant,
   RemoteTrack,
@@ -104,6 +105,10 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
   const remoteVideoRefs = useRef<{
     [trackSid: string]: HTMLVideoElement | null;
   }>({});
+  const localAudioRef = useRef<HTMLAudioElement | null>(null);
+  const remoteAudioRefs = useRef<{
+    [trackSid: string]: HTMLAudioElement | null;
+  }>({});
   // Effect to join the room on mount
   useEffect(() => {
     joinRoom();
@@ -186,18 +191,22 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
       }
 
       // 카메라 트랙 복원
-      const cameraTrack = await createCameraTrack();
-      await room.localParticipant.publishTrack(cameraTrack);
-      setLocalTrack(cameraTrack);
+      const { audioTrack, videoTrack } = await createCameraTrack();
+    await room.localParticipant.publishTrack(videoTrack); // Publish video track
+    await room.localParticipant.publishTrack(audioTrack); // Publish audio track
 
-      setIsScreenSharing(false);
+    setLocalTrack(videoTrack); // Update local track state to the new video track
+    setIsScreenSharing(false);
     }
   }
 
   async function createCameraTrack() {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    return new LocalVideoTrack(stream.getVideoTracks()[0]);
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+    const audioTrack = new LocalAudioTrack(stream.getAudioTracks()[0]);
+    const videoTrack = new LocalVideoTrack(stream.getVideoTracks()[0]);
+    return { audioTrack, videoTrack };
   }
+  
 
   async function joinRoom() {
     const room = new Room();
@@ -212,12 +221,12 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
       ) => {
         console.log("트랙 구독됨:", publication.trackSid);
 
-        if (publication.kind === "video") {
-          // 첫 번째 비디오 트랙만 표시하고 나머지 비디오 트랙은 숨김
-          if (displayedVideoTrackSid === null) {
-            setDisplayedVideoTrackSid(publication.trackSid);
-          }
-        }
+        // if (publication.kind === "video") {
+        //   // 첫 번째 비디오 트랙만 표시하고 나머지 비디오 트랙은 숨김
+        //   if (displayedVideoTrackSid === null) {
+        //     setDisplayedVideoTrackSid(publication.trackSid);
+        //   }
+        // }
 
         setRemoteTracks((prev) => [
           ...prev,
@@ -240,16 +249,21 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
           )
         );
 
-        // 비디오 트랙이 모두 해제되면 표시할 비디오 트랙 SID 초기화
-        if (publication.trackSid === displayedVideoTrackSid) {
-          setDisplayedVideoTrackSid(null);
-        }
+        // // 비디오 트랙이 모두 해제되면 표시할 비디오 트랙 SID 초기화
+        // if (publication.trackSid === displayedVideoTrackSid) {
+        //   setDisplayedVideoTrackSid(null);
+        // }
       }
     );
 
     try {
+      const { audioTrack, videoTrack } = await createCameraTrack();
       const token = await getToken(roomName, participantName);
-      await room.connect(LIVEKIT_URL, token);
+      await room.localParticipant.publishTrack(videoTrack);
+    await room.localParticipant.publishTrack(audioTrack);
+
+    
+    await room.connect(LIVEKIT_URL, token);
 
       // 화면 공유가 필요한 경우 시작
       if (isScreenSharing) {
@@ -385,30 +399,21 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
   }
   useEffect(() => {
     remoteTracks.forEach((trackInfo) => {
-      if (
-        trackInfo.trackPublication.kind === "video" &&
-        remoteVideoRefs.current[trackInfo.trackPublication.trackSid]
-      ) {
-        // 첫 번째 비디오 트랙만 랜더링
-        if (trackInfo.trackPublication.trackSid === displayedVideoTrackSid) {
-          trackInfo.trackPublication.videoTrack?.attach(
-            remoteVideoRefs.current[trackInfo.trackPublication.trackSid]!
-          );
-        } else {
-          // 비디오 트랙을 숨김
-          trackInfo.trackPublication.videoTrack?.detach();
-        }
+      if (trackInfo.trackPublication.kind === "audio" && remoteAudioRefs.current[trackInfo.trackPublication.trackSid]) {
+        trackInfo.trackPublication.audioTrack?.attach(
+          remoteAudioRefs.current[trackInfo.trackPublication.trackSid]!
+        );
       }
     });
-
+  
     return () => {
       remoteTracks.forEach((trackInfo) => {
-        if (trackInfo.trackPublication.kind === "video") {
-          trackInfo.trackPublication.videoTrack?.detach();
+        if (trackInfo.trackPublication.kind === "audio") {
+          trackInfo.trackPublication.audioTrack?.detach();
         }
       });
     };
-  }, [remoteTracks, displayedVideoTrackSid]);
+  }, [remoteTracks]);
   const handlePreviewCard = () => {
     setIsModalVisible(true);
   };
@@ -510,11 +515,21 @@ const handleColorChange = (selectedColor: string) => {
           alt="Main Background"
         /> */}
         <div id="layout-container">
-          {/* 로컬 비디오가 시각적으로 표시되지 않지만 존재함 */}
-          <div className="video-container local" style={{ display: "none" }}>
-            <video ref={localVideoRef} autoPlay={true}  />
-            <div className="participant-name">{participantName}</div>
+          {/* 로컬 비디오가 시각적으로 표시되지 않지만 존재함style={{ display: "none" }} */}
+          <div className="audio-container local" >
+          <audio
+            ref={localAudioRef}
+            autoPlay
+            />
+            {/* <video ref={localVideoRef} autoPlay={true}  /> */}
+            {/* <div className="participant-name">{participantName}</div> */}
           </div>
+          {/* <div
+                  className="audio-container"
+                  key="local"
+                >
+          
+          </div> */}
 
           {isSeeker ? (
             <div>
