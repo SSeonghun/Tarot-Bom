@@ -39,18 +39,31 @@
 ##  개발 환경
 
 #### Backend
-- Spring
-- MySQL
-- Redis
+- SpringBoot
+- Spring Data JPA
+- Spring Security
+- QueryDSL
 
 #### Frontend
 - React
 - Node.js
 - Tailwind CSS
-- Justand
+- Zustand
 
-#### CI/CD
-- Git
+#### Database
+- MySQL
+- Redis
+
+#### Infra
+- Docker
+- Caddy
+- Nginx
+- Let's Encrypt(HTTPS)
+- AWS EC2
+- AWS S3
+
+#### 협업 툴
+- GitLab
 - Jira
 - Notion
 
@@ -60,50 +73,43 @@
 #### Frontend
 ```
 📦src
+ ┣ 📂API
  ┣ 📂assets
- ┃ ┣ 📜arrow-left-circle.svg
- ┃ ┣ 📜box-arrow-in-right.svg
- ┃ ┣ 📜caret-down-square.svg
- ┃ ┣ 📜coin.svg
- ┃ ┣ 📜disneyplus.svg
- ┃ ┣ 📜main-img.png
- ┃ ┣ 📜movie-repeat.svg
- ┃ ┣ 📜netflix.svg
- ┃ ┣ 📜person-add.svg
- ┃ ┣ 📜recommend-rewrite.svg
- ┃ ┗ 📜watcha.svg
+ ┃ ┣ 📂css
+ ┃ ┣ 📂img
+ ┃ ┣ 📂quotes
+ ┃ ┣ 📂tarot_images - 복사본
  ┣ 📂components
- ┃ ┣ 📂common
- ┃ ┃ ┣ 📜MovieNavbar.vue
- ┃ ┃ ┗ 📜OTTNavbar.vue
- ┃ ┣ 📂movies
- ┃ ┃ ┣ 📜MovieCard.vue
- ┃ ┃ ┣ 📜MovieDetailInfo.vue
- ┃ ┃ ┣ 📜MovieRecommend.vue
- ┃ ┃ ┗ 📜Recommend.vue
- ┃ ┗ 📂otts
- ┃ ┃ ┣ 📜MyPartyCard.vue
- ┃ ┃ ┣ 📜MyPartyCreated.vue
- ┃ ┃ ┣ 📜MyPartyJoined.vue
- ┃ ┃ ┗ 📜PartyCard.vue
- ┣ 📂router
- ┃ ┗ 📜index.js
+ ┃ ┣ 📂Booking
+ ┃ ┣ 📂Cards
+ ┃ ┣ 📂Common
+ ┃ ┣ 📂Community
+ ┃ ┣ 📂Home
+ ┃ ┣ 📂login_signup
+ ┃ ┣ 📂Matching
+ ┃ ┣ 📂Mypage
+ ┃ ┣ 📂OfflineTarot
+ ┃ ┣ 📂PlayTarot
+ ┃ ┣ 📂ReaderProfile
+ ┃ ┣ 📂SearchReader
+ ┃ ┣ 📂TarotResult
+ ┃ ┣ 📂WebRTC
+ ┣ 📂pages
+ ┃ ┣ 📂Admin
+ ┃ ┣ 📂Booking
+ ┃ ┣ 📂Community
+ ┃ ┣ 📂CreateReader
+ ┃ ┣ 📂Matching
+ ┃ ┣ 📂PlayTarot
+ ┃ ┣ 📂SearchReader
+ ┃ ┣ 📂TarotResult
+ ┃ ┣ 📂Test
+ ┃ ┣ 📂UserAuth
+ ┃ ┣ 📂UserProfile
+ ┃ ┣ 📂WebRTC
  ┣ 📂stores
- ┃ ┗ 📜movie.js
- ┣ 📂views
- ┃ ┣ 📜AIRecommendView.vue
- ┃ ┣ 📜HomeView.vue
- ┃ ┣ 📜LoginView.vue
- ┃ ┣ 📜MovieDetailView.vue
- ┃ ┣ 📜MyPageView.vue
- ┃ ┣ 📜OTTHomeView.vue
- ┃ ┣ 📜PartyCreateView.vue
- ┃ ┣ 📜PartyJoinView.vue
- ┃ ┗ 📜SignupView.vue
- ┣ 📜App.vue
- ┗ 📜main.js
-
-```
+ ┣ 📂types 
+ ```
 
 ## 팀 소개
 ![alt text](<assets/팀 소개.PNG>)
@@ -129,6 +135,9 @@
 ![alt text](assets/아키텍처.PNG)
 
 ### 핵심 기술
+
+- 이메일 인증
+- WebRTC Platform openVidu v3
 
 
 ## 구현 기능
