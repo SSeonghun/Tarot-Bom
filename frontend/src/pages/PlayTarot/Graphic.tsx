@@ -58,7 +58,7 @@ const Graphic: React.FC<GraphicProps> = ({ onModalOpen }) => {
 
   // TODO : 여기서 리더 타입이랑 페이로드 받기
   const { readerType, payload } = location.state || {};
-
+  console.log(payload)
   useEffect(() => {
     console.log("타로 페이지");
     Swal.fire({
@@ -91,7 +91,7 @@ const Graphic: React.FC<GraphicProps> = ({ onModalOpen }) => {
     // 랜덤 카드 선택
     const randomCard = getRandomCard([...selectedCard, index]);
     console.log(index);
-    if (selectedCard.length >= 78 || selectedCard.includes(randomCard)) return; // 최대 3개까지만 선택 가능, 이미 선택된 카드 클릭 방지
+    if (selectedCard.length >= 3 || selectedCard.includes(randomCard)) return; // 최대 3개까지만 선택 가능, 이미 선택된 카드 클릭 방지
 
     console.log("Random Card:", randomCard);
 
@@ -184,7 +184,7 @@ const Graphic: React.FC<GraphicProps> = ({ onModalOpen }) => {
       });
       return;
     }
-
+    console.log(payload)
     const state = location.state as MatchingState;
     navigate("/tarot-result", {
       state: {
@@ -192,6 +192,7 @@ const Graphic: React.FC<GraphicProps> = ({ onModalOpen }) => {
         selectedCard: selectedCard,
         worry: state.payload.worry, // worry 전달
         category: state.payload.keyword || "기본 카테고리", // category 전달, 기본값 설정
+        candidateId:payload.candidateId,
       },
     });
   };

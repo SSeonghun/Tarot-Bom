@@ -35,6 +35,7 @@ interface ResultSummaryProps {
   selectedCard: CardData[];
   worry: string;
   category: string;
+  candidateId:number;
 }
 
 interface SaveRequest {
@@ -72,13 +73,14 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
   selectedCard,
   worry,
   category,
+  candidateId,
 }) => {
   const [summary, setSummary] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [music, setMusic] = useState<string>("");
   const [overall, setOverall] = useState<string>("");
   const { userInfo } = useStore();
-
+  console.log(candidateId)
   // Category 변환
   const translatedCategory = categoryMap[category] || category;
 
@@ -104,7 +106,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
     }
 
     const saveRequest: SaveRequest = {
-      readerId: 1, // 여기 바꿔줘야함
+      readerId: candidateId, // 여기 바꿔줘야함
       seekerId: userInfo?.memberId,
       date: new Date(),
       keyword: category,

@@ -17,7 +17,7 @@ interface ChatAndControlsProps {
     handleSendChatMessage: (message: string) => void;
     onCameraChange: (deviceId: string | null) => void; // 추가
     onAudioChange: (deviceId: string | null) => void; // 추가
-    candidateId:number
+    candidateId:number;
 }
 const ChatAndControls: React.FC<ChatAndControlsProps> = ({ 
     roomId, 
@@ -26,6 +26,7 @@ const ChatAndControls: React.FC<ChatAndControlsProps> = ({
     handleSendChatMessage,
     onCameraChange, // 추가
     onAudioChange // 추가
+
  }) => {
     const [isReportVisible, setReportVisible] = useState<boolean>(false);
     const reportRef = useRef<HTMLDivElement>(null);

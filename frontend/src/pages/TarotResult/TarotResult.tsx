@@ -12,6 +12,7 @@ interface TarotResultState {
   selectedCard: number[];
   worry: string;
   category: string;
+  candidateId:number;
 }
 
 interface CardData {
@@ -26,7 +27,7 @@ const TarotResult: React.FC = () => {
   const state = location.state as TarotResultState;
   const [cards, setCards] = useState<CardData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
+  console.log(state)
   useEffect(() => {
     const loadCardData = async () => {
       try {
@@ -91,6 +92,7 @@ const TarotResult: React.FC = () => {
           selectedCard={cards}
           worry={state.worry}
           category={state.category}
+          candidateId={state.candidateId}
         />
       )}
 
