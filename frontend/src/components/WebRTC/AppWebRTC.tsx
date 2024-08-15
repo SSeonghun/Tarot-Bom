@@ -14,6 +14,7 @@ import ClearOfIcon from '../../assets/지우기.png'
 import CloseDrowIcon from '../../assets/캔버스 끄기.png'
 import OpenDrowIcon from '../../assets/캔버스 켜기.png'
 import SelectIcon from '../../assets/선택완료.png'
+import ColorChange from '../../assets/색상 수정.png'
 import html2canvas from 'html2canvas';
 import ScreenShootImageUpload from './Tools/ScreenShootImageUpload';
 import ProfileModal from './Tools/ProfileModal';
@@ -74,6 +75,8 @@ const AppWebRTC:React.FC<RTCTest>= ({ token, name, type,position })=> {
 
     const [isCardSelectionOngoing, setIsCardSelectionOngoing] = useState(false);
     const [currentScenario, setCurrentScenario] = useState<'입장 인사'|'카드 선택 시간' | '카드 선택 확인'|'결과 확인'|'마무리 인사'>('입장 인사');
+    const [color, setColor] = useState('black'); // 초기 색깔 설정
+    const [showColorPicker, setShowColorPicker] = useState(false); // 색깔 선택 메뉴 표시 여부
     console.log(token, name, type,position)
     // Effect to join the room on mount
   useEffect(() => {
@@ -456,6 +459,17 @@ async function handleScenarioChange() {
     // 카드 선택 확인이 끝나면 webrtc를 통해 다른 참가자가 스크린샷 기능을 사용하도록 유도하며, localVideoTrack을 최대화하고, 그림그리기 기능을 비활성화시키며 결과를 송출한다
     // 이 과정이 webrtc를 통해 상대방 유저에게 동일하게 적용되어야 하며, localParticipant.publishData를 활용하여 webrtc로 통제를 전송하고, 모든 방 참가자를 통제해야한다
 };
+// 색깔을 변경하는 함수
+const changeColor = () => {
+    setShowColorPicker(prev => !prev); // 색깔 선택 메뉴 토글
+};
+
+// 색깔을 설정하는 함수
+const handleColorChange = (selectedColor: string) => {
+    setColor(selectedColor);
+    setShowColorPicker(false); // 색깔 선택 후 메뉴 숨기기
+};
+
     return (
         <>
            
@@ -469,8 +483,8 @@ async function handleScenarioChange() {
                 <div className="flex flex-col justify-center items-center h-full relative" id="room">
                     
                     {isCanvasVisible && (
-                <div className="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50 overflow-visible">
-                                        <DrawingCanvasComponent onUpdate={handleDrawingUpdate} ref={canvasRef} />
+                <div className="fixed inset-0 bg-white bg-opacity-25 flex items-center justify-center z-50 overflow-visible">
+                                        <DrawingCanvasComponent color={color} onUpdate={handleDrawingUpdate} ref={canvasRef} />
                                     </div> )}
                     <div className="flex flex-col h-full w-full relative overflow-visible">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 p-4">
@@ -555,7 +569,7 @@ async function handleScenarioChange() {
 
                     </div>
                     
-                    <div className="fixed bottom-4 left-4 bg-white border border-gray-300 rounded-lg p-4 shadow-md flex space-x-4 z-50">
+                    {/* <div className="fixed bottom-4 left-4 bg-white border border-gray-300 rounded-lg p-4 shadow-md flex space-x-4 z-50"> */}
                     {/* <p>진행 상황판</p>
                     <button
                             className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
@@ -569,11 +583,11 @@ async function handleScenarioChange() {
                         >
                             {scenarios[currentScenario]}
                         </button> */}
-                        <ScenarioPanel onScenarioChange={handleScenarioChange} onOpenProfile={OpenProfile} />
+                        {/* <ScenarioPanel onScenarioChange={handleScenarioChange} onOpenProfile={OpenProfile} /> */}
                         {/* 진행 상황을 알려주는 변화하는 버튼 */}
                         {/* 누르면 그다음 시나리오로 넘어가는 시나리오 통제 */}
                         {/* 필요 시니라오 : 입장인사 -> 카드 선택 시간 -> 결과 확인 */}
-                    </div>
+                    {/* </div> */}
                     {isProfileModalVisible && (
                         <ProfileModal
                             isVisible={isProfileModalVisible}
@@ -587,7 +601,26 @@ async function handleScenarioChange() {
                     )}
 
                     <div className="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-lg p-4 shadow-md flex space-x-4 z-50">
-                        <p>선택 완료 : 시커</p>
+                        {/* <p>선택 완료 : 시커</p> */}
+                        <button
+                    className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
+                    onClick={changeColor}
+                >
+                    <img src={ColorChange} alt="" className="w-8 h-8" />
+                </button>
+                {showColorPicker && (
+                    <div className="absolute bottom-14 right-0 bg-white border border-gray-300 rounded-lg shadow-lg p-2 flex flex-wrap space-x-2 space-y-2 z-50">
+                        {/* 색깔 버튼들 */}
+                        {['black', 'red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'purple'].map(colorOption => (
+                            <button
+                                key={colorOption}
+                                onClick={() => handleColorChange(colorOption)}
+                                style={{ backgroundColor: colorOption }}
+                                className="w-8 h-8 rounded-full border border-gray-300"
+                            />
+                        ))}
+                    </div>
+                )}
                         <button
                             className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
                             onClick={clearCanvas}

@@ -3,6 +3,7 @@ import * as fabric from 'fabric';
 
 interface DrawingCanvasProps {
     onUpdate: (message: any) => void;
+    color: string; // 부모 컴포넌트로부터 받은 색깔 속성
 }
 
 export type DrawingCanvasHandle = {
@@ -13,7 +14,7 @@ export type DrawingCanvasHandle = {
 };
 
 const DrawingCanvasComponent = forwardRef<DrawingCanvasHandle, DrawingCanvasProps>(
-    ({ onUpdate }, ref: ForwardedRef<DrawingCanvasHandle>) => {
+    ({ onUpdate, color }, ref: ForwardedRef<DrawingCanvasHandle>) => {
         const canvasRef = useRef<fabric.Canvas | null>(null);
         const [loading, setLoading] = useState<boolean>(false);
 
@@ -100,7 +101,7 @@ const DrawingCanvasComponent = forwardRef<DrawingCanvasHandle, DrawingCanvasProp
             console.log("Canvas initialized:", canvas);
 
             const pencilBrush = new fabric.PencilBrush(canvas);
-            pencilBrush.color = 'black';
+            pencilBrush.color = color;
             pencilBrush.width = 20;
             canvas.freeDrawingBrush = pencilBrush;
             console.log("Pencil brush configured:", pencilBrush);
@@ -132,7 +133,13 @@ const DrawingCanvasComponent = forwardRef<DrawingCanvasHandle, DrawingCanvasProp
             };
 
         }, []);
-
+        // 색깔이 변경될 때마다 brush 색깔 업데이트
+        useEffect(() => {
+            if (canvasRef.current && canvasRef.current.freeDrawingBrush) {
+                canvasRef.current.freeDrawingBrush.color = color;
+                console.log("Pencil brush color updated:", color);
+            }
+        }, [color]);
         return (
             <div className="fixed top-0 left-0 w-screen h-screen z-50">
                 <canvas
@@ -143,7 +150,7 @@ const DrawingCanvasComponent = forwardRef<DrawingCanvasHandle, DrawingCanvasProp
                         transition: 'opacity 0s',
                     }}
                 />
-                {loading && (
+                {/* {loading && (
                     <div
                         style={{
                             position: 'absolute',
@@ -168,7 +175,7 @@ const DrawingCanvasComponent = forwardRef<DrawingCanvasHandle, DrawingCanvasProp
                             로딩 중...
                         </div>
                     </div>
-                )}
+                )} */}
             </div>
         );
     }
