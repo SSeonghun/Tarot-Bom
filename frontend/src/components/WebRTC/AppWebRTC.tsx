@@ -32,6 +32,7 @@ interface RTCTest {
     name: string; // 닉네임
     type: string; // 룸 타입
     position: string;
+    candidateId:number;
   }
 function configureUrls() {
     if (!APPLICATION_SERVER_URL) {
@@ -51,7 +52,7 @@ function configureUrls() {
     }
 }
 
-const AppWebRTC:React.FC<RTCTest>= ({ token, name, type,position })=> {
+const AppWebRTC:React.FC<RTCTest>= ({ token, name, type,position,candidateId })=> {
     const [room, setRoom] = useState<Room | undefined>(undefined);
     const [localVideoTrack, setLocalVideoTrack] = useState<LocalVideoTrack | undefined>(undefined);
     const [localAudioTrack, setLocalAudioTrack] = useState<LocalAudioTrack | undefined>(undefined);
@@ -560,6 +561,7 @@ const handleColorChange = (selectedColor: string) => {
                                 handleSendChatMessage={handleSendChatMessage}
                                 onCameraChange={handleCameraChange}
                                 onAudioChange={handleAudioChange}
+                                candidateId={candidateId}
                             />)}
                             </div>
                         </div>

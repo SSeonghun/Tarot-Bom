@@ -17,6 +17,7 @@ interface ChatAndControlsProps {
     handleSendChatMessage: (message: string) => void;
     onCameraChange: (deviceId: string | null) => void; // 추가
     onAudioChange: (deviceId: string | null) => void; // 추가
+    candidateId:number
 }
 const ChatAndControls: React.FC<ChatAndControlsProps> = ({ 
     roomId, 
