@@ -18,8 +18,8 @@ const MatchingConfirmationModal: React.FC<MatchingConfirmationModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center ">
-      <div className="bg-white p-4 rounded-lg shadow-lg w-[400px] flex flex-col justify-center items-center z-[100]">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-4 rounded-lg shadow-lg w-[400px] flex flex-col justify-center items-center ">
         <h2 className="text-[30px] font-bold mb-4 text-black">수락 완료!</h2>
         <img src={Giphy} alt="" className="w-[170px]" />
         <p className="mt-4">상대방의 확인을 기다리고 있습니다.</p>

@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Button from './CommonButton';
 
 interface CalendarComponentProps {
-  highlightDates?: Date[]; // 하이라이트할 날짜 배열을 받는 props
-  layout?: "row" | "col" | "col-single"; // 레이아웃 유형을 설정하는 props
+  highlightDates?: Date[];
+  layout?: "row" | "col" | "col-single";
   hsize: number;
 }
 
@@ -12,12 +12,8 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
   layout = "row",
   hsize
 }) => {
-  const [currentMonth, setCurrentMonth] = useState<number>(
-    new Date().getMonth()
-  );
-  const [currentYear, setCurrentYear] = useState<number>(
-    new Date().getFullYear()
-  );
+  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth());
+  const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<Date | null>(null);
 
@@ -83,9 +79,9 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
         (date) =>
           date.getFullYear() === currentYear &&
           date.getMonth() === currentMonth &&
-          date > now // 현재 시간 이후의 일정만 포함
+          date > now
       )
-      .sort((a, b) => a.getTime() - b.getTime()); // 시간까지 고려하여 정렬
+      .sort((a, b) => a.getTime() - b.getTime());
   };
 
   const handleOpenModal = (eventDate: Date) => {
@@ -104,69 +100,67 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
 
   const isWithin30Minutes = (eventDate: Date) => {
     const now = new Date();
-    const thirtyMinutesBefore = new Date(now.getTime() + 30 * 60000); // 현재 시간 기준으로 30분 후
+    const thirtyMinutesBefore = new Date(now.getTime() + 30 * 60000);
     return now <= eventDate && eventDate <= thirtyMinutesBefore;
   };
 
-const renderUpcomingEvents = () => {
-  const upcomingEvents = getUpcomingEvents();
+  const renderUpcomingEvents = () => {
+    const upcomingEvents = getUpcomingEvents();
 
-  // 30분 이하 남은 일정과 나머지 일정 분리
-  const urgentEvents = upcomingEvents.filter(isWithin30Minutes);
-  const futureEvents = upcomingEvents.filter(event => !isWithin30Minutes(event));
+    const urgentEvents = upcomingEvents.filter(isWithin30Minutes);
+    const futureEvents = upcomingEvents.filter(event => !isWithin30Minutes(event));
 
-  if (layout === "col-single") {
-    return urgentEvents.length ? (
-      <div>
-        <strong>{urgentEvents[0].toLocaleString()}</strong>: 다가오는 일정
-        <button
-          className="ml-4 px-4 py-2 bg-blue-500 text-white rounded"
-          onClick={() => handleOpenModal(urgentEvents[0])}
-        >
-          입장
-        </button>
-      </div>
-    ) : (
-      <div>다가오는 일정</div>
-    );
-  } else {
-    return (
-      <>
-        {urgentEvents.length ? (
-          <div>
-            <h2 className="text-lg font-bold text-red-500">예약 입장</h2>
-            {urgentEvents.map((event, index) => (
-              <div key={index}>
-                <strong>{event.toLocaleString()}</strong>
-                <button
-                  className="ml-4 px-4 py-2 bg-pink-400 hover:bg-pink-300 text-white rounded"
-                  onClick={() => handleOpenModal(event)}
-                >
-                  입장
-                </button>
+    if (layout === "col-single") {
+      return urgentEvents.length ? (
+        <div>
+          <strong>{urgentEvents[0].toLocaleString()}</strong>: 다가오는 일정
+          <button
+            className="ml-4 px-4 py-2 bg-blue-500 text-white rounded"
+            onClick={() => handleOpenModal(urgentEvents[0])}
+          >
+            입장
+          </button>
+        </div>
+      ) : (
+        <div>다가오는 일정</div>
+      );
+    } else {
+      return (
+        <>
+          {urgentEvents.length ? (
+            <div>
+              <h2 className="text-lg font-bold text-red-500">예약 입장</h2>
+              {urgentEvents.map((event, index) => (
+                <div key={index}>
+                  <strong>{event.toLocaleString()}</strong>
+                  <button
+                    className="ml-4 px-4 py-2 bg-pink-400 hover:bg-pink-300 text-white rounded"
+                    onClick={() => handleOpenModal(event)}
+                  >
+                    입장
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          {futureEvents.length ? (
+            <div>
+              <h2 className="text-lg font-bold text-gray-800">예약 리스트</h2>
+              <div style={{ maxHeight: `${hsize}px`, overflowY: 'auto' }}>
+                {futureEvents.map((event, index) => (
+                  <div key={index}>
+                    <strong>{event.toLocaleString()}</strong>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        ) : null}
-        {futureEvents.length ? (
-          <div>
-            <h2 className="text-lg font-bold text-gray-800">예약 리스트</h2>
-            <div style={{ maxHeight: `${hsize}px`, overflowY: 'auto' }}> {/* 스크롤 추가 */}
-            {futureEvents.map((event, index) => (
-              <div key={index}>
-                <strong>{event.toLocaleString()}</strong>
-              </div>
-            ))}
-          </div>
-          </div>
-        ) : (
-          <div>다가오는 일정이 없습니다.</div>
-        )}
-      </>
-    );
-  }
-};
-
+            </div>
+          ) : (
+            <div>다가오는 일정이 없습니다.</div>
+          )}
+        </>
+      );
+    }
+  };
 
   return (
     <div
@@ -261,19 +255,23 @@ const renderUpcomingEvents = () => {
                         <td key={dayIndex} className="pt-6">
                           <div
                             className={`px-2 py-2 cursor-pointer flex w-full justify-center ${
-                              isHighlighted(dayNumber)
-                                ? "bg-red-300 bg-opacity-60 text-black rounded-full"
-                                : ""
-                            } ${isToday(dayNumber) ? "text-blue-500 font-bold" : ""}`}
+                              isToday(dayNumber) ? "text-blue-500 font-bold" : ""
+                            } ${
+                              isHighlighted(dayNumber) ? "bg-red-300 bg-opacity-60 rounded-full" : ""
+                            }`}
                           >
                             {dayNumber > 0 && dayNumber <= daysInMonth ? (
                               <p
                                 className={`text-base font-medium ${
-                                  isHighlighted(dayNumber)
+                                  isToday(dayNumber) ? "text-blue-500 font-bold" : ""
+                                } ${
+                                  isHighlighted(dayNumber) && !isToday(dayNumber)
                                     ? "text-black"
-                                    : isToday(dayNumber)
-                                    ? "text-blue-500 font-bold"
-                                    : "text-gray-500 dark:text-gray-100"
+                                    : ""
+                                } ${
+                                  !isHighlighted(dayNumber) && !isToday(dayNumber)
+                                    ? "text-gray-500 dark:text-gray-100"
+                                    : ""
                                 }`}
                               >
                                 {dayNumber}
