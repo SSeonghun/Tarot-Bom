@@ -93,12 +93,12 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
   const APPLICATION_SERVER_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:6080/"
-      : "https://" + window.location.hostname + ":6443/";
+      : "https://" + window.location.hostname + "/";
 
   const LIVEKIT_URL =
     window.location.hostname === "localhost"
       ? "ws://localhost:7880/"
-      : "wss://" + window.location.hostname + ":7443/";
+      : "wss://" + window.location.hostname + "/";
 
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRefs = useRef<{
