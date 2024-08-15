@@ -91,7 +91,7 @@ const Graphic: React.FC<GraphicProps> = ({ onModalOpen }) => {
     // 랜덤 카드 선택
     const randomCard = getRandomCard([...selectedCard, index]);
     console.log(index);
-    if (selectedCard.length >= 78 || selectedCard.includes(randomCard)) return; // 최대 3개까지만 선택 가능, 이미 선택된 카드 클릭 방지
+    if (selectedCard.length >= 3 || selectedCard.includes(randomCard)) return; // 최대 3개까지만 선택 가능, 이미 선택된 카드 클릭 방지
 
     console.log("Random Card:", randomCard);
 
