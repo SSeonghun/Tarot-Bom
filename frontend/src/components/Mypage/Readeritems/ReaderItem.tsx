@@ -98,7 +98,7 @@ const ReaderItem: React.FC<ReaderItemProps> = ({
             <ol className="mb-[100px]">
               {[
                 "Summary",
-                // "Matching",
+                "Matching",
                 "Review",
                 "Consulting",
                 "Reservation",
@@ -114,7 +114,7 @@ const ReaderItem: React.FC<ReaderItemProps> = ({
                   onClick={() => setActiveComponent(item)}
                 >
                   {item === "Summary" && "요약"}
-                  {/* {item === "Matching" && "매칭"} */}
+                  {item === "Matching" && "매칭"}
                   {item === "Review" && "리뷰"}
                   {item === "Consulting" && "최근내역"}
                   {item === "Reservation" && "예약일정"}
