@@ -4,7 +4,6 @@ import InputField from "../../components/login_signup/InputField";
 import SubmitButton from "../../components/login_signup/SubmitButton";
 import { Link } from "react-router-dom";
 
-
 const { signup } = require("../../API/userApi"); // api.js에서 signup 함수를 import
 const {
   emailVerificationApi,
@@ -21,6 +20,14 @@ const Signup: React.FC = () => {
   const [pinNumber, setPinNumber] = useState("");
   const [pinError, setPinError] = useState(""); // State to hold pin error
   const [verifyEmail, setVerifyEmail] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    // document.body.style.overflow = "hidden";
+    // return () => {
+    //   document.body.style.overflow = "";
+    // };
+  }, []);
 
   const validateEmail = (email: string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

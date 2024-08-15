@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import useUserStore from '../../stores/store';
-import axios from 'axios'; // axios import 추가
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useUserStore from "../../stores/store";
+import axios from "axios"; // axios import 추가
+import { userInfo } from "os";
 
-
-
-const { boardWrite } = require('../../API/boardsApi'); // API 호출을 위한 import 추가
+const { boardWrite } = require("../../API/boardsApi"); // API 호출을 위한 import 추가
 
 const CreatePostPage: React.FC = () => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [category, setCategory] = useState('');
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [category, setCategory] = useState("");
   const navigate = useNavigate();
   const store = useUserStore();
 
@@ -23,14 +22,14 @@ const CreatePostPage: React.FC = () => {
         store.userInfo?.memberId,
         title,
         content,
-        category,
+        category
       );
 
       // console.log('게시글 저장 성공:', response.data);
       // 게시글 저장 후 목록 페이지로 리디렉션
-      navigate('/community');
+      navigate("/community");
     } catch (error) {
-      console.error('게시글 저장 실패:', error);
+      console.error("게시글 저장 실패:", error);
       // 오류 처리 (예: 사용자에게 알림)
     }
   };
@@ -54,7 +53,10 @@ const CreatePostPage: React.FC = () => {
         </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700"
+            >
               제목
             </label>
             <input
@@ -67,7 +69,10 @@ const CreatePostPage: React.FC = () => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="content"
+              className="block text-sm font-medium text-gray-700"
+            >
               내용
             </label>
             <textarea
@@ -80,7 +85,10 @@ const CreatePostPage: React.FC = () => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="category"
+              className="block text-sm font-medium text-gray-700"
+            >
               카테고리
             </label>
             <select
@@ -91,7 +99,7 @@ const CreatePostPage: React.FC = () => {
               required
             >
               <option value="">카테고리를 선택하세요.</option>
-              {/* <option value="B01">공지사항</option> */}
+              {store.userInfo?.isAdmin && <option value="B01">공지사항</option>}
               <option value="B02">카드</option>
               <option value="B03">리딩경험담</option>
               <option value="B04">기타</option>

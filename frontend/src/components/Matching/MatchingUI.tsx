@@ -15,6 +15,10 @@ const Matching: React.FC = () => {
   const randomLabel = shiftDirection === "right" ? "돌아가기" : "실시간타로";
   const bookLabel = shiftDirection === "left" ? "돌아가기" : "예약하기";
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // 버튼 클릭 핸들러
   const handleButtonClick = (direction: "left" | "right") => {
     if (shiftDirection === "none") {
@@ -41,7 +45,9 @@ const Matching: React.FC = () => {
             </div>
           )}
           <img
-            src={"https://cdn3d.iconscout.com/3d/premium/thumb/tarot-cards-11858327-9666345.png?f=webp"}
+            src={
+              "https://cdn3d.iconscout.com/3d/premium/thumb/tarot-cards-11858327-9666345.png?f=webp"
+            }
             alt="Tarot Card"
             className="absolute right-0 -top-1/4 mt-60 w-1/3 h-auto"
           />
@@ -68,7 +74,9 @@ const Matching: React.FC = () => {
             </div>
           )}
           <img
-            src={"https://cdn3d.iconscout.com/3d/premium/thumb/review-8533326-6715462.png?f=webp"}
+            src={
+              "https://cdn3d.iconscout.com/3d/premium/thumb/review-8533326-6715462.png?f=webp"
+            }
             alt="Calander"
             className="absolute left-0 w-1/3 -top-1/4 h-auto mt-60"
           />

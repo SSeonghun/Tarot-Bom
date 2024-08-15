@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import FireWork from "../../assets/img/firework.png";
+
 const { readerJoin } = require("../../API/api");
+
 //  : axios로 서버 저장
 const CreateReader: React.FC = () => {
   const navigate = useNavigate();
@@ -46,7 +49,6 @@ const CreateReader: React.FC = () => {
       console.error("Navigation Error:", error);
     }
   };
-  
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests((prev) =>
@@ -82,8 +84,11 @@ const CreateReader: React.FC = () => {
           <div className="flex flex-col items-center">
             <h2 className="text-2xl font-bold mb-6 text-center">유의사항</h2>
             <p className="mb-4">
-              여기에 유의사항 내용을 적습니다. 유의사항 내용을 자세히 읽고
-              동의해주세요.
+              "우리 플랫폼에서는 모든 타로 리더에 대한 리뷰와 평가 시스템을
+              제공하여, 사용자들이 신뢰할 수 있는 리더를 선택할 수 있도록 돕고
+              있습니다. 여러분의 경험을 바탕으로 리더를 평가하고, 최고의 리딩을
+              경험하세요. 비적절한 행동이 신고될 경우, 활동이 정지될 수
+              있습니다."
             </p>
             <div className="flex items-center mb-6">
               <input
@@ -163,8 +168,14 @@ const CreateReader: React.FC = () => {
         )}
         {step === 3 && (
           <div className="flex flex-col items-center">
-            <h2 className="text-2xl font-bold mb-6 text-center">인증 완료</h2>
+            <img src={FireWork} alt="" className="mt-[20px]" />
+            <h2 className="text-[35px] text-black font-bold mb-6 text-center">
+              축하합니다
+            </h2>
             {/* 여기에 인증 완료 메시지를 추가합니다 */}
+            <p className="text-[18px] font-bold mb-[40px]">
+              리더 프로필 생성이 완료 되었습니다
+            </p>
             <div className="flex justify-between w-full">
               <button
                 onClick={handlePrevious}

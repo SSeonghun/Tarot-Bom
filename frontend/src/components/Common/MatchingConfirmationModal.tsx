@@ -1,6 +1,6 @@
-import React from 'react';
-import Comfirm from '../../assets/img/confirm.webp';
-import CommonButton from './CommonButton';
+import React from "react";
+import Comfirm from "../../assets/img/confirm.webp";
+import CommonButton from "./CommonButton";
 
 // MatchData 정의
 interface MatchData {
@@ -50,7 +50,7 @@ const MatchingConfirmationModal: React.FC<MatchingConfirmationModalProps> = ({
         ...matchData,
         data: {
           ...matchData.data,
-          status: 'accepted',
+          status: "accepted",
         },
       };
 
@@ -60,8 +60,8 @@ const MatchingConfirmationModal: React.FC<MatchingConfirmationModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-4 rounded-lg shadow-lg w-[400px] flex flex-col justify-center items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center ">
+      <div className="bg-white p-4 rounded-lg shadow-lg w-[400px] flex flex-col justify-center items-center z-[100]">
         <h2 className="text-[30px] font-bold mb-4">매칭 완료!</h2>
         <img src={Comfirm} alt="" className="w-[170px] m-4" />
         <h1 className="text-[20px] font-bold"> 수락 버튼을 눌러주세요!</h1>
