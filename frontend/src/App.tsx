@@ -46,7 +46,14 @@ const App: React.FC = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/offline" element={<Offline />} />
           <Route path="/online" element={<Matching />} />
-          <Route path="/online/graphic" element={<Graphic />} />
+          <Route
+            path="/online/graphic"
+            element={
+              <Graphic
+                onModalOpen={function (selectedCards: number[]): void {}}
+              />
+            }
+          />
           <Route path="/search-reader" element={<SerchReader />} />
           <Route path="/community" element={<Community />} />
           <Route path="/matching" element={<Matching />} />

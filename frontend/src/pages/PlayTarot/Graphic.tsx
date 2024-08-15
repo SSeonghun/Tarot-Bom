@@ -33,9 +33,13 @@ const getRandomCard = (excludeCards: number[]): number => {
   return availableCards[randomIndex];
 };
 
+interface GraphicProps {
+  onModalOpen: (selectedCards: number[]) => void;
+}
+
 // TODO: 메모장 추가 및 props
 
-const Graphic: React.FC = () => {
+const Graphic: React.FC<GraphicProps> = ({ onModalOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -128,7 +132,11 @@ const Graphic: React.FC = () => {
   };
 
   // 모달 열기
-  const openModal = () => setIsModalOpen(true);
+  const openModal = () => {
+    // 모달을 열기 전에 카드 정보를 부모 컴포넌트로 전송
+    onModalOpen(selectedCard);
+    setIsModalOpen(true);
+  };
 
   // 모달 닫기
   const closeModal = () => setIsModalOpen(false);
