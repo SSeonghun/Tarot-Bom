@@ -6,6 +6,9 @@ import axios from "axios";
 import reportIcon from '../../../assets/신고.png'
 import OnIcon from '../../../assets/토글 ON.png'
 import OffIcon from '../../../assets/토글 OFF.png'
+import { useLocation } from "react-router-dom";
+
+import { reader, seeker}from '../../../API/reservationsApi'
 const { chatReport } = require("../../../API/api")
 interface ChatAndControlsProps {
     roomId: string;
@@ -31,7 +34,7 @@ const ChatAndControls: React.FC<ChatAndControlsProps> = ({
     const [reportUserId, setReportUserId] = useState<string>(''); // 유저 ID 상태
     const [reportReason, setReportReason] = useState<string>(''); // 신고 사유 상태
     const [isChatVisible, setIsChatVisible] = useState<boolean>(true);
-    
+    const location = useLocation();
 
     const toggleChatVisibility = () => {
         setIsChatVisible(prevState => !prevState);
@@ -80,7 +83,42 @@ const ChatAndControls: React.FC<ChatAndControlsProps> = ({
     }, [dragging, offset]);
     const handleReportSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        try {
+        
+        const query = new URLSearchParams(location.search);
+
+        const roomId = query.get('token') || '';
+        const name = query.get('name') || '';
+        const type = query.get('type') || '';
+        const position = query.get('position') || '';
+        console.log(roomId, name, type, position);
+        const Red = await reader();
+        const Sek = await seeker();
+    
+        console.log(Red,Sek);
+        let matchingReservation_R;
+        let matchingReservation_S;
+        //if(position==='Reader'){
+        matchingReservation_R = Red.data.find((reservation: any) =>
+                reservation.readerName=== name
+            );
+        //}else{
+            matchingReservation_S = Sek.data.find((reservation: any) =>
+                reservation.seekerName=== name
+            );
+        //}
+      if (matchingReservation_R) {
+
+        setReportUserId(matchingReservation_R.seekerId);
+        console.log(reportUserId, reportReason)
+      }
+  
+      if (matchingReservation_S) {
+
+        setReportUserId(matchingReservation_S.readerId);
+        console.log(reportUserId, reportReason)
+      }
+      
+        try {console.log(reportUserId, reportReason)
             // 백엔드로 POST 요청 보내기
             const response = await chatReport(reportUserId, reportReason, roomId);
             console.log('신고 제출 성공:', response);
@@ -122,14 +160,14 @@ const ChatAndControls: React.FC<ChatAndControlsProps> = ({
                     >
                         <h3 className="text-lg font-bold mb-2">신고하기</h3>
                         <form onSubmit={handleReportSubmit} className="space-y-4">
-                            <label className="block mb-2 text-gray-700">유저 ID</label>
-                            <input
+                            {/* <label className="block mb-2 text-gray-700">유저 ID</label> */}
+                            {/* <input
                                 type="text"
                                 value={reportUserId}
                                 onChange={(e) => setReportUserId(e.target.value)}
                                 className="w-full p-2 border border-gray-300 rounded mb-4 pointer-events-auto"
                                 placeholder="유저 ID 입력"
-                            />
+                            /> */}
                             <textarea
                                 rows={4}
                                 value={reportReason}
