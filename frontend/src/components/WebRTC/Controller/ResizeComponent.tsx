@@ -63,13 +63,13 @@ const ResizeComponent: React.FC<{
     // ResizeComponent의 크기를 VideoComponent와 비율 맞추기
     // VideoComponent의 비율: 16:9 (대부분의 비디오 비율)
     const videoAspectRatio = 16 / 9; // 비율 계산
-    const resizeWidth = isMaximized ? '100vw' : isMinimized ? '250px' : '400px';
-    const resizeHeight = isMaximized ? '100vh' : isMinimized ? '180px' : `${400 / videoAspectRatio}px`;
+    const resizeWidth = isMaximized ? '100vw' : isMinimized ? '50vw' : '400px';
+    const resizeHeight = isMaximized ? '100vh' : isMinimized ? `${40 / videoAspectRatio}vw` : `${400 / videoAspectRatio}px`;
     return (
         <div
             onMouseDown={handleMouseDown}
             onDoubleClick={handleDoubleClick}
-            className={`relative border border-gray-300 rounded-lg transition-all duration-300 ease-in-out ${isMinimized ? 'w-64 h-48' : isMaximized ? 'w-screen h-screen' : 'w-[400px] h-[300px]'} m-1`} // ResizeComponent 크기 조정
+            className={`relative border border-gray-300 rounded-lg transition-all duration-300 ease-in-out ${isMinimized ? 'w-1000 h-800' : isMaximized ? 'w-screen h-screen' : 'w-[800px] h-[500px]'} m-1`} // ResizeComponent 크기 조정
             style={{
                 position: isMaximized ? 'fixed' : 'absolute',
                 top: isMaximized ? 0 : position.y,

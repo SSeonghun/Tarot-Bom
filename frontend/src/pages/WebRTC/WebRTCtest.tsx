@@ -21,13 +21,19 @@ import DrawingCanvasComponent, {
 import ProfileModal from "../../components/WebRTC/Tools/ProfileModal";
 import ScenarioPanel from "../../components/WebRTC/Controller/ScenarioPanel";
 import { useLocation } from "react-router-dom";
-
+import { cardInfo } from "../../API/api";
+import Title from "../../components/TarotResult/Title";
 // 정의된 타입
 type TrackInfo = {
   trackPublication: RemoteTrackPublication;
   participantIdentity: string;
 };
-
+interface CardData {
+  cardId: number;
+  name: string;
+  desc: string;
+  imgUrl: string;
+}
 interface RTCTest {
   // token: string; // 토큰
   // name: string; // 닉네임
@@ -76,7 +82,7 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
     | "결과 확인"
     | "마무리 인사"
   >("입장 인사");
-
+  const [cards, setCards] = useState<CardData[]>([]);
   const APPLICATION_SERVER_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:6080/"
@@ -140,8 +146,8 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
       const stream = await navigator.mediaDevices.getDisplayMedia({
         video: {
           frameRate: { ideal: 30, max: 60 }, // 프레임률 조정
-          width: { ideal: 1920 }, // 해상도 조정 (가로)
-          height: { ideal: 1080 }, // 해상도 조정 (세로)
+          width: { ideal: 1920 ,max:1920}, // 해상도 조정 (가로)
+          height: { ideal: 1080 ,max:1080}, // 해상도 조정 (세로)
         },
       });
       const screenTrack = new LocalVideoTrack(stream.getVideoTracks()[0]);
@@ -318,8 +324,21 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
             setIsCardSelectionOngoing(true);
           } else if (type === "requestScreenshot") {
             setIsCardSelectionOngoing(false);
+          } else if (type==='cards'){
+            console.log(rest);
+            const cardDetails:CardData[]=[];
+            for (const cardId of rest.data){
+              const response = await cardInfo(cardId+1);
+              cardDetails.push({
+                cardId: cardId + 1,
+                imgUrl: response.data.imageUrl,
+                name: response.data.cardName,
+                desc: response.data.description,
+              });
+            }setCards(cardDetails);
+            }
           }
-        } catch (error) {
+         catch (error) {
           console.error("Error parsing JSON data:", error);
         }
       });
@@ -438,18 +457,42 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
   const isSeeker = participantName === "Seeker";
 
   //TODO: 여기서 selectedCards받음 이제 JSON 전송후 카드 확인
-  const handleCardInfo = (selectedCards: number[]) => {
-    console.log("Received card info from child:", selectedCards);
-  };
+  // Handles card info and sends it as a JSON string
+const handleCardInfo = async (selectedCards: number[]) => {
+  console.log("Received card info from child:", selectedCards);
+  
+  // Construct the message object
+  const message = { type: 'cards', data: selectedCards };
+  if (room?.localParticipant.publishData) {
+  // Convert the message object to a JSON string
+  const dataToSend = JSON.stringify(message);
+  
+  // Encode the JSON string into a Uint8Array
+  const uint8ArrayData = new TextEncoder().encode(dataToSend);
+  
+  console.log("Sending drawing update:", message);
+  
+  try {
+    // Publish the data to the room's local participant
+    await room.localParticipant.publishData(uint8ArrayData);
+    console.log("Data successfully sent.");
+  } catch (error) {
+    // Handle any errors that occur during publishing
+    console.error("Error sending data:", error);
+  }
+}
+};
+
 
   return (
     <div>
       <div id="room">
-        <img
+        
+        {/* <img
           className="absolute inset-0 w-full h-full object-cover  z-0"
           src={MainBg}
           alt="Main Background"
-        />
+        /> */}
         <div id="layout-container">
           {/* 로컬 비디오가 시각적으로 표시되지 않지만 존재함 */}
           <div className="video-container local" style={{ display: "none" }}>
@@ -468,10 +511,13 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
                   ></div>
                 ) : null
               )}
+              
             </div>
           ) : (
+            
             remoteTracks.map((remoteTrack) =>
               remoteTrack.trackPublication.kind === "video" ? (
+                
                 <div
                   className="video-container w-full h-full flex items-center justify-center"
                   key={remoteTrack.trackPublication.trackSid}
@@ -527,14 +573,15 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
                         >
                             {scenarios[currentScenario]}
                         </button> */}
-            <ScenarioPanel
+            {/* <ScenarioPanel
               onScenarioChange={handleScenarioChange}
               onOpenProfile={OpenProfile}
-            />
+            /> */}
             {/* 진행 상황을 알려주는 변화하는 버튼 */}
             {/* 누르면 그다음 시나리오로 넘어가는 시나리오 통제 */}
             {/* 필요 시니라오 : 입장인사 -> 카드 선택 시간 -> 결과 확인 */}
           </div>
+          <Title selectedCard={cards}/>
           {isProfileModalVisible && (
             <ProfileModal
               isVisible={isProfileModalVisible}
@@ -554,9 +601,9 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
               />
             </div>
           )}
-          <div className="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-lg p-4 shadow-md flex space-x-4 z-50">
-            <p>선택 완료 : 시커</p>
-            <button
+          <div className="fixed bottom-4 right-4 mb-[100px] bg-white border border-gray-300 rounded-lg p-4 shadow-md flex space-x-4 z-50">
+            {/* <p>선택 완료 : 시커</p> */}
+            {/* <button
               className={`btn ${
                 isScreenSharing ? "btn-warning" : "btn-primary"
               }`}
@@ -565,7 +612,7 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
               }
             >
               {isScreenSharing ? "화면 공유 중지" : "화면 공유 시작"}
-            </button>
+            </button> */}
             <button
               className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
               onClick={clearCanvas}
@@ -597,12 +644,12 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
             </button>
             {/* 토글 버튼 */}
 
-            <button
+            {/* <button
               className="preview-button"
               onClick={() => handlePreviewCard()}
             >
               선택결과
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
