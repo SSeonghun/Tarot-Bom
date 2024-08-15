@@ -25,15 +25,15 @@ const ChatAndControls: React.FC<ChatAndControlsProps> = ({
     room, 
     handleSendChatMessage,
     onCameraChange, // 추가
-    onAudioChange // 추가
-
+    onAudioChange, // 추가
+    candidateId,
  }) => {
     const [isReportVisible, setReportVisible] = useState<boolean>(false);
     const reportRef = useRef<HTMLDivElement>(null);
     const [dragging, setDragging] = useState(false);
     const [offset, setOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
-    const [reportUserId, setReportUserId] = useState<string>(''); // 유저 ID 상태
+    const [reportedId, setReportUserId] = useState<any>(); // 유저 ID 상태
     const [reportReason, setReportReason] = useState<string>(''); // 신고 사유 상태
     const [isChatVisible, setIsChatVisible] = useState<boolean>(true);
     const location = useLocation();
@@ -111,18 +111,18 @@ const ChatAndControls: React.FC<ChatAndControlsProps> = ({
       if (matchingReservation_R) {
 
         setReportUserId(matchingReservation_R.seekerId);
-        console.log(reportUserId, reportReason)
+        console.log(reportedId, reportReason)
       }
   
       if (matchingReservation_S) {
 
         setReportUserId(matchingReservation_S.readerId);
-        console.log(reportUserId, reportReason)
+        console.log(reportedId, reportReason)
       }
-      
-        try {console.log(reportUserId, reportReason)
+      setReportUserId(candidateId);
+        try {console.log(reportedId, reportReason)
             // 백엔드로 POST 요청 보내기
-            const response = await chatReport(reportUserId, reportReason, roomId);
+            const response = await chatReport(reportedId, reportReason, roomId);
             console.log('신고 제출 성공:', response);
             
             // 초기화

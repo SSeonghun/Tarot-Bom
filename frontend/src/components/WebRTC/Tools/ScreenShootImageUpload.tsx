@@ -166,7 +166,7 @@ const ScreenShootImageUpload: React.FC<ScreenShootImageUploadProps> = (props) =>
     console.log(summary)
     const cardData: number[] = [];
   
-    const cardNameRegex = /\*\*Card Name\*\*: ([^>]+)/g;
+    const cardNameRegex = /Card Name: ([^>]+)/g;
     let match;
     while ((match = cardNameRegex.exec(summary)) !== null) {
       const cardName = match[1];
