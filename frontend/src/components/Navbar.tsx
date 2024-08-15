@@ -248,7 +248,7 @@ const Navbar: React.FC = () => {
     return () => {
       client.current?.deactivate();
     };
-  }, [memberId, matchingModal]);
+  }, [memberId]);
 
   const handleCancelMatching = () => {
     console.log("모달 닫기");
