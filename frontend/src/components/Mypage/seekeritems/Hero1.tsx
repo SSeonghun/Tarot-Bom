@@ -138,7 +138,7 @@ const Hero1: React.FC<Hero1Props> = ({
           <div className="border border-black rounded-lg">
             <h1 className="text-black text-[40px] font-bold text-center mt-3">예약내역</h1>
             <div>
-              <Calendar highlightDates={highlightDates} layout="col" hsize={300}/>
+              <Calendar highlightDates={highlightDates} layout="col" hsize={200}/>
             </div>
           </div>
         </div>
