@@ -11,4 +11,5 @@ public class MatchingRoomEnterResponseDto {
     private long roomId;
     private String worry;
     private String keyword;
+    private long candidateId;
 }
