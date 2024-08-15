@@ -131,7 +131,84 @@
 ### 핵심 기술
 
 
+
+
 ## 구현 기능
+<table>
+  <thead>
+    <tr>
+      <th>메인 페이지</th>
+      <th>취향 설문</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets/MainPage.gif" width="400px"></td>
+      <td></td>
+      <td><img src="https://github.com/MINJOO-KIM/Movie/assets/124031561/ef4b8baa-c741-4e5e-964e-d58bf54df9cd.gif" 
+    </tr>
+  </tbody>
+  <thead>
+    <tr>
+      <th>취향 기반 영화 추천</th>
+      <th>영화 상세 조회</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets\survery-recommend.gif" width="400px"></td>
+      <td><img src="assets\movie-detail.gif" width="400px"></td>
+    </tr>
+  </tbody>
+  <thead>
+    <tr>
+      <th>회원가입</th>
+      <th>로그인/로그아웃</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets\signup.gif" width="400px"></td>
+      <td><img src="assets\login-logout.gif" width="400px"></td>
+    </tr>
+  </tbody>
+  <thead>
+    <tr>
+      <th>계정 공유 파티 개설</th>
+      <th>계정 공유 파티 조회</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets\party-create.gif" width="400px"></td>
+      <td><img src="assets\party-search.gif" width="400px"></td>
+    </tr>
+  </tbody>
+  <thead>
+    <tr>
+      <th>계정 공유 파티 참여</th>
+      <th>마이 페이지</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets\party-participate.gif" width="400px"></td>
+      <td><img src="assets\my-page.gif" width="400px"></td>
+    </tr>
+  </tbody>
+  <thead>
+    <tr>
+      <th>계정 공유 파티 수정</th>
+      <th>계정 공유 파티 탈퇴</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets\party-update.gif" width="400px"></td>
+      <td><img src="assets\party-leave.gif" width="400px"></td>
+    </tr>
+  </tbody>
+</table>
 
-
+![alt text](assets/mainpage.webm)
 ## 느낀 점
