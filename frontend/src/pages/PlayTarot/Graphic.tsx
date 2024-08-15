@@ -58,7 +58,7 @@ const Graphic: React.FC<GraphicProps> = ({ onModalOpen }) => {
 
   // TODO : 여기서 리더 타입이랑 페이로드 받기
   const { readerType, payload } = location.state || {};
-
+  console.log(payload)
   useEffect(() => {
     console.log("타로 페이지");
     Swal.fire({
@@ -184,7 +184,7 @@ const Graphic: React.FC<GraphicProps> = ({ onModalOpen }) => {
       });
       return;
     }
-
+    console.log(payload)
     const state = location.state as MatchingState;
     navigate("/tarot-result", {
       state: {
@@ -192,6 +192,7 @@ const Graphic: React.FC<GraphicProps> = ({ onModalOpen }) => {
         selectedCard: selectedCard,
         worry: state.payload.worry, // worry 전달
         category: state.payload.keyword || "기본 카테고리", // category 전달, 기본값 설정
+        candidateId:payload.candidateId,
       },
     });
   };

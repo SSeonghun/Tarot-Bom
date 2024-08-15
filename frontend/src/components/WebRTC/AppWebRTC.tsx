@@ -32,6 +32,7 @@ interface RTCTest {
     name: string; // 닉네임
     type: string; // 룸 타입
     position: string;
+    candidateId:number;
   }
 function configureUrls() {
     if (!APPLICATION_SERVER_URL) {
@@ -51,7 +52,7 @@ function configureUrls() {
     }
 }
 
-const AppWebRTC:React.FC<RTCTest>= ({ token, name, type,position })=> {
+const AppWebRTC:React.FC<RTCTest>= ({ token, name, type,position,candidateId })=> {
     const [room, setRoom] = useState<Room | undefined>(undefined);
     const [localVideoTrack, setLocalVideoTrack] = useState<LocalVideoTrack | undefined>(undefined);
     const [localAudioTrack, setLocalAudioTrack] = useState<LocalAudioTrack | undefined>(undefined);
@@ -488,7 +489,7 @@ const handleColorChange = (selectedColor: string) => {
                                     </div> )}
                     <div className="flex flex-col h-full w-full relative overflow-visible">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 p-4">
-                        {isModalVisible && <ScreenShootImageUpload isVisible={isModalVisible} imageData={taroimageData} onClose={closeModal}/>
+                        {isModalVisible && <ScreenShootImageUpload isVisible={isModalVisible} imageData={taroimageData} onClose={closeModal} candidateId={candidateId}/>
                         //<CardModal isVisible={isModalVisible} card={card[0]} onClose={closeModal} />
                         }
                         </div>
@@ -560,6 +561,7 @@ const handleColorChange = (selectedColor: string) => {
                                 handleSendChatMessage={handleSendChatMessage}
                                 onCameraChange={handleCameraChange}
                                 onAudioChange={handleAudioChange}
+                                candidateId={candidateId}
                             />)}
                             </div>
                         </div>
@@ -645,22 +647,23 @@ const handleColorChange = (selectedColor: string) => {
                         </button>
                         <button
                             className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
-                            onClick={leaveRoom}
-                        >
-                            <img src={LeaveOfIcon} alt="" className="w-8 h-8" />
-                        </button>{/* 토글 버튼 */}
-                        <button
-                            className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
                             onClick={handleScreenshot}  // 여기서 handleScreenshot 핸들러 호출
                         >
                             <img src={SelectIcon} alt="" className="w-8 h-8" />
                         </button>
                         <button
+                            className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none"
+                            onClick={leaveRoom}
+                        >
+                            <img src={LeaveOfIcon} alt="" className="w-8 h-8" />
+                        </button>{/* 토글 버튼 */}
+                        
+                        {/* <button
                             className="preview-button"
                             onClick={() => handlePreviewCard()}
                         >
                             선택결과
-                        </button>
+                        </button> */}
                     </div>
                         
                     </div>

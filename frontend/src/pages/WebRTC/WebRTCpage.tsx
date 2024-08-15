@@ -25,7 +25,7 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
   return (
     <div>
       <div>
-        <AppWebRTC token={token} name={name} type={type} position={position} />
+        <AppWebRTC token={token} name={name} type={type} position={position} candidateId={payload.candidateId} />
       </div>
     </div>
   );
