@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/card")
 @Slf4j
-public class //TarotCardController {
+public class TarotCardController {
     private final TarotCardService tarotCardService;
 
     @GetMapping("/info/{cardId}")
