@@ -65,7 +65,7 @@ const OpenAI: React.FC<OpenAIProps> = ({
         1. **카드이름**: <Card Name>
            - **카드요약**: <Card Detail>
            - **카드상세**: <Your Interpretation of this card in the context of the category>
-        **전반적인 카드해석**: <Your Overall Interpretation of all cards in the context of the category>
+        Overall: <Your Overall Interpretation of all cards in the context of the category>
         Music: <Please provide only the song title and artist name appropriate for the category>
         I've been struggling with ${category}, and it's been weighing on me for a while. Lately, I've been feeling ${worry} about it. I believe that talking it through could really help me gain some clarity. Could you please offer your advice or perspective on this issue? I'd greatly appreciate your help.`,
       };
