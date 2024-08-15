@@ -19,9 +19,8 @@ public class TarotSummary {
     private long memberId;
 
     /* @ManyToOne으로 연결 : 타로카드 ID */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "card_id", columnDefinition = "int(2)")
+    @JoinColumn(name = "card_id", insertable = false, updatable = false)
     private TarotCard card;
 
     @NotNull
@@ -37,9 +36,18 @@ public class TarotSummary {
     @JoinColumn(name = "member_id", columnDefinition = "int unsigned")
     private Member member;
 
+    @NotNull
+    @Column(name = "card_id")
+    private int cardId;
+
     // create time 자동갱신
     @PrePersist
     public void prePersist() {
+        this.createTime = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
         this.createTime = LocalDateTime.now();
     }
 

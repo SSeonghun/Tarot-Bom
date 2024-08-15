@@ -4,6 +4,7 @@ import com.ssafy.tarotbom.domain.member.entity.Member;
 import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -26,14 +27,13 @@ public class Board {
     private long boardId;
 
     /* @ManyToOne으로 연결 : 작성자ID, 게시글유형 */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", columnDefinition = "int unsigned", insertable = false, updatable = false)
     private Member member;
 
-    @NotNull
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_type")
+    @JoinColumn(name = "board_type", columnDefinition = "char(3)", insertable = false, updatable = false)
     private CodeDetail boardType;
 
     @NotNull
@@ -65,6 +65,15 @@ public class Board {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "board", cascade = CascadeType.ALL)
     List<Likely> likelyList;
+
+    @NotNull
+    @Column(name = "member_id", columnDefinition = "int unsigned")
+    private long memberId;
+
+    @NotNull
+    @Column(name = "board_type", columnDefinition = "char(3)")
+    private String category;
+
 
     // create time, update time 자동갱신
     @PrePersist

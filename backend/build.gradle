@@ -47,17 +47,31 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	// ModelMapper
-//	implementation group: 'org.modelmapper', name : 'modelmapper', version '2.4.2'
 	implementation 'org.modelmapper:modelmapper:3.1.1'
 
 	// email 라이브러리
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.0.5'
 
+	// email
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+	// websocket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	// stomp
+	implementation 'org.webjars:sockjs-client:1.1.2'
+	implementation 'org.webjars:stomp-websocket:2.3.3-1'
+
 	// aws
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// livekit
+	implementation 'io.livekit:livekit-server:0.5.11'
+
 
 }
 

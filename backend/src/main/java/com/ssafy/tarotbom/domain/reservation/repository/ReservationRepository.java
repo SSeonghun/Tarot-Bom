@@ -10,4 +10,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     public <S extends Reservation> S save(S res);
     List<Reservation> findAllByReaderId(long readerId);
     List<Reservation> findAllBySeekerId(long readerId);
+    public int countByReaderId(Long readerId);
+    public long deleteAllByReservationId(long reservationId);
 }

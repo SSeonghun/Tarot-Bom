@@ -1,12 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Calendar from "../../Common/Calendar";
 
-const Reservation: React.FC = () => {
-  const highlightDates = [
-    new Date(2024, 6, 31), // 2024년 7월 15일
-    new Date(2024, 7, 20), // 2024년 7월 20일
-    new Date(2024, 7, 25), // 2024년 7월 25일
-  ];
+interface ReservationData {
+  startTime: string; // 예약 시작 시간
+}
+
+interface Props {
+  reservationData: ReservationData[];
+}
+
+const Reservation: React.FC<Props> = ({ reservationData }) => {
+  const [highlightDates, setHighlightDates] = useState<Date[]>([]);
+
+  // 날짜와 시간을 포맷팅하는 함수
+  const formatDateTime = (dateTimeString: string): Date => {
+    return new Date(dateTimeString);
+  };
+
+  useEffect(() => {
+    if (reservationData) {
+      const dates = reservationData.map((reservation) =>
+        formatDateTime(reservation.startTime),
+      );
+      setHighlightDates(dates)
+    }
+  }, [reservationData]);
+
+  console.log(highlightDates)
+
   return (
     <div className="min-h-screen p-10">
       <div>
@@ -14,7 +35,7 @@ const Reservation: React.FC = () => {
         <hr className="border-black border-[2px]" />
       </div>
       <div className="mt-[100px]">
-        <Calendar highlightDates={highlightDates} layout="row" />
+        <Calendar highlightDates={highlightDates} layout="row" hsize={200}/>
       </div>
     </div>
   );

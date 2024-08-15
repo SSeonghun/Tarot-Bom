@@ -6,6 +6,7 @@ import com.ssafy.tarotbom.global.code.entity.CodeType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -60,11 +61,13 @@ public class Member {
     /* @ManyToOne 리스트
     * 1. 회원유형 (시커, 리더, 매니저)
     * */
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="member_type", columnDefinition = "char(3)", insertable = false, updatable = false)
+    private CodeDetail memberType;
 
     @NotNull
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="member_type", columnDefinition = "char(3)")
-    private CodeDetail memberType;
+    @Column(name = "member_type", columnDefinition = "char(3)")
+    private String memberTypeId;
 
     @Column(name = "create_time", columnDefinition = "timestamp")
     private LocalDateTime createTime;
@@ -86,14 +89,4 @@ public class Member {
         this.updateTime = LocalDateTime.now();
     }
 
-    public Member(String nickname, String email, String password, CodeDetail memberType) {
-        this.nickname = nickname;
-        this.email = email;
-        this.password = password;
-        this.memberType = memberType;
-    }
-
-    public void setMemberType(@NotNull CodeDetail memberType) {
-        this.memberType = memberType;
-    }
 }

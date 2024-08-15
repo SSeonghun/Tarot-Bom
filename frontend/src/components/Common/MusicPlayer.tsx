@@ -1,83 +1,139 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useRef } from 'react';
+import YouTube, { YouTubePlayer } from 'react-youtube';
 
-const MusicPlayer: React.FC = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(30);
+const { youtubeMusic } = require('../../API/api');
 
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-  };
+interface MusicPlayerProps {
+  width: number;
+  height: number;
+  searchQuery: string;
+}
+
+const MusicPlayer: React.FC<MusicPlayerProps> = ({ width, height, searchQuery }) => {
+  const [videoId, setVideoId] = useState<string>('');
+  const [thumbnail, setThumbnail] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const playerRef = useRef<YouTubePlayer | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | undefined;
+    const fetchMusic = async () => {
+      try {
+        setLoading(true);
+        const musicData = await youtubeMusic(searchQuery);
+        const videoId = musicData.id.videoId;
+        const thumbnail = musicData.snippet.thumbnails.default.url;
+        const title = musicData.snippet.title;
+  
+        setVideoId(videoId);
+        setThumbnail(thumbnail);
+        setTitle(title);
+      } catch (error) {
+        console.error('비디오 데이터 가져오기 실패:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (isPlaying) {
-      interval = setInterval(() => {
-        setProgress((prevProgress) => {
-          if (prevProgress >= 100) {
-            clearInterval(interval);
-            return 100;
-          }
-          return prevProgress + 1;
-        });
-      }, 1000); // update progress every second
-    } else if (!isPlaying && progress !== 0) {
-      clearInterval(interval);
+    fetchMusic();
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (isPlaying && playerRef.current) {
+      intervalRef.current = setInterval(() => {
+        setCurrentTime(playerRef.current!.getCurrentTime());
+      }, 1000);
+    } else if (intervalRef.current) {
+      clearInterval(intervalRef.current);
     }
-
-    return () => clearInterval(interval); // cleanup interval on component unmount
+    return () => clearInterval(intervalRef.current!);
   }, [isPlaying]);
 
+  const opts = {
+    height: '0',
+    width: '0',
+    playerVars: {
+      autoplay: 1,
+      mute: 1,
+    },
+  };
+
+  const onReady = (event: { target: YouTubePlayer }) => {
+    playerRef.current = event.target;
+    setDuration(playerRef.current.getDuration());
+    setIsPlaying(true);
+
+    // 0.5초 후에 음소거 해제 및 볼륨 설정
+    setTimeout(() => {
+      if (playerRef.current) {
+        playerRef.current.unMute();
+        playerRef.current.setVolume(100); // 볼륨을 100으로 설정 (최대 볼륨)
+      }
+    }, 500);
+  };
+
+  const handlePlayPause = () => {
+    if (playerRef.current) {
+      const playerState = playerRef.current.getPlayerState();
+      if (playerState === 1) {
+        playerRef.current.pauseVideo();
+        setIsPlaying(false);
+      } else {
+        playerRef.current.playVideo();
+        setIsPlaying(true);
+      }
+    }
+  };
+
+  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = parseFloat(event.target.value);
+    if (playerRef.current) {
+      playerRef.current.seekTo(newTime, true);
+      setCurrentTime(newTime);
+    }
+  };
+
+  const formatTime = (time: number): string => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
   return (
-    <div className="rounded-lg drop-shadow p-4 dark:bg-black dark:shadow-white">
-      <div className="flex items-center justify-center">
-        <img
-          className="rounded-lg aspect-square w-16"
-          src="https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/d5/37/f0/d537f0d1-5cfd-ce67-d7ac-0c4151f63f70/23UMGIM17915.rgb.jpg/1200x1200bb.jpg"
-          alt="Album cover"
-        />
-        <div className="ml-4">
-          <p className="font-semibold text-md text-gray-600">I ain't worried</p>
-          <p className="font-semibold text-xs text-gray-600">One Republic</p>
-        </div>
-      </div>
-      <div className="flex flex-col justify-center items-center my-4">
-        <div className="flex items-center w-full">
-          <button
-            onClick={handlePlayPause}
-            className="ml-4 aspect-square me-3 bg-gray-300 flex justify-center items-center rounded-full p-2 shadow-lg dark:bg-gray-800"
-          >
-            {isPlaying ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-              >
-                <path fill="#131313" d="M3 22h6V2H3v20zm12-20v20h6V2h-6z" />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 512 512"
-              >
-                <path
-                  fill="#131313"
-                  d="M133 440a35.37 35.37 0 0 1-17.5-4.67c-12-6.8-19.46-20-19.46-34.33V111c0-14.37 7.46-27.53 19.46-34.33a35.13 35.13 0 0 1 35.77.45l247.85 148.36a36 36 0 0 1 0 61l-247.89 148.4A35.5 35.5 0 0 1 133 440"
-                />
-              </svg>
-            )}
-          </button>
-          <input
-            type="range"
-            value={progress}
-            onChange={(e) => setProgress(Number(e.target.value))}
-            className="rounded-lg overflow-hidden appearance-none bg-gray-300 h-1 w-full custom-range"
-          />
-        </div>
-      </div>
+    <div className="music-player">
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          {videoId && (
+            <YouTube videoId={videoId} opts={opts} onReady={onReady} style={{ display: 'none' }} />
+          )}
+          <div className="music-info flex items-center mt-5">
+            <img src={thumbnail} alt="thumbnail" width={50} className='mr-3'/>
+            <p className='text-xs'>{searchQuery}</p>
+          </div>
+          <div className="controls flex justify-center mt-2">
+            <button onClick={handlePlayPause} className="play-pause-button">
+              {isPlaying ? '⏸️' : '▶️'}
+            </button>
+            <input
+              type="range"
+              min="0"
+              max={duration}
+              value={currentTime}
+              onChange={handleTimeChange}
+            />
+            
+            <div className="time-display ml-1">
+              <span>{formatTime(currentTime)}</span> / <span>{formatTime(duration)}</span>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

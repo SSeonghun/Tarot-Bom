@@ -1,0 +1,24 @@
+/* Hero3.css */
+.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 1s ease-in, transform 1s ease-in;
+}
+
+.fade-out {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s ease-in, transform 1s ease-in;
+}
+
+.slide-in {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 1s ease-in, transform 1s ease-in;
+}
+
+.slide-out {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 1s ease-in, transform 1s ease-in;
+}

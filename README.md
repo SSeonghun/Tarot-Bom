@@ -1,56 +1,223 @@
-# 웹/모바일(웹 기술) 스켈레톤 프로젝트
+![타로:봄](assets/Title.png)
 
-<!-- 필수 항목 -->
+## 📚 목차
 
-## 카테고리
+- [🗓️프로젝트 개요](#️프로젝트-개요)
+  - [진행 기간](#진행-기간)
+  - [기획 배경](#기획-배경)
 
-| Application | Domain | Language | Framework |
-| ---- | ---- | ---- | ---- |
-| :white_check_mark: Desktop Web | :white_check_mark: AI | :white_check_mark: JavaScript | :black_square_button: Vue.js |
-| :white_check_mark: Mobile Web | :black_square_button: Big Data | :white_check_mark: TypeScript | :white_check_mark: React |
-| :white_check_mark: Responsive Web | :black_square_button: Blockchain | :black_square_button: C/C++ | :black_square_button: Angular |
-| :black_square_button: Android App | :black_square_button: IoT | :black_square_button: C# | :black_square_button: Node.js |
-| :black_square_button: iOS App | :black_square_button: AR/VR/Metaverse | :white_check_mark: Python | :white_check_mark: Flask/Django |
-| :black_square_button: Desktop App | :black_square_button: Game | :white_check_mark: Java | :white_check_mark: Spring/Springboot |
-| | | :black_square_button: Kotlin | |
+- [💡개발 환경](#개발-환경)
+  - [프로젝트 파일 구조](#프로젝트-파일-구조)
 
-<!-- 필수 항목 -->
+- [👯‍♀️팀 소개](#팀-소개)
 
-## 프로젝트 소개
+- [📢서비스 소개](#서비스-소개)
+  - [타로:봄](#타로봄)
+  - [ERD](#erd)
+  - [와이어프레임](#와이어프레임)
+  - [아키텍쳐](#아키텍쳐)
+  - [핵심 기술](#핵심-기술)
 
-* 프로젝트명: 그룹 비디오 컨퍼런스 서비스
-* 서비스 특징: 웹/모바일(웹 기술) 프로젝트를 위한 스켈레톤 프로젝트
-* 주요 기능
-  - 회원 관리
-  - 화상 미팅룸
-  - 그룹 채팅
-* 주요 기술
-  - WebRTC
-  - WebSocket
-  - JWT Authentication
-  - REST API
-* 참조 리소스
-  * Vuetify: 디자인 전반 적용
-  * Vue Argon Design System: 디자인 전반 적용
-  * Vue Black Dashboard Pro(유료): 캘린더 컴포넌트 사용
-  * AR Core: 구글에서 제공하는 AR 지원 라이브러리. 이미지 인식 및 오버레이 영상에 활용
-  * Color Thief: 이미지 색상 추출 라이브러리. 커버 사진 색상 추출 및 배경 변경에 활용
-  * Animation.css: CSS 애니메이션 지원 라이브러리. 메인 페이지 진입 애니메이션에 활용
-* 배포 환경
-  - URL: // 웹 서비스, 랜딩 페이지, 프로젝트 소개 등의 배포 URL 기입
-  - 테스트 계정: // 로그인이 필요한 경우, 사용 가능한 테스트 계정(ID/PW) 기입
+- [💻구현 기능](#구현-기능)
 
-<!-- 자유 양식 -->
+- [👍 느낀 점](#-느낀-점)
 
-## 팀 소개
-* 최현석: 팀장, 프론트엔드 개발
-* 곽재은: 부팀장, 기획 및 와이어프레임 작성, 프론트엔드 개발
-* 임성훈: 백엔드 개발 및 QA 담당
-* 정지영: 백엔드 개발, Swagger API 문서 관리
-* 주수아: 코드 리뷰 및 인프라 담당, CI/CD, HTTPS, Docker 구성
 
-<!-- 자유 양식 -->
 
-## 프로젝트 상세 설명
+<hr>
 
-// 개발 환경, 기술 스택, 시스템 구성도, ERD, 기능 상세 설명 등
+## 🗓️프로젝트 개요
+
+### 진행 기간
+2024.07.02 ~ 2024.08.16(7주)
+
+### 기획 배경
+- 타로를 봐보고 싶지만 가볍게 시작해보기는 생각보다 어렵다.
+- 사람 대 사람 타로 넘어가는 부분이 특히 어려움. 사람 대 사람 타로는 비싼 돈을 내야하는 전문가에 의한 타로가 대부분이기 때문. 또, 타로를 직접 보고자 하더라도 같은 관심사를 가진 사람을 만나기가 어렵다.
+- 이런 타로의 단계별 진입장벽을 자연스럽게 해결할 수 있는 서비스를 만들자! 우리의 목표는 타로의 대중화! 하고 기획하게 된 것이 타로봄!
+
+##  💡개발 환경
+
+#### Backend
+- SpringBoot
+- Spring Data JPA
+- Spring Security
+- QueryDSL
+
+#### Frontend
+- React
+- Node.js
+- Tailwind CSS
+- Zustand
+
+#### Database
+- MySQL
+- Redis
+
+#### Infra
+- Docker
+- Caddy
+- Nginx
+- Let's Encrypt(HTTPS)
+- AWS EC2
+- AWS S3
+
+#### 협업 툴
+- GitLab
+- Jira
+- Notion
+
+#### 프로젝트 파일 구조
+
+
+#### Frontend
+```
+📦src
+ ┣ 📂API
+ ┣ 📂assets
+ ┃ ┣ 📂css
+ ┃ ┣ 📂img
+ ┃ ┣ 📂quotes
+ ┃ ┣ 📂tarot_images - 복사본
+ ┣ 📂components
+ ┃ ┣ 📂Booking
+ ┃ ┣ 📂Cards
+ ┃ ┣ 📂Common
+ ┃ ┣ 📂Community
+ ┃ ┣ 📂Home
+ ┃ ┣ 📂login_signup
+ ┃ ┣ 📂Matching
+ ┃ ┣ 📂Mypage
+ ┃ ┣ 📂OfflineTarot
+ ┃ ┣ 📂PlayTarot
+ ┃ ┣ 📂ReaderProfile
+ ┃ ┣ 📂SearchReader
+ ┃ ┣ 📂TarotResult
+ ┃ ┣ 📂WebRTC
+ ┣ 📂pages
+ ┃ ┣ 📂Admin
+ ┃ ┣ 📂Booking
+ ┃ ┣ 📂Community
+ ┃ ┣ 📂CreateReader
+ ┃ ┣ 📂Matching
+ ┃ ┣ 📂PlayTarot
+ ┃ ┣ 📂SearchReader
+ ┃ ┣ 📂TarotResult
+ ┃ ┣ 📂Test
+ ┃ ┣ 📂UserAuth
+ ┃ ┣ 📂UserProfile
+ ┃ ┣ 📂WebRTC
+ ┣ 📂stores
+ ┣ 📂types 
+ ```
+
+## 👯‍♀️팀 소개
+![alt text](<assets/팀 소개.PNG>)
+
+
+<br></br>
+
+## 📢서비스 소개
+
+### 타로:봄
+
+- 타로:봄 – 타로점을 보고싶은 사람, 시커(seeker)와 타로점을 봐 주는 사람, 리더(reader) 모두가 쉽게 타로를 즐길 수 있는 통합 타로 플랫폼
+- 시커는? -> 랜덤매칭을 통해 가벼운 타로점 보기 가능, 예약을 통해 원하는 사람과 타로를 보는 것도 가능.
+- 리더는? -> 누구나 리더 프로필 생성을 통해 리더가 될 수 있음, 랜덤매칭을 통해 가볍게 타로점 봐 주기 가능,예약을 받아 약속된 때에 리딩을 하는 것도 가능.
+- 커뮤니티를 통해 교류 가능,  오프라인 타로점까지의 연결
+
+### ERD
+![alt text](assets/ERD.png)
+
+### 와이어프레임
+![alt text](assets/Figma.png)
+
+### 아키텍쳐
+![alt text](assets/아키텍처.PNG)
+
+### 핵심 기술
+
+- 이메일 인증
+- WebRTC Platform openVidu v3
+
+
+
+
+## 💻구현 기능
+<table>
+  <thead>
+    <tr>
+      <th>회원가입/로그인</th>
+      <th>메인 페이지</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets/로그인_회원가입.gif" width="400px"></td>
+      <td><img src="assets/MainPage.gif" width="400px"></td>
+    </tr>
+  </tbody>
+  <thead>
+    <tr>
+      <th>시커 마이페이지 & 리더 생성</th>
+      <th>리더 마이페이지</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets/SeekerMypage_ReaderCreate.gif" width="400px"></td>
+      <td><img src="assets/리더마이페이지.gif" width="400px"></td>
+  </tbody>
+  <thead>
+    <tr>
+      <th>리더 검색 & 리더 프로필</th>
+      <th>예약하기</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets/ReaderProfile.gif" width="400px"></td>
+      <td><img src="assets/예약하기.gif" width="400px"></td>
+    </tr>
+  </tbody>
+  </thead>
+  <thead>
+    <tr>
+      <th>시커입장 매칭</th>
+      <th>리더입장 매칭</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets/시커입장 랜덤매칭.gif" width="400px"></td>
+      <td><img src="assets/리더입장랜덤매칭.gif" width="400px"></td>
+    </tr>
+  </tbody>
+  <thead>
+    <tr>
+      <th>AI타로</th>
+      <th>타로보기/캠</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets/AI_그래픽_타로.gif" width="400px"></td>
+      <td><img src="" width="400px"></td>
+    </tr>
+  </tbody>
+   <thead>
+    <tr>
+      <th>오프라인 타로점</th>
+      <th>커뮤니티</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets/오프라인등록삭제.gif" width="400px"></td>
+      <td><img src="assets/커뮤니티.gif" width="400px"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+## 👍느낀 점

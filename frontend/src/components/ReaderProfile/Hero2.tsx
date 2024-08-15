@@ -2,8 +2,21 @@ import React from 'react';
 import Hero2Item from './items/Hero2Item';
 import FireWork from '../../assets/img/firework.png';
 
+interface Hero2Props {
+  name: String;
+  reviews: string[];
+  allConsultings: number;
+  allReservations: number;
+  afterReader: number;
+}
 // Hero2Item에 보낼때 props로 보내면 됨
-const Hero2: React.FC = () => {
+const Hero2: React.FC<Hero2Props> = ({
+  name,
+  reviews,
+  allConsultings,
+  allReservations,
+  afterReader
+}) => {
   return (
     <div className="container p-4 mx-auto">
       <hr />
@@ -11,12 +24,12 @@ const Hero2: React.FC = () => {
       <div className="grid grid-cols-12 gap-4 mt-10">
         <div className="col-span-6">
           <div className="grid grid-cols-2 gap-2">
-            <Hero2Item title="리뷰" value={4.5} subValue="번" />
-            <Hero2Item title="총 상담 횟수" value={32} subValue="번" />
+            <Hero2Item title="리뷰" value={reviews.length} subValue="번" />
+            <Hero2Item title="총 상담 횟수" value={allConsultings} subValue="번" />
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Hero2Item title="총 예약 횟수" value={6} subValue="번" />
-            <Hero2Item title="리더가 된지" value={108} subValue="일" />
+            <Hero2Item title="총 예약 횟수" value={allReservations} subValue="번" />
+            <Hero2Item title="리더가 된지" value={afterReader} subValue="일" />
           </div>
         </div>
         <div className="col-span-6 flex flex-col justify-center items-center">
@@ -26,7 +39,7 @@ const Hero2: React.FC = () => {
           </div>
           <div>
             <h3 className="text-[40px] text-white">
-              리더 <strong>김싸피</strong>님의 프로필 입니다!!
+              리더 <strong>{name}</strong>님의 프로필 입니다!!
             </h3>
           </div>
         </div>

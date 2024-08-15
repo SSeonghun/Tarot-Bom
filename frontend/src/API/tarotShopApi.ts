@@ -1,24 +1,29 @@
 import axios from "axios";
 import { error } from "console";
 
-const API_URL = "http://localhost/tarotbom/tarotshop/";
+
+
+// const API_URL = "https://i11c208.p.ssafy.io/tarotbom/shop";
+const API_URL = `${process.env.REACT_APP_URL}/tarotbom/shop`;
 
 const writeTarotshop = async (
   shopName: string,
-  readerId: number,
   address: string,
   phone: string,
   longitude: number,
   latitude: number
 ) => {
   try {
-    const response = await axios.post(`${API_URL}write`, {
+    const response = await axios.post(`${API_URL}`, {
       shopName,
-      readerId,
       address,
       phone,
       longitude,
       latitude,
+      
+    },
+    {
+      withCredentials: true, // 쿠키를 포함하도록 설정
     });
     return response.data;
   } catch (error) {
@@ -29,7 +34,7 @@ const writeTarotshop = async (
 
 const detailTarotshop = async (shopId: number) => {
   try {
-    const response = await axios.get(`${API_URL}${shopId}`);
+    const response = await axios.get(`${API_URL}/${shopId}`);
     return response.data;
   } catch (error) {
     console.error("타로점 상세조회 실패", error);
@@ -40,14 +45,25 @@ const detailTarotshop = async (shopId: number) => {
 const patchTarotshop = async (
   shopId: number,
   shopName: string,
-  readerId: number,
   address: string,
   phone: string,
   longitude: number,
   latitude: number
 ) => {
   try {
-    const response = await axios.patch(`${API_URL}${shopId}`);
+
+    const response = await axios.patch(`${API_URL}/${shopId}`,
+      {
+        shopName,
+        address,
+        phone,
+        longitude,
+        latitude,
+      },
+      {
+        withCredentials: true, // 쿠키를 포함하도록 설정
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("타로점 수정 실패", error);
@@ -57,7 +73,11 @@ const patchTarotshop = async (
 
 const deleteTarotshop = async (shopId: number) => {
   try {
-    const response = await axios.delete(`${API_URL}${shopId}`);
+    const response = await axios.delete(`${API_URL}/${shopId}`,
+      {
+        withCredentials: true, // 쿠키를 포함하도록 설정
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("타로점 삭제 실패", error);

@@ -1,32 +1,78 @@
-import React from 'react';
-import MainBg from '../../assets/mainBg.png';
-import HoverButton from '../Common/HoverButton';
+import React from "react";
+import HoverButton from "../Common/HoverButton";
+import PrivateLink from "../Common/PrivateLink";
+import CommonButton from "../Common/CommonButton";
+import Witch from "../../assets/img/witch.webp";
+import Meteo from "../Common/Meteo";
+import MainBack from "../../assets/img/MainBack.jpg";
+import Galaxy from "../../assets/img/galaxy.png";
 
 // Main Section 1
 const Hero1: React.FC = () => {
   return (
-    <div className="relative w-screen min-h-screen bg-black">
-      <img className="w-full h-screen object-cover opacity-90" src={MainBg} alt="Main Background" />
+    <div className="relative w-screen h-[860px]  bg-gray-900 z-99 ">
+      <Meteo />
+      <img
+        className="w-full h-full object-cover opacity-50"
+        src={MainBack}
+        alt="Main Background"
+        style={{ objectPosition: "bottom" }}
+      />
+      <img
+        src={Witch}
+        alt=""
+        className="absolute left-[150px] top-[200px] w-[500px]"
+      />
 
       {/* Overlay */}
-      <div className="absolute inset-0 flex flex-col items-end justify-center text-end text-white px-4" style={{ right: '5%', transform: 'translateX(0)' }}>
-        <p className="text-9xl mb-4" style={{ color: '#EBCB8B' }}>
-          타로 : 봄
-        </p>
-        <p className="text-1xl mb-8" style={{ color: '#EBCB8B' }}>
-          타로카드 리딩과 해석에 관한 깊이 있는 정보와 <br />
-          개인 맞춤형 서비스를 제공하여 <br />
-          여러분의 삶에 새로운 통찰과 방향을 제시합니다.
+      <div className="absolute inset-0 flex flex-col right-[200px] items-end justify-center text-end text-white px-4">
+        <div className="relative">
+          {/* <img
+            src={Galaxy}
+            alt=""
+            className="absolute w-[100px] -left-[32px] -top-[42px]"
+          /> */}
+          {/* <p className="text-9xl mb-4 font-bold" style={{ color: "#EBCB8B" }}>
+            타로 : 봄
+          </p> */}
+
+          <h1
+            className="text-9xl font-bold"
+            style={{
+              background: "linear-gradient(to right, #7af0e5, #ce67f7)",
+              WebkitBackgroundClip: "text",
+              color: "transparent",
+            }}
+          >
+            타로 : 봄
+          </h1>
+        </div>
+        <p className="text-[18px] mb-8" style={{ color: "#FFFFFF " }}>
+          타로:봄은 실시간 타로 리딩 플랫폼으로,
+          <br />
+          랜덤 매칭이나 AI 타로를 통해 즉시 답을 얻을 수 있습니다.
+          <br />
+          또한, 예약 시스템을 통해 원하는 타로 리더와 심층 상담이 가능하며,
+          <br />
+          누구나 타로 리더가 되어 상담에 참여할 수 있습니다.
+          <br />
+          언제 어디서나 통찰을 받을 수 있는 타로:봄 으로 오세요!
         </p>
         <div className="space-y-6 space-x-4">
-          <HoverButton
-            label="지금 만나보세요!"
-            color="bg-gray-500"
-            hoverColor="bg-gray-300"
-            hsize="h-12"
-            wsize="w-48"
-            fontsize="text-lg"
-          />
+          <PrivateLink to="/online">
+            <CommonButton
+              label="지금 만나보세요!"
+              color="bg-gray-900"
+              hoverColor="hover:bg-gray-600"
+              hsize="h-12"
+              wsize="w-48"
+              textColor="text-gray-300"
+              hoverTextColor="hover:text-yellow-500"
+              rounded={true}
+              fontsize="text-lg"
+              onClick={function (): void {}}
+            />
+          </PrivateLink>
         </div>
       </div>
 

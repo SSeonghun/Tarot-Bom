@@ -6,12 +6,14 @@ import com.ssafy.tarotbom.global.code.entity.CodeDetail;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name="reservation")
 @Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder(toBuilder = true)
@@ -26,7 +28,6 @@ public class Reservation {
     @JoinColumn(name = "room_id", insertable = false, updatable = false, columnDefinition = "int unsigned")
     private Room room;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seeker_id", insertable = false, updatable = false, columnDefinition = "int unsigned")
     private Member seeker;
@@ -35,13 +36,12 @@ public class Reservation {
     @JoinColumn(name = "reader_id", insertable = false, updatable = false, columnDefinition = "int unsigned")
     private Member reader;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status", columnDefinition = "char(3)")
+    @JoinColumn(name = "status", columnDefinition = "char(3)", insertable = false, updatable = false)
     private CodeDetail status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "keyword", columnDefinition = "char(3)")
+    @JoinColumn(name = "keyword", columnDefinition = "char(3)", insertable = false, updatable = false)
     private CodeDetail keyword;
 
     @NotNull
@@ -58,15 +58,23 @@ public class Reservation {
     private LocalDateTime updateTime;
 
     // 단순 쿼리를 위한 string column 생성
-    
     @Column(name = "room_id", columnDefinition = "int unsigned")
-    private long roomId;
+    private Long roomId;
 
     @Column(name = "seeker_id", columnDefinition = "int unsigned")
-    private long seekerId;
+    private Long seekerId;
 
+    @NotNull
+    @Column(name = "status", columnDefinition = "char(3)")
+    private String statusCode;
+
+    @NotNull
     @Column(name = "reader_id", columnDefinition = "int unsigned")
     private long readerId;
+
+    @NotNull
+    @Column(name = "keyword", columnDefinition = "char(3)")
+    private String keywordCode;
 
     // create time, update time 자동갱신
     @PrePersist

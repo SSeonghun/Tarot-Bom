@@ -1,5 +1,6 @@
-import React from "react";
-import ResultSummary from "../../Common/ResultSummary";
+import React from 'react';
+import ResultSummary from '../../Common/ResultSummary';
+
 
 const Hero1: React.FC = () => {
   const date1 = new Date(2024, 4, 15);
@@ -8,7 +9,7 @@ const Hero1: React.FC = () => {
 
   return (
     <div className="grid grid-cols-12 gap-4">
-      <div className="col-span-4 border border-gray-600 mt-4 rounded-lg">
+      {/* <div className="col-span-4 border border-gray-600 mt-4 rounded-lg">
         <ResultSummary date={date1} />
       </div>
       <div className="col-span-4 border border-gray-600 mt-4 rounded-lg">
@@ -16,7 +17,7 @@ const Hero1: React.FC = () => {
       </div>
       <div className="col-span-4 border border-gray-600 mt-4 rounded-lg">
         <ResultSummary date={date3} />
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -1,75 +1,114 @@
-import React, { useState, useEffect } from 'react';
-import Select from '../Common/SelectTime'; // 경로 수정
+import React, { useState, useEffect } from "react";
+import Select from "../Common/SelectTime"; // 경로 수정
 
 interface TimeProps {
   selectedDate: Date | null;
+  reservedTimes: { time: string; date: Date | null }[];
   onTimeSelect: (timeWithDate: { time: string; date: Date | null }[]) => void;
 }
 
-const Time: React.FC<TimeProps> = ({ selectedDate, onTimeSelect }) => {
-  const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
+const Time: React.FC<TimeProps> = ({
+  selectedDate,
+  reservedTimes,
+  onTimeSelect,
+}) => {
+  console.log("time mounted");
+  console.log("reservedTimes:", reservedTimes);
+
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [activeButtons, setActiveButtons] = useState<string[]>([]);
-  const timeOptions: string[] = [];
-  const [savedButtons, setSavedButtons] = useState<string[]>([]); // 저장된 버튼 배열 추가
+  const [savedButtons, setSavedButtons] = useState<string[]>([]);
 
-  // 기본 시간 옵션 생성 (10:00부터 13:00까지, 16:00부터 18:00까지)
-  for (let hour = 10; hour <= 13; hour++) {
-    timeOptions.push(`${hour}:00`, `${hour}:30`);
-  }
-  for (let hour = 16; hour <= 18; hour++) {
-    timeOptions.push(`${hour}:00`, `${hour}:30`);
-  }
-
-  // 초기 활성화 상태 설정
-  useEffect(() => {
-    setActiveButtons(timeOptions);
-  }, [timeOptions]);
-
-  const handleSelect = (time: string) => {
-    const updatedSelectedTimes = selectedTimes.includes(time)
-      ? selectedTimes.filter(t => t !== time)
-      : [...selectedTimes, time];
-
-    setSelectedTimes(updatedSelectedTimes);
-    updateActiveButtons(updatedSelectedTimes); // 활성화된 버튼 상태 업데이트
-
-    const timeWithDate = updatedSelectedTimes.map(t => ({ time: t, date: selectedDate }));
-    onTimeSelect(timeWithDate);
+  // 기본 시간 옵션 생성 (10:00부터 13:00까지, 16:00부터 24:00까지)
+  const generateTimeOptions = () => {
+    const timeOptions: string[] = [];
+    for (let hour = 10; hour <= 13; hour++) {
+      timeOptions.push(
+        `${String(hour).padStart(2, "0")}:00`,
+        `${String(hour).padStart(2, "0")}:30`
+      );
+    }
+    for (let hour = 16; hour <= 23; hour++) {
+      timeOptions.push(
+        `${String(hour).padStart(2, "0")}:00`,
+        `${String(hour).padStart(2, "0")}:30`
+      );
+    }
+    return timeOptions;
   };
 
-  const updateActiveButtons = (selected: string[]) => {
-    const selectedInMinutes = selected.map(time => {
-      const [hour, minute] = time.split(':').map(Number);
-      return hour * 60 + minute;
-    });
+  // 예약된 시간 제외
+  const getReservedTimeStrings = () => {
+    return reservedTimes
+      .filter(
+        (reservation) =>
+          reservation.date?.toDateString() === selectedDate?.toDateString()
+      )
+      .map((reservation) => convertTo24HourFormat(reservation.time));
+  };
 
-    // 등차수열 확인
-    const isInSequence = selectedInMinutes.every((time, index) => {
-      if (index === 0) return true; // 첫 번째 요소는 항상 true
-      return time - selectedInMinutes[index - 1] === 30; // 30분 간격 확인
-    });
+  // 12시간 형식의 시간 문자열을 24시간 형식으로 변환하는 함수
+  const convertTo24HourFormat = (time: string) => {
+    const [timeOfDay, timeString] = time.split(" ");
+    const [hours, minutes] = timeString.split(":").map(Number);
 
-    if (isInSequence) {
-      setSavedButtons(selected); // 등차수열이 유지될 때 저장
-      setActiveButtons(selected); // 선택된 버튼 활성화
+    let newHours = hours;
+    if (timeOfDay === "오후" && hours < 12) {
+      newHours += 12;
+    } else if (timeOfDay === "오전" && hours === 12) {
+      newHours = 0;
+    }
+
+    return `${String(newHours).padStart(2, "0")}:${String(minutes).padStart(
+      2,
+      "0"
+    )}`;
+  };
+
+  // 컴포넌트 마운트 시 활성화 상태 설정
+  useEffect(() => {
+    const timeOptions = generateTimeOptions();
+    const reservedTimeStrings = getReservedTimeStrings();
+    setActiveButtons(
+      timeOptions.filter((option) => !reservedTimeStrings.includes(option))
+    );
+  }, [selectedDate, reservedTimes]);
+
+  // 시간 선택 핸들러
+  const handleSelect = (time: string) => {
+    if (selectedTime === time) {
+      setSelectedTime(null);
     } else {
-      // 등차수열이 깨진 경우, 저장된 버튼만 활성화하고 나머지는 비활성화
-      setActiveButtons(timeOptions.filter(option => savedButtons.includes(option)));
+      setSelectedTime(time);
+    }
+
+    if (selectedDate) {
+      const timeWithDate = [
+        { time, date: new Date(`${selectedDate.toDateString()} ${time}`) },
+      ];
+      onTimeSelect(timeWithDate);
     }
   };
 
+  // 버튼 활성화 여부 확인
   const isButtonActive = (option: string): boolean => {
-    return activeButtons.includes(option); // 활성화된 버튼만 활성화
+    const reservedTimeStrings = getReservedTimeStrings();
+    const isActive =
+      activeButtons.includes(option) &&
+      !reservedTimeStrings.includes(option) &&
+      option !== selectedTime;
+    console.log(`Button ${option} is ${isActive ? "active" : "inactive"}`);
+    return isActive;
   };
 
   return (
     <div className="mb-4">
-      <Select 
-        options={timeOptions} 
-        selectedOption={selectedTimes} 
-        onSelect={handleSelect} 
-        isButtonActive={isButtonActive} 
-        activeButtons={activeButtons} // 활성화된 버튼 목록 전달
+      <Select
+        options={generateTimeOptions()} // 모든 시간 옵션을 제공
+        selectedOption={[selectedTime].filter(Boolean) as string[]}
+        onSelect={handleSelect}
+        isButtonActive={isButtonActive}
+        activeButtons={activeButtons}
       />
     </div>
   );

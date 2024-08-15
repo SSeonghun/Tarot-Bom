@@ -24,11 +24,11 @@ const PieChart: React.FC<PieChartProps> = ({
   labels,
   data,
   backgroundColor = [
-    "rgb(25, 14, 126)",
-    "rgb(56, 46, 148)",
-    "rgb(111, 101, 199)",
-    "rgb(185, 177, 250)",
-    "rgb(230, 227, 255)",
+    "#DFF0FF",
+    "#FFDFF4",
+    "#FDECB0",
+    "#C3F8DF",
+    "#FEDEBC",
   ],
   hoverOffset = 4,
   width = 400,
@@ -72,8 +72,8 @@ const PieChart: React.FC<PieChartProps> = ({
   }, [labels, data, backgroundColor, hoverOffset]);
 
   return (
-    <div className="rounded-lg overflow-hidden" style={{ width, height }}>
-      <canvas className="p-1 ml-5 mr-5" ref={chartContainer} />
+    <div className="rounded-lg overflow-hidden mt-10" style={{ width, height }}>
+      <canvas className="p-3 ml-5 mr-5" ref={chartContainer} />
     </div>
   );
 };

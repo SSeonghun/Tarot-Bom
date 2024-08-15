@@ -1,8 +1,8 @@
 // userApi.ts
 import axios from "axios";
-import { error } from "console";
 
-const API_URL = "http://localhost/tarotbom/user/emails/";
+// const API_URL = "https://i11c208.p.ssafy.io/tarotbom/user/emails/";
+const API_URL = `${process.env.REACT_APP_URL}/tarotbom/user/emails/`;
 
 const emailVerificationApi = async (email: string) => {
   try {
@@ -21,7 +21,7 @@ const emailVerificationCheckApi = async (
   verificationCode: string
 ) => {
   try {
-    const response = await axios.post(API_URL + "verifications/check", {
+    const response = await axios.post(API_URL + "check", {
       email,
       verificationCode,
     });

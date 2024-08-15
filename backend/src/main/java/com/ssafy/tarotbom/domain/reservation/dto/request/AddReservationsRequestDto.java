@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,6 +17,7 @@ public class AddReservationsRequestDto {
     private LocalDateTime startTime;
     private int price;
     private String worry;
-    private CodeDetail keyword;
-    private CodeDetail roomStyle;
+    private String keyword;
+    private String roomStyle;
+    private String status;
 }

@@ -19,18 +19,24 @@ public class FavoriteReader {
     private long favoriteId;
 
     /* @ManyToOne으로 연결 : 찜한사람 ID, 리더 ID */
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seeker_id", columnDefinition = "int unsigned")
+    @JoinColumn(name = "seeker_id", columnDefinition = "int unsigned", insertable = false, updatable = false)
     private Member seeker;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reader_id", columnDefinition = "int unsigned")
-    private Member reader;
+    @JoinColumn(name = "reader_id", columnDefinition = "int unsigned", insertable = false, updatable = false)
+    private Reader reader;
 
     @Column(name = "create_time", columnDefinition = "timestamp")
     private LocalDateTime createTime;
+
+    @NotNull
+    @Column(name = "seeker_id", columnDefinition = "int unsigned")
+    private long seekerId;
+
+    @NotNull
+    @Column(name = "reader_id", columnDefinition = "int unsigned")
+    private long readerId;
 
     // create time 자동갱신
     @PrePersist

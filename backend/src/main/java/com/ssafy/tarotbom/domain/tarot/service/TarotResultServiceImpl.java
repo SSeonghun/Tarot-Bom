@@ -2,15 +2,20 @@ package com.ssafy.tarotbom.domain.tarot.service;
 
 import com.ssafy.tarotbom.domain.tarot.dto.TarotResultCardDto;
 import com.ssafy.tarotbom.domain.tarot.dto.request.TarotResultSaveRequestDto;
+import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultCardResponseDto;
 import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultGetResponseDto;
+import com.ssafy.tarotbom.domain.tarot.dto.response.TarotResultSaveResponseDto;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotCard;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotDirection;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotResult;
 import com.ssafy.tarotbom.domain.tarot.entity.TarotResultCard;
 import com.ssafy.tarotbom.domain.tarot.repository.TarotResultCardRepository;
+import com.ssafy.tarotbom.domain.tarot.repository.TarotResultQueryRepository;
 import com.ssafy.tarotbom.domain.tarot.repository.TarotResultRepository;
 import com.ssafy.tarotbom.global.error.BusinessException;
 import com.ssafy.tarotbom.global.error.ErrorCode;
+import com.ssafy.tarotbom.global.util.CookieUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +32,8 @@ public class TarotResultServiceImpl implements TarotResultService {
 
     private final TarotResultRepository tarotResultRepository;
     private final TarotResultCardRepository tarotResultCardRepository;
-
+    private final TarotResultQueryRepository tarotResultQueryRepository;
+    private final CookieUtil cookieUtil;
     /** <pre>
      * public void saveTarotResult(TarotResultSaveRequestDto dto)
      * dto로 입력된 정보를 기반으로 타로 결과를 저장합니다.
@@ -35,7 +42,7 @@ public class TarotResultServiceImpl implements TarotResultService {
      * */
     @Override
     @Transactional
-    public void saveTarotResult(TarotResultSaveRequestDto dto) {
+    public TarotResultSaveResponseDto saveTarotResult(TarotResultSaveRequestDto dto) {
         // 배열 구성 완료
         // 먼저 save할 TarotResult entity를 구성한다
         TarotResult tarotResult = TarotResult.builder()
@@ -71,26 +78,34 @@ public class TarotResultServiceImpl implements TarotResultService {
         // 삽입할 list 구성 종료
         // 값을 삽입한다.
         tarotResultCardRepository.saveAll(cardList);
+
+        TarotResultSaveResponseDto tarotResultSaveResponseDto = TarotResultSaveResponseDto
+                .builder()
+                .result_id(savedResult.getResultId())
+                .build();
+
+        return null;
     }
 
     /** <pre>
      * public void getTarotResult(long resultId)
      * resultId를 기반으로 타로 결과를 반환합니다. 카드의 정보도 함께 반환합니다.
-     * 요청한 유저의 ID가 타로 결과에 포함되어있지 않다면 볼 수 없습니다. (구현 예정)
      * </pre>
      * */
     @Override
     @Transactional
-    public TarotResultGetResponseDto getTarotResult(long resultId, long userId) {
+    public TarotResultGetResponseDto getTarotResult(long resultId, HttpServletRequest request) {
         log.info("요청 받음 : getTarotResult");
         TarotResult tarotResult = tarotResultRepository.findById(resultId).orElse(null);
+        long memberId = cookieUtil.getUserId(request);
         if(tarotResult == null) { // 검색 결과가 없다면 null을 반환
             throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_FOUND);
         }
-//        if(tarotResult.getReaderId() != userId && tarotResult.getSeekerId() != userId){
-//            throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_YOUR_RESULT);
-//        }
-        List<TarotResultCardDto> cards = new ArrayList<>();
+        log.info("seeker : {}, reader : {}", tarotResult.getReaderId(), tarotResult.getSeekerId());
+        if(tarotResult.getReaderId() != memberId && tarotResult.getSeekerId() != memberId){
+            throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_YOUR_RESULT);
+        }
+        List<TarotResultCardResponseDto> cards = new ArrayList<>();
         // 우선 카드 리스트 정보부터 채운다
         for(TarotResultCard c : tarotResult.getCardList()){
             TarotCard oneCard = c.getCard();
@@ -102,14 +117,18 @@ public class TarotResultServiceImpl implements TarotResultService {
                 direction = "upright";
             }
             cards.add(
-                    TarotResultCardDto.builder()
-                            .cardId(oneCard.getCardId())
+                    TarotResultCardResponseDto.builder()
+                            .cardId(c.getCardId())
+                            .cardName(c.getCard().getCardName())
+                            .description(c.getCard().getDescription())
+                            .imageUrl(c.getCard().getImageUrl())
                             .sequence(c.getSequence())
                             .direction(direction)
                             .build()
             );
         }
         return TarotResultGetResponseDto.builder()
+                .resultId(tarotResult.getResultId())
                 .readerId(tarotResult.getReaderId())
                 .seekerId(tarotResult.getSeekerId())
                 .date(tarotResult.getDate())
@@ -120,4 +139,165 @@ public class TarotResultServiceImpl implements TarotResultService {
                 .cards(cards)
                 .build();
     }
+
+    /**
+     * 특정 유저의 모든 타로 결과를 조회합니다.
+     *
+     * @param userId 유저 ID
+     * @return 유저의 모든 타로 결과 리스트
+     */
+    @Transactional
+    @Override
+    public List<TarotResultGetResponseDto> getAllTarotResultsBySeekerId(long userId) {
+
+        List<TarotResult> tarotResults = tarotResultRepository.findAllBySeekerId(userId);
+
+        log.info("{}", tarotResults.size());
+
+//        if (tarotResults.isEmpty()) {
+//            throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_FOUND);
+//        }
+
+        return tarotResults.stream()
+                .map(result -> {
+                    // 카드 리스트 정보 채우기
+                    List<TarotResultCardResponseDto> cards = new ArrayList<>();
+                    for (TarotResultCard c : result.getCardList()) {
+                        String direction = (c.getDirection() == TarotDirection.R) ? "reversed" : "upright";
+                        cards.add(TarotResultCardResponseDto.builder()
+                                .cardId(c.getCardId())
+                                .cardName(c.getCard().getCardName())
+                                .description(c.getCard().getDescription())
+                                .imageUrl(c.getCard().getImageUrl())
+                                .sequence(c.getSequence())
+                                .direction(direction)
+                                .build());
+                    }
+
+                    return TarotResultGetResponseDto.builder()
+                            .resultId(result.getResultId())
+                            .readerId(result.getReaderId())
+                            .seekerId(result.getSeekerId())
+                            .date(result.getDate())
+                            .keyword(result.getKeywords())
+                            .memo(result.getMemo())
+                            .summary(result.getSummary())
+                            .music(result.getMusic())
+                            .cards(cards)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TarotResultGetResponseDto> getAllTarotResultsBySeekerId(long userId, int limit) {
+        List<TarotResult> tarotResults = tarotResultQueryRepository.findAllBySeekerId(userId, limit);
+
+        log.info("{}", tarotResults.size());
+
+//        if (tarotResults.isEmpty()) {
+//            throw new BusinessException(ErrorCode.TAROT_RESULT_NOT_FOUND);
+//        }
+
+        return tarotResults.stream()
+                .map(result -> {
+                    // 카드 리스트 정보 채우기
+                    List<TarotResultCardResponseDto> cards = new ArrayList<>();
+                    for (TarotResultCard c : result.getCardList()) {
+                        String direction = (c.getDirection() == TarotDirection.R) ? "reversed" : "upright";
+                        cards.add(TarotResultCardResponseDto.builder()
+                                .cardId(c.getCardId())
+                                .cardName(c.getCard().getCardName())
+                                .description(c.getCard().getDescription())
+                                .imageUrl(c.getCard().getImageUrl())
+                                .sequence(c.getSequence())
+                                .direction(direction)
+                                .build());
+                    }
+
+                    return TarotResultGetResponseDto.builder()
+                            .resultId(result.getResultId())
+                            .readerId(result.getReaderId())
+                            .seekerId(result.getSeekerId())
+                            .date(result.getDate())
+                            .keyword(result.getKeywords())
+                            .memo(result.getMemo())
+                            .summary(result.getSummary())
+                            .music(result.getMusic())
+                            .cards(cards)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TarotResultGetResponseDto> getAllTarotResultsByReaderId(long memberId) {
+        List<TarotResult> tarotResults = tarotResultRepository.findAllByReaderId(memberId);
+
+        return tarotResults.stream()
+                .map(result -> {
+                    // 카드 리스트 정보 채우기
+                    List<TarotResultCardResponseDto> cards = new ArrayList<>();
+                    for (TarotResultCard c : result.getCardList()) {
+                        String direction = (c.getDirection() == TarotDirection.R) ? "reversed" : "upright";
+                        cards.add(TarotResultCardResponseDto.builder()
+                                .cardId(c.getCardId())
+                                .cardName(c.getCard().getCardName())
+                                .description(c.getCard().getDescription())
+                                .imageUrl(c.getCard().getImageUrl())
+                                .sequence(c.getSequence())
+                                .direction(direction)
+                                .build());
+                    }
+
+                    return TarotResultGetResponseDto.builder()
+                            .resultId(result.getResultId())
+                            .readerId(result.getReaderId())
+                            .seekerId(result.getSeekerId())
+                            .date(result.getDate())
+                            .keyword(result.getKeywords())
+                            .memo(result.getMemo())
+                            .summary(result.getSummary())
+                            .music(result.getMusic())
+                            .cards(cards)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TarotResultGetResponseDto> getAllTarotResultsByReaderId(long memberId, int limit) {
+        List<TarotResult> tarotResults = tarotResultQueryRepository.findAllByReaderId(memberId, limit);
+
+        return tarotResults.stream()
+                .map(result -> {
+                    // 카드 리스트 정보 채우기
+                    List<TarotResultCardResponseDto> cards = new ArrayList<>();
+                    for (TarotResultCard c : result.getCardList()) {
+                        String direction = (c.getDirection() == TarotDirection.R) ? "reversed" : "upright";
+                        cards.add(TarotResultCardResponseDto.builder()
+                                .cardId(c.getCardId())
+                                .cardName(c.getCard().getCardName())
+                                .description(c.getCard().getDescription())
+                                .imageUrl(c.getCard().getImageUrl())
+                                .sequence(c.getSequence())
+                                .direction(direction)
+                                .build());
+                    }
+
+                    return TarotResultGetResponseDto.builder()
+                            .resultId(result.getResultId())
+                            .readerId(result.getReaderId())
+                            .seekerId(result.getSeekerId())
+                            .date(result.getDate())
+                            .keyword(result.getKeywords())
+                            .memo(result.getMemo())
+                            .summary(result.getSummary())
+                            .music(result.getMusic())
+                            .cards(cards)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
 }

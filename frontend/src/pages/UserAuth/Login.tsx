@@ -4,25 +4,28 @@ import { Link, useNavigate } from "react-router-dom";
 import "./login.css";
 import InputField from "../../components/login_signup/InputField";
 import SubmitButton from "../../components/login_signup/SubmitButton";
-import useStore from '../../stores/store'
+import useUserStore from "../../stores/store";
+import ProfileImg from "../../components/login_signup/ProfileImg";
+import { userInfo } from "os";
 
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 const { login } = require("../../API/userApi");
 
 const Login: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
 
-  const store = useStore();
+  const store = useUserStore();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
 
   const validateEmail = (email: string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -39,7 +42,6 @@ const Login: React.FC = () => {
     }
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateEmail(email)) {
@@ -52,11 +54,29 @@ const Login: React.FC = () => {
       const result = await login(email, password);
       console.log("로그인 성공", result);
       store.loginUser();
-      
+
+      store.userInfoSet({
+        memberId: result.data.memberId,
+        nickname: result.data.name,
+        email: result.data.email,
+        isReader: result.data.reader,
+        isAdmin: result.data.admin,
+        profileImg: result.data.profileUrl,
+        password: password,
+      });
+
       // window.location.href = "/";
       navigate("/");
     } catch (error) {
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "이메일과 비밀번호를 다시 확인하세요",
+        showConfirmButton: false,
+        timer: 1200,
+      });
       console.error("로그인 중 오류 발생", error);
+      setPassword("");
     }
   };
 
@@ -84,15 +104,9 @@ const Login: React.FC = () => {
               />
               <SubmitButton text="로그인" />
 
-              <div className="flex justify-evenly mb-auto">
+              <div className="flex justify-end mb-auto">
                 <Link className="block text-blue-400 my-5" to="/signup">
                   회원가입
-                </Link>
-                <Link className="block text-blue-400 my-5" to="/change-pwd">
-                  비밀번호 변경
-                </Link>
-                <Link className="block text-blue-400 my-5" to="/findpwd">
-                  비밀번호 찾기
                 </Link>
               </div>
             </form>
