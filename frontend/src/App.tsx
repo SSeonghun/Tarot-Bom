@@ -64,9 +64,9 @@ const App: React.FC = () => {
             element={<ReaderRoute element={<ReaderMypage />} />}
           />
           <Route path="/booking" element={<Booking />} />
-          <Route path="/webrtc" element={<WebRTCpage />} />
-          <Route path="/rtcTest" element={<WebRTCTest/>} />
-          <Route path="/test" element={<ImageUpload />} />
+          <Route path="/RTCCAM" element={<WebRTCpage />} />
+          <Route path="/RTCGFX" element={<WebRTCTest/>} />
+          <Route path="/ImageUpload" element={<ImageUpload />} />
           <Route path="/error" element={<Error />} />
 
           {/* AdminRoute 사용 */}

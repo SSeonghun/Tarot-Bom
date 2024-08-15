@@ -171,7 +171,7 @@ const RandomMatching: React.FC = () => {
     console.log("room : ", room);
     if (room === "GFX") {
       console.log(room);
-      const roomEntryPath = `/rtcTest?token=${encodeURIComponent(
+      const roomEntryPath = `/RTCGFX?token=${encodeURIComponent(
         token
       )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
         room
@@ -183,7 +183,7 @@ const RandomMatching: React.FC = () => {
       });
     } else {
       // 방 입장 URL을 위한 데이터 준비
-      const roomEntryPath = `/webrtc?token=${encodeURIComponent(
+      const roomEntryPath = `/RTCCAM?token=${encodeURIComponent(
         token
       )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
         room
