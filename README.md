@@ -202,7 +202,7 @@
   <tbody>
     <tr>
       <td><img src="assets/AI_그래픽_타로.gif" width="400px"></td>
-      <td><img src="" width="400px"></td>
+      <td><img src="assets/시커기준캠타로.gif" width="400px"></td>
     </tr>
   </tbody>
    <thead>
