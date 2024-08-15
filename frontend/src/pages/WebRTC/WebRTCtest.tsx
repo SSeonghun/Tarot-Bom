@@ -194,21 +194,21 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
       }
 
       // 카메라 트랙 복원
-      const { audioTrack, videoTrack } = await createCameraTrack();
-    await room.localParticipant.publishTrack(videoTrack); // Publish video track
-    await room.localParticipant.publishTrack(audioTrack); // Publish audio track
+    //   const { audioTrack, videoTrack } = await createCameraTrack();
+    // await room.localParticipant.publishTrack(videoTrack); // Publish video track
+    // await room.localParticipant.publishTrack(audioTrack); // Publish audio track
 
-    setLocalTrack(videoTrack); // Update local track state to the new video track
+    // setLocalTrack(videoTrack); // Update local track state to the new video track
     setIsScreenSharing(false);
     }
   }
 
-  async function createCameraTrack() {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-    const audioTrack = new LocalAudioTrack(stream.getAudioTracks()[0]);
-    const videoTrack = new LocalVideoTrack(stream.getVideoTracks()[0]);
-    return { audioTrack, videoTrack };
-  }
+  // async function createCameraTrack() {
+  //   const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+  //   const audioTrack = new LocalAudioTrack(stream.getAudioTracks()[0]);
+  //   const videoTrack = new LocalVideoTrack(stream.getVideoTracks()[0]);
+  //   return { audioTrack, videoTrack };
+  // }
   
 
   async function joinRoom() {
@@ -260,18 +260,19 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
     );
 
     try {
-      const { audioTrack, videoTrack } = await createCameraTrack();
+      //const { audioTrack, videoTrack } = await createCameraTrack();
       const token = await getToken(roomName, participantName);
-      await room.localParticipant.publishTrack(videoTrack);
-    await room.localParticipant.publishTrack(audioTrack);
+      // await room.localParticipant.publishTrack(videoTrack);
+   /// await room.localParticipant.publishTrack(audioTrack);
 
     
     await room.connect(LIVEKIT_URL, token);
-
+    await room.localParticipant.enableCameraAndMicrophone();
+    setLocalTrack(room.localParticipant.videoTrackPublications.values().next().value.videoTrack);
       // 화면 공유가 필요한 경우 시작
-      if (isScreenSharing) {
-        await startScreenShare();
-      }
+      // if (isScreenSharing) {
+      //   await startScreenShare();
+      // }
     } catch (error) {
       console.log("방에 연결하는 중 오류 발생:", (error as Error).message);
       await leaveRoom();
@@ -520,7 +521,7 @@ const handleColorChange = (selectedColor: string) => {
         <div id="layout-container">
         {/* 로컬 비디오가 시각적으로 표시되지 않지만 존재함 */}
         {localTrack && (
-          <div className="opacity-0 z-0">
+          <div className="absolute inset-0 opacity-0 z-0 pointer-events-none">
             <VideoComponent
             track={localTrack}
             participantIdentity={participantName}
@@ -533,13 +534,13 @@ const handleColorChange = (selectedColor: string) => {
 
         {isSeeker ? (
           <>
-          <div className="z-10" >
+          <div className="z-50" >
           <Graphic onModalOpen={handleCardInfo} />
           </div>
             
             {remoteTracks.map((remoteTrack) =>
               remoteTrack.trackPublication.kind === "video" ? (
-                <div className="opacity-0 z-0">
+                <div className="absolute inset-0 opacity-0 z-0 pointer-events-none">
                   <VideoComponent
                   key={remoteTrack.trackPublication.trackSid}
                   track={remoteTrack.trackPublication.videoTrack!}
@@ -550,10 +551,13 @@ const handleColorChange = (selectedColor: string) => {
                 </div>
                 
               ) : (
-                <AudioComponent
+                <div className="absolute inset-0 opacity-0 z-0 pointer-events-none">
+                  <AudioComponent
                   key={remoteTrack.trackPublication.trackSid}
                   track={remoteTrack.trackPublication.audioTrack!}
                 />
+                </div>
+                
               )
             )}
           </>
@@ -561,7 +565,7 @@ const handleColorChange = (selectedColor: string) => {
           <>
             {remoteTracks.map((remoteTrack) =>
               remoteTrack.trackPublication.kind === "video" ? (
-                <div className="opacity-0 z-0">
+                <div className="absolute inset-0 opacity-0 z-0 pointer-events-none">
             <VideoComponent
                               key={remoteTrack.trackPublication.trackSid}
                               track={remoteTrack.trackPublication.videoTrack!}
@@ -572,10 +576,13 @@ const handleColorChange = (selectedColor: string) => {
                 </div>
                 
               ) : (
-                <AudioComponent
+                <div className="absolute inset-0 opacity-0 z-0 pointer-events-none">
+                  <AudioComponent
                   key={remoteTrack.trackPublication.trackSid}
                   track={remoteTrack.trackPublication.audioTrack!}
                 />
+                </div>
+                
               )
             )}
           </>
