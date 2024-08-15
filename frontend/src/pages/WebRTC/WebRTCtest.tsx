@@ -25,6 +25,7 @@ import ScenarioPanel from "../../components/WebRTC/Controller/ScenarioPanel";
 import { useLocation } from "react-router-dom";
 import { cardInfo } from "../../API/api";
 import Title from "../../components/TarotResult/Title";
+import AudioComponent from "../../components/WebRTC/AudioComponent";
 // 정의된 타입
 type TrackInfo = {
   trackPublication: RemoteTrackPublication;
@@ -109,6 +110,7 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
   const remoteAudioRefs = useRef<{
     [trackSid: string]: HTMLAudioElement | null;
   }>({});
+  
   // Effect to join the room on mount
   useEffect(() => {
     joinRoom();
@@ -516,14 +518,14 @@ const handleColorChange = (selectedColor: string) => {
         /> */}
         <div id="layout-container">
           {/* 로컬 비디오가 시각적으로 표시되지 않지만 존재함style={{ display: "none" }} */}
-          <div className="audio-container local" >
-          <audio
-            ref={localAudioRef}
-            autoPlay
-            />
-            {/* <video ref={localVideoRef} autoPlay={true}  /> */}
-            {/* <div className="participant-name">{participantName}</div> */}
-          </div>
+          {localTrack &&localTrack instanceof LocalAudioTrack && (
+    <AudioComponent
+        track={localTrack}
+
+       // participantIdentity={participantName}
+        //key={local}  // local 속성 추가
+    />
+)}
           {/* <div
                   className="audio-container"
                   key="local"
@@ -536,22 +538,20 @@ const handleColorChange = (selectedColor: string) => {
     <Graphic onModalOpen={handleCardInfo} />
     {remoteTracks.map((remoteTrack) =>
       remoteTrack.trackPublication.kind === "audio" ? (
-        <div
-          className="audio-container"
-          key={remoteTrack.trackPublication.trackSid}
-        ></div>
+        <AudioComponent
+            key={remoteTrack.trackPublication.trackSid}
+            track={remoteTrack.trackPublication.audioTrack!}
+        />
       ) : null
     )}
   </div>
 ) : (
   remoteTracks.map((remoteTrack) =>
     remoteTrack.trackPublication.kind === "audio" ? (
-      <div
-        className="audio-container"
-        key={remoteTrack.trackPublication.trackSid}
-      >
-        <audio autoPlay={true} />
-      </div>
+      <AudioComponent
+            key={remoteTrack.trackPublication.trackSid}
+            track={remoteTrack.trackPublication.audioTrack!}
+        />
     ) : null
   )
 )}
