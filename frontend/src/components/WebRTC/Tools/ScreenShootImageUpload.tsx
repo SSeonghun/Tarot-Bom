@@ -163,21 +163,28 @@ const ScreenShootImageUpload: React.FC<ScreenShootImageUploadProps> = (props) =>
     
   const handleSummaryGenerated = (summary: string) => {
     
-    console.log(summary)
+    console.log(summary);
     const cardData: number[] = [];
-  
-    const cardNameRegex = /Card Name: ([^>]+)/g;
-    let match;
-    while ((match = cardNameRegex.exec(summary)) !== null) {
-      const cardName = match[1];
-  
-      // tarotCards 배열에서 카드 이름과 일치하는 카드의 ID를 찾음
-      const foundCard = tarotCards.find(card => card.name === cardName);
-  
-      if (foundCard) {
-        cardData.push(foundCard.id);
-      }
-    }
+
+    // summary를 줄바꿈으로 나눕니다.
+    const lines = summary.split('\n');
+    
+    // 각 줄을 처리합니다.
+    lines.forEach(line => {
+        // 줄에서 Card Name: 뒤의 내용을 찾습니다.
+        const match = line.match(/Card Name:\s*(.+)/);
+        if (match) {
+            const cardName = match[1].trim(); // 카드 이름을 추출합니다.
+            console.log(cardName);
+
+            // tarotCards 배열에서 카드 이름과 일치하는 카드의 ID를 찾습니다.
+            const foundCard = tarotCards.find(card => card.name === cardName);
+            if (foundCard) {
+                cardData.push(foundCard.id);
+            }
+        }
+    });
+    console.log(cardData)
     setResult(cardData);
     setvbutton(false);
     console.log("Extracted card names:", cardData);  // 디버깅: 추출된 카드 이름 확인
