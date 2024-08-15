@@ -531,65 +531,31 @@ const handleColorChange = (selectedColor: string) => {
           
           </div> */}
 
-          {isSeeker ? (
-            <div>
-              <Graphic onModalOpen={handleCardInfo} />
-              {remoteTracks.map((remoteTrack) =>
-                remoteTrack.trackPublication.kind === "audio" ? (
-                  <div
-                    className="audio-container"
-                    key={remoteTrack.trackPublication.trackSid}
-                  ></div>
-                ) : null
-              )}
-              
-            </div>
-          ) : (
-            
-            remoteTracks.map((remoteTrack) =>
-              remoteTrack.trackPublication.kind === "video" ? (
-                
-                <div
-                  className="video-container w-full h-full flex items-center justify-center"
-                  key={remoteTrack.trackPublication.trackSid}
-                  style={{
-                    display:
-                      remoteTrack.trackPublication.trackSid ===
-                      displayedVideoTrackSid
-                        ? "flex"
-                        : "none",
-                  }}
-                >
-                  <video
-                    ref={(el) =>
-                      (remoteVideoRefs.current[
-                        remoteTrack.trackPublication.trackSid
-                      ] = el)
-                    }
-                    autoPlay={true}
-                    className="object-cover w-full h-full"
-                    style={{
-                      display:
-                        remoteTrack.trackPublication.trackSid ===
-                        displayedVideoTrackSid
-                          ? "block"
-                          : "none",
-                    }}
-                  />
-                  <div className="participant-name">
-                    {remoteTrack.participantIdentity}
-                  </div>
-                </div>
-              ) : (
-                <div
-                  className="audio-container"
-                  key={remoteTrack.trackPublication.trackSid}
-                >
-                  <audio autoPlay={true} />
-                </div>
-              )
-            )
-          )}
+{isSeeker ? (
+  <div>
+    <Graphic onModalOpen={handleCardInfo} />
+    {remoteTracks.map((remoteTrack) =>
+      remoteTrack.trackPublication.kind === "audio" ? (
+        <div
+          className="audio-container"
+          key={remoteTrack.trackPublication.trackSid}
+        ></div>
+      ) : null
+    )}
+  </div>
+) : (
+  remoteTracks.map((remoteTrack) =>
+    remoteTrack.trackPublication.kind === "audio" ? (
+      <div
+        className="audio-container"
+        key={remoteTrack.trackPublication.trackSid}
+      >
+        <audio autoPlay={true} />
+      </div>
+    ) : null
+  )
+)}
+
           {/* <div className="fixed bottom-4 left-4 bg-white border border-gray-300 rounded-lg p-4 shadow-md flex space-x-4 z-50"> */}
             {/* <p>진행 상황판</p>
                     <button
