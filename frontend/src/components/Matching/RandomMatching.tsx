@@ -62,6 +62,7 @@ interface MatchingStartRequestDto {
   roomStyle: string;
   memberType: string;
   memberId: number;
+  candidateId: string;
   worry: string;
 }
 
@@ -130,13 +131,14 @@ const RandomMatching: React.FC = () => {
               const keyword = parsedData.keyword;
               const roomStyle = parsedData.roomStyle;
               const worry = parsedData.worry;
+              const candidateId = parsedData.candidateId;
               console.log(jsonString);
 
               // TODO: 여기서? 아님 리더 쪽에서? 리더 아이디 넘겨줘야 결과창에서 받아서 저장함
 
               // token 값을 사용
               console.log(parsedData);
-              enterRoom(token, roomStyle, keyword, worry);
+              enterRoom(token, roomStyle, keyword, worry, candidateId);
 
               // token을 활용하여 필요한 로직 수행
               // 예: API 호출, 검증 등
@@ -173,16 +175,18 @@ const RandomMatching: React.FC = () => {
     token: string,
     room: string,
     keyword: string,
-    worry: string
+    worry: string,
+    cadidateId: string
   ) => {
     const memberName = userInfo?.nickname ?? "Unknown";
 
     const memberId = userInfo?.memberId ?? 0;
-    console.log(memberId);
+    console.log(cadidateId);
 
     const payload: MatchingStartRequestDto = {
       keyword: keyword,
       roomStyle: room,
+      candidateId: cadidateId,
       memberType,
       memberId,
       worry: worry, // worry가 null인 경우 빈 문자열을 기본값으로 사용
@@ -293,6 +297,7 @@ const RandomMatching: React.FC = () => {
         memberType,
         memberId,
         worry: worryArea.current.value,
+        candidateId: "AI",
       };
 
       setPendingPayload(payload);
