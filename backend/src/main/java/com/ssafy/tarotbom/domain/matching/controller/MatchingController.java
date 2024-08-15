@@ -104,6 +104,7 @@ public class MatchingController {
                         .roomStyle(roomStyle)
                         .worry(worry)
                         .keyword(myDto.getKeyword())
+                        .candidateId(candidateDto.getMemberId())
                         .build();
                 SocketResponse socketResponse = SocketResponse.of(SocketCode.MATCHING_ENTER_ROOM, myRoomEnterResponseDto);
                 sendingOperation.convertAndSend(matchingStatusPath+myDto.getMemberId(), socketResponse);
@@ -114,6 +115,7 @@ public class MatchingController {
                         .roomStyle(roomStyle)
                         .worry(worry)
                         .keyword(candidateDto.getKeyword())
+                        .candidateId(myDto.getMemberId())
                         .build();
                 socketResponse = SocketResponse.of(SocketCode.MATCHING_ENTER_ROOM, candidateRoomEnterResponseDto);
                 sendingOperation.convertAndSend(matchingStatusPath+candidateDto.getMemberId(), socketResponse);
