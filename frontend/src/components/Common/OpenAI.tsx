@@ -44,6 +44,7 @@ const fetchOpenAIResponse = async (
 const OpenAI: React.FC<OpenAIProps> = ({
   cards,
   onSummaryGenerated,
+  worry,
   cardImage,
   category,
 }) => {
@@ -56,6 +57,8 @@ const OpenAI: React.FC<OpenAIProps> = ({
         return;
       }
 
+      console.log(worry);
+
       const initialMessage = {
         role: "system",
         content: `You are a tarot reader and a Korean music recommender. I will give three or more tarot cards and a category, provide the following:
@@ -64,7 +67,7 @@ const OpenAI: React.FC<OpenAIProps> = ({
            - **카드상세**: <Your Interpretation of this card in the context of the category>
         **전반적인 카드해석**: <Your Overall Interpretation of all cards in the context of the category>
         Music: <Please provide only the song title and artist name appropriate for the category>
-        The category is: ${category}. Please provide the explanation in Korean, but Music part should be in English.`,
+        I've been struggling with ${category}, and it's been weighing on me for a while. Lately, I've been feeling ${worry} about it. I believe that talking it through could really help me gain some clarity. Could you please offer your advice or perspective on this issue? I'd greatly appreciate your help.`,
       };
 
       let messages = [initialMessage];
