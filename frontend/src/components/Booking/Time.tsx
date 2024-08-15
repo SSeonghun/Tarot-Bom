@@ -28,7 +28,7 @@ const Time: React.FC<TimeProps> = ({
         `${String(hour).padStart(2, "0")}:30`
       );
     }
-    for (let hour = 16; hour <= 24; hour++) {
+    for (let hour = 16; hour <= 23; hour++) {
       timeOptions.push(
         `${String(hour).padStart(2, "0")}:00`,
         `${String(hour).padStart(2, "0")}:30`
