@@ -8,6 +8,11 @@ import useUserStore from "../../stores/store";
 import ProfileImg from "../../components/login_signup/ProfileImg";
 import { userInfo } from "os";
 
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
+
 const { login } = require("../../API/userApi");
 
 const Login: React.FC = () => {
@@ -63,7 +68,13 @@ const Login: React.FC = () => {
       // window.location.href = "/";
       navigate("/");
     } catch (error) {
-      alert("이메일과 비밀번호를 다시 확인하세요");
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "이메일과 비밀번호를 다시 확인하세요",
+        showConfirmButton: false,
+        timer: 1200,
+      });
       console.error("로그인 중 오류 발생", error);
       setPassword("");
     }

@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import Chatting from '../../components/PlayTarot/Chatting';
-import TarotCard from '../../components/PlayTarot/TarotCard'; // 타로 카드 컴포넌트 추가
-import Memo from '../../components/PlayTarot/Memo'; // 메모 컴포넌트 추가
+import React, { useEffect } from "react";
+import Chatting from "../../components/PlayTarot/Chatting";
+import TarotCard from "../../components/PlayTarot/TarotCard"; // 타로 카드 컴포넌트 추가
+import Memo from "../../components/PlayTarot/Memo"; // 메모 컴포넌트 추가
 
 const Play: React.FC = () => {
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, []);
 
@@ -33,6 +33,6 @@ const Play: React.FC = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Play;

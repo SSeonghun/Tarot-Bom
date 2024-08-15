@@ -3,7 +3,7 @@ import "./Graphic.css";
 import cardBackImage from "../../assets/card-back.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Shuffle.css";
-import dask from "../../assets/img/wooden-natural-floor-decoration-concept.jpg";
+import dask from "../../assets/img/dask.png";
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -162,6 +162,18 @@ const Graphic: React.FC = () => {
 
   const submitClick = () => {
     // `selectedCard`, `worry`, `category`를 TarotResult로 전달
+
+    if (selectedCard.length < 3) {
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "카드를 선택해주세요",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+
     const state = location.state as MatchingState;
     navigate("/tarot-result", {
       state: {
@@ -193,7 +205,7 @@ const Graphic: React.FC = () => {
           alt=""
           className="absolute -bottom-[120px] dask rounded-lg h-[900px]"
         />
-        <div className="absolute inset-0 bg-black opacity-40"></div>
+        <div className="absolute inset-0 bg-black opacity-20"></div>
       </div>
       <div className="relative w-full max-w-4xl p-4 mb-auto mt-16 mr-auto ml-36">
         {/* Display selected numbers */}
@@ -241,15 +253,26 @@ const Graphic: React.FC = () => {
           </button> */}
           <button
             onClick={openModal}
-            className=" bg-blue-500 text-white px-4 py-2 rounded shadow-lg hover:bg-blue-600 transition-colors duration-300"
+            className=" bg-gray-500 text-white px-4 py-2 rounded shadow-lg hover:bg-gray-600 transition-colors duration-300"
           >
-            선택한 카드
+            결과보기
           </button>
         </div>
         {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-8 w-[1000px] h-11/12 relative overflow-auto">
+            <div className="bg-white p-8 w-[800px] h-[500px] relative overflow-auto rounded-lg">
+              <div className=" grid-cols-12 flex gap-4 justify-center items-center">
+                {selectedCard.map((cardIndex) => (
+                  <div className="w-[200px] col-span-4 bg-cover bg-center rounded-lg border-[4px] border-black ">
+                    <img
+                      src={getCardImage2(selectedCard, cardIndex)}
+                      alt={`Card Back `}
+                    />
+                  </div>
+                ))}
+              </div>
               <div className="absolute top-4 right-4">
+                {/* 모달 내용 - 3열 레이아웃 */}
                 <button
                   onClick={submitClick}
                   className=" bg-blue-500 text-white px-2 py-1 rounded"
@@ -262,27 +285,6 @@ const Graphic: React.FC = () => {
                 >
                   닫기
                 </button>
-              </div>
-              <h2 className="text-black text-2xl mb-4 font-bold">
-                선택된 카드
-              </h2>
-              {/* 모달 내용 - 3열 레이아웃 */}
-              <div className="grid grid-cols-12 gap-4">
-                {selectedCard.map((cardIndex) => (
-                  <div
-                    className="w-[200px] col-span-4 bg-cover bg-center rounded-lg border-[4px] border-black "
-                    style={
-                      {
-                        // backgroundImage: `url(/tarot_images/${cardImages[cardIndex]}.jpg)`, // 랜덤 카드 인덱스에 따른 이미지 경로
-                      }
-                    }
-                  >
-                    <img
-                      src={getCardImage2(selectedCard, cardIndex)}
-                      alt={`Card Back `}
-                    />
-                  </div>
-                ))}
               </div>
             </div>
           </div>
