@@ -66,7 +66,7 @@ const App: React.FC = () => {
           <Route path="/reader-mypage" element={<ReaderMypage />} />
           <Route path="/booking" element={<Booking />} />
           <Route path="/RTCCAM" element={<WebRTCpage />} />
-          <Route path="/RTCGFX" element={<WebRTCTest/>} />
+          <Route path="/RTCGFX" element={<WebRTCTest />} />
           <Route path="/ImageUpload" element={<ImageUpload />} />
           <Route path="/error" element={<Error />} />
 
@@ -86,8 +86,8 @@ const FooterWrapper: React.FC = () => {
   const shouldHideFooter =
     location.pathname.includes("seeker-mypage") ||
     location.pathname.includes("reader-mypage") ||
-    location.pathname.includes("rtcTest") ||
-    location.pathname.includes("webrtc");
+    location.pathname.includes("RTCCAM") ||
+    location.pathname.includes("RTCGFX");
 
   return <>{!shouldHideFooter && <Footer />}</>;
 };
