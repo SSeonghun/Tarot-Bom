@@ -173,7 +173,7 @@ const Summary: React.FC<Props> = ({ reservationData, mainData }) => {
         </div>
       </div>
       <div className="col-span-5 bg-gray-200 rounded-lg">
-        <Calendar highlightDates={highlightDates} layout="col" />
+        <Calendar highlightDates={highlightDates} layout="col" hsize={50}/>
       </div>
     </div>
   );

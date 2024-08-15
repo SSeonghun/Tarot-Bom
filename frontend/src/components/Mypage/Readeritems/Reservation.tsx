@@ -35,7 +35,7 @@ const Reservation: React.FC<Props> = ({ reservationData }) => {
         <hr className="border-black border-[2px]" />
       </div>
       <div className="mt-[100px]">
-        <Calendar highlightDates={highlightDates} layout="row" />
+        <Calendar highlightDates={highlightDates} layout="row" hsize={300}/>
       </div>
     </div>
   );
