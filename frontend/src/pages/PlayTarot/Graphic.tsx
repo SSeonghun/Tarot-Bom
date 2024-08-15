@@ -26,7 +26,7 @@ interface Payload {
 
 // 비복원 추출을 위한 유틸리티 함수
 const getRandomCard = (excludeCards: number[]): number => {
-  const availableCards = Array.from({ length: 79 }, (_, index) => index).filter(
+  const availableCards = Array.from({ length: 78 }, (_, index) => index).filter(
     (card) => !excludeCards.includes(card)
   );
   const randomIndex = Math.floor(Math.random() * availableCards.length);
@@ -91,7 +91,7 @@ const Graphic: React.FC<GraphicProps> = ({ onModalOpen }) => {
     // 랜덤 카드 선택
     const randomCard = getRandomCard([...selectedCard, index]);
     console.log(index);
-    if (selectedCard.length >= 3 || selectedCard.includes(randomCard)) return; // 최대 3개까지만 선택 가능, 이미 선택된 카드 클릭 방지
+    if (selectedCard.length >= 78 || selectedCard.includes(randomCard)) return; // 최대 3개까지만 선택 가능, 이미 선택된 카드 클릭 방지
 
     console.log("Random Card:", randomCard);
 
