@@ -83,6 +83,7 @@ const RandomMatching: React.FC = () => {
   const [roomStyle, setRoomStyle] = useState<string>("");
   const [memberType, setMemberType] = useState<string>("seeker");
   const worryArea = useRef<HTMLTextAreaElement | null>(null);
+  const [worrys, setWorry] = useState<string>("");
 
   // Zustand 스토어에서 필요한 값 가져오기
   const { userInfo } = useStore();
@@ -126,14 +127,16 @@ const RandomMatching: React.FC = () => {
               // JSON 문자열을 객체로 역직렬화하여 token 값을 추출
               const parsedData = JSON.parse(jsonString);
               const token = parsedData.roomId;
+              const keyword = parsedData.keyword;
               const roomStyle = parsedData.roomStyle;
+              const worry = parsedData.worry;
               console.log(jsonString);
 
               // TODO: 여기서? 아님 리더 쪽에서? 리더 아이디 넘겨줘야 결과창에서 받아서 저장함
 
               // token 값을 사용
               console.log(parsedData);
-              enterRoom(token, roomStyle);
+              enterRoom(token, roomStyle, keyword, worry);
 
               // token을 활용하여 필요한 로직 수행
               // 예: API 호출, 검증 등
@@ -166,8 +169,25 @@ const RandomMatching: React.FC = () => {
   // 방 입장 메서드
   //TODO : 경준형님 토큰: token, nickname : member, type: CAM인지 GFX인지 일단 하드코딩 주말 수정 예정
   // TODO : 그래픽인지, 진짜 카드인지 분기해서 나눠줘야함 지금은 그냥 모두 하드하게 캠으로만 가는중
-  const enterRoom = (token: string, room: string) => {
+  const enterRoom = (
+    token: string,
+    room: string,
+    keyword: string,
+    worry: string
+  ) => {
     const memberName = userInfo?.nickname ?? "Unknown";
+
+    const memberId = userInfo?.memberId ?? 0;
+    console.log(memberId);
+
+    const payload: MatchingStartRequestDto = {
+      keyword: keyword,
+      roomStyle: room,
+      memberType,
+      memberId,
+      worry: worry, // worry가 null인 경우 빈 문자열을 기본값으로 사용
+    };
+
     console.log("room : ", room);
     if (room === "GFX") {
       console.log(room);
@@ -179,7 +199,7 @@ const RandomMatching: React.FC = () => {
 
       // 라우터를 통해 방으로 이동
       navigate(roomEntryPath, {
-        state: { readerType: "AI" },
+        state: { readerType: "reader", payload: payload },
       });
     } else {
       // 방 입장 URL을 위한 데이터 준비
@@ -188,10 +208,10 @@ const RandomMatching: React.FC = () => {
       )}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(
         room
       )}&position=Seeker`;
-      console.log(roomEntryPath)
+      console.log(roomEntryPath);
       // 라우터를 통해 방으로 이동
       navigate(roomEntryPath, {
-        state: { readerType: "AI" },
+        state: { readerType: "reader", payload: payload },
       });
     }
   };
@@ -265,6 +285,7 @@ const RandomMatching: React.FC = () => {
       }
 
       setKeyword(keywords); // 상태 업데이트
+      setWorry(worryArea.current.value);
 
       const payload: MatchingStartRequestDto = {
         keyword: keywords,

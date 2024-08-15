@@ -190,7 +190,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
             <p className="mt-5 text-lg font-bold text-white">
               타로 결과에 어울리는 음악을 들어보세요!
             </p>
-            {/* <MusicPlayer width={40} height={40} searchQuery={music} /> */}
+            <MusicPlayer width={40} height={40} searchQuery={music} />
           </div>
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4">

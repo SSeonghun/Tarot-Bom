@@ -68,6 +68,10 @@ const WebRTCpage: React.FC<RTCTest> = ({}) => {
   const [isProfileModalVisible, setIsProfileModalVisible] =
     useState<boolean>(false);
 
+  // TODO : 여기서 리더 타입이랑 페이로드 받기
+  const { readerType, payload } = location.state || {};
+  console.log(readerType, payload);
+
   const [isCardSelectionOngoing, setIsCardSelectionOngoing] = useState(false);
   const [currentScenario, setCurrentScenario] = useState<
     | "입장 인사"

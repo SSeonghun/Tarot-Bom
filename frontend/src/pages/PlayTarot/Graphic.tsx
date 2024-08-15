@@ -56,6 +56,9 @@ const Graphic: React.FC<GraphicProps> = ({ onModalOpen }) => {
   );
   const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set()); // 뒤집힌 카드 상태
 
+  // TODO : 여기서 리더 타입이랑 페이로드 받기
+  const { readerType, payload } = location.state || {};
+
   useEffect(() => {
     console.log("타로 페이지");
     Swal.fire({
