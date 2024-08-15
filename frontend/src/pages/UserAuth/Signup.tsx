@@ -4,6 +4,11 @@ import InputField from "../../components/login_signup/InputField";
 import SubmitButton from "../../components/login_signup/SubmitButton";
 import { Link } from "react-router-dom";
 
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
+
 const { signup } = require("../../API/userApi"); // api.js에서 signup 함수를 import
 const {
   emailVerificationApi,
@@ -91,7 +96,13 @@ const Signup: React.FC = () => {
     }
 
     if (!verifyEmail) {
-      alert("이메일 인증을 완료해 주세요");
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "이메일인증을 완료해 주세요",
+        showConfirmButton: false,
+        timer: 1200,
+      });
       return;
     }
 
@@ -108,17 +119,35 @@ const Signup: React.FC = () => {
 
   const emailVerification = async () => {
     if (!validateEmail(email)) {
-      alert("이메일을 확인하세요");
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "이메일을 확인하세요",
+        showConfirmButton: false,
+        timer: 1200,
+      });
       return;
     }
 
     try {
       await emailVerificationApi(email);
       console.log("인증번호 발송");
-      alert("인증번호 전송");
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "인증번호 전송",
+        showConfirmButton: false,
+        timer: 1200,
+      });
     } catch (error) {
       console.error("이메일 인증 코드 전송 중 오류 발생", error);
-      alert("이메일을 확인하세요");
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "이메일을 확인하세요",
+        showConfirmButton: false,
+        timer: 1200,
+      });
     }
   };
 
@@ -127,12 +156,24 @@ const Signup: React.FC = () => {
 
     try {
       await emailVerificationCheckApi(email, pinNumber);
-      alert("인증 성공");
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "인증성공",
+        showConfirmButton: false,
+        timer: 1200,
+      });
       console.log("인증성공");
       setVerifyEmail(true);
     } catch (error) {
       console.error("이메일 인증 실패");
-      alert("이메일 인증 실패");
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "인증실패",
+        showConfirmButton: false,
+        timer: 1200,
+      });
     }
   };
 

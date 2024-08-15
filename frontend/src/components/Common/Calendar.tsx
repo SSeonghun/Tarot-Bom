@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-
+import { reader, seeker}from '../../API/reservationsApi'
+import { useNavigate } from "react-router-dom";
 interface CalendarComponentProps {
   highlightDates?: Date[]; // 하이라이트할 날짜 배열을 받는 props
   layout?: "row" | "col" | "col-single"; // 레이아웃 유형을 설정하는 props
@@ -18,6 +19,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<Date | null>(null);
   // 날짜 계산 로직
+  const navigate = useNavigate();
   const getDaysInMonth = (month: number, year: number) => {
     return new Date(year, month + 1, 0).getDate();
   };
@@ -84,16 +86,56 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
     setSelectedEvent(null);
   };
 
-  const handleConfirmEntry = () => {
-    // if (selectedEvent) {
-    //   const matchingReservation = data.reservationList.find(reservation =>
-    //     new Date(reservation.startTime).toDateString() === selectedEvent.toDateString()
-    //   );
-    //   const roomEntryPath = `/rtcTest?token=${matchingReservation}&name=${data.name}&type=Cam`;
-    //   // URL을 사용하여 원하는 작업 수행 (예: 라우팅, API 호출 등)
-    //   console.log(roomEntryPath);
-    //   // 예를 들어, navigate(roomEntryPath) 등으로 이동할 수 있습니다.
-    // }
+  const handleConfirmEntry = async () => {
+    const Red = await reader();
+    const Sek = await seeker();
+    
+    console.log(Red);
+    let room: string | undefined;
+    let token: number | undefined;
+    let memberName: string | undefined;
+    let position: string | undefined;
+  
+    if (selectedEvent) {
+      const matchingReservation_R = Red.data.find((reservation: any) =>
+        new Date(reservation.startTime).toDateString() === selectedEvent.toDateString()
+      );
+      const matchingReservation_S = Sek.data.find((reservation: any) =>
+        new Date(reservation.startTime).toDateString() === selectedEvent.toDateString()
+      );
+  
+      if (matchingReservation_R) {
+        room = matchingReservation_R.roomStyle;
+        token = matchingReservation_R.reservationId * 10000;
+        memberName = matchingReservation_R.readerName;
+        position = "Reader";
+      }
+  
+      if (matchingReservation_S) {
+        room = matchingReservation_S.roomStyle;
+        token = matchingReservation_S.reservationId * 10000;
+        memberName = matchingReservation_S.readerName;
+        position = "Seeker";
+      }
+
+      console.log(room, token, memberName);
+  
+      // token과 다른 값들이 정의되어 있는지 확인
+      if (room && token !== undefined && memberName && position) {
+        const encodedToken = encodeURIComponent(token.toString());
+        const roomEntryPath = room === "GFX"
+          ? `/RTCGFX?token=${encodedToken}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(room)}&position=${position}`
+          : `/RTCCAM?token=${encodedToken}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(room)}&position=${position}`;
+  
+        // 라우터를 통해 방으로 이동
+        navigate(roomEntryPath, {
+          state: { readerType: "AI" },
+        });
+      } else {
+        console.error("필수 정보가 누락되었습니다.");
+      }
+    }
+  
     handleCloseModal();
   };
   // 현재 날짜와 예약 시간 비교

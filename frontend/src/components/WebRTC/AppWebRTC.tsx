@@ -75,7 +75,17 @@ const AppWebRTC:React.FC<RTCTest>= ({ token, name, type,position })=> {
     const [isCardSelectionOngoing, setIsCardSelectionOngoing] = useState(false);
     const [currentScenario, setCurrentScenario] = useState<'입장 인사'|'카드 선택 시간' | '카드 선택 확인'|'결과 확인'|'마무리 인사'>('입장 인사');
     console.log(token, name, type,position)
+    // Effect to join the room on mount
+  useEffect(() => {
+    joinRoom();
+    
+    // Cleanup on unmount
+    return () => {
+      leaveRoom();
+    };
+  }, []);
     useEffect(() => {
+        
         if (room) {
             console.log('Room is set. Listening for data events...');
             
@@ -448,58 +458,10 @@ async function handleScenarioChange() {
 };
     return (
         <>
-            {!room ? (
-                <div className="relative h-screen overflow-hidden" id="join">
-                    <img
-                        className="absolute inset-0 w-full h-full object-cover opacity-40 z-0"
-                        src={MainBg}
-                        alt="Main Background"
-                    />
-                    <div className="relative flex flex-col justify-center items-center h-full z-10" id="join-dialog">
-                        <h2 className="text-gray-600 text-5xl font-bold text-center">온라인 타로 상담실</h2>
-                        <form
-                            onSubmit={(e) => {
-                                joinRoom();
-                                e.preventDefault();
-                            }}
-                        >
-                            {/* <div className="mb-4">
-                                <label htmlFor="participant-name" className="block mb-2 text-teal-600 font-bold text-lg">참가자</label>
-                                <input
-                                    id="participant-name"
-                                    className="w-full p-2 mb-4 border border-teal-600 rounded focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600"
-                                    type="text"
-                                    value={participantName}
-                                    onChange={(e) => setParticipantName(e.target.value)}
-                                    required
-                                     // 사용자가 직접 입력하지 못하게 하려면 readOnly 속성을 추가합니다.
-                                /><p>{participantName}</p>
-                            </div>
-                            <div className="mb-4">
-                                <label htmlFor="room-name" className="block mb-2 text-teal-600 font-bold text-lg">상담실 번호</label>
-                                <input
-                                    id="room-name"
-                                    className="w-full p-2 mb-4 border border-teal-600 rounded focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600"
-                                    type="text"
-                                    value={roomName}
-                                    onChange={(e) => setRoomName(e.target.value)}
-                                    required
-                                />
-                                <p>{roomName}</p>
-                            </div> */}
-                            <button
-                                className="bg-teal-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg transform transition-transform duration-200 hover:bg-teal-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                                type="submit"
-                                disabled={!roomName || !participantName}
-                            >
-                                입장
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            ) : (<div ref={contentRef}>
+           
+           <div ref={contentRef}>
                 <img
-                        className="absolute inset-0 w-full h-full object-cover opacity-40 z-0"
+                        className="absolute inset-0 w-full h-full object-cover  z-0"
                         src={MainBg}
                         alt="Main Background"
                     />
@@ -670,7 +632,7 @@ async function handleScenarioChange() {
                         
                     </div>
                 </div>
-                </div> )}
+                </div>
         </>
     );
 }

@@ -7,17 +7,22 @@ const API_URL = `${process.env.REACT_APP_URL}/tarotbom/`;
 const chatReport = async (
   reportedId: number,
   content: string,
-  roomId: String
+  roomId: number
 ) => {
-  const status = "D00";
-  const reporType = "S02";
+  //const status = "D00";
+  const reportType = "S02";
+  console.log(reportedId,content,roomId,reportType)
   try {
+    console.log(reportedId,content)
     const response = await axios.post(`${API_URL}report`, {
       reportedId,
       content,
       roomId, // 추가: roomId도 함께 전송
-      status,
-      reporType,
+      //status,
+      reportType,
+    },
+    {
+      withCredentials: true, // 요청에 쿠키를 포함하도록 설정
     });
     return response.data;
   } catch (error) {

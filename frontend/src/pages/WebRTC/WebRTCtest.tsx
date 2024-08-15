@@ -76,6 +76,15 @@ const WebRTCpage: React.FC<RTCTest> = ({ }) => {
 
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRefs = useRef<{ [trackSid: string]: HTMLVideoElement | null }>({});
+  // Effect to join the room on mount
+  useEffect(() => {
+    joinRoom();
+    
+    // Cleanup on unmount
+    return () => {
+      leaveRoom();
+    };
+  }, []);
   useEffect(() => {
     if (room) {
         console.log('Room is set. Listening for data events...');
@@ -392,57 +401,13 @@ function saveDrawing() {
 
   return (
     <div>
-      {!room ? (
-        <div className="relative h-screen overflow-hidden" id="join">
-          <img
-            className="absolute inset-0 w-full h-full object-cover opacity-40 z-0"
-            src={MainBg}
-            alt="Main Background"
-          />
-          <div id="join-dialog" className="relative flex flex-col justify-center items-center h-full z-10">
-          <h2 className="text-gray-600 text-5xl font-bold text-center">온라인 타로 상담실</h2>
-            <form
-              onSubmit={(e) => {
-                joinRoom();
-                e.preventDefault();
-              }}
-            >
-              {/* <div>
-                <label htmlFor="participant-name">참가자</label>
-                <input
-                  id="participant-name"
-                  className="form-control"
-                  type="text"
-                  value={participantName}
-                  onChange={(e) => setParticipantName(e.target.value)}
-                  required
-                />
-                <p>{participantName}</p>
-              </div>
-              <div>
-                <label htmlFor="room-name">룸</label>
-                <input
-                  id="room-name"
-                  className="form-control"
-                  type="text"
-                  value={roomName}
-                  onChange={(e) => setRoomName(e.target.value)}
-                  required
-                />
-              </div> */}
-              <button
-                  className="bg-teal-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg transform transition-transform duration-200 hover:bg-teal-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                  type="submit"
-                  disabled={!roomName || !participantName}
-              >
-                  입장
-              </button>
-            </form>
-          </div>
-        </div>
-      ) : (
+      
         <div id="room">
-          
+        <img
+                        className="absolute inset-0 w-full h-full object-cover  z-0"
+                        src={MainBg}
+                        alt="Main Background"
+                    />
           <div id="layout-container">
             {/* 로컬 비디오가 시각적으로 표시되지 않지만 존재함 */}
             <div className="video-container local" style={{ display: 'none' }}>
@@ -575,7 +540,7 @@ function saveDrawing() {
                     </div>
           </div>
         </div>
-      )}
+  
     </div>
   );
 };
