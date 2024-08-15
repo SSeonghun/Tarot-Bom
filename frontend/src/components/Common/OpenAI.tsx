@@ -62,12 +62,13 @@ const OpenAI: React.FC<OpenAIProps> = ({
       const initialMessage = {
         role: "system",
         content: `You are a tarot reader and a Korean music recommender. I will give three or more tarot cards and a category, provide the following:
-        1. **카드이름**: <Card Name>
+        1. **Card Name**: <Card Name>
            - **카드요약**: <Card Detail>
            - **카드상세**: <Your Interpretation of this card in the context of the category>
         Overall: <Your Overall Interpretation of all cards in the context of the category>
         Music: <Please provide only the song title and artist name appropriate for the category>
-        I've been struggling with ${category}, and it's been weighing on me for a while. Lately, I've been feeling ${worry} about it. I believe that talking it through could really help me gain some clarity. Could you please offer your advice or perspective on this issue? I'd greatly appreciate your help.`,
+        I've been struggling with ${category}, and it's been weighing on me for a while. Lately, I've been feeling ${worry} about it. I believe that talking it through could really help me gain some clarity. Could you please offer your advice or perspective on this issue? I'd greatly appreciate your help.
+        <Card Name> must English`,
       };
 
       let messages = [initialMessage];
