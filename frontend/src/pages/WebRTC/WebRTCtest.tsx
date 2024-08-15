@@ -26,6 +26,7 @@ import { useLocation } from "react-router-dom";
 import { cardInfo } from "../../API/api";
 import Title from "../../components/TarotResult/Title";
 import AudioComponent from "../../components/WebRTC/AudioComponent";
+import VideoComponent from "../../components/WebRTC/VideoComponent";
 // 정의된 타입
 type TrackInfo = {
   trackPublication: RemoteTrackPublication;
@@ -517,44 +518,69 @@ const handleColorChange = (selectedColor: string) => {
           alt="Main Background"
         /> */}
         <div id="layout-container">
-          {/* 로컬 비디오가 시각적으로 표시되지 않지만 존재함style={{ display: "none" }} */}
-          {localTrack &&localTrack instanceof LocalAudioTrack && (
-    <AudioComponent
-        track={localTrack}
-
-       // participantIdentity={participantName}
-        //key={local}  // local 속성 추가
-    />
-)}
-          {/* <div
-                  className="audio-container"
-                  key="local"
-                >
+        {/* 로컬 비디오가 시각적으로 표시되지 않지만 존재함 */}
+        {localTrack && (
+          <div className="opacity-0 z-0">
+            <VideoComponent
+            track={localTrack}
+            participantIdentity={participantName}
+            local={true}  // local 속성 추가
+            
+          />
+          </div>
           
-          </div> */}
+        )}
 
-{isSeeker ? (
-  <div>
-    <Graphic onModalOpen={handleCardInfo} />
-    {remoteTracks.map((remoteTrack) =>
-      remoteTrack.trackPublication.kind === "audio" ? (
-        <AudioComponent
-            key={remoteTrack.trackPublication.trackSid}
-            track={remoteTrack.trackPublication.audioTrack!}
-        />
-      ) : null
-    )}
-  </div>
-) : (
-  remoteTracks.map((remoteTrack) =>
-    remoteTrack.trackPublication.kind === "audio" ? (
-      <AudioComponent
-            key={remoteTrack.trackPublication.trackSid}
-            track={remoteTrack.trackPublication.audioTrack!}
-        />
-    ) : null
-  )
-)}
+        {isSeeker ? (
+          <>
+          <div className="z-10" >
+          <Graphic onModalOpen={handleCardInfo} />
+          </div>
+            
+            {remoteTracks.map((remoteTrack) =>
+              remoteTrack.trackPublication.kind === "video" ? (
+                <div className="opacity-0 z-0">
+                  <VideoComponent
+                  key={remoteTrack.trackPublication.trackSid}
+                  track={remoteTrack.trackPublication.videoTrack!}
+                  participantIdentity={remoteTrack.participantIdentity}
+                  local={false}  // 원격 트랙의 경우 local 속성 추가
+                  
+                />
+                </div>
+                
+              ) : (
+                <AudioComponent
+                  key={remoteTrack.trackPublication.trackSid}
+                  track={remoteTrack.trackPublication.audioTrack!}
+                />
+              )
+            )}
+          </>
+        ) : (
+          <>
+            {remoteTracks.map((remoteTrack) =>
+              remoteTrack.trackPublication.kind === "video" ? (
+                <div className="opacity-0 z-0">
+            <VideoComponent
+                              key={remoteTrack.trackPublication.trackSid}
+                              track={remoteTrack.trackPublication.videoTrack!}
+                              participantIdentity={remoteTrack.participantIdentity}
+                              local={false}  // 원격 트랙의 경우 local 속성 추가
+                              
+                            />
+                </div>
+                
+              ) : (
+                <AudioComponent
+                  key={remoteTrack.trackPublication.trackSid}
+                  track={remoteTrack.trackPublication.audioTrack!}
+                />
+              )
+            )}
+          </>
+        )}
+      </div>
 
           {/* <div className="fixed bottom-4 left-4 bg-white border border-gray-300 rounded-lg p-4 shadow-md flex space-x-4 z-50"> */}
             {/* <p>진행 상황판</p>
@@ -578,7 +604,10 @@ const handleColorChange = (selectedColor: string) => {
             {/* 누르면 그다음 시나리오로 넘어가는 시나리오 통제 */}
             {/* 필요 시니라오 : 입장인사 -> 카드 선택 시간 -> 결과 확인 */}
           {/* </div> */}
-          <Title selectedCard={cards}/>
+          <div className="z-10">
+          <Title selectedCard={cards} />
+          </div>
+          
           {isProfileModalVisible && (
             <ProfileModal
               isVisible={isProfileModalVisible}
@@ -670,7 +699,7 @@ const handleColorChange = (selectedColor: string) => {
           </div>
         </div>
       </div>
-    </div>
+
   );
 };
 
