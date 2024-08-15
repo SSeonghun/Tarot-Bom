@@ -96,7 +96,8 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
     setOverall(overall);
     setLoading(false); // 요약 생성 후 로딩 상태를 false로 변경
 
-    console.log(translatedCategory);
+    console.log(category);
+    console.log(overall);
 
     if (readerType === "AI") {
       return;
@@ -106,7 +107,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
       readerId: 1, // 여기 바꿔줘야함
       seekerId: userInfo?.memberId,
       date: new Date(),
-      keyword: translatedCategory,
+      keyword: category,
       memo: "this is memo",
       summary: overall,
       music: music,
@@ -134,14 +135,20 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
     return "No recommended music found";
   };
 
-  // Overall을 추출하는 함수
+  // Overall부터 Music까지의 내용을 추출하는 함수
   const extractOverall = (response: string): string => {
-    const overallLine = response
-      .split("\n")
-      .find((line) => line.startsWith("Overall"));
-    if (overallLine) {
-      return overallLine.replace("Overall:", "").trim();
+    const lines = response.split("\n");
+    const overallIndex = lines.findIndex((line) => line.startsWith("Overall"));
+    const musicIndex = lines.findIndex((line) => line.startsWith("Music"));
+
+    if (overallIndex !== -1 && musicIndex !== -1 && overallIndex < musicIndex) {
+      return lines
+        .slice(overallIndex, musicIndex)
+        .join("\n")
+        .replace("Overall:", "")
+        .trim();
     }
+
     return "No recommended overall found";
   };
 
