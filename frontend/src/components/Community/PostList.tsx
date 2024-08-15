@@ -10,11 +10,9 @@ interface Post {
   category: string; // 추가된 필드
 }
 
-
 interface PostListProps {
   posts: Post[];
 }
-
 
 function convertToKoreaStandardTime(utcDateString: string) {
   const utcDate = new Date(utcDateString); // 입력받은 UTC 날짜 문자열을 Date 객체로 변환
@@ -27,7 +25,6 @@ function convertToKoreaStandardTime(utcDateString: string) {
 
   return `${month}/${day}`; // MM/DD 형식으로 반환
 }
-
 
 function getCategoryName(code: string): string {
   const categories: { [key: string]: string } = {
@@ -59,18 +56,25 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
           </tr>
         </thead>
         <tbody>
-          {posts.map((post) => (
-            <tr
-              key={post.boardId}
-              className="cursor-pointer hover:bg-gray-50"
-              onClick={() => handleRowClick(post.boardId)}
-            >
-              <td className="py-2 px-4 border-b text-center">{getCategoryName(post.category)}</td> {/* 카테고리 표시 */}
-              <td className="py-2 px-4 border-b text-left">{post.title}</td>
-              <td className="py-2 px-4 border-b text-center">{post.nickname}</td>
-              <td className="py-2 px-4 border-b text-center">{convertToKoreaStandardTime(post.createdTime)}</td>
-            </tr>
-          ))}
+          {posts.map((post) => {
+            const isNotice = post.category === 'B01';
+            return (
+              <tr
+                key={post.boardId}
+                className="cursor-pointer hover:bg-gray-50"
+                onClick={() => handleRowClick(post.boardId)}
+              >
+                <td className={`py-2 px-4 border-b text-center ${isNotice ? 'text-red-600 font-bold' : ''}`}>
+                  {getCategoryName(post.category)}
+                </td>
+                <td className={`py-2 px-4 border-b text-left ${isNotice ? 'font-bold' : ''}`}>
+                  {post.title}
+                </td>
+                <td className="py-2 px-4 border-b text-center">{post.nickname}</td>
+                <td className="py-2 px-4 border-b text-center">{convertToKoreaStandardTime(post.createdTime)}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
