@@ -12,7 +12,17 @@ interface Post {
   category: string;
 }
 
-// TODO : axios!!!!!!!!! 데이터 뿌려주기
+// Function to sort posts with '공지사항' first and then by date descending
+function sortPosts(posts: Post[]): Post[] {
+  return posts.slice().sort((a, b) => {
+    // Prioritize '공지사항' category first
+    if (a.category === 'B01' && b.category !== 'B01') return -1;
+    if (a.category !== 'B01' && b.category === 'B01') return 1;
+    
+    // If both posts have the same category, sort by createdTime in descending order
+    return new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime();
+  });
+}
 
 const PostListPage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -25,11 +35,11 @@ const PostListPage: React.FC = () => {
     window.scrollTo(0, 0);
     const fetchPosts = async () => {
       try {
-        const response = await boardList(); // 수정된 boardList 호출
-        // 데이터가 배열인지 확인
+        const response = await boardList(); // Fetch posts from API
+        // Ensure data is an array
         if (Array.isArray(response.data)) {
           setPosts(response.data);
-          // console.log(response.data);
+          console.log(response.data);
         } else {
           console.error("API 응답이 배열이 아닙니다:", response.data);
         }
@@ -43,23 +53,24 @@ const PostListPage: React.FC = () => {
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(e.target.value);
-    setCurrentPage(1);
+    setCurrentPage(1); // Reset to first page on category change
   };
 
-  // posts가 배열인지 확인 후 filter
+  // Filter posts based on selected category
   const filteredPosts =
     selectedCategory === "All"
       ? posts
       : posts.filter((post) => post.category === selectedCategory);
 
-  // filteredPosts가 배열일 경우에만 slice
+  // Sort posts globally
+  const sortedPosts = sortPosts(filteredPosts);
+
+  // Pagination logic
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
-  const currentPosts = Array.isArray(filteredPosts)
-    ? filteredPosts.slice(firstPostIndex, lastPostIndex)
-    : [];
+  const currentPosts = sortedPosts.slice(firstPostIndex, lastPostIndex);
 
-  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+  const totalPages = Math.ceil(sortedPosts.length / postsPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
