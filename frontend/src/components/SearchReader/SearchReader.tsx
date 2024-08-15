@@ -142,7 +142,7 @@ const SerchReader: React.FC = () => {
                   key={reader.memberId}
                   name={reader.name}
                   detail={reader.intro}
-                  review={0} // 리뷰 데이터가 없으면 기본값 0
+                  rating={reader.rating} // 리뷰 데이터가 없으면 기본값 0
                   category={['Category1']} // 카테고리 예시
                   // TODO : 이미지처리
                   imgUrl={ reader.profileUrl } // 더미 이미지 URL

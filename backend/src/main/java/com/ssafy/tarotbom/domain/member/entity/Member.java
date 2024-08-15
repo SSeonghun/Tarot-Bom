@@ -6,6 +6,7 @@ import com.ssafy.tarotbom.global.code.entity.CodeType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 

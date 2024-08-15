@@ -203,7 +203,6 @@ public class MemberServiceImpl implements MemberService {
         String nickname = signupReqDto.getNickname();
         String email = signupReqDto.getEmail();
         String password = bcrypasswordEncoder.encode(signupReqDto.getPassword());
-        String imageUrl = signupReqDto.getProfileUrl();
 
         Optional<Member> findMemberByNickname = memberRepository.findMemberByNickname(nickname);
         if(findMemberByNickname.isPresent()){
@@ -220,8 +219,11 @@ public class MemberServiceImpl implements MemberService {
                 .email(email)
                 .password(password)
                 .memberTypeId("M01")
-                .profileUrl(imageUrl)
+                .profileUrl("https://d2ovihsqke74ur.cloudfront.net/profile/429f76b1-f8ea-44df-bf71-6de4e8471954_기본이미지.webp")
                 .build();
+
+        log.info(member.getProfileUrl());
+
         memberRepository.save(member);
 
     }

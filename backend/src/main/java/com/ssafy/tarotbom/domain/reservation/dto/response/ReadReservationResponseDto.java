@@ -1,5 +1,6 @@
 package com.ssafy.tarotbom.domain.reservation.dto.response;
 
+import com.ssafy.tarotbom.domain.room.entity.RoomStyle;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,5 +24,6 @@ public class ReadReservationResponseDto {
     private String readerProfileUrl;
     private String status;
     private String keyword;
+    private RoomStyle roomStyle;
     private LocalDateTime startTime;
 }
