@@ -9,4 +9,6 @@ public class MatchingRoomEnterResponseDto {
     //private String token;
     private String roomStyle;
     private long roomId;
+    private String worry;
+    private String keyword;
 }

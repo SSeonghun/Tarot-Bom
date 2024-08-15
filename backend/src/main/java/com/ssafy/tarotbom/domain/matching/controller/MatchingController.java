@@ -77,7 +77,6 @@ public class MatchingController {
 
     @MessageMapping("/confirm")
     public void confirmMatching(MatchingConfirmRequestDto dto){
-
         log.info("{}",dto);
         MatchingInfoDto myDto = dto.getMemberDto();
         MatchingInfoDto candidateDto = dto.getCandidateDto();
@@ -90,12 +89,21 @@ public class MatchingController {
                 matchingService.setMatchingStatusEnd(candidateDto.getMemberId());
                 log.info("방을 생성합니다...");
                 long roomId = matchingService.openMatchingRoom(myDto, candidateDto);
+                // worry : seeker쪽에서 가져옴
+                String worry;
+                if(myDto.getWorry() != null){
+                    worry = myDto.getWorry();
+                } else {
+                    worry = candidateDto.getWorry();
+                }
                 // my 쪽 메시지 전송
                 // String myToken = openviduService.getToken(myDto.getMemberId(), roomId);
                 String roomStyle = myDto.getRoomStyle();
                 MatchingRoomEnterResponseDto myRoomEnterResponseDto = MatchingRoomEnterResponseDto.builder()
                         .roomId(roomId)
                         .roomStyle(roomStyle)
+                        .worry(worry)
+                        .keyword(myDto.getKeyword())
                         .build();
                 SocketResponse socketResponse = SocketResponse.of(SocketCode.MATCHING_ENTER_ROOM, myRoomEnterResponseDto);
                 sendingOperation.convertAndSend(matchingStatusPath+myDto.getMemberId(), socketResponse);
@@ -104,6 +112,8 @@ public class MatchingController {
                 MatchingRoomEnterResponseDto candidateRoomEnterResponseDto = MatchingRoomEnterResponseDto.builder()
                         .roomId(roomId)
                         .roomStyle(roomStyle)
+                        .worry(worry)
+                        .keyword(candidateDto.getKeyword())
                         .build();
                 socketResponse = SocketResponse.of(SocketCode.MATCHING_ENTER_ROOM, candidateRoomEnterResponseDto);
                 sendingOperation.convertAndSend(matchingStatusPath+candidateDto.getMemberId(), socketResponse);
