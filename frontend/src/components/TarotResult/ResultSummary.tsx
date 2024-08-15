@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import cardBg from '../../assets/img/card.png';
-import HoverButton from '../../components/Common/HoverButton';
-import OpenAI from '../Common/OpenAI';
-import Loading from '../Common/Loading';
-import MusicPlayer from '../Common/MusicPlayer';
-import ReactMarkdown from 'react-markdown';
-import remarkBreaks from 'remark-breaks';
-import remarkGfm from 'remark-gfm';
-import useStore from '../../stores/store';
+import React, { useState, useEffect } from "react";
+import cardBg from "../../assets/img/card.png";
+import HoverButton from "../../components/Common/HoverButton";
+import OpenAI from "../Common/OpenAI";
+import Loading from "../Common/Loading";
+import MusicPlayer from "../Common/MusicPlayer";
+import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
+import remarkGfm from "remark-gfm";
+import useStore from "../../stores/store";
 
-import Heart from '../../assets/img/heart.webp';
-import Healthy from '../../assets/img/heathy.webp';
-import Course from '../../assets/img/course.webp';
-import Money from '../../assets/img/money.webp';
-import Etc from '../../assets/img/question.webp';
+import Heart from "../../assets/img/heart.webp";
+import Healthy from "../../assets/img/heathy.webp";
+import Course from "../../assets/img/course.webp";
+import Money from "../../assets/img/money.webp";
+import Etc from "../../assets/img/question.webp";
 
-const { saveTarotResult } = require('../../API/api');
+const { saveTarotResult } = require("../../API/api");
 
 interface CardData {
   cardId: number;
@@ -51,11 +51,11 @@ interface SaveRequest {
 
 // 카테고리 변환 맵
 const categoryMap: { [key: string]: string } = {
-  G01: '연애운',
-  G02: '진로운',
-  G03: '금전운',
-  G04: '건강운',
-  G05: '기타',
+  G01: "연애운",
+  G02: "진로운",
+  G03: "금전운",
+  G04: "건강운",
+  G05: "기타",
 };
 
 // 카테고리별 이미지 맵
@@ -73,10 +73,10 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
   worry,
   category,
 }) => {
-  const [summary, setSummary] = useState<string>('');
+  const [summary, setSummary] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const [music, setMusic] = useState<string>('');
-  const [overall, setOverall] = useState<string>('');
+  const [music, setMusic] = useState<string>("");
+  const [overall, setOverall] = useState<string>("");
   const { userInfo } = useStore();
 
   // Category 변환
@@ -85,12 +85,12 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
   // 카테고리에 따른 이미지 선택
   const selectedImage = imageMap[translatedCategory] || Etc;
 
-  console.log('selected Cards : ', selectedCard);
+  console.log("selected Cards : ", selectedCard);
 
   const handleSummaryGenerated = (generatedSummary: string) => {
     setSummary(generatedSummary);
     const music = extractRecommendedMusic(generatedSummary);
-    console.log('music : ', music);
+    console.log("music : ", music);
     const overall = extractOverall(generatedSummary);
     setMusic(music);
     setOverall(overall);
@@ -98,7 +98,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
 
     console.log(translatedCategory);
 
-    if (readerType === 'AI') {
+    if (readerType === "AI") {
       return;
     }
 
@@ -107,14 +107,14 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
       seekerId: userInfo?.memberId,
       date: new Date(),
       keyword: translatedCategory,
-      memo: 'this is memo',
+      memo: "this is memo",
       summary: overall,
       music: music,
       roomId: 1,
       cards: selectedCard.map((card, index) => ({
         cardId: card.cardId,
         sequence: index + 1,
-        direction: 'U', // 방향을 수동으로 설정하거나 선택할 수 있도록 추가
+        direction: "U", // 방향을 수동으로 설정하거나 선택할 수 있도록 추가
       })),
     };
 
@@ -125,20 +125,24 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
 
   // 음악을 추출하는 함수
   const extractRecommendedMusic = (response: string): string => {
-    const musicLine = response.split('\n').find((line) => line.startsWith('Music'));
+    const musicLine = response
+      .split("\n")
+      .find((line) => line.startsWith("Music"));
     if (musicLine) {
-      return musicLine.replace('Music:', '').trim();
+      return musicLine.replace("Music:", "").trim();
     }
-    return 'No recommended music found';
+    return "No recommended music found";
   };
 
   // Overall을 추출하는 함수
   const extractOverall = (response: string): string => {
-    const overallLine = response.split('\n').find((line) => line.startsWith('Overall'));
+    const overallLine = response
+      .split("\n")
+      .find((line) => line.startsWith("Overall"));
     if (overallLine) {
-      return overallLine.replace('Overall:', '').trim();
+      return overallLine.replace("Overall:", "").trim();
     }
-    return 'No recommended overall found';
+    return "No recommended overall found";
   };
 
   return (
@@ -151,7 +155,11 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
       />
 
       <div className="relative w-full max-w-3xl">
-        <img src={cardBg} alt="Background" className="w-full h-auto object-cover" />
+        <img
+          src={cardBg}
+          alt="Background"
+          className="w-full h-auto object-cover"
+        />
         <div className="absolute inset-12 bg-white bg-opacity-20 border shadow-lg p-3 bg-cover"></div>
 
         {loading ? (
@@ -164,7 +172,11 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
         ) : summary ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
             <div className="text-4xl font-bold text-white p-4 rounded-lg flex flex-row">
-              <img src={selectedImage} alt="Category Icon" className="w-8 h-8 mr-2" />
+              <img
+                src={selectedImage}
+                alt="Category Icon"
+                className="w-8 h-8 mr-2"
+              />
               AI {translatedCategory} 요약
             </div>
             <div className="mt-8 border border-white p-6 rounded-lg max-w-xl bg-black bg-opacity-60 h-[600px] overflow-y-auto">
@@ -172,7 +184,7 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
                 className="text-white text-s"
                 remarkPlugins={[remarkBreaks, remarkGfm]}
               >
-                {summary.replace(/\n/g, '\n\n')}
+                {summary.replace(/\n/g, "\n\n")}
               </ReactMarkdown>
             </div>
             <p className="mt-5 text-lg font-bold text-white">
@@ -189,17 +201,9 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
 
       <div className="relative mt-8 flex items-center gap-10">
         <HoverButton
-          label="이미지 저장"
-          color="bg-gray-500"
-          hoverColor="bg-gray-300"
-          hsize="h-12"
-          wsize="w-48"
-          fontsize="text-lg"
-        />
-        <HoverButton
           label="리더 프로필"
-          color="bg-gray-500"
-          hoverColor="bg-gray-300"
+          color="bg-gray-300"
+          hoverColor="bg-gray-500"
           hsize="h-12"
           wsize="w-48"
           fontsize="text-lg"

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import PostList from '../../components/Community/PostList';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import PostList from "../../components/Community/PostList";
 import { boardList } from "../../API/boardsApi";
-
 
 interface Post {
   boardId: number;
@@ -18,11 +17,12 @@ interface Post {
 const PostListPage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const postsPerPage = 9;
   const navigate = useNavigate();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchPosts = async () => {
       try {
         const response = await boardList(); // 수정된 boardList 호출
@@ -31,8 +31,6 @@ const PostListPage: React.FC = () => {
           setPosts(response.data);
           // console.log(response.data);
         } else {
-
-
           console.error("API 응답이 배열이 아닙니다:", response.data);
         }
       } catch (error) {
@@ -50,24 +48,28 @@ const PostListPage: React.FC = () => {
 
   // posts가 배열인지 확인 후 filter
   const filteredPosts =
-    selectedCategory === 'All' ? posts : posts.filter((post) => post.category === selectedCategory);
+    selectedCategory === "All"
+      ? posts
+      : posts.filter((post) => post.category === selectedCategory);
 
   // filteredPosts가 배열일 경우에만 slice
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
-  const currentPosts = Array.isArray(filteredPosts) ? filteredPosts.slice(firstPostIndex, lastPostIndex) : [];
+  const currentPosts = Array.isArray(filteredPosts)
+    ? filteredPosts.slice(firstPostIndex, lastPostIndex)
+    : [];
 
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const goToCreatePostPage = () => {
-    navigate('/create-post');
+    navigate("/create-post");
   };
 
   return (
     <div className="min-h-screen bg-gray-900 p-8">
-      <div className="max-w-4xl mx-auto p-4 bg-white rounded-lg shadow-md mt-12">
+      <div className="max-w-4xl mx-auto p-4 bg-white rounded-lg shadow-md mt-[70px]">
         <div className="flex justify-between items-center mb-auto">
           <h1 className="text-2xl font-bold">게시판</h1>
           <button
@@ -79,8 +81,11 @@ const PostListPage: React.FC = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mt-3 mb-2">
-          카테고리별 필터
+          <label
+            htmlFor="category"
+            className="block text-sm font-medium text-gray-700 mt-3 mb-2"
+          >
+            카테고리별 필터
           </label>
           <select
             id="category"
@@ -97,7 +102,11 @@ const PostListPage: React.FC = () => {
         </div>
 
         <PostList posts={currentPosts} />
-        <Pagination totalPages={totalPages} paginate={paginate} currentPage={currentPage} />
+        <Pagination
+          totalPages={totalPages}
+          paginate={paginate}
+          currentPage={currentPage}
+        />
       </div>
     </div>
   );
@@ -109,7 +118,11 @@ interface PaginationProps {
   currentPage: number;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ totalPages, paginate, currentPage }) => {
+const Pagination: React.FC<PaginationProps> = ({
+  totalPages,
+  paginate,
+  currentPage,
+}) => {
   const pageNumbers = [];
   const maxVisiblePages = 5;
   let startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 1);
@@ -139,7 +152,9 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, paginate, currentPa
           key={number}
           onClick={() => paginate(number)}
           className={`mx-1 px-3 py-1 rounded-md ${
-            currentPage === number ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'
+            currentPage === number
+              ? "bg-blue-600 text-white"
+              : "bg-gray-200 hover:bg-gray-300"
           }`}
         >
           {number}

@@ -38,9 +38,6 @@ const Income: React.FC<IncomeProps> = ({ onSelection }) => {
 
   return (
     <div className="min-h-screen flex flex-col justify-center mx-8">
-      <h1 className="text-[35px] font-bold text-black mb-8 text-center">
-        랜덤 매칭으로 타로리딩을 진행해 보세요!!
-      </h1>
       <p className="text-center font-bold">카테고리를 선택하세요</p>
       <div className="grid grid-cols-5 gap-4 m-2">
         {[

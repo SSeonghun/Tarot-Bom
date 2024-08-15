@@ -17,8 +17,8 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen, onCancel }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-4 rounded-lg shadow-lg flex flex-col justify-center items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center ">
+      <div className="bg-white p-4 rounded-lg shadow-lg flex flex-col justify-center items-center z-[9999]">
         <h2 className="text-[30px] text-black font-bold mb-4">매칭중</h2>
         {/* 여기에 로딩 애니메이션을 추가할 수 있습니다 */}
         <img src={LoadingImg} alt="" className="w-[130px] mt-4 rounded-lg" />

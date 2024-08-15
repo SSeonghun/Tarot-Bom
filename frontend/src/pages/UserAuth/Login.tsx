@@ -11,6 +11,10 @@ import { userInfo } from "os";
 const { login } = require("../../API/userApi");
 
 const Login: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
