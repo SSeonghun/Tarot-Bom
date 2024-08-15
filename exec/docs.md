@@ -1,5 +1,47 @@
 ![타로:봄](assets/Title.png)
 
+## 💡개발 환경
+
+#### Backend
+
+- SpringBoot
+- Spring Data JPA
+- Spring Security
+- QueryDSL
+
+#### Frontend
+
+- React
+- Node.js
+- Tailwind CSS
+- Zustand
+
+#### Database
+
+- MySQL
+- Redis
+
+#### Infra
+
+- Docker
+- Caddy
+- Nginx
+- Let's Encrypt(HTTPS)
+- AWS EC2
+- AWS S3
+
+#### 협업 툴
+
+- GitLab
+- Jira
+- Notion
+
+## 📦 외부 서비스
+
+- Open AI API
+- Youtube API
+- KakaoMap API
+
 ## 💻구현 기능 (시나리오)
 
 <table>
