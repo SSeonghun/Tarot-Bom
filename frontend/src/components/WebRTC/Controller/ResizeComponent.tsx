@@ -15,7 +15,7 @@ const ResizeComponent: React.FC<{
     isMuted: boolean;          // 음소거 상태
     isVideoOff: boolean;       // 화면 끄기 상태
 }> = ({ videoId, isMaximized, isMinimized, onDoubleClick, children, onToggleMute, onToggleVideo, isMuted, isVideoOff }) => {
-    const [position, setPosition] = useState<{ x: number; y: number }>({ x: 100, y: 100 });
+    const [position, setPosition] = useState<{ x: number; y: number }>({ x: videoId === 'local'?325:-700, y: videoId === 'local'?39:-200 });
     const [dragging, setDragging] = useState<boolean>(false);
     const dragItem = useRef<HTMLDivElement | null>(null);
     const dragStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -63,8 +63,21 @@ const ResizeComponent: React.FC<{
     // ResizeComponent의 크기를 VideoComponent와 비율 맞추기
     // VideoComponent의 비율: 16:9 (대부분의 비디오 비율)
     const videoAspectRatio = 16 / 9; // 비율 계산
-    const resizeWidth = isMaximized ? '100vw' : isMinimized ? '50vw' : '400px';
-    const resizeHeight = isMaximized ? '100vh' : isMinimized ? `${40 / videoAspectRatio}vw` : `${400 / videoAspectRatio}px`;
+    const resizeWidth = isMaximized
+        ? '100vw'
+        : isMinimized
+        ? '10vw'
+        : videoId !== 'local'
+        ? '80vw'
+        : '20vw';
+
+    const resizeHeight = isMaximized
+        ? '100vh'
+        : isMinimized
+        ? `${10 / videoAspectRatio}vh`
+        : videoId !== 'local'
+        ? `${140 / videoAspectRatio}vh`
+        : `${40 / videoAspectRatio}vh`;
     return (
         <div
             onMouseDown={handleMouseDown}
@@ -77,7 +90,7 @@ const ResizeComponent: React.FC<{
                 width: resizeWidth,
                 height: resizeHeight,
                 backgroundColor: '#ccc',
-                zIndex: isMaximized ? 40 : 1,
+                zIndex: isMaximized ? 40 : videoId !== 'local'?1:2,
                 cursor: isMinimized ? 'move' : 'default',
                 overflow: 'hidden',  // 비디오 크기 조절 시 잘림 방지
             }}
