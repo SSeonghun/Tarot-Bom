@@ -58,18 +58,21 @@ const Hero5: React.FC = () => {
               </p>
             </div>
           </div>
-          <div ref={imageRef} className="relative grid col-span-6 opacity-0">
+          <div
+            ref={imageRef}
+            className="relative grid col-span-6 opacity-0 ms-[50px] mt-[10px]"
+          >
             <img
               src={Book}
               alt=""
-              className="absolute inset-0 z-99 top-[70px]"
+              className="absolute w-[350px] inset-0 z-99 top-[70px]"
             />
             <img
               src={Tarot}
               alt=""
-              className="relative z-100 -top-[50px] ms-auto me-auto right-[25px]"
+              className="relative z-100 top-[20px] ms-auto me-auto right-[55px]"
               style={{
-                width: "70%",
+                width: "50%",
                 height: "auto",
                 objectFit: "contain",
               }}

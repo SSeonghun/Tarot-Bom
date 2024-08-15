@@ -508,7 +508,7 @@ const Navbar: React.FC = () => {
               </h1>
             </Link>
           </div>
-          <div className="space-x-4 flex items-center justify-center pointer-events-auto">
+          <div className="space-x-4 flex items-center justify-center pointer-events-auto font-bold">
             <PrivateLink to="/online">타로보기</PrivateLink>
             <PrivateLink to="/search-reader">예약하기</PrivateLink>
             <PrivateLink to="/community">커뮤니티</PrivateLink>
@@ -521,7 +521,7 @@ const Navbar: React.FC = () => {
             )}
 
             {store.isLoggedIn ? (
-              <div className="relative inline-block text-left dropdown ">
+              <div className="relative inline-block text-left dropdown">
                 <button
                   onClick={toggleDropdown}
                   className="focus:outline-none "
