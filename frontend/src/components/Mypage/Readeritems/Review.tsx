@@ -12,7 +12,7 @@ const Review: React.FC<props> = ({mainData}) => {
   
   
   return (
-    <div className="min-h-screen p-10">
+    <div className="min-h-screen p-10 pb-0">
       <div className="mb-6">
         <h1 className="text-[50px] text-black font-bold">리뷰</h1>
         <hr className="border-[2px] border-gray-500" />

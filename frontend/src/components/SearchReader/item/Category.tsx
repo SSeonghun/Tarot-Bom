@@ -3,32 +3,24 @@ import Categoryitem from './Categoryitem';
 
 interface CategoryProps {
   items: { name: string }[];
-  onSelect:(label:{name:string})=>void;
+  selectedCategory: string | null;
+  onSelect: (label: { name: string }) => void;
 }
 
-const Category: React.FC<CategoryProps> = ({ items, onSelect }) => {
+const Category: React.FC<CategoryProps> = ({ items, selectedCategory, onSelect }) => {
   return (
-    <nav className="rounded-md w-44 h-fit flex flex-col justify-between">
-      <div className="h-fit">
-        <div className="flex justify-center shadow-sm pr-4">
-          <div className="pl-2">
-            <p className="text-4xl font-bold text-indigo-300">READER</p>
-            <span className="text-lg block text-center text-gray-400">CATEGORY</span>
-          </div>
-        </div>
-        <div className="pl-10">
-          <ul className="space-y-8 pt-10">
-            {items.map((item, index) => (
-              <Categoryitem 
-              key={index} 
-              name={item.name} 
-              onClick={()=>onSelect(item)}
-              />
-            ))}
-          </ul>
-        </div>
-      </div>
-    </nav>
+    <ul className="space-y-2">
+      {items.map(item => (
+        <Categoryitem
+          key={item.name}
+          name={item.name}
+          selected={
+            (selectedCategory === null && item.name === '전체') || selectedCategory === item.name
+          } // "전체"를 기본 선택
+          onClick={() => onSelect(item)}
+        />
+      ))}
+    </ul>
   );
 };
 

@@ -73,13 +73,14 @@ const ReaderCard: React.FC<ReaderCardProps> = ({
           src={imgUrl}
           alt="popular reader"
         />
-        <h1 className="text-[20px] text-black">{name}</h1>
-        <h3 className="text-sm text-gray-600 line-clamp-2">{detail}</h3>
+        <h1 className="text-[20px] text-black mt-3">{name}</h1>
         {/* 별점 표시 */}
-        <div className="flex flex-col items-center mb-3">
+        <div className="flex flex-col items-center mt-3">
           {renderStars(rating)}
         </div>
-        <div className="absolute left-1/2 transform -translate-x-1/2">
+        <h3 className="text-lg text-gray-600 line-clamp-2 mt-4 mb-3 ">{detail}</h3>
+        
+        {/* <div className="absolute left-1/2 transform -translate-x-1/2">
           <HoverButton
             label="Detail"
             color="bg-red-500"
@@ -88,7 +89,7 @@ const ReaderCard: React.FC<ReaderCardProps> = ({
             wsize={wsize}
             fontsize="text-base"
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

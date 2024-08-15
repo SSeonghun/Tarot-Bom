@@ -1,25 +1,22 @@
 import React, { useState } from "react";
-import { reader, seeker}from '../../API/reservationsApi'
-import { useNavigate } from "react-router-dom";
+import Button from './CommonButton';
+
 interface CalendarComponentProps {
-  highlightDates?: Date[]; // 하이라이트할 날짜 배열을 받는 props
-  layout?: "row" | "col" | "col-single"; // 레이아웃 유형을 설정하는 props
+  highlightDates?: Date[];
+  layout?: "row" | "col" | "col-single";
+  hsize: number;
 }
 
 const CalendarComponent: React.FC<CalendarComponentProps> = ({
   highlightDates = [],
   layout = "row",
+  hsize
 }) => {
-  const [currentMonth, setCurrentMonth] = useState<number>(
-    new Date().getMonth()
-  );
-  const [currentYear, setCurrentYear] = useState<number>(
-    new Date().getFullYear()
-  );
+  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth());
+  const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<Date | null>(null);
-  // 날짜 계산 로직
-  const navigate = useNavigate();
+
   const getDaysInMonth = (month: number, year: number) => {
     return new Date(year, month + 1, 0).getDate();
   };
@@ -49,7 +46,6 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
   const daysInMonth = getDaysInMonth(currentMonth, currentYear);
   const startDay = getStartDayOfMonth(currentMonth, currentYear);
 
-  // 날짜 배열을 set으로 변환하여 효율적으로 확인할 수 있도록 합니다.
   const highlightedDatesSet = new Set(
     highlightDates
       .filter(
@@ -59,7 +55,6 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
       .map((date) => date.getDate())
   );
 
-  // 하이라이트 날짜를 확인하는 함수
   const isHighlighted = (dayNumber: number) => {
     return (
       dayNumber > 0 &&
@@ -68,120 +63,101 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
     );
   };
 
-  // 다가오는 일정을 하이라이트 날짜에서 추출합니다.
+  const isToday = (dayNumber: number) => {
+    const today = new Date();
+    return (
+      today.getDate() === dayNumber &&
+      today.getMonth() === currentMonth &&
+      today.getFullYear() === currentYear
+    );
+  };
+
   const getUpcomingEvents = () => {
+    const now = new Date();
     return highlightDates
       .filter(
         (date) =>
-          date.getFullYear() === currentYear && date.getMonth() === currentMonth
+          date.getFullYear() === currentYear &&
+          date.getMonth() === currentMonth &&
+          date > now
       )
-      .sort((a, b) => a.getDate() - b.getDate());
+      .sort((a, b) => a.getTime() - b.getTime());
   };
+
   const handleOpenModal = (eventDate: Date) => {
     setSelectedEvent(eventDate);
     setIsModalOpen(true);
   };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedEvent(null);
   };
 
-  const handleConfirmEntry = async () => {
-    const Red = await reader();
-    const Sek = await seeker();
-    
-    console.log(Red);
-    let room: string | undefined;
-    let token: number | undefined;
-    let memberName: string | undefined;
-    let position: string | undefined;
-  
-    if (selectedEvent) {
-      const matchingReservation_R = Red.data.find((reservation: any) =>
-        new Date(reservation.startTime).toDateString() === selectedEvent.toDateString()
-      );
-      const matchingReservation_S = Sek.data.find((reservation: any) =>
-        new Date(reservation.startTime).toDateString() === selectedEvent.toDateString()
-      );
-  
-      if (matchingReservation_R) {
-        room = matchingReservation_R.roomStyle;
-        token = matchingReservation_R.reservationId * 10000;
-        memberName = matchingReservation_R.readerName;
-        position = "Reader";
-      }
-  
-      if (matchingReservation_S) {
-        room = matchingReservation_S.roomStyle;
-        token = matchingReservation_S.reservationId * 10000;
-        memberName = matchingReservation_S.readerName;
-        position = "Seeker";
-      }
-
-      console.log(room, token, memberName);
-  
-      // token과 다른 값들이 정의되어 있는지 확인
-      if (room && token !== undefined && memberName && position) {
-        const encodedToken = encodeURIComponent(token.toString());
-        const roomEntryPath = room === "GFX"
-          ? `/RTCGFX?token=${encodedToken}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(room)}&position=${position}`
-          : `/RTCCAM?token=${encodedToken}&name=${encodeURIComponent(memberName)}&type=${encodeURIComponent(room)}&position=${position}`;
-  
-        // 라우터를 통해 방으로 이동
-        navigate(roomEntryPath, {
-          state: { readerType: "AI" },
-        });
-      } else {
-        console.error("필수 정보가 누락되었습니다.");
-      }
-    }
-  
+  const handleConfirmEntry = () => {
     handleCloseModal();
   };
-  // 현재 날짜와 예약 시간 비교
+
   const isWithin30Minutes = (eventDate: Date) => {
     const now = new Date();
-    const endOfDay = new Date(eventDate);
-    endOfDay.setHours(23, 59, 59, 999); // 해당 날짜의 끝 시간
-    const thirtyMinutesBefore = new Date(eventDate.getTime() - 30 * 60000);
-    return now <= endOfDay && now >= thirtyMinutesBefore;
+    const thirtyMinutesBefore = new Date(now.getTime() + 30 * 60000);
+    return now <= eventDate && eventDate <= thirtyMinutesBefore;
   };
-  // 달력과 다가오는 일정이 표시될 레이아웃에 따라 처리
+
   const renderUpcomingEvents = () => {
     const upcomingEvents = getUpcomingEvents();
 
+    const urgentEvents = upcomingEvents.filter(isWithin30Minutes);
+    const futureEvents = upcomingEvents.filter(event => !isWithin30Minutes(event));
+
     if (layout === "col-single") {
-      // 단일 일정 표시
-      const firstEvent = upcomingEvents[0];
-      return firstEvent ? (
+      return urgentEvents.length ? (
         <div>
-          <strong>{firstEvent.toLocaleString()}</strong>: 
-          <strong>{firstEvent.toLocaleDateString()}</strong>: 다가오는 일정
+          <strong>{urgentEvents[0].toLocaleString()}</strong>: 다가오는 일정
+          <button
+            className="ml-4 px-4 py-2 bg-blue-500 text-white rounded"
+            onClick={() => handleOpenModal(urgentEvents[0])}
+          >
+            입장
+          </button>
         </div>
       ) : (
-        <div>일정이 없습니다.</div>
+        <div>다가오는 일정</div>
       );
     } else {
-      // 모든 일정 표시
-      return upcomingEvents.length ? (
-        upcomingEvents.map((event, index) => (
-          <div key={index}>
-            <strong>{event.toLocaleString()}</strong>: 
-            {/* 날짜 시간의 30분 전이 되면 예약 webrtc 입장버튼 추가 */}
-            {isWithin30Minutes(event)&& (
-            <button
-              className="ml-4 px-4 py-2 bg-blue-500 text-white rounded"
-              onClick={() => handleOpenModal(event)}
-            >
-            입장
-            </button>
+      return (
+        <>
+          {urgentEvents.length ? (
+            <div>
+              <h2 className="text-lg font-bold text-red-500">예약 입장</h2>
+              {urgentEvents.map((event, index) => (
+                <div key={index}>
+                  <strong>{event.toLocaleString()}</strong>
+                  <button
+                    className="ml-4 px-4 py-2 bg-pink-400 hover:bg-pink-300 text-white rounded"
+                    onClick={() => handleOpenModal(event)}
+                  >
+                    입장
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          {futureEvents.length ? (
+            <div>
+              <h2 className="text-lg font-bold text-gray-800">예약 리스트</h2>
+              <div style={{ maxHeight: `${hsize}px`, overflowY: 'auto' }}>
+                {futureEvents.map((event, index) => (
+                  <div key={index}>
+                    <strong>{event.toLocaleString()}</strong>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div>다가오는 일정이 없습니다.</div>
           )}
-            <strong>{event.toLocaleDateString()}</strong>: 다가오는 일정
-          </div>
-        ))
-      ) : (
-
-        <div>일정이 없습니다.</div>
+        </>
       );
     }
   };
@@ -279,17 +255,23 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
                         <td key={dayIndex} className="pt-6">
                           <div
                             className={`px-2 py-2 cursor-pointer flex w-full justify-center ${
-                              isHighlighted(dayNumber)
-                                ? "bg-red-300 bg-opacity-60 text-black rounded-full"
-                                : ""
+                              isToday(dayNumber) ? "text-blue-500 font-bold" : ""
+                            } ${
+                              isHighlighted(dayNumber) ? "bg-red-300 bg-opacity-60 rounded-full" : ""
                             }`}
                           >
                             {dayNumber > 0 && dayNumber <= daysInMonth ? (
                               <p
                                 className={`text-base font-medium ${
-                                  isHighlighted(dayNumber)
+                                  isToday(dayNumber) ? "text-blue-500 font-bold" : ""
+                                } ${
+                                  isHighlighted(dayNumber) && !isToday(dayNumber)
                                     ? "text-black"
-                                    : "text-gray-500 dark:text-gray-100"
+                                    : ""
+                                } ${
+                                  !isHighlighted(dayNumber) && !isToday(dayNumber)
+                                    ? "text-gray-500 dark:text-gray-100"
+                                    : ""
                                 }`}
                               >
                                 {dayNumber}
