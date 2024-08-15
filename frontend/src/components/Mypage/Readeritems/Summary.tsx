@@ -31,8 +31,7 @@ const Summary: React.FC<Props> = ({ reservationData, mainData }) => {
 
   // 날짜와 시간을 포맷팅하는 함수
   const formatDateTime = (dateTimeString: string) => {
-    const date = new Date(dateTimeString);
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    return new Date(dateTimeString); // 시간을 유지한 채로 Date 객체를 생성
   };
 
   useEffect(() => {

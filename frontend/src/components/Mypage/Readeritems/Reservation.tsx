@@ -14,18 +14,19 @@ const Reservation: React.FC<Props> = ({ reservationData }) => {
 
   // 날짜와 시간을 포맷팅하는 함수
   const formatDateTime = (dateTimeString: string): Date => {
-    const date = new Date(dateTimeString);
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    return new Date(dateTimeString);
   };
 
   useEffect(() => {
     if (reservationData) {
       const dates = reservationData.map((reservation) =>
-        formatDateTime(reservation.startTime)
+        formatDateTime(reservation.startTime),
       );
-      setHighlightDates(dates);
+      setHighlightDates(dates)
     }
   }, [reservationData]);
+
+  console.log(highlightDates)
 
   return (
     <div className="min-h-screen p-10">
