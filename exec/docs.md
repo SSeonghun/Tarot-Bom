@@ -53,8 +53,8 @@
   </thead>
   <tbody>
     <tr>
-      <td><img src="assets/로그인_회원가입.gif" width="400px"></td>
-      <td><img src="assets/MainPage.gif" width="400px"></td>
+      <td><img src="../assets/로그인_회원가입.gif" width="400px"></td>
+      <td><img src="../assets/MainPage.gif" width="400px"></td>
     </tr>
   </tbody>
   <thead>
@@ -65,8 +65,8 @@
   </thead>
   <tbody>
     <tr>
-      <td><img src="assets/SeekerMypage_ReaderCreate.gif" width="400px"></td>
-      <td><img src="assets/리더마이페이지.gif" width="400px"></td>
+      <td><img src="../assets/SeekerMypage_ReaderCreate.gif" width="400px"></td>
+      <td><img src="../assets/리더마이페이지.gif" width="400px"></td>
   </tbody>
   <thead>
     <tr>
@@ -76,8 +76,8 @@
   </thead>
   <tbody>
     <tr>
-      <td><img src="assets/ReaderProfile.gif" width="400px"></td>
-      <td><img src="assets/예약하기.gif" width="400px"></td>
+      <td><img src="../assets/ReaderProfile.gif" width="400px"></td>
+      <td><img src="../assets/예약하기.gif" width="400px"></td>
     </tr>
   </tbody>
   </thead>
@@ -101,8 +101,8 @@
   </thead>
   <tbody>
     <tr>
-      <td><img src="assets/AI_그래픽_타로.gif" width="400px"></td>
-      <td><img src="assets/시커기준캠타로.gif" width="400px"></td>
+      <td><img src="../assets/AI_그래픽_타로.gif" width="400px"></td>
+      <td><img src="../assets/시커기준캠타로.gif" width="400px"></td>
     </tr>
   </tbody>
    <thead>
@@ -113,8 +113,8 @@
   </thead>
   <tbody>
     <tr>
-      <td><img src="assets/오프라인등록삭제.gif" width="400px"></td>
-      <td><img src="assets/커뮤니티.gif" width="400px"></td>
+      <td><img src="../assets/오프라인등록삭제.gif" width="400px"></td>
+      <td><img src="../assets/커뮤니티.gif" width="400px"></td>
     </tr>
   </tbody>
 </table>
