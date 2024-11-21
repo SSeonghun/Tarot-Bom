@@ -89,8 +89,8 @@
   </thead>
   <tbody>
     <tr>
-      <td><img src="../assets/시커입장 랜덤매칭.gif" width="400px"></td>
-      <td><img src="../assets/리더입장랜덤매칭.gif" width="400px"></td>
+      <td><img src="assets/시커입장랜덤매칭.gif" width="400px"></td>
+      <td><img src="assets/리더입장랜덤매칭.gif" width="400px"></td>
     </tr>
   </tbody>
   <thead>
@@ -102,7 +102,7 @@
   <tbody>
     <tr>
       <td><img src="../assets/AI_그래픽_타로.gif" width="400px"></td>
-      <td><img src="" width="400px"></td>
+      <td><img src="../assets/시커기준캠타로.gif" width="400px"></td>
     </tr>
   </tbody>
    <thead>
